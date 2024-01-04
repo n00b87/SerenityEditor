@@ -1,33 +1,41 @@
 # depslib dependency file v1.0
-1698002785 source:/home/n00b/Projects/SerenityEngine/Serenity3D_Editor.cpp
+1698331691 source:/home/n00b/Projects/SerenityEngine/Serenity3D_Editor.cpp
 	"Serenity3D_Editor.h"
 
-1698031449 /home/n00b/Projects/SerenityEngine/Serenity3D_Editor.h
+1704378758 /home/n00b/Projects/SerenityEngine/Serenity3D_Editor.h
 	<wx/artprov.h>
 	<wx/xrc/xmlres.h>
 	<wx/string.h>
+	<wx/bitmap.h>
+	<wx/image.h>
+	<wx/icon.h>
 	<wx/menu.h>
 	<wx/gdicmn.h>
 	<wx/font.h>
 	<wx/colour.h>
 	<wx/settings.h>
-	<wx/bitmap.h>
-	<wx/image.h>
-	<wx/icon.h>
+	<wx/stattext.h>
+	<wx/aui/aui.h>
+	<wx/aui/auibar.h>
+	<wx/sizer.h>
+	<wx/panel.h>
 	<wx/ribbon/toolbar.h>
 	<wx/ribbon/panel.h>
 	<wx/ribbon/page.h>
 	<wx/ribbon/control.h>
 	<wx/ribbon/art.h>
 	<wx/ribbon/bar.h>
-	<wx/sizer.h>
-	<wx/panel.h>
 	<wx/simplebook.h>
-	<wx/aui/auibook.h>
-	<wx/splitter.h>
+	<wx/srchctrl.h>
 	<wx/listbox.h>
+	<wx/aui/auibook.h>
+	<wx/notebook.h>
+	<wx/splitter.h>
+	<wx/treectrl.h>
 	<wx/propgrid/propgrid.h>
 	<wx/propgrid/advprops.h>
+	<wx/statusbr.h>
+	<wx/toolbar.h>
 	<wx/frame.h>
 
 1648163323 /usr/include/wx-3.0/wx/artprov.h
@@ -1988,4 +1996,45 @@
 1648163323 /usr/include/wx-3.0/wx/simplebook.h
 	"wx/bookctrl.h"
 	"wx/vector.h"
+
+1648163323 /usr/include/wx-3.0/wx/srchctrl.h
+	"wx/defs.h"
+	"wx/textctrl.h"
+	"wx/compositewin.h"
+	"wx/containr.h"
+	"wx/osx/srchctrl.h"
+	"wx/generic/srchctlg.h"
+
+1648163323 /usr/include/wx-3.0/wx/compositewin.h
+	"wx/window.h"
+	"wx/containr.h"
+
+1648163323 /usr/include/wx-3.0/wx/generic/srchctlg.h
+	"wx/bitmap.h"
+
+1648163323 /usr/include/wx-3.0/wx/treectrl.h
+	"wx/defs.h"
+	"wx/control.h"
+	"wx/treebase.h"
+	"wx/textctrl.h"
+	"wx/generic/treectlg.h"
+	"wx/msw/treectrl.h"
+	"wx/generic/treectlg.h"
+	"wx/generic/treectlg.h"
+	"wx/generic/treectlg.h"
+	"wx/generic/treectlg.h"
+	"wx/generic/treectlg.h"
+
+1648163323 /usr/include/wx-3.0/wx/treebase.h
+	"wx/defs.h"
+	"wx/window.h"
+	"wx/event.h"
+	"wx/dynarray.h"
+	"wx/itemid.h"
+
+1648163323 /usr/include/wx-3.0/wx/itemid.h
+
+1648163323 /usr/include/wx-3.0/wx/generic/treectlg.h
+	"wx/scrolwin.h"
+	"wx/pen.h"
 
