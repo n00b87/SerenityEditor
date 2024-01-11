@@ -16,6 +16,12 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
 	public:
 		/** Constructor */
 		SerenityEditorSerenity3D_Frame( wxWindow* parent );
+
+		int ClientH(float pct) { return (int) (GetClientSize().y * pct / 100); }
+		int ClientW(float pct) { return (int) (GetClientSize().x * pct / 100); }
+
+    protected:
+		void OnPlayClicked( wxCommandEvent& event );
 	//// end generated class members
 
 };

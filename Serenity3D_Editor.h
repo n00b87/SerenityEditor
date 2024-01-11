@@ -23,24 +23,27 @@
 #include <wx/aui/auibar.h>
 #include <wx/sizer.h>
 #include <wx/panel.h>
-#include <wx/ribbon/toolbar.h>
-#include <wx/ribbon/panel.h>
-#include <wx/ribbon/page.h>
-#include <wx/ribbon/control.h>
-#include <wx/ribbon/art.h>
-#include <wx/ribbon/bar.h>
-#include <wx/simplebook.h>
 #include <wx/srchctrl.h>
 #include <wx/listbox.h>
-#include <wx/aui/auibook.h>
-#include <wx/notebook.h>
-#include <wx/splitter.h>
 #include <wx/treectrl.h>
+#include <wx/notebook.h>
+#include <wx/simplebook.h>
+#include <wx/combobox.h>
+#include <wx/bmpbuttn.h>
+#include <wx/button.h>
+#include <wx/aui/auibook.h>
+#include <wx/richtext/richtextctrl.h>
+#include <wx/splitter.h>
 #include <wx/propgrid/propgrid.h>
 #include <wx/propgrid/advprops.h>
+#include <wx/checkbox.h>
+#include <wx/spinctrl.h>
+#include <wx/clrpicker.h>
 #include <wx/statusbr.h>
 #include <wx/toolbar.h>
 #include <wx/frame.h>
+#include <wx/textctrl.h>
+#include <wx/scrolwin.h>
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -62,7 +65,6 @@ class Serenity3D_Frame : public wxFrame
 		wxPanel* m_panel161;
 		wxSimplebook* m_simplebook2;
 		wxPanel* m_panel4;
-		wxSimplebook* m_simplebook3;
 		wxPanel* m_tools3D_panel;
 		wxPanel* m_panel30;
 		wxStaticText* m_staticText7;
@@ -72,6 +74,8 @@ class Serenity3D_Frame : public wxFrame
 		wxAuiToolBarItem* m_s3d_move_tool;
 		wxAuiToolBarItem* m_s3d_rotate_tool;
 		wxAuiToolBarItem* m_s3d_scale_tool;
+		wxNotebook* m_notebook2;
+		wxPanel* m_panel50;
 		wxPanel* m_panel301;
 		wxStaticText* m_staticText71;
 		wxAuiToolBar* m_auiToolBar51;
@@ -90,17 +94,12 @@ class Serenity3D_Frame : public wxFrame
 		wxAuiToolBar* m_auiToolBar54;
 		wxAuiToolBarItem* m_scene3d_camera_tool;
 		wxAuiToolBarItem* m_scene3d_light_tool;
-		wxAuiToolBarItem* m_scene_effect_tool;
 		wxPanel* m_panel306;
 		wxStaticText* m_staticText75;
 		wxAuiToolBar* m_auiToolBar55;
-		wxAuiToolBarItem* m_s3d_select_tool1;
-		wxPanel* m_toolsNone_panel;
-		wxPanel* m_tools2D_panel;
-		wxRibbonBar* m_ribbonBar3;
-		wxRibbonPage* m_ribbonPage3;
-		wxRibbonPanel* m_ribbonPanel6;
-		wxRibbonToolBar* m_ribbonToolBar6;
+		wxAuiToolBarItem* m_m3d_path_tool;
+		wxAuiToolBarItem* m_m3d_billboard_tool;
+		wxAuiToolBarItem* m_scene_effect_tool;
 		wxPanel* m_panel302;
 		wxStaticText* m_staticText72;
 		wxAuiToolBar* m_auiToolBar52;
@@ -109,30 +108,51 @@ class Serenity3D_Frame : public wxFrame
 		wxPanel* m_meshList_panel;
 		wxSearchCtrl* m_searchCtrl4;
 		wxListBox* m_listBox3;
+		wxTreeCtrl* m_treeCtrl21;
 		wxPanel* m_panel5;
 		wxSplitterWindow* m_splitter3;
 		wxPanel* m_panel71;
 		wxSplitterWindow* m_splitter5;
 		wxPanel* m_panel15;
 		wxAuiNotebook* m_stage_viewport_auinotebook;
+		wxPanel* m_panel45;
+		wxPanel* m_panel47;
+		wxStaticText* m_staticText12;
+		wxComboBox* m_comboBox3;
+		wxPanel* m_panel48;
+		wxStaticText* m_staticText11;
+		wxComboBox* m_comboBox2;
+		wxBitmapButton* m_bpButton3;
+		wxPanel* m_panel44;
 		wxPanel* m_panel16;
 		wxNotebook* m_notebook1;
-		wxPanel* m_panel32;
 		wxPanel* m_panel31;
+		wxRichTextCtrl* m_richText1;
 		wxPanel* m_panel8;
 		wxAuiNotebook* m_auinotebook3;
-		wxPanel* m_panel25;
+		wxPanel* m_project_stages_panel;
 		wxSplitterWindow* m_splitter6;
 		wxPanel* m_panel305;
 		wxTreeCtrl* m_treeCtrl2;
 		wxPanel* m_panel311;
 		wxPropertyGrid* m_propertyGrid3;
-		wxPanel* m_stage_actor_panel;
-		wxSplitterWindow* m_splitter4;
-		wxPanel* m_panel12;
-		wxTreeCtrl* m_treeCtrl1;
-		wxPanel* m_panel13;
-		wxPropertyGrid* m_propertyGrid1;
+		wxPanel* m_viewport_settings_panel;
+		wxPanel* m_panel49;
+		wxPanel* m_panel57;
+		wxStaticText* m_staticText39;
+		wxStaticText* m_staticText40;
+		wxStaticText* m_staticText43;
+		wxStaticText* m_staticText42;
+		wxStaticText* m_staticText44;
+		wxPanel* m_panel56;
+		wxStaticText* m_staticText36;
+		wxCheckBox* m_checkBox1;
+		wxStaticText* m_staticText37;
+		wxSpinCtrl* m_spinCtrl2;
+		wxStaticText* m_staticText38;
+		wxSpinCtrl* m_spinCtrl3;
+		wxStaticText* m_staticText41;
+		wxColourPickerCtrl* m_colourPicker1;
 		wxPanel* m_panel6;
 		wxSplitterWindow* m_splitter51;
 		wxPanel* m_panel28;
@@ -143,8 +163,12 @@ class Serenity3D_Frame : public wxFrame
 		wxToolBarToolBase* m_tool1;
 		wxToolBarToolBase* m_tool2;
 		wxToolBarToolBase* m_tool3;
-		wxToolBarToolBase* m_tool6;
+		wxToolBarToolBase* m_tbar_play_tool;
 		wxToolBarToolBase* m_tool7;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void OnPlayClicked( wxCommandEvent& event ) { event.Skip(); }
+
 
 	public:
 
@@ -154,7 +178,7 @@ class Serenity3D_Frame : public wxFrame
 
 		void m_splitter1OnIdle( wxIdleEvent& )
 		{
-			m_splitter1->SetSashPosition( 204 );
+			m_splitter1->SetSashPosition( 230 );
 			m_splitter1->Disconnect( wxEVT_IDLE, wxIdleEventHandler( Serenity3D_Frame::m_splitter1OnIdle ), NULL, this );
 		}
 
@@ -176,17 +200,61 @@ class Serenity3D_Frame : public wxFrame
 			m_splitter6->Disconnect( wxEVT_IDLE, wxIdleEventHandler( Serenity3D_Frame::m_splitter6OnIdle ), NULL, this );
 		}
 
-		void m_splitter4OnIdle( wxIdleEvent& )
-		{
-			m_splitter4->SetSashPosition( 0 );
-			m_splitter4->Disconnect( wxEVT_IDLE, wxIdleEventHandler( Serenity3D_Frame::m_splitter4OnIdle ), NULL, this );
-		}
-
 		void m_splitter51OnIdle( wxIdleEvent& )
 		{
 			m_splitter51->SetSashPosition( 233 );
 			m_splitter51->Disconnect( wxEVT_IDLE, wxIdleEventHandler( Serenity3D_Frame::m_splitter51OnIdle ), NULL, this );
 		}
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class StageCanvasSettings_Frame
+///////////////////////////////////////////////////////////////////////////////
+class StageCanvasSettings_Frame : public wxFrame
+{
+	private:
+
+	protected:
+		wxPanel* m_panel33;
+		wxScrolledWindow* m_scrolledWindow1;
+		wxPanel* m_panel34;
+		wxStaticText* m_staticText9;
+		wxStaticText* m_staticText10;
+		wxTextCtrl* m_textCtrl1;
+		wxComboBox* m_comboBox4;
+		wxButton* m_button3;
+		wxButton* m_button2;
+		wxPanel* m_panel341;
+		wxStaticText* m_staticText91;
+		wxStaticText* m_staticText101;
+		wxTextCtrl* m_textCtrl11;
+		wxComboBox* m_comboBox41;
+		wxButton* m_button31;
+		wxButton* m_button21;
+		wxPanel* m_panel342;
+		wxStaticText* m_staticText92;
+		wxStaticText* m_staticText102;
+		wxTextCtrl* m_textCtrl12;
+		wxComboBox* m_comboBox42;
+		wxButton* m_button32;
+		wxButton* m_button22;
+		wxPanel* m_panel343;
+		wxStaticText* m_staticText93;
+		wxStaticText* m_staticText103;
+		wxTextCtrl* m_textCtrl13;
+		wxComboBox* m_comboBox43;
+		wxButton* m_button33;
+		wxButton* m_button23;
+		wxStdDialogButtonSizer* m_sdbSizer1;
+		wxButton* m_sdbSizer1OK;
+		wxButton* m_sdbSizer1Cancel;
+
+	public:
+
+		StageCanvasSettings_Frame( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Canvas Settings"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 682,420 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
+
+		~StageCanvasSettings_Frame();
 
 };
 

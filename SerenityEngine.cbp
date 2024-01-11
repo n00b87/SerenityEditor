@@ -35,7 +35,7 @@
 			<Add option="`wx-config --cflags`" />
 		</Compiler>
 		<Linker>
-			<Add option="`wx-config --libs std,stc,aui,propgrid,ribbon`" />
+			<Add option="`wx-config --libs std,stc,aui,propgrid,ribbon` -lirrlicht pkg-config --cflags gtk+-3.0" />
 		</Linker>
 		<Unit filename="Serenity3D_Editor.cpp" />
 		<Unit filename="Serenity3D_Editor.h" />
@@ -45,6 +45,8 @@
 		<Unit filename="SerenityEngineApp.h" />
 		<Unit filename="SerenityEngineMain.cpp" />
 		<Unit filename="SerenityEngineMain.h" />
+		<Unit filename="wxIrrlicht.cpp" />
+		<Unit filename="wxIrrlicht.h" />
 		<Extensions />
 	</Project>
 </CodeBlocks_project_file>
