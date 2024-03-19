@@ -25,7 +25,6 @@
 #include <wx/panel.h>
 #include <wx/srchctrl.h>
 #include <wx/listbox.h>
-#include <wx/treectrl.h>
 #include <wx/notebook.h>
 #include <wx/simplebook.h>
 #include <wx/combobox.h>
@@ -34,15 +33,16 @@
 #include <wx/aui/auibook.h>
 #include <wx/richtext/richtextctrl.h>
 #include <wx/splitter.h>
+#include <wx/treectrl.h>
 #include <wx/propgrid/propgrid.h>
 #include <wx/propgrid/advprops.h>
 #include <wx/checkbox.h>
 #include <wx/spinctrl.h>
 #include <wx/clrpicker.h>
+#include <wx/textctrl.h>
 #include <wx/statusbr.h>
 #include <wx/toolbar.h>
 #include <wx/frame.h>
-#include <wx/textctrl.h>
 #include <wx/scrolwin.h>
 
 ///////////////////////////////////////////////////////////////////////////
@@ -108,7 +108,6 @@ class Serenity3D_Frame : public wxFrame
 		wxPanel* m_meshList_panel;
 		wxSearchCtrl* m_searchCtrl4;
 		wxListBox* m_listBox3;
-		wxTreeCtrl* m_treeCtrl21;
 		wxPanel* m_panel5;
 		wxSplitterWindow* m_splitter3;
 		wxPanel* m_panel71;
@@ -123,6 +122,7 @@ class Serenity3D_Frame : public wxFrame
 		wxStaticText* m_staticText11;
 		wxComboBox* m_comboBox2;
 		wxBitmapButton* m_bpButton3;
+		wxBitmapButton* m_bpButton31;
 		wxPanel* m_panel44;
 		wxPanel* m_panel16;
 		wxNotebook* m_notebook1;
@@ -158,6 +158,15 @@ class Serenity3D_Frame : public wxFrame
 		wxPanel* m_panel28;
 		wxListBox* m_listBox31;
 		wxPanel* m_panel291;
+		wxPanel* m_panel41;
+		wxStaticText* m_staticText32;
+		wxTextCtrl* m_textCtrl9;
+		wxStaticText* m_staticText321;
+		wxTextCtrl* m_textCtrl91;
+		wxStaticText* m_staticText3211;
+		wxComboBox* m_comboBox7;
+		wxPanel* m_panel42;
+		wxPanel* m_panel43;
 		wxStatusBar* m_statusBar1;
 		wxToolBar* m_toolBar1;
 		wxToolBarToolBase* m_tool1;
@@ -172,7 +181,7 @@ class Serenity3D_Frame : public wxFrame
 
 	public:
 
-		Serenity3D_Frame( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Serenity Engine"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 1240,812 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
+		Serenity3D_Frame( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Serenity Engine"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 1368,812 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
 
 		~Serenity3D_Frame();
 
@@ -184,7 +193,7 @@ class Serenity3D_Frame : public wxFrame
 
 		void m_splitter3OnIdle( wxIdleEvent& )
 		{
-			m_splitter3->SetSashPosition( 768 );
+			m_splitter3->SetSashPosition( 850 );
 			m_splitter3->Disconnect( wxEVT_IDLE, wxIdleEventHandler( Serenity3D_Frame::m_splitter3OnIdle ), NULL, this );
 		}
 
