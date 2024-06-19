@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version 3.10.1-0-g8feb16b3)
+// C++ code generated with wxFormBuilder (version 4.2.1-0-g80c4cb6-dirty)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO *NOT* EDIT THIS FILE!
@@ -65,7 +65,7 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer2 = new wxBoxSizer( wxHORIZONTAL );
 
 	m_splitter1 = new wxSplitterWindow( m_stage_panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_3D );
-	m_splitter1->SetSashGravity( 1 );
+	m_splitter1->SetSashGravity( 0 );
 	m_splitter1->Connect( wxEVT_IDLE, wxIdleEventHandler( Serenity3D_Frame::m_splitter1OnIdle ), NULL, this );
 	m_splitter1->SetMinimumPaneSize( 1 );
 
@@ -111,8 +111,10 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer30->Fit( m_panel30 );
 	bSizer25->Add( m_panel30, 0, wxEXPAND | wxALL, 5 );
 
-	m_notebook2 = new wxNotebook( m_tools3D_panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
-	m_panel50 = new wxPanel( m_notebook2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	m_panel50 = new wxPanel( m_tools3D_panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	m_panel50->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_CAPTIONTEXT ) );
+	m_panel50->SetBackgroundColour( wxColour( 224, 224, 224 ) );
+
 	wxBoxSizer* bSizer91;
 	bSizer91 = new wxBoxSizer( wxVERTICAL );
 
@@ -145,6 +147,33 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer301->Fit( m_panel301 );
 	bSizer91->Add( m_panel301, 0, wxEXPAND | wxALL, 5 );
 
+	m_panel421 = new wxPanel( m_panel50, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_RAISED|wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer711;
+	bSizer711 = new wxBoxSizer( wxVERTICAL );
+
+	m_staticText72 = new wxStaticText( m_panel421, wxID_ANY, wxT("Objects"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText72->Wrap( -1 );
+	bSizer711->Add( m_staticText72, 0, wxALL, 5 );
+
+	m_auiToolBar52 = new wxAuiToolBar( m_panel421, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_TB_HORZ_LAYOUT );
+	m_mesh_dump_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/mesh.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+
+	m_mesh_wiz_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/animated_mesh.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+
+	m_m3d_billboard_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("Add Billboard"), wxBitmap( wxT("icons/billboard.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxT("Add a billboard to the stage"), wxEmptyString, NULL );
+
+	m_scene3d_light_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("Add Light"), wxBitmap( wxT("icons/light-bulb.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxT("Add a light to the stage"), wxEmptyString, NULL );
+
+	m_auiToolBar52->Realize();
+
+	bSizer711->Add( m_auiToolBar52, 0, wxALL, 5 );
+
+
+	m_panel421->SetSizer( bSizer711 );
+	m_panel421->Layout();
+	bSizer711->Fit( m_panel421 );
+	bSizer91->Add( m_panel421, 0, wxEXPAND | wxALL, 5 );
+
 	m_panel303 = new wxPanel( m_panel50, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer303;
 	bSizer303 = new wxBoxSizer( wxVERTICAL );
@@ -154,11 +183,11 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer303->Add( m_staticText73, 0, wxALL, 5 );
 
 	m_auiToolBar53 = new wxAuiToolBar( m_panel303, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_TB_HORZ_LAYOUT );
-	m_geo_terrain_tool = m_auiToolBar53->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/terrain.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_CHECK, wxEmptyString, wxEmptyString, NULL );
+	m_geo_terrain_tool = m_auiToolBar53->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/terrain.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
 
-	m_geo_water_tool = m_auiToolBar53->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/sea.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_CHECK, wxEmptyString, wxEmptyString, NULL );
+	m_geo_water_tool = m_auiToolBar53->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/sea.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
 
-	m_geo_grass_tool = m_auiToolBar53->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/grass.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_CHECK, wxEmptyString, wxEmptyString, NULL );
+	m_geo_grass_tool = m_auiToolBar53->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/grass.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
 
 	m_auiToolBar53->Realize();
 
@@ -174,14 +203,14 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	wxBoxSizer* bSizer304;
 	bSizer304 = new wxBoxSizer( wxVERTICAL );
 
-	m_staticText74 = new wxStaticText( m_panel304, wxID_ANY, wxT("Scene"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText74 = new wxStaticText( m_panel304, wxID_ANY, wxT("Misc"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText74->Wrap( -1 );
 	bSizer304->Add( m_staticText74, 0, wxALL, 5 );
 
 	m_auiToolBar54 = new wxAuiToolBar( m_panel304, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_TB_HORZ_LAYOUT );
-	m_scene3d_camera_tool = m_auiToolBar54->AddTool( wxID_ANY, wxT("Add Camera"), wxBitmap( wxT("icons/camera.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_CHECK, wxT("Add a camera to the stage"), wxEmptyString, NULL );
+	m_m3d_path_tool = m_auiToolBar54->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/anchor.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_CHECK, wxEmptyString, wxEmptyString, NULL );
 
-	m_scene3d_light_tool = m_auiToolBar54->AddTool( wxID_ANY, wxT("Add Light"), wxBitmap( wxT("icons/light-bulb.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_CHECK, wxT("Add a light to the stage"), wxEmptyString, NULL );
+	m_scene_effect_tool = m_auiToolBar54->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/effect.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
 
 	m_auiToolBar54->Realize();
 
@@ -193,80 +222,11 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer304->Fit( m_panel304 );
 	bSizer91->Add( m_panel304, 0, wxEXPAND | wxALL, 5 );
 
-	m_panel306 = new wxPanel( m_panel50, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|wxTAB_TRAVERSAL );
-	wxBoxSizer* bSizer306;
-	bSizer306 = new wxBoxSizer( wxVERTICAL );
-
-	m_staticText75 = new wxStaticText( m_panel306, wxID_ANY, wxT("Misc."), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText75->Wrap( -1 );
-	bSizer306->Add( m_staticText75, 0, wxALL, 5 );
-
-	m_auiToolBar55 = new wxAuiToolBar( m_panel306, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_TB_HORZ_LAYOUT );
-	m_m3d_path_tool = m_auiToolBar55->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/anchor.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_CHECK, wxEmptyString, wxEmptyString, NULL );
-
-	m_m3d_billboard_tool = m_auiToolBar55->AddTool( wxID_ANY, wxT("Add Billboard"), wxBitmap( wxT("icons/billboard.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxT("Add a billboard to the stage"), wxEmptyString, NULL );
-
-	m_scene_effect_tool = m_auiToolBar55->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/effect.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_CHECK, wxEmptyString, wxEmptyString, NULL );
-
-	m_auiToolBar55->Realize();
-
-	bSizer306->Add( m_auiToolBar55, 0, wxALL, 5 );
-
-
-	m_panel306->SetSizer( bSizer306 );
-	m_panel306->Layout();
-	bSizer306->Fit( m_panel306 );
-	bSizer91->Add( m_panel306, 0, wxEXPAND | wxALL, 5 );
-
 
 	m_panel50->SetSizer( bSizer91 );
 	m_panel50->Layout();
 	bSizer91->Fit( m_panel50 );
-	m_notebook2->AddPage( m_panel50, wxT("Tools"), true );
-	m_panel302 = new wxPanel( m_notebook2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|wxTAB_TRAVERSAL );
-	wxBoxSizer* bSizer302;
-	bSizer302 = new wxBoxSizer( wxVERTICAL );
-
-	m_staticText72 = new wxStaticText( m_panel302, wxID_ANY, wxT("Meshes"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText72->Wrap( -1 );
-	bSizer302->Add( m_staticText72, 0, wxALL, 5 );
-
-	m_auiToolBar52 = new wxAuiToolBar( m_panel302, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_TB_HORZ_LAYOUT );
-	m_mesh_dump_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/mesh.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_CHECK, wxEmptyString, wxEmptyString, NULL );
-
-	m_mesh_wiz_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/animated_mesh.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_CHECK, wxEmptyString, wxEmptyString, NULL );
-
-	m_auiToolBar52->Realize();
-
-	bSizer302->Add( m_auiToolBar52, 0, wxALL, 5 );
-
-	m_meshList_panel = new wxPanel( m_panel302, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	wxBoxSizer* bSizer14;
-	bSizer14 = new wxBoxSizer( wxVERTICAL );
-
-	m_searchCtrl4 = new wxSearchCtrl( m_meshList_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	#ifndef __WXMAC__
-	m_searchCtrl4->ShowSearchButton( true );
-	#endif
-	m_searchCtrl4->ShowCancelButton( false );
-	bSizer14->Add( m_searchCtrl4, 0, wxALL|wxEXPAND, 5 );
-
-	m_listBox3 = new wxListBox( m_meshList_panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
-	bSizer14->Add( m_listBox3, 7, wxALL|wxEXPAND, 5 );
-
-
-	m_meshList_panel->SetSizer( bSizer14 );
-	m_meshList_panel->Layout();
-	bSizer14->Fit( m_meshList_panel );
-	bSizer302->Add( m_meshList_panel, 1, wxEXPAND | wxALL, 5 );
-
-
-	m_panel302->SetSizer( bSizer302 );
-	m_panel302->Layout();
-	bSizer302->Fit( m_panel302 );
-	m_notebook2->AddPage( m_panel302, wxT("Assets"), false );
-
-	bSizer25->Add( m_notebook2, 1, wxEXPAND | wxALL, 5 );
+	bSizer25->Add( m_panel50, 1, wxEXPAND | wxALL, 5 );
 
 
 	m_tools3D_panel->SetSizer( bSizer25 );
@@ -299,17 +259,11 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	wxBoxSizer* bSizer10;
 	bSizer10 = new wxBoxSizer( wxVERTICAL );
 
-	m_splitter5 = new wxSplitterWindow( m_panel71, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_3D );
-	m_splitter5->SetSashGravity( 1 );
-	m_splitter5->Connect( wxEVT_IDLE, wxIdleEventHandler( Serenity3D_Frame::m_splitter5OnIdle ), NULL, this );
-	m_splitter5->SetMinimumPaneSize( 1 );
-
-	m_panel15 = new wxPanel( m_splitter5, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	m_panel15 = new wxPanel( m_panel71, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer11;
 	bSizer11 = new wxBoxSizer( wxVERTICAL );
 
-	m_stage_viewport_auinotebook = new wxAuiNotebook( m_panel15, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_NB_DEFAULT_STYLE );
-	m_panel45 = new wxPanel( m_stage_viewport_auinotebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	m_panel45 = new wxPanel( m_panel15, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer42;
 	bSizer42 = new wxBoxSizer( wxVERTICAL );
 
@@ -324,8 +278,8 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_staticText12->Wrap( -1 );
 	bSizer46->Add( m_staticText12, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_comboBox3 = new wxComboBox( m_panel47, wxID_ANY, wxT("Combo!"), wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
-	bSizer46->Add( m_comboBox3, 0, wxALL, 5 );
+	m_stagePOV_comboBox = new wxComboBox( m_panel47, wxID_ANY, wxT("Combo!"), wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	bSizer46->Add( m_stagePOV_comboBox, 0, wxALL, 5 );
 
 
 	m_panel47->SetSizer( bSizer46 );
@@ -333,77 +287,87 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer46->Fit( m_panel47 );
 	bSizer43->Add( m_panel47, 1, wxEXPAND | wxALL, 5 );
 
-	m_panel48 = new wxPanel( m_panel45, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	wxBoxSizer* bSizer44;
-	bSizer44 = new wxBoxSizer( wxHORIZONTAL );
+	m_panel441 = new wxPanel( m_panel45, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer74;
+	bSizer74 = new wxBoxSizer( wxHORIZONTAL );
 
-	m_staticText11 = new wxStaticText( m_panel48, wxID_ANY, wxT("Active Layer"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText11->Wrap( -1 );
-	bSizer44->Add( m_staticText11, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	m_staticText331 = new wxStaticText( m_panel441, wxID_ANY, wxT("MODE"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText331->Wrap( -1 );
+	bSizer74->Add( m_staticText331, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_comboBox2 = new wxComboBox( m_panel48, wxID_ANY, wxT("Combo!"), wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
-	bSizer44->Add( m_comboBox2, 1, wxALL, 5 );
+	m_auiToolBar6 = new wxAuiToolBar( m_panel441, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_TB_HORZ_LAYOUT );
+	m_editMode_tool = m_auiToolBar6->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/edit_pencil_icon.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_RADIO, wxEmptyString, wxEmptyString, NULL );
 
-	m_bpButton3 = new wxBitmapButton( m_panel48, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW|0 );
+	m_cameraMode_tool = m_auiToolBar6->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/camera.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_RADIO, wxEmptyString, wxEmptyString, NULL );
 
-	m_bpButton3->SetBitmap( wxBitmap( wxT("icons/canvas.png"), wxBITMAP_TYPE_ANY ) );
-	bSizer44->Add( m_bpButton3, 0, wxALL, 5 );
+	m_auiToolBar6->Realize();
 
-	m_bpButton31 = new wxBitmapButton( m_panel48, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW|0 );
-
-	m_bpButton31->SetBitmap( wxBitmap( wxT("icons/globe.png"), wxBITMAP_TYPE_ANY ) );
-	bSizer44->Add( m_bpButton31, 0, wxALL, 5 );
+	bSizer74->Add( m_auiToolBar6, 1, wxALL, 5 );
 
 
-	m_panel48->SetSizer( bSizer44 );
-	m_panel48->Layout();
-	bSizer44->Fit( m_panel48 );
-	bSizer43->Add( m_panel48, 1, wxEXPAND | wxALL, 5 );
+	m_panel441->SetSizer( bSizer74 );
+	m_panel441->Layout();
+	bSizer74->Fit( m_panel441 );
+	bSizer43->Add( m_panel441, 0, wxALL|wxEXPAND, 5 );
 
 
 	bSizer42->Add( bSizer43, 0, wxEXPAND, 5 );
 
-	m_panel44 = new wxPanel( m_panel45, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	bSizer42->Add( m_panel44, 1, wxEXPAND | wxALL, 5 );
+	m_stageViewport_panel = new wxPanel( m_panel45, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SIMPLE|wxTAB_TRAVERSAL );
+	bSizer42->Add( m_stageViewport_panel, 1, wxEXPAND | wxALL, 5 );
 
 
 	m_panel45->SetSizer( bSizer42 );
 	m_panel45->Layout();
 	bSizer42->Fit( m_panel45 );
-	m_stage_viewport_auinotebook->AddPage( m_panel45, wxT("a page"), false, wxNullBitmap );
-
-	bSizer11->Add( m_stage_viewport_auinotebook, 1, wxEXPAND | wxALL, 5 );
+	bSizer11->Add( m_panel45, 1, wxEXPAND | wxALL, 5 );
 
 
 	m_panel15->SetSizer( bSizer11 );
 	m_panel15->Layout();
 	bSizer11->Fit( m_panel15 );
-	m_panel16 = new wxPanel( m_splitter5, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	wxBoxSizer* bSizer17;
-	bSizer17 = new wxBoxSizer( wxVERTICAL );
+	bSizer10->Add( m_panel15, 1, wxEXPAND | wxALL, 5 );
 
-	m_notebook1 = new wxNotebook( m_panel16, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
-	m_panel31 = new wxPanel( m_notebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	wxBoxSizer* bSizer59;
-	bSizer59 = new wxBoxSizer( wxVERTICAL );
+	m_panel39 = new wxPanel( m_panel71, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer62;
+	bSizer62 = new wxBoxSizer( wxVERTICAL );
 
-	m_richText1 = new wxRichTextCtrl( m_panel31, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0|wxVSCROLL|wxHSCROLL|wxNO_BORDER|wxWANTS_CHARS );
-	bSizer59->Add( m_richText1, 1, wxEXPAND | wxALL, 5 );
+	wxBoxSizer* bSizer611;
+	bSizer611 = new wxBoxSizer( wxHORIZONTAL );
 
+	m_staticText23 = new wxStaticText( m_panel39, wxID_ANY, wxT("Position:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText23->Wrap( -1 );
+	bSizer611->Add( m_staticText23, 0, wxALL, 5 );
 
-	m_panel31->SetSizer( bSizer59 );
-	m_panel31->Layout();
-	bSizer59->Fit( m_panel31 );
-	m_notebook1->AddPage( m_panel31, wxT("Build Log"), false );
-
-	bSizer17->Add( m_notebook1, 1, wxEXPAND | wxALL, 5 );
+	m_viewPosition_staticText = new wxStaticText( m_panel39, wxID_ANY, wxT("0, 0, 0"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_viewPosition_staticText->Wrap( -1 );
+	bSizer611->Add( m_viewPosition_staticText, 0, wxALL, 5 );
 
 
-	m_panel16->SetSizer( bSizer17 );
-	m_panel16->Layout();
-	bSizer17->Fit( m_panel16 );
-	m_splitter5->SplitHorizontally( m_panel15, m_panel16, 419 );
-	bSizer10->Add( m_splitter5, 1, wxEXPAND, 5 );
+	bSizer611->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText25 = new wxStaticText( m_panel39, wxID_ANY, wxT("Rotation:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText25->Wrap( -1 );
+	bSizer611->Add( m_staticText25, 0, wxALL, 5 );
+
+	m_viewRotation_staticText = new wxStaticText( m_panel39, wxID_ANY, wxT("0, 0, 0"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_viewRotation_staticText->Wrap( -1 );
+	bSizer611->Add( m_viewRotation_staticText, 0, wxALL, 5 );
+
+
+	bSizer611->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer62->Add( bSizer611, 0, wxEXPAND, 5 );
+
+
+	m_panel39->SetSizer( bSizer62 );
+	m_panel39->Layout();
+	bSizer62->Fit( m_panel39 );
+	bSizer10->Add( m_panel39, 0, wxEXPAND | wxALL, 5 );
+
+	m_panel40 = new wxPanel( m_panel71, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	bSizer10->Add( m_panel40, 0, wxEXPAND | wxALL, 5 );
 
 
 	m_panel71->SetSizer( bSizer10 );
@@ -425,8 +389,10 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	wxBoxSizer* bSizer305;
 	bSizer305 = new wxBoxSizer( wxVERTICAL );
 
-	m_treeCtrl2 = new wxTreeCtrl( m_panel305, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE );
-	bSizer305->Add( m_treeCtrl2, 1, wxALL|wxEXPAND, 5 );
+	m_project_treeCtrl = new wxTreeCtrl( m_panel305, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE );
+	m_project_treeCtrl->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
+
+	bSizer305->Add( m_project_treeCtrl, 1, wxALL|wxEXPAND, 5 );
 
 
 	m_panel305->SetSizer( bSizer305 );
@@ -436,8 +402,8 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	wxBoxSizer* bSizer31;
 	bSizer31 = new wxBoxSizer( wxVERTICAL );
 
-	m_propertyGrid3 = new wxPropertyGrid(m_panel311, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxPG_DEFAULT_STYLE);
-	bSizer31->Add( m_propertyGrid3, 1, wxALL|wxEXPAND, 5 );
+	m_project_propertyGrid = new wxPropertyGrid(m_panel311, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxPG_DEFAULT_STYLE);
+	bSizer31->Add( m_project_propertyGrid, 1, wxALL|wxEXPAND, 5 );
 
 
 	m_panel311->SetSizer( bSizer31 );
@@ -450,131 +416,86 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_project_stages_panel->SetSizer( bSizer29 );
 	m_project_stages_panel->Layout();
 	bSizer29->Fit( m_project_stages_panel );
-	m_auinotebook3->AddPage( m_project_stages_panel, wxT("Project"), false, wxNullBitmap );
-	m_viewport_settings_panel = new wxPanel( m_auinotebook3, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	wxBoxSizer* bSizer6;
-	bSizer6 = new wxBoxSizer( wxVERTICAL );
+	m_auinotebook3->AddPage( m_project_stages_panel, wxT("Project"), true, wxNullBitmap );
+	m_scrolledWindow2 = new wxScrolledWindow( m_auinotebook3, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL );
+	m_scrolledWindow2->SetScrollRate( 5, 5 );
+	wxBoxSizer* bSizer671;
+	bSizer671 = new wxBoxSizer( wxVERTICAL );
 
-	m_panel49 = new wxPanel( m_viewport_settings_panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	wxBoxSizer* bSizer47;
-	bSizer47 = new wxBoxSizer( wxVERTICAL );
+	m_panel422 = new wxPanel( m_scrolledWindow2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_RAISED|wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer68;
+	bSizer68 = new wxBoxSizer( wxVERTICAL );
 
-	m_panel57 = new wxPanel( m_panel49, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|wxTAB_TRAVERSAL );
-	wxBoxSizer* bSizer95;
-	bSizer95 = new wxBoxSizer( wxVERTICAL );
+	wxBoxSizer* bSizer691;
+	bSizer691 = new wxBoxSizer( wxHORIZONTAL );
 
-	m_staticText39 = new wxStaticText( m_panel57, wxID_ANY, wxT("Current View"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText39->Wrap( -1 );
-	bSizer95->Add( m_staticText39, 0, wxALL, 5 );
-
-	wxBoxSizer* bSizer97;
-	bSizer97 = new wxBoxSizer( wxHORIZONTAL );
-
-	m_staticText40 = new wxStaticText( m_panel57, wxID_ANY, wxT("Position"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText40->Wrap( -1 );
-	bSizer97->Add( m_staticText40, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-	m_staticText43 = new wxStaticText( m_panel57, wxID_ANY, wxT("( 0, 0, 0 )"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText43->Wrap( -1 );
-	bSizer97->Add( m_staticText43, 2, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	m_staticText28 = new wxStaticText( m_panel422, wxID_ANY, wxT("Grid Settings"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText28->Wrap( -1 );
+	bSizer691->Add( m_staticText28, 0, wxALL, 5 );
 
 
-	bSizer95->Add( bSizer97, 0, wxEXPAND, 5 );
+	bSizer68->Add( bSizer691, 0, wxEXPAND, 5 );
 
-	wxBoxSizer* bSizer99;
-	bSizer99 = new wxBoxSizer( wxHORIZONTAL );
+	wxBoxSizer* bSizer702;
+	bSizer702 = new wxBoxSizer( wxHORIZONTAL );
 
-	m_staticText42 = new wxStaticText( m_panel57, wxID_ANY, wxT("Orientation"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText42->Wrap( -1 );
-	bSizer99->Add( m_staticText42, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-	m_staticText44 = new wxStaticText( m_panel57, wxID_ANY, wxT("( 0, 0, 0 )"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText44->Wrap( -1 );
-	bSizer99->Add( m_staticText44, 2, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-
-	bSizer95->Add( bSizer99, 0, wxEXPAND, 5 );
-
-
-	m_panel57->SetSizer( bSizer95 );
-	m_panel57->Layout();
-	bSizer95->Fit( m_panel57 );
-	bSizer47->Add( m_panel57, 0, wxEXPAND | wxALL, 5 );
-
-	m_panel56 = new wxPanel( m_panel49, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|wxTAB_TRAVERSAL );
-	wxBoxSizer* bSizer92;
-	bSizer92 = new wxBoxSizer( wxVERTICAL );
-
-	m_staticText36 = new wxStaticText( m_panel56, wxID_ANY, wxT("Grid Settings"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText36->Wrap( -1 );
-	bSizer92->Add( m_staticText36, 0, wxALL, 5 );
-
-	wxBoxSizer* bSizer60;
-	bSizer60 = new wxBoxSizer( wxHORIZONTAL );
-
-	m_checkBox1 = new wxCheckBox( m_panel56, wxID_ANY, wxT("Show Grid"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT );
+	m_checkBox1 = new wxCheckBox( m_panel422, wxID_ANY, wxT("Show Grid"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT );
 	m_checkBox1->SetValue(true);
-	bSizer60->Add( m_checkBox1, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	bSizer702->Add( m_checkBox1, 0, wxALL, 5 );
 
 
-	bSizer92->Add( bSizer60, 1, wxEXPAND, 5 );
+	bSizer68->Add( bSizer702, 0, wxEXPAND, 5 );
 
-	wxBoxSizer* bSizer93;
-	bSizer93 = new wxBoxSizer( wxHORIZONTAL );
+	wxBoxSizer* bSizer712;
+	bSizer712 = new wxBoxSizer( wxHORIZONTAL );
 
-	m_staticText37 = new wxStaticText( m_panel56, wxID_ANY, wxT("Size\t\t"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText37->Wrap( -1 );
-	bSizer93->Add( m_staticText37, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	m_staticText30 = new wxStaticText( m_panel422, wxID_ANY, wxT("Size"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText30->Wrap( -1 );
+	bSizer712->Add( m_staticText30, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_spinCtrl2 = new wxSpinCtrl( m_panel56, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10, 0 );
-	bSizer93->Add( m_spinCtrl2, 2, wxALL, 5 );
-
-
-	bSizer92->Add( bSizer93, 0, wxEXPAND, 5 );
-
-	wxBoxSizer* bSizer94;
-	bSizer94 = new wxBoxSizer( wxHORIZONTAL );
-
-	m_staticText38 = new wxStaticText( m_panel56, wxID_ANY, wxT("Spacing\t"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText38->Wrap( -1 );
-	bSizer94->Add( m_staticText38, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-	m_spinCtrl3 = new wxSpinCtrl( m_panel56, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10, 0 );
-	bSizer94->Add( m_spinCtrl3, 2, wxALL, 5 );
+	m_spinCtrl1 = new wxSpinCtrl( m_panel422, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10, 0 );
+	bSizer712->Add( m_spinCtrl1, 2, wxALL, 5 );
 
 
-	bSizer92->Add( bSizer94, 0, wxEXPAND, 5 );
+	bSizer68->Add( bSizer712, 0, wxEXPAND, 5 );
 
-	wxBoxSizer* bSizer98;
-	bSizer98 = new wxBoxSizer( wxHORIZONTAL );
+	wxBoxSizer* bSizer72;
+	bSizer72 = new wxBoxSizer( wxHORIZONTAL );
 
-	m_staticText41 = new wxStaticText( m_panel56, wxID_ANY, wxT("Color\t\t"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText41->Wrap( -1 );
-	bSizer98->Add( m_staticText41, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	m_staticText31 = new wxStaticText( m_panel422, wxID_ANY, wxT("Spacing"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText31->Wrap( -1 );
+	bSizer72->Add( m_staticText31, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_colourPicker1 = new wxColourPickerCtrl( m_panel56, wxID_ANY, *wxBLACK, wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE );
-	bSizer98->Add( m_colourPicker1, 2, wxALL, 5 );
-
-
-	bSizer92->Add( bSizer98, 1, wxEXPAND, 5 );
+	m_spinCtrl2 = new wxSpinCtrl( m_panel422, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10, 0 );
+	bSizer72->Add( m_spinCtrl2, 2, wxALL, 5 );
 
 
-	m_panel56->SetSizer( bSizer92 );
-	m_panel56->Layout();
-	bSizer92->Fit( m_panel56 );
-	bSizer47->Add( m_panel56, 0, wxEXPAND | wxALL, 5 );
+	bSizer68->Add( bSizer72, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer73;
+	bSizer73 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText322 = new wxStaticText( m_panel422, wxID_ANY, wxT("Color"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText322->Wrap( -1 );
+	bSizer73->Add( m_staticText322, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_colourPicker1 = new wxColourPickerCtrl( m_panel422, wxID_ANY, *wxBLACK, wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE );
+	bSizer73->Add( m_colourPicker1, 2, wxALL, 5 );
 
 
-	m_panel49->SetSizer( bSizer47 );
-	m_panel49->Layout();
-	bSizer47->Fit( m_panel49 );
-	bSizer6->Add( m_panel49, 1, wxEXPAND | wxALL, 5 );
+	bSizer68->Add( bSizer73, 0, wxEXPAND, 5 );
 
 
-	m_viewport_settings_panel->SetSizer( bSizer6 );
-	m_viewport_settings_panel->Layout();
-	bSizer6->Fit( m_viewport_settings_panel );
-	m_auinotebook3->AddPage( m_viewport_settings_panel, wxT("Viewport"), true, wxNullBitmap );
+	m_panel422->SetSizer( bSizer68 );
+	m_panel422->Layout();
+	bSizer68->Fit( m_panel422 );
+	bSizer671->Add( m_panel422, 0, wxEXPAND | wxALL, 5 );
+
+
+	m_scrolledWindow2->SetSizer( bSizer671 );
+	m_scrolledWindow2->Layout();
+	bSizer671->Fit( m_scrolledWindow2 );
+	m_auinotebook3->AddPage( m_scrolledWindow2, wxT("Settings"), false, wxNullBitmap );
 
 	bSizer5->Add( m_auinotebook3, 1, wxEXPAND | wxALL, 5 );
 
@@ -589,7 +510,7 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_panel5->SetSizer( bSizer4 );
 	m_panel5->Layout();
 	bSizer4->Fit( m_panel5 );
-	m_splitter1->SplitVertically( m_panel161, m_panel5, 230 );
+	m_splitter1->SplitVertically( m_panel161, m_panel5, 238 );
 	bSizer2->Add( m_splitter1, 1, wxEXPAND, 5 );
 
 
@@ -605,7 +526,7 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer22 = new wxBoxSizer( wxHORIZONTAL );
 
 	m_splitter51 = new wxSplitterWindow( m_panel6, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_3D );
-	m_splitter51->SetSashGravity( 1 );
+	m_splitter51->SetSashGravity( 0 );
 	m_splitter51->Connect( wxEVT_IDLE, wxIdleEventHandler( Serenity3D_Frame::m_splitter51OnIdle ), NULL, this );
 	m_splitter51->SetMinimumPaneSize( 1 );
 
@@ -619,8 +540,8 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 
 	bSizer23->Add( bSizer251, 0, wxEXPAND, 5 );
 
-	m_listBox31 = new wxListBox( m_panel28, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
-	bSizer23->Add( m_listBox31, 1, wxALL|wxEXPAND, 5 );
+	m_mesh_listBox = new wxListBox( m_panel28, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	bSizer23->Add( m_mesh_listBox, 1, wxALL|wxEXPAND, 5 );
 
 
 	m_panel28->SetSizer( bSizer23 );
@@ -647,8 +568,8 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_staticText32->Wrap( -1 );
 	bSizer70->Add( m_staticText32, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_textCtrl9 = new wxTextCtrl( m_panel41, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer70->Add( m_textCtrl9, 1, wxALL, 5 );
+	m_meshFile_textCtrl = new wxTextCtrl( m_panel41, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer70->Add( m_meshFile_textCtrl, 1, wxALL, 5 );
 
 
 	bSizer69->Add( bSizer70, 0, wxEXPAND, 5 );
@@ -660,11 +581,11 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_staticText321->Wrap( -1 );
 	bSizer701->Add( m_staticText321, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_textCtrl91 = new wxTextCtrl( m_panel41, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer701->Add( m_textCtrl91, 1, wxALL, 5 );
+	m_meshID_textCtrl = new wxTextCtrl( m_panel41, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer701->Add( m_meshID_textCtrl, 1, wxALL, 5 );
 
 
-	bSizer69->Add( bSizer701, 0, wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
+	bSizer69->Add( bSizer701, 0, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer7011;
 	bSizer7011 = new wxBoxSizer( wxHORIZONTAL );
@@ -673,11 +594,11 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_staticText3211->Wrap( -1 );
 	bSizer7011->Add( m_staticText3211, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_comboBox7 = new wxComboBox( m_panel41, wxID_ANY, wxT("Combo!"), wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
-	bSizer7011->Add( m_comboBox7, 1, wxALL, 5 );
+	m_meshTexture_comboBox = new wxComboBox( m_panel41, wxID_ANY, wxT("Combo!"), wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	bSizer7011->Add( m_meshTexture_comboBox, 1, wxALL, 5 );
 
 
-	bSizer69->Add( bSizer7011, 0, wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
+	bSizer69->Add( bSizer7011, 0, wxEXPAND, 5 );
 
 
 	m_panel41->SetSizer( bSizer69 );
@@ -691,14 +612,20 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	wxBoxSizer* bSizer71;
 	bSizer71 = new wxBoxSizer( wxVERTICAL );
 
-	m_panel42 = new wxPanel( m_panel291, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SIMPLE|wxTAB_TRAVERSAL );
-	bSizer71->Add( m_panel42, 1, wxEXPAND | wxALL, 5 );
+	m_modelView_panel = new wxPanel( m_panel291, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SIMPLE|wxTAB_TRAVERSAL );
+	bSizer71->Add( m_modelView_panel, 1, wxEXPAND | wxALL, 5 );
+
+	m_toolBar2 = new wxToolBar( m_panel291, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL );
+	m_meshAnimation_play_tool = m_toolBar2->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/play.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+
+	m_meshAnimation_stop_tool = m_toolBar2->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/stop.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+
+	m_toolBar2->Realize();
+
+	bSizer71->Add( m_toolBar2, 0, wxEXPAND, 5 );
 
 
 	bSizer61->Add( bSizer71, 4, wxEXPAND, 5 );
-
-
-	bSizer61->Add( 0, 0, 1, wxEXPAND, 5 );
 
 
 	bSizer78->Add( bSizer61, 1, wxEXPAND, 5 );
@@ -707,6 +634,140 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer81 = new wxBoxSizer( wxVERTICAL );
 
 	m_panel43 = new wxPanel( m_panel291, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer75;
+	bSizer75 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer76;
+	bSizer76 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_panel46 = new wxPanel( m_panel43, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer77;
+	bSizer77 = new wxBoxSizer( wxVERTICAL );
+
+	m_staticText33 = new wxStaticText( m_panel46, wxID_ANY, wxT("Animations"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText33->Wrap( -1 );
+	bSizer77->Add( m_staticText33, 0, wxALL, 5 );
+
+	wxBoxSizer* bSizer781;
+	bSizer781 = new wxBoxSizer( wxHORIZONTAL );
+
+	wxBoxSizer* bSizer82;
+	bSizer82 = new wxBoxSizer( wxVERTICAL );
+
+	m_meshAnimation_new_button = new wxButton( m_panel46, wxID_ANY, wxT("New"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer82->Add( m_meshAnimation_new_button, 0, wxALL, 5 );
+
+	m_meshAnimation_delete_button = new wxButton( m_panel46, wxID_ANY, wxT("Delete"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer82->Add( m_meshAnimation_delete_button, 0, wxALL, 5 );
+
+	m_meshAnimation_save_button = new wxButton( m_panel46, wxID_ANY, wxT("Save"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer82->Add( m_meshAnimation_save_button, 0, wxALL, 5 );
+
+
+	bSizer781->Add( bSizer82, 1, wxEXPAND, 5 );
+
+	m_meshAnimation_listBox = new wxListBox( m_panel46, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	bSizer781->Add( m_meshAnimation_listBox, 4, wxALL|wxEXPAND, 5 );
+
+
+	bSizer77->Add( bSizer781, 1, wxEXPAND, 5 );
+
+
+	m_panel46->SetSizer( bSizer77 );
+	m_panel46->Layout();
+	bSizer77->Fit( m_panel46 );
+	bSizer76->Add( m_panel46, 1, wxEXPAND | wxALL, 5 );
+
+	m_panel451 = new wxPanel( m_panel43, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer713;
+	bSizer713 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer721;
+	bSizer721 = new wxBoxSizer( wxVERTICAL );
+
+
+	bSizer721->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer731;
+	bSizer731 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText27 = new wxStaticText( m_panel451, wxID_ANY, wxT("Animation ID"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText27->Wrap( -1 );
+	bSizer731->Add( m_staticText27, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_animationID_textCtrl = new wxTextCtrl( m_panel451, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer731->Add( m_animationID_textCtrl, 2, wxALL, 5 );
+
+
+	bSizer731->Add( 0, 0, 3, wxEXPAND, 5 );
+
+
+	bSizer721->Add( bSizer731, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer7311;
+	bSizer7311 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText271 = new wxStaticText( m_panel451, wxID_ANY, wxT("Start Frame"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText271->Wrap( -1 );
+	bSizer7311->Add( m_staticText271, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_animationStartFrame_textCtrl = new wxTextCtrl( m_panel451, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer7311->Add( m_animationStartFrame_textCtrl, 2, wxALL, 5 );
+
+
+	bSizer7311->Add( 0, 0, 3, wxEXPAND, 5 );
+
+
+	bSizer721->Add( bSizer7311, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer73111;
+	bSizer73111 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText2711 = new wxStaticText( m_panel451, wxID_ANY, wxT("End Frame"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText2711->Wrap( -1 );
+	bSizer73111->Add( m_staticText2711, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_animationEndFrame_textCtrl = new wxTextCtrl( m_panel451, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer73111->Add( m_animationEndFrame_textCtrl, 2, wxALL, 5 );
+
+
+	bSizer73111->Add( 0, 0, 3, wxEXPAND, 5 );
+
+
+	bSizer721->Add( bSizer73111, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer73112;
+	bSizer73112 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText2712 = new wxStaticText( m_panel451, wxID_ANY, wxT("Speed"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText2712->Wrap( -1 );
+	bSizer73112->Add( m_staticText2712, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_animationSpeed_textCtrl = new wxTextCtrl( m_panel451, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer73112->Add( m_animationSpeed_textCtrl, 2, wxALL, 5 );
+
+
+	bSizer73112->Add( 0, 0, 3, wxEXPAND, 5 );
+
+
+	bSizer721->Add( bSizer73112, 0, wxEXPAND, 5 );
+
+
+	bSizer713->Add( bSizer721, 0, wxEXPAND, 5 );
+
+
+	m_panel451->SetSizer( bSizer713 );
+	m_panel451->Layout();
+	bSizer713->Fit( m_panel451 );
+	bSizer76->Add( m_panel451, 1, wxEXPAND | wxALL, 5 );
+
+
+	bSizer75->Add( bSizer76, 1, wxEXPAND, 5 );
+
+
+	m_panel43->SetSizer( bSizer75 );
+	m_panel43->Layout();
+	bSizer75->Fit( m_panel43 );
 	bSizer81->Add( m_panel43, 1, wxEXPAND | wxALL, 5 );
 
 
@@ -726,7 +787,7 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_panel6->SetSizer( bSizer21 );
 	m_panel6->Layout();
 	bSizer21->Fit( m_panel6 );
-	m_auinotebook2->AddPage( m_panel6, wxT("Assets"), true, wxNullBitmap );
+	m_auinotebook2->AddPage( m_panel6, wxT("Mesh"), true, wxNullBitmap );
 
 	bSizer1->Add( m_auinotebook2, 1, wxEXPAND | wxALL, 5 );
 
@@ -735,11 +796,11 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	this->Layout();
 	m_statusBar1 = this->CreateStatusBar( 1, wxSTB_SIZEGRIP, wxID_ANY );
 	m_toolBar1 = this->CreateToolBar( wxTB_HORIZONTAL, wxID_ANY );
-	m_tool1 = m_toolBar1->AddTool( wxID_ANY, wxT("tool"), wxArtProvider::GetBitmap( wxART_NEW, wxART_TOOLBAR ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+	m_tool1 = m_toolBar1->AddTool( wxID_ANY, wxT("tool"), wxArtProvider::GetBitmap( wxASCII_STR(wxART_NEW), wxASCII_STR(wxART_TOOLBAR) ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
 
-	m_tool2 = m_toolBar1->AddTool( wxID_ANY, wxT("tool"), wxArtProvider::GetBitmap( wxART_FOLDER_OPEN, wxART_TOOLBAR ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+	m_tool2 = m_toolBar1->AddTool( wxID_ANY, wxT("tool"), wxArtProvider::GetBitmap( wxASCII_STR(wxART_FOLDER_OPEN), wxASCII_STR(wxART_TOOLBAR) ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
 
-	m_tool3 = m_toolBar1->AddTool( wxID_ANY, wxT("tool"), wxArtProvider::GetBitmap( wxART_FILE_SAVE, wxART_TOOLBAR ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+	m_tool3 = m_toolBar1->AddTool( wxID_ANY, wxT("tool"), wxArtProvider::GetBitmap( wxASCII_STR(wxART_FILE_SAVE), wxASCII_STR(wxART_TOOLBAR) ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
 
 	m_toolBar1->AddSeparator();
 
@@ -753,13 +814,19 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	this->Centre( wxBOTH );
 
 	// Connect Events
+	m_modelView_panel->Connect( wxEVT_SIZE, wxSizeEventHandler( Serenity3D_Frame::OnAnimationPreviewSize ), NULL, this );
+	this->Connect( m_meshAnimation_stop_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnAnimationStopClicked ) );
 	this->Connect( m_tbar_play_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnPlayClicked ) );
+	this->Connect( m_tool7->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnStopClicked ) );
 }
 
 Serenity3D_Frame::~Serenity3D_Frame()
 {
 	// Disconnect Events
+	m_modelView_panel->Disconnect( wxEVT_SIZE, wxSizeEventHandler( Serenity3D_Frame::OnAnimationPreviewSize ), NULL, this );
+	this->Disconnect( m_meshAnimation_stop_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnAnimationStopClicked ) );
 	this->Disconnect( m_tbar_play_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnPlayClicked ) );
+	this->Disconnect( m_tool7->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnStopClicked ) );
 
 }
 

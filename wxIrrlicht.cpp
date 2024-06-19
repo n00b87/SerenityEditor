@@ -11,7 +11,7 @@
 #include <X11/Xlib.h>
 #endif // __linux__
 
-#include <irrlicht/irrlicht.h>
+#include <irrlicht.h>
 #include "wxIrrlicht.h"
 
 using namespace irr;
@@ -41,6 +41,7 @@ wxIrrlicht::wxIrrlicht(wxWindow* parent, wxWindowID id, bool bs, const wxPoint& 
     m_Timer(this, ID_IRR_TIMER),
     m_pFPSText(0),
 	m_showFPS(bs) {
+
 	    SetBackgroundStyle(wxBG_STYLE_CUSTOM);
 	    parent_window = parent;
 }//ctor
@@ -98,6 +99,17 @@ actual_params->WindowId = (HWND)this->GetHandle();
 
     m_pDevice = createDeviceEx(*actual_params);
 
+    //SIrrlichtCreationParameters wx_params;
+    //wx_params.WindowId = parent_window;
+    //wx_params.DeviceType = EIDT_WX;
+    //wx_params.DriverType = EDT_OPENGL;
+
+    //dimension2d<u32> irrSize(GetClientSize().GetX(), GetClientSize().GetY());
+    //wx_params.WindowSize = irrSize;
+    //wxMessageBox(_("testing"));
+    //m_pDevice = createDeviceEx(wx_params);
+    //wxMessageBox(_("no dice"));
+
 
     if (!m_pDevice) {
         throw "Can't create Irrlicht device!";
@@ -110,9 +122,39 @@ actual_params->WindowId = (HWND)this->GetHandle();
 
     parent_window->Connect( wxEVT_SIZE, wxSizeEventHandler( wxIrrlicht::OnParentSize ), NULL, this );
     m_forceWindowActive = true;
+    rendering = false;
 	Refresh();
 
+	m_init = true;
+
+	if(init_params && (actual_params->DriverType == EDT_BURNINGSVIDEO || actual_params->DriverType == EDT_SOFTWARE))
+	{
+		force_refresh();
+	}
+
 }//InitIrr()
+
+
+void wxIrrlicht::InitIrr(irr::IrrlichtDevice* device) {
+
+    m_pDevice = device;
+
+	m_pDriver = m_pDevice->getVideoDriver();
+	m_pSceneManager = m_pDevice->getSceneManager();
+	m_pGuiEnvironment = m_pDevice->getGUIEnvironment();
+
+	dimension2d<u32> irrSize(GetClientSize().GetX(), GetClientSize().GetY());
+    m_pDriver->OnResize(irrSize);
+
+    parent_window->Connect( wxEVT_SIZE, wxSizeEventHandler( wxIrrlicht::OnParentSize ), NULL, this );
+    m_forceWindowActive = true;
+    rendering = false;
+	Refresh();
+
+	m_init = true;
+
+}//InitIrr()
+
 
 void wxIrrlicht::StartRendering(int milliseconds) {
     m_Timer.Start(milliseconds);
@@ -123,9 +165,8 @@ void wxIrrlicht::StopRendering(){
 }//StopRendering()
 
 void wxIrrlicht::Render() {
-    static bool rendering = false;
 
-    if (rendering || !m_pDevice->run()) {
+    if (rendering) {
         return;
 	}//if
 
@@ -145,9 +186,9 @@ void wxIrrlicht::Render() {
     m_forceWindowActive = false;
 
     rendering = true;
-    OnPreRender();
+    //OnPreRender();
     OnRender();
-    OnPostRender();
+    //OnPostRender();
     rendering = false;
 }//Render()
 
@@ -159,16 +200,16 @@ void wxIrrlicht::OnCreateScene() {
 }//OnCreateScene()
 
 void wxIrrlicht::OnRender() {
-    if (m_windowIsActive)
-    {
         // draw everything here
+        if(!m_init)
+			return;
         m_pDriver->beginScene(true, true, SColor(255,0,255,0));
         m_pSceneManager->drawAll();
         m_pGuiEnvironment->drawAll();
         m_pDriver->endScene();
-    }
-    else
-        m_pDevice->yield();
+
+        Refresh();
+
 }//OnRender()
 
 void wxIrrlicht::OnPostRender() {
@@ -188,13 +229,16 @@ void wxIrrlicht::OnPostRender() {
 }//OnPostRender()
 
 void wxIrrlicht::OnPaint(wxPaintEvent& event){
+    Render();
     wxPaintDC paint_dc(this);
 
-    Render();
 }//OnPaint()
 
 void wxIrrlicht::OnParentSize(wxSizeEvent& event)
 {
+	if(!m_init)
+		return;
+
     if (!m_pDriver) {
         return;
 	}//if
@@ -214,9 +258,13 @@ void wxIrrlicht::OnParentSize(wxSizeEvent& event)
         m_pCameraNode->setAspectRatio((float)w / (float)h);
 	}//if
 
+	m_pDevice->setWindowSize(irr::core::dimension2d((irr::u32)w,(irr::u32)h));
+
 	m_forceWindowActive = true;
 	parent->Refresh();
 	Refresh();
+
+	//wxMessageBox(_("REFRESH"));
 }
 
 void wxIrrlicht::OnSize(wxSizeEvent& event) {
@@ -228,10 +276,15 @@ void wxIrrlicht::OnSize(wxSizeEvent& event) {
 }//OnSize
 
 void wxIrrlicht::OnTimer(wxTimerEvent& event) {
-    Render();
+	if(!m_init)
+		return;
+
+    m_pDevice->getTimer()->tick();
 }
 
 void wxIrrlicht::OnMouse(wxMouseEvent& event) {
+	if(!m_init)
+		return;
     irr::SEvent sevt;
 
     sevt.EventType = irr::EET_MOUSE_INPUT_EVENT;
@@ -266,14 +319,13 @@ void wxIrrlicht::OnMouse(wxMouseEvent& event) {
 
     m_pDevice->postEventFromUser(sevt);
 
-    if (!m_Timer.IsRunning()) {
-        Render();
-	}//if
-
     event.Skip();
 }//OnMouse()
 
 void wxIrrlicht::OnKey(wxKeyEvent& event) {
+	if(!m_init)
+		return;
+
     irr::SEvent sevt;
 
     sevt.EventType = irr::EET_KEY_INPUT_EVENT;
@@ -291,9 +343,34 @@ void wxIrrlicht::OnKey(wxKeyEvent& event) {
 
     m_pDevice->postEventFromUser(sevt);
 
-    if (!m_Timer.IsRunning()) {
-        Render();
-	}//if
-
     event.Skip();
 }//OnKey()
+
+
+void wxIrrlicht::force_refresh()
+{
+    if (!m_pDriver) {
+        return;
+	}//if
+
+    s32 w;
+    s32 h;
+
+    wxWindow* parent = parent_window;
+
+    parent->GetClientSize(&w, &h);
+    this->SetClientSize(w, h);
+
+    dimension2d<u32> size(w, h);
+    m_pDriver->OnResize(size);
+
+    if (m_pCameraNode) {
+        m_pCameraNode->setAspectRatio((float)w / (float)h);
+	}//if
+
+	m_pDevice->setWindowSize(irr::core::dimension2d((irr::u32)w,(irr::u32)h));
+
+	m_forceWindowActive = true;
+	parent->Refresh();
+	Refresh();
+}

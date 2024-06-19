@@ -32,10 +32,16 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add option="`wx-config --cflags`" />
+			<Add option="`wx-config --cflags` `pkg-config --cflags gtk+-3.0`" />
+			<Add directory="/home/n00b/Projects/irrlicht-svn/include" />
 		</Compiler>
 		<Linker>
-			<Add option="`wx-config --libs std,stc,aui,propgrid,ribbon` -lirrlicht pkg-config --cflags gtk+-3.0" />
+			<Add option="`wx-config --libs std,stc,aui,propgrid,ribbon,richtext` `pkg-config --libs gtk+-3.0`" />
+			<Add library="EGL" />
+			<Add library="GL" />
+			<Add library="Xxf86vm" />
+			<Add library="/home/n00b/Projects/irrlicht-svn/lib/Linux/libIrrlicht.so" />
+			<Add directory="/home/n00b/Projects/irrlicht-svn/lib/Linux" />
 		</Linker>
 		<Unit filename="Serenity3D_Editor.cpp" />
 		<Unit filename="Serenity3D_Editor.h" />

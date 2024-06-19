@@ -41,8 +41,9 @@
 #include <windows.h>
 #endif //WINDOWS
 
-#include <irrlicht/irrlicht.h>
+#include <irrlicht.h>
 #include <wx/wx.h>
+#include <wx/glcanvas.h>
 
 
 class wxIrrlicht : public wxControl {
@@ -51,6 +52,8 @@ class wxIrrlicht : public wxControl {
 		~wxIrrlicht();
 
         void InitIrr(irr::SIrrlichtCreationParameters* init_params = 0);
+        void InitIrr(irr::IrrlichtDevice* device);
+
         void StartRendering(int milliseconds = 10);
         void StopRendering();
         void Render();
@@ -59,6 +62,8 @@ class wxIrrlicht : public wxControl {
         virtual void OnRender();
         virtual void OnPostRender();
 
+        void force_refresh();
+
         irr::IrrlichtDevice* GetDevice() const { return m_pDevice; }
         irr::video::IVideoDriver* GetVideoDriver() const { return m_pDriver; }
         irr::scene::ISceneManager* GetSceneManager() const { return m_pSceneManager; }
@@ -66,6 +71,7 @@ class wxIrrlicht : public wxControl {
         irr::gui::IGUIEnvironment* GetGuiEnvironment() const { return m_pGuiEnvironment; }
 
         wxWindow* parent_window;
+        wxGLCanvas* canvas;
 
 	protected:
         void OnPaint(wxPaintEvent& event);
@@ -87,6 +93,8 @@ class wxIrrlicht : public wxControl {
         bool m_windowIsActive;
         bool m_forceWindowInActive;
         bool m_forceWindowActive;
+        bool rendering;
+        bool m_init = false;
 
 		enum {
 			ID_IRR_TIMER=1000
