@@ -44,7 +44,32 @@
 #include <irrlicht.h>
 #include <wx/wx.h>
 #include <wx/glcanvas.h>
+#include "CGridSceneNode.h"
+#include "camera.h"
+#include "gui_freetype_font.h"
 
+#define MAX_FONTS 8
+
+struct viewport_camera
+{
+	Camera camera;
+	irr::video::ITexture* texture;
+	irr::video::ITexture* ui_layer;
+	int pov;
+	int x;
+	int y;
+	int w;
+	int h;
+	CGridSceneNode * gridSceneNode;
+};
+
+struct font_obj
+{
+    CGUITTFace* face;
+    CGUIFreetypeFont* font;
+    int font_size;
+    bool active = false;
+};
 
 class wxIrrlicht : public wxControl {
 	public:
@@ -73,7 +98,25 @@ class wxIrrlicht : public wxControl {
         wxWindow* parent_window;
         wxGLCanvas* canvas;
 
-	protected:
+        viewport_camera camera[4];
+        int active_camera = 0;
+        int num_views = 1; //will either be 1 or 4
+
+        font_obj font[MAX_FONTS];
+        int active_font = -1;
+
+        int grid_size = 2500;
+        int grid_spacing = 100;
+        irr::video::SColor grid_color;
+
+        int irr_LoadFont(std::string font_file, int font_size);
+        void irr_DrawText(std::string txt, int x, int y, irr::video::SColor color);
+        void irr_DeleteFont(int font_id);
+        void irr_SetFont(int font_id);
+
+        irr::video::ITexture* back_buffer;
+
+	//protected:
         void OnPaint(wxPaintEvent& event);
         void OnSize(wxSizeEvent& event);
         void OnParentSize(wxSizeEvent& event);
@@ -81,6 +124,11 @@ class wxIrrlicht : public wxControl {
         void OnTimer(wxTimerEvent& event);
         void OnMouse(wxMouseEvent& event);
         void OnKey(wxKeyEvent& event);
+
+        void SetCameraViewParam();
+        void SetViews(int view_flag, int view0_pov=-1, int view1_pov=-1, int view2_pov=-1, int view3_pov=-1);
+
+        void OnUpdate();
 
         irr::IrrlichtDevice* m_pDevice;
         irr::video::IVideoDriver* m_pDriver;
@@ -96,12 +144,29 @@ class wxIrrlicht : public wxControl {
         bool rendering;
         bool m_init = false;
 
+        wxPoint drag_start;
+        wxPoint mouse_position;
+        bool middle_drag_init = false;
+        bool left_drag_init = false;
+        bool right_drag_init = false;
+
+        int cam_move_speed = 5;
+
+        bool VIEW_KEY_W = false;
+        bool VIEW_KEY_A = false;
+        bool VIEW_KEY_S = false;
+        bool VIEW_KEY_D = false;
+
+        #ifdef __linux__
+        GdkWindow* gdkWindow;
+        #endif // __linux__
+
 		enum {
 			ID_IRR_TIMER=1000
 		};
 
     private:
-		DECLARE_EVENT_TABLE();
+		//DECLARE_EVENT_TABLE();
 
 };//wxIrrlicht
 

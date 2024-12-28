@@ -1,0 +1,200 @@
+Actors
+------------------
+Cube
+Sphere
+Animated
+Octree
+Billboard
+Water
+Terrain
+Light
+Particle
+
+
+File
+------------
+New Project
+Load Project
+Save Project
+
+
+Stage
+--------------
+New Stage
+Import Stage
+Save Stage
+
+
+[Project Format]
+* Grid  color=c  visible=flag  size=s  spacing=sp
+
+* Stage  id=id_name  file=relative_path
+
+
+
+[Animation Format]
+
+Animation  id=id_name  start_frame=f  end_frame=f  speed=fps
+Animation  id=id_name  start_frame=f  end_frame=f  speed=fps
+Animation  id=id_name  start_frame=f  end_frame=f  speed=fps
+etc.
+
+
+
+[Material Format]
+------------------------
+* type=t
+* ambient_color=color
+* diffuse_color=color
+* emissive_color=color
+* specular_color=color
+* anti_alias=aa_level
+* backface_culling=flag
+* blend_factor=bf
+* blend_mode=mode
+* color_mask=mask
+* color_mode=mode
+* fog=f
+* frontface_culling=flag
+* gourad_shading=flag
+* lighting=flag
+* normalize=flag
+* point_cloud=flag
+* shineness=s
+* thickness=t
+* wireframe=flag
+* texture  level=lv  file=img_file
+
+
+[Stage Format]
+------------------------
+
+------[Resources]-------
+
+	* Image id=id_name file=relative_path
+	* Image id=id_name file=relative_path
+	etc.
+
+	* Mesh id=id_name  file=relative_path
+	* Mesh id=id_name  zip=relative_path  file=filename
+	etc.
+
+	* AN8 id=id_name file=relative_path
+	* AN8 id=id_name file=relative_path
+	etc.
+
+	* Mesh id=id_name an8=an8_id
+	etc.
+	
+	* Material id=id_name file=relative_path
+
+------[Scene]-------
+
+* Background  color=RGB_VAL
+
+
+* Sky  type=BOX  lf=image_id  rt=image_id  ft=image_id  bk=image_id  up=image_id  dn=image_id
+
+* Sky  type=DOME  dome=image_id
+
+	
+* Actor  type=ANIMATED  
+	* mesh=mesh_id  
+	* anim=anim_id  
+	* loops=num_loops  
+	* material=material_id  
+	* pos_x=x  pos_y=y  pos_z=z  
+	* rot_x=rx  rot_y=ry  rot_z=rz  
+	* scale_x=sx  scale_y=sy  scale_z=sz  
+	* visible=flag  
+	* shadow=flag  
+	* auto_culling=flag
+
+* Actor  type=OCTREE
+	* mesh=mesh_id  
+	* material=material_id
+	* pos_x=x  pos_y=y  pos_z=z  
+	* rot_x=rx  rot_y=ry  rot_z=rz  
+	* scale_x=sx  scale_y=sy  scale_z=sz  
+	* visible=flag  
+	* shadow=flag  
+	* auto_culling=flag
+	
+* Actor  type=CUBE
+	* cube_size=size
+	* material=material_id
+	* pos_x=x  pos_y=y  pos_z=z  
+	* rot_x=rx  rot_y=ry  rot_z=rz  
+	* scale_x=sx  scale_y=sy  scale_z=sz  
+	* visible=flag  
+	* shadow=flag  
+	* auto_culling=flag
+	
+* Actor  type=SPHERE
+	* radius=r
+	* material=material_id
+	* pos_x=x  pos_y=y  pos_z=z  
+	* rot_x=rx  rot_y=ry  rot_z=rz  
+	* scale_x=sx  scale_y=sy  scale_z=sz  
+	* visible=flag  
+	* shadow=flag  
+	* auto_culling=flag
+	
+* Actor  type=BILLBOARD
+	* material=material_id
+	* pos_x=x  pos_y=y  pos_z=z  
+	* rot_x=rx  rot_y=ry  rot_z=rz  
+	* scale_x=sx  scale_y=sy  scale_z=sz  
+	* visible=flag  
+	* shadow=flag  
+	* auto_culling=flag
+	
+* Actor  type=LIGHT
+	* material=material_id
+	* pos_x=x  pos_y=y  pos_z=z  
+	* rot_x=rx  rot_y=ry  rot_z=rz  
+	* scale_x=sx  scale_y=sy  scale_z=sz  
+	* visible=flag  
+	* cast_shadow=flag
+	* type=light_type
+	* radius=light_radius
+	* angle=light_angle
+	* falloff=n
+	
+* Actor  type=PARTICLE
+	* material=material_id
+	* pos_x=x  pos_y=y  pos_z=z  
+	* rot_x=rx  rot_y=ry  rot_z=rz  
+	* scale_x=sx  scale_y=sy  scale_z=sz  
+	* visible=flag  
+	* cast_shadow=flag
+	* type=light_type
+	* radius=light_radius
+	* angle=light_angle
+	* falloff=n
+	* diffuse=color
+	* ambient=color
+	* specular=color
+	
+* Actor  type=TERRAIN
+	* file=hmap_file
+	* material=material_id
+	* pos_x=x  pos_y=y  pos_z=z  
+	* rot_x=rx  rot_y=ry  rot_z=rz  
+	* scale_x=sx  scale_y=sy  scale_z=sz  
+	* visible=flag  
+	* cast_shadow=flag
+	
+* Actor  type=WATER
+	* mesh=mesh_id  
+	* wave_height=h
+	* wave_speed=sp
+	* wave_length=len
+	* material=material_id
+	* pos_x=x  pos_y=y  pos_z=z  
+	* rot_x=rx  rot_y=ry  rot_z=rz  
+	* scale_x=sx  scale_y=sy  scale_z=sz  
+	* visible=flag  
+	* cast_shadow=flag
+
+

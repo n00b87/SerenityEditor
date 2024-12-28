@@ -22,6 +22,8 @@ m_m3d_path_tool
 m_scene_effect_tool
 
 
+
+m_stageViewport_panel
 -----------------------------
 
 m_stagePOV_comboBox - Front, Left, Top, Perspective, All

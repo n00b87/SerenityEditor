@@ -34,15 +34,18 @@
 			<Add option="-Wall" />
 			<Add option="`wx-config --cflags` `pkg-config --cflags gtk+-3.0`" />
 			<Add directory="/home/n00b/Projects/irrlicht-svn/include" />
+			<Add directory="/usr/include/freetype2" />
 		</Compiler>
 		<Linker>
-			<Add option="`wx-config --libs std,stc,aui,propgrid,ribbon,richtext` `pkg-config --libs gtk+-3.0`" />
+			<Add option="`wx-config --libs std,stc,aui,propgrid,ribbon,richtext` `pkg-config --libs gtk+-3.0` -lfreetype" />
 			<Add library="EGL" />
 			<Add library="GL" />
 			<Add library="Xxf86vm" />
 			<Add library="/home/n00b/Projects/irrlicht-svn/lib/Linux/libIrrlicht.so" />
 			<Add directory="/home/n00b/Projects/irrlicht-svn/lib/Linux" />
 		</Linker>
+		<Unit filename="CGridSceneNode.cpp" />
+		<Unit filename="CGridSceneNode.h" />
 		<Unit filename="Serenity3D_Editor.cpp" />
 		<Unit filename="Serenity3D_Editor.h" />
 		<Unit filename="SerenityEditorSerenity3D_Frame.cpp" />
@@ -51,6 +54,20 @@
 		<Unit filename="SerenityEngineApp.h" />
 		<Unit filename="SerenityEngineMain.cpp" />
 		<Unit filename="SerenityEngineMain.h" />
+		<Unit filename="camera.cpp" />
+		<Unit filename="camera.h" />
+		<Unit filename="engine_base.cpp" />
+		<Unit filename="engine_base.h" />
+		<Unit filename="gui_freetype_font.cpp" />
+		<Unit filename="gui_freetype_font.h" />
+		<Unit filename="rc_camera.h" />
+		<Unit filename="rc_defines.h" />
+		<Unit filename="rc_font.h" />
+		<Unit filename="rc_gfx.h" />
+		<Unit filename="rc_gfx_core.h" />
+		<Unit filename="rc_stage.cpp" />
+		<Unit filename="rc_stage.h" />
+		<Unit filename="rc_utf8.h" />
 		<Unit filename="wxIrrlicht.cpp" />
 		<Unit filename="wxIrrlicht.h" />
 		<Extensions />

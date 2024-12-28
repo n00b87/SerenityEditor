@@ -18,14 +18,14 @@
 #include <wx/font.h>
 #include <wx/colour.h>
 #include <wx/settings.h>
-#include <wx/stattext.h>
 #include <wx/aui/aui.h>
 #include <wx/aui/auibar.h>
 #include <wx/sizer.h>
-#include <wx/panel.h>
-#include <wx/simplebook.h>
+#include <wx/stattext.h>
 #include <wx/combobox.h>
+#include <wx/panel.h>
 #include <wx/treectrl.h>
+#include <wx/notebook.h>
 #include <wx/propgrid/propgrid.h>
 #include <wx/propgrid/advprops.h>
 #include <wx/splitter.h>
@@ -34,10 +34,11 @@
 #include <wx/clrpicker.h>
 #include <wx/scrolwin.h>
 #include <wx/aui/auibook.h>
+#include <wx/button.h>
 #include <wx/listbox.h>
 #include <wx/textctrl.h>
 #include <wx/toolbar.h>
-#include <wx/button.h>
+#include <wx/statbmp.h>
 #include <wx/statusbr.h>
 #include <wx/frame.h>
 
@@ -52,50 +53,27 @@ class Serenity3D_Frame : public wxFrame
 
 	protected:
 		wxMenuBar* m_menubar1;
-		wxMenu* m_file_menu;
-		wxMenu* m_view_menu;
+		wxMenu* m_project_menu;
+		wxMenu* m_menu3;
 		wxAuiNotebook* m_auinotebook2;
 		wxPanel* m_stage_panel;
-		wxSplitterWindow* m_splitter1;
-		wxPanel* m_panel161;
-		wxSimplebook* m_simplebook2;
-		wxPanel* m_panel4;
-		wxPanel* m_tools3D_panel;
-		wxPanel* m_panel30;
-		wxStaticText* m_staticText7;
-		wxAuiToolBar* m_auiToolBar5;
+		wxAuiToolBar* m_auiToolBar52;
 		wxAuiToolBarItem* m_s3d_select_tool;
 		wxAuiToolBarItem* m_s3d_boxSelect_tool;
 		wxAuiToolBarItem* m_s3d_move_tool;
 		wxAuiToolBarItem* m_s3d_rotate_tool;
 		wxAuiToolBarItem* m_s3d_scale_tool;
-		wxPanel* m_panel50;
-		wxPanel* m_panel301;
-		wxStaticText* m_staticText71;
-		wxAuiToolBar* m_auiToolBar51;
-		wxAuiToolBarItem* m_prim3d_plane_tool;
-		wxAuiToolBarItem* m_prim3d_cube_tool;
-		wxAuiToolBarItem* m_prim3d_sphere_tool;
-		wxAuiToolBarItem* m_prim3d_cylinder_tool;
-		wxPanel* m_panel421;
-		wxStaticText* m_staticText72;
-		wxAuiToolBar* m_auiToolBar52;
-		wxAuiToolBarItem* m_mesh_dump_tool;
-		wxAuiToolBarItem* m_mesh_wiz_tool;
-		wxAuiToolBarItem* m_m3d_billboard_tool;
-		wxAuiToolBarItem* m_scene3d_light_tool;
-		wxPanel* m_panel303;
-		wxStaticText* m_staticText73;
-		wxAuiToolBar* m_auiToolBar53;
-		wxAuiToolBarItem* m_geo_terrain_tool;
-		wxAuiToolBarItem* m_geo_water_tool;
-		wxAuiToolBarItem* m_geo_grass_tool;
-		wxPanel* m_panel304;
-		wxStaticText* m_staticText74;
-		wxAuiToolBar* m_auiToolBar54;
-		wxAuiToolBarItem* m_m3d_path_tool;
-		wxAuiToolBarItem* m_scene_effect_tool;
-		wxPanel* m_panel5;
+		wxAuiToolBarItem* m_s3d_octreeActor_tool;
+		wxAuiToolBarItem* m_s3d_animatedActor_tool;
+		wxAuiToolBarItem* m_s3d_billboardActor_tool;
+		wxAuiToolBarItem* m_s3d_lightActor_tool;
+		wxAuiToolBarItem* m_s3d_terrainActor_tool;
+		wxAuiToolBarItem* m_s3d_waterActor_tool;
+		wxAuiToolBarItem* m_s3d_particleActor_tool;
+		wxAuiToolBarItem* m_s3d_plane_tool;
+		wxAuiToolBarItem* m_s3d_cube_tool;
+		wxAuiToolBarItem* m_s3d_sphere_tool;
+		wxAuiToolBarItem* m_s3d_path_tool;
 		wxSplitterWindow* m_splitter3;
 		wxPanel* m_panel71;
 		wxPanel* m_panel15;
@@ -103,24 +81,18 @@ class Serenity3D_Frame : public wxFrame
 		wxPanel* m_panel47;
 		wxStaticText* m_staticText12;
 		wxComboBox* m_stagePOV_comboBox;
-		wxPanel* m_panel441;
-		wxStaticText* m_staticText331;
-		wxAuiToolBar* m_auiToolBar6;
-		wxAuiToolBarItem* m_editMode_tool;
-		wxAuiToolBarItem* m_cameraMode_tool;
 		wxPanel* m_stageViewport_panel;
-		wxPanel* m_panel39;
-		wxStaticText* m_staticText23;
-		wxStaticText* m_viewPosition_staticText;
-		wxStaticText* m_staticText25;
-		wxStaticText* m_viewRotation_staticText;
 		wxPanel* m_panel40;
 		wxPanel* m_panel8;
 		wxAuiNotebook* m_auinotebook3;
 		wxPanel* m_project_stages_panel;
 		wxSplitterWindow* m_splitter6;
 		wxPanel* m_panel305;
+		wxNotebook* m_notebook1;
+		wxPanel* m_panel44;
 		wxTreeCtrl* m_project_treeCtrl;
+		wxPanel* m_panel452;
+		wxTreeCtrl* m_treeCtrl2;
 		wxPanel* m_panel311;
 		wxPropertyGrid* m_project_propertyGrid;
 		wxScrolledWindow* m_scrolledWindow2;
@@ -133,38 +105,108 @@ class Serenity3D_Frame : public wxFrame
 		wxSpinCtrl* m_spinCtrl2;
 		wxStaticText* m_staticText322;
 		wxColourPickerCtrl* m_colourPicker1;
-		wxPanel* m_panel6;
+		wxPanel* m_meshDB_panel;
 		wxSplitterWindow* m_splitter51;
 		wxPanel* m_panel28;
-		wxListBox* m_mesh_listBox;
+		wxButton* m_mesh_importMesh_button;
+		wxButton* m_mesh_removeMesh_button;
+		wxListBox* m_mesh_mesh_listBox;
 		wxPanel* m_panel291;
 		wxPanel* m_panel41;
-		wxStaticText* m_staticText32;
-		wxTextCtrl* m_meshFile_textCtrl;
+		wxPanel* m_panel33;
 		wxStaticText* m_staticText321;
-		wxTextCtrl* m_meshID_textCtrl;
-		wxStaticText* m_staticText3211;
-		wxComboBox* m_meshTexture_comboBox;
-		wxPanel* m_modelView_panel;
+		wxTextCtrl* m_mesh_meshID_textCtrl;
+		wxStaticText* m_staticText32;
+		wxTextCtrl* m_mesh_meshFile_textCtrl;
+		wxPanel* m_panel34;
+		wxStaticText* m_staticText323;
+		wxPanel* m_panel35;
+		wxScrolledWindow* m_setMaterial_scrolledWindow;
+		wxPropertyGrid* m_mesh_material_propertyGrid;
+		wxPGProperty* m_propertyGridItem25;
+		wxPGProperty* m_propertyGridItem26;
+		wxPanel* m_mesh_animationPreview_panel;
 		wxToolBar* m_toolBar2;
-		wxToolBarToolBase* m_meshAnimation_play_tool;
-		wxToolBarToolBase* m_meshAnimation_stop_tool;
+		wxToolBarToolBase* m_mesh_meshAnimation_play_tool;
+		wxToolBarToolBase* m_mesh_meshAnimation_stop_tool;
 		wxPanel* m_panel43;
 		wxPanel* m_panel46;
 		wxStaticText* m_staticText33;
-		wxButton* m_meshAnimation_new_button;
-		wxButton* m_meshAnimation_delete_button;
-		wxButton* m_meshAnimation_save_button;
-		wxListBox* m_meshAnimation_listBox;
+		wxButton* m_mesh_newAnimation_button;
+		wxButton* m_mesh_deleteAnimation_button;
+		wxListBox* m_mesh_meshAnimation_listBox;
 		wxPanel* m_panel451;
 		wxStaticText* m_staticText27;
-		wxTextCtrl* m_animationID_textCtrl;
+		wxTextCtrl* m_mesh_animationID_textCtrl;
 		wxStaticText* m_staticText271;
-		wxTextCtrl* m_animationStartFrame_textCtrl;
+		wxTextCtrl* m_mesh_animationStartFrame_textCtrl;
 		wxStaticText* m_staticText2711;
-		wxTextCtrl* m_animationEndFrame_textCtrl;
+		wxTextCtrl* m_mesh_animationEndFrame_textCtrl;
 		wxStaticText* m_staticText2712;
-		wxTextCtrl* m_animationSpeed_textCtrl;
+		wxTextCtrl* m_mesh_animationSpeed_textCtrl;
+		wxPanel* m_panel36;
+		wxSplitterWindow* m_splitter4;
+		wxPanel* m_panel37;
+		wxButton* m_material_newMaterial_button;
+		wxButton* m_button231;
+		wxButton* m_material_saveMaterial_button;
+		wxButton* m_button24;
+		wxListBox* m_material_material_listBox;
+		wxPanel* m_panel38;
+		wxPanel* m_panel391;
+		wxScrolledWindow* m_scrolledWindow3;
+		wxStaticText* m_staticText34;
+		wxTextCtrl* m_material_id_textCtrl;
+		wxStaticText* m_staticText35;
+		wxComboBox* m_material_type_comboBox;
+		wxStaticText* m_staticText36;
+		wxColourPickerCtrl* m_material_ambient_colourPicker;
+		wxStaticText* m_staticText361;
+		wxColourPickerCtrl* m_material_diffuse_colourPicker;
+		wxStaticText* m_staticText362;
+		wxColourPickerCtrl* m_material_emissive_colourPicker;
+		wxStaticText* m_staticText363;
+		wxColourPickerCtrl* m_material_specular_colourPicker;
+		wxStaticText* m_staticText351;
+		wxComboBox* m_material_antiAlias_comboBox;
+		wxStaticText* m_staticText43;
+		wxCheckBox* m_material_backFaceCulling_checkBox;
+		wxStaticText* m_staticText431;
+		wxCheckBox* m_material_frontFaceCulling_checkBox;
+		wxStaticText* m_staticText46;
+		wxSpinCtrlDouble* m_material_blendFactor_spinCtrlDouble;
+		wxStaticText* m_staticText47;
+		wxComboBox* m_material_blendMode_comboBox;
+		wxStaticText* m_staticText48;
+		wxComboBox* m_material_colorMask_comboBox;
+		wxStaticText* m_staticText49;
+		wxComboBox* m_material_colorMode_comboBox;
+		wxStaticText* m_staticText50;
+		wxCheckBox* m_material_fog_checkBox;
+		wxStaticText* m_staticText51;
+		wxCheckBox* m_material_gouradShading_checkBox;
+		wxStaticText* m_staticText52;
+		wxCheckBox* m_material_lighting_checkBox;
+		wxStaticText* m_staticText521;
+		wxCheckBox* m_material_normalize_checkBox;
+		wxStaticText* m_staticText522;
+		wxCheckBox* m_material_pointCloud_checkBox;
+		wxStaticText* m_staticText56;
+		wxSpinCtrl* m_material_shineness_spinCtrl;
+		wxPanel* m_panel401;
+		wxPanel* m_panel411;
+		wxPanel* m_material_materialPreview_panel;
+		wxAuiToolBar* m_auiToolBar2;
+		wxAuiToolBarItem* m_material_previewSpotLight_tool;
+		wxAuiToolBarItem* m_material_previewPointLight_tool;
+		wxPanel* m_panel42;
+		wxStaticText* m_staticText57;
+		wxButton* m_material_addTextureLevel_button;
+		wxButton* m_material_removeTextureLevel_button;
+		wxPropertyGrid* m_material_textureLevel_propertyGrid;
+		wxPGProperty* m_propertyGridItem23;
+		wxPanel* m_panel441;
+		wxStaticBitmap* m_material_texturePreview_bitmap;
 		wxStatusBar* m_statusBar1;
 		wxToolBar* m_toolBar1;
 		wxToolBarToolBase* m_tool1;
@@ -174,6 +216,25 @@ class Serenity3D_Frame : public wxFrame
 		wxToolBarToolBase* m_tool7;
 
 		// Virtual event handlers, override them in your derived class
+		virtual void OnNewProjectMenuSelection( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnS3DSelectClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnS3DBoxClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnS3DMoveClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnS3DRotateClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnS3DScaleClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnS3DDumpClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnS3DWizClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnS3DBillboardClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnS3DLightClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnS3DTerrainClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnS3DWaterClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnS3DEffectClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnS3DPlaneClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnS3DCubeClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnS3DSphereClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnS3DPathClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnViewComboSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnMeshImportButtonClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAnimationPreviewSize( wxSizeEvent& event ) { event.Skip(); }
 		virtual void OnAnimationStopClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnPlayClicked( wxCommandEvent& event ) { event.Skip(); }
@@ -186,15 +247,9 @@ class Serenity3D_Frame : public wxFrame
 
 		~Serenity3D_Frame();
 
-		void m_splitter1OnIdle( wxIdleEvent& )
-		{
-			m_splitter1->SetSashPosition( 238 );
-			m_splitter1->Disconnect( wxEVT_IDLE, wxIdleEventHandler( Serenity3D_Frame::m_splitter1OnIdle ), NULL, this );
-		}
-
 		void m_splitter3OnIdle( wxIdleEvent& )
 		{
-			m_splitter3->SetSashPosition( 850 );
+			m_splitter3->SetSashPosition( 1400 );
 			m_splitter3->Disconnect( wxEVT_IDLE, wxIdleEventHandler( Serenity3D_Frame::m_splitter3OnIdle ), NULL, this );
 		}
 
@@ -206,8 +261,14 @@ class Serenity3D_Frame : public wxFrame
 
 		void m_splitter51OnIdle( wxIdleEvent& )
 		{
-			m_splitter51->SetSashPosition( 233 );
+			m_splitter51->SetSashPosition( 300 );
 			m_splitter51->Disconnect( wxEVT_IDLE, wxIdleEventHandler( Serenity3D_Frame::m_splitter51OnIdle ), NULL, this );
+		}
+
+		void m_splitter4OnIdle( wxIdleEvent& )
+		{
+			m_splitter4->SetSashPosition( 300 );
+			m_splitter4->Disconnect( wxEVT_IDLE, wxIdleEventHandler( Serenity3D_Frame::m_splitter4OnIdle ), NULL, this );
 		}
 
 };
@@ -259,6 +320,91 @@ class StageCanvasSettings_Frame : public wxFrame
 		StageCanvasSettings_Frame( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Canvas Settings"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 682,420 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
 
 		~StageCanvasSettings_Frame();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class MyFrame3
+///////////////////////////////////////////////////////////////////////////////
+class MyFrame3 : public wxFrame
+{
+	private:
+
+	protected:
+		wxPanel* m_panel38;
+		wxStaticText* m_staticText32;
+		wxStaticText* m_staticText33;
+		wxTextCtrl* m_textCtrl11;
+		wxStaticText* m_staticText34;
+		wxTextCtrl* m_textCtrl12;
+		wxButton* m_button17;
+		wxListBox* m_listBox3;
+		wxButton* m_button18;
+		wxButton* m_button19;
+
+	public:
+
+		MyFrame3( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Create Octree Actor"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 500,300 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
+
+		~MyFrame3();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class MyFrame31
+///////////////////////////////////////////////////////////////////////////////
+class MyFrame31 : public wxFrame
+{
+	private:
+
+	protected:
+		wxPanel* m_panel38;
+		wxStaticText* m_staticText32;
+		wxStaticText* m_staticText33;
+		wxTextCtrl* m_textCtrl11;
+		wxStaticText* m_staticText34;
+		wxTextCtrl* m_textCtrl12;
+		wxButton* m_button17;
+		wxListBox* m_listBox3;
+		wxButton* m_button18;
+		wxButton* m_button19;
+
+	public:
+
+		MyFrame31( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Create Octree Actor"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 500,300 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
+
+		~MyFrame31();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class MyFrame5
+///////////////////////////////////////////////////////////////////////////////
+class MyFrame5 : public wxFrame
+{
+	private:
+
+	protected:
+		wxPanel* m_setMaterial_panel;
+		wxPanel* m_materialLabel_panel;
+		wxStaticText* m_materialNumber_staticText;
+		wxPanel* m_materialID_panel;
+		wxComboBox* m_materialID_comboBox;
+		wxPanel* m_setMaterial_panel1;
+		wxPanel* m_materialLabel_panel1;
+		wxStaticText* m_materialNumber_staticText1;
+		wxPanel* m_materialID_panel1;
+		wxComboBox* m_materialID_comboBox1;
+		wxPropertyGrid* m_propertyGrid2;
+		wxPGProperty* m_propertyGridItem1;
+		wxPGProperty* m_propertyGridItem2;
+		wxPGProperty* m_propertyGridItem3;
+
+	public:
+
+		MyFrame5( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 733,653 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
+
+		~MyFrame5();
 
 };
 
