@@ -65,7 +65,7 @@ void wxIrrlicht::InitIrr(irr::SIrrlichtCreationParameters* init_params) {
     params.DriverType = EDT_OPENGL;
 
     SIrrlichtCreationParameters* actual_params = init_params ? init_params : &params;
-    dimension2d<u32> irrSize(GetClientSize().GetX(), GetClientSize().GetY());
+    dimension2d<u32> irrSize(parent_window->GetClientSize().GetX(), parent_window->GetClientSize().GetY());
     actual_params->WindowSize = irrSize;
 
 #ifdef __linux__
@@ -198,6 +198,8 @@ actual_params->WindowId = (HWND)this->GetHandle();
 	num_views = 4;
 	SetCameraViewParam();
 
+	view2D_texture = NULL;
+
 	m_init = true;
 
 	if(init_params && (actual_params->DriverType == EDT_BURNINGSVIDEO || actual_params->DriverType == EDT_SOFTWARE))
@@ -235,30 +237,30 @@ void wxIrrlicht::SetCameraViewParam()
 		case 1:
 			camera[0].x = 0;
 			camera[0].y = 0;
-			camera[0].w = this->GetSize().GetWidth();
-			camera[0].h = this->GetSize().GetHeight();
+			camera[0].w = parent_window->GetSize().GetWidth();
+			camera[0].h = parent_window->GetSize().GetHeight();
 			break;
 
 		case 4:
 			camera[0].x = 0;
 			camera[0].y = 0;
-			camera[0].w = this->GetSize().GetWidth()/2;
-			camera[0].h = this->GetSize().GetHeight()/2;
+			camera[0].w = parent_window->GetSize().GetWidth()/2;
+			camera[0].h = parent_window->GetSize().GetHeight()/2;
 
 			camera[1].x = camera[0].w;
 			camera[1].y = 0;
-			camera[1].w = this->GetSize().GetWidth()/2;
-			camera[1].h = this->GetSize().GetHeight()/2;
+			camera[1].w = parent_window->GetSize().GetWidth()/2;
+			camera[1].h = parent_window->GetSize().GetHeight()/2;
 
 			camera[2].x = 0;
 			camera[2].y = camera[0].h;
-			camera[2].w = this->GetSize().GetWidth()/2;
-			camera[2].h = this->GetSize().GetHeight()/2;
+			camera[2].w = parent_window->GetSize().GetWidth()/2;
+			camera[2].h = parent_window->GetSize().GetHeight()/2;
 
 			camera[3].x = camera[0].w;
 			camera[3].y = camera[0].h;
-			camera[3].w = this->GetSize().GetWidth()/2;
-			camera[3].h = this->GetSize().GetHeight()/2;
+			camera[3].w = parent_window->GetSize().GetWidth()/2;
+			camera[3].h = parent_window->GetSize().GetHeight()/2;
 			break;
 	}
 
@@ -341,18 +343,57 @@ void wxIrrlicht::OnRender() {
 		camera[2].gridSceneNode->setVisible(false);
 		camera[3].gridSceneNode->setVisible(false);
 
+		if(window_type == RC_IRR_WINDOW_VIEW2D)
+			num_views = 1; //Just to be safe
+
 		for(int i = 0; i < num_views; i++)
 		{
-			camera[i].gridSceneNode->setVisible(true);
-			m_pDriver->setRenderTarget(camera[i].texture, true, true, irr::video::SColor(255,170,170,170));
+			if(window_type == RC_IRR_WINDOW_VIEW2D)
+			{
+				m_pDriver->setRenderTarget(camera[i].texture, true, true, irr::video::SColor(255,0,0,0));
 
-			m_pSceneManager->setActiveCamera(camera[i].camera.camera);
-			camera[i].camera.update();
+				m_pSceneManager->setActiveCamera(camera[i].camera.camera);
+				camera[i].camera.update();
 
-			m_pDriver->setViewPort(irr::core::rect<irr::s32>(0,0,camera[i].w, camera[i].h));
-			m_pSceneManager->drawAll();
+				//draw texture
+				if(view2D_texture)
+				{
+					irr::core::dimension2d<irr::u32> texture_size = view2D_texture->getSize();
+					irr::u32 fit_factor = 1;
 
-			camera[i].gridSceneNode->setVisible(false);
+					if(texture_size.Height > texture_size.Width)
+					{
+						fit_factor = camera[i].h / (texture_size.Height < 1 ? 1 : texture_size.Height);
+					}
+					else
+					{
+						fit_factor = camera[i].w / (texture_size.Width < 1 ? 1 : texture_size.Width);
+					}
+
+					fit_factor = (fit_factor < 1 ? 1 : fit_factor);
+
+					irr::core::rect src( irr::core::position2di(0, 0), texture_size );
+					irr::core::rect dst( irr::core::position2di(0, 0), irr::core::dimension2d(texture_size.Width * fit_factor, texture_size.Height * fit_factor) );
+					m_pDriver->draw2DImage(view2D_texture, dst, src);
+				}
+
+				m_pDriver->setViewPort(irr::core::rect<irr::s32>(0,0,camera[i].w, camera[i].h));
+				m_pSceneManager->drawAll();
+
+			}
+			else
+			{
+				camera[i].gridSceneNode->setVisible(true);
+				m_pDriver->setRenderTarget(camera[i].texture, true, true, irr::video::SColor(255,170,170,170));
+
+				m_pSceneManager->setActiveCamera(camera[i].camera.camera);
+				camera[i].camera.update();
+
+				m_pDriver->setViewPort(irr::core::rect<irr::s32>(0,0,camera[i].w, camera[i].h));
+				m_pSceneManager->drawAll();
+
+				camera[i].gridSceneNode->setVisible(false);
+			}
 		}
 
 		m_pDriver->setRenderTarget(back_buffer, true, true);
@@ -452,7 +493,8 @@ void wxIrrlicht::OnTimer(wxTimerEvent& event) {
 
     m_pDevice->getTimer()->tick();
 
-    OnUpdate();
+    if(window_type != RC_IRR_WINDOW_VIEW2D)
+		OnUpdate();
 
     #ifdef _WIN32
 	m_forceWindowActive = true;
@@ -462,6 +504,7 @@ void wxIrrlicht::OnTimer(wxTimerEvent& event) {
 }
 
 void wxIrrlicht::OnMouse(wxMouseEvent& event) {
+	return;
 	if(!m_init)
 		return;
     irr::SEvent sevt;
@@ -584,6 +627,16 @@ void wxIrrlicht::force_refresh()
 
 void wxIrrlicht::OnUpdate()
 {
+	if(window_type == RC_IRR_WINDOW_MATERIAL)
+	{
+		//ROTATE AROUND (0, 0, 0)
+		irr::core::vector3df cam_pos = camera[0].camera.camera->getAbsolutePosition();
+		cam_pos.rotateXZBy(material_view_camera_speed, irr::core::vector3df(0,cam_pos.Y,0));
+		camera[0].camera.setPosition(cam_pos.X, cam_pos.Y, cam_pos.Z);
+		camera[0].camera.setRotation(camera[0].camera.rx, camera[0].camera.ry-material_view_camera_speed, camera[0].camera.rz);
+		return;
+	}
+
 	wxMouseState  mouse_state = wxGetMouseState();
 
 	int px = mouse_state.GetPosition().x - this->GetScreenPosition().x;
@@ -609,6 +662,18 @@ void wxIrrlicht::OnUpdate()
 		}
 	}
 
+	if(mouse_state.RightIsDown())
+	{
+		wxMessageBox(_("POS: ") + wxString::Format(_("%d"), (int)camera[0].camera.x) + _(", ") +
+								  wxString::Format(_("%d"), (int)camera[0].camera.y) + _(", ") +
+								  wxString::Format(_("%d"), (int)camera[0].camera.z));
+
+		wxMessageBox(_("ROT: ") + wxString::Format(_("%d"), (int)camera[0].camera.rx) + _(", ") +
+								  wxString::Format(_("%d"), (int)camera[0].camera.ry) + _(", ") +
+								  wxString::Format(_("%d"), (int)camera[0].camera.rz));
+	}
+
+
 
 	if(mouse_state.MiddleIsDown())
 	{
@@ -618,7 +683,7 @@ void wxIrrlicht::OnUpdate()
 			if( px >= 0 && px < pw && py >= 0 && py < ph )
 			{
 				middle_drag_init = true;
-				this->CaptureMouse();
+				//this->CaptureMouse();
 				this->SetFocusFromKbd();
 				HIDE_CURSOR;
 				//this->WarpPointer(px + (pw/2), py + (ph/2));
@@ -672,6 +737,7 @@ void wxIrrlicht::OnUpdate()
 			drag_start.x = px;
 			drag_start.y = py;
 
+
 			if(VIEW_KEY_W)
 			{
 				VIEW_KEY_W = false;
@@ -704,7 +770,7 @@ void wxIrrlicht::OnUpdate()
 	else if( (!mouse_state.MiddleIsDown()) && middle_drag_init )
 	{
 		SHOW_CURSOR;
-		this->ReleaseMouse();
+		//this->ReleaseMouse();
 		middle_drag_init = false;
 		//wxMessageBox(_("RELEASE"));
 	}

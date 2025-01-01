@@ -38,9 +38,13 @@
 #include <wx/listbox.h>
 #include <wx/textctrl.h>
 #include <wx/toolbar.h>
-#include <wx/statbmp.h>
 #include <wx/statusbr.h>
 #include <wx/frame.h>
+#include <wx/filepicker.h>
+#include <wx/dialog.h>
+#include <wx/checklst.h>
+#include <wx/srchctrl.h>
+#include <wx/statline.h>
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -55,7 +59,7 @@ class Serenity3D_Frame : public wxFrame
 		wxMenuBar* m_menubar1;
 		wxMenu* m_project_menu;
 		wxMenu* m_menu3;
-		wxAuiNotebook* m_auinotebook2;
+		wxAuiNotebook* m_editorMain_auinotebook;
 		wxPanel* m_stage_panel;
 		wxAuiToolBar* m_auiToolBar52;
 		wxAuiToolBarItem* m_s3d_select_tool;
@@ -88,28 +92,29 @@ class Serenity3D_Frame : public wxFrame
 		wxPanel* m_project_stages_panel;
 		wxSplitterWindow* m_splitter6;
 		wxPanel* m_panel305;
-		wxNotebook* m_notebook1;
+		wxNotebook* m_project_abstraction_notebook;
 		wxPanel* m_panel44;
-		wxTreeCtrl* m_project_treeCtrl;
+		wxTreeCtrl* m_project_stage_treeCtrl;
 		wxPanel* m_panel452;
-		wxTreeCtrl* m_treeCtrl2;
+		wxTreeCtrl* m_project_object_treeCtrl;
 		wxPanel* m_panel311;
 		wxPropertyGrid* m_project_propertyGrid;
 		wxScrolledWindow* m_scrolledWindow2;
 		wxPanel* m_panel422;
 		wxStaticText* m_staticText28;
-		wxCheckBox* m_checkBox1;
+		wxCheckBox* m_viewportSettings_showGrid_checkBox;
 		wxStaticText* m_staticText30;
-		wxSpinCtrl* m_spinCtrl1;
+		wxSpinCtrl* m_viewportSettings_gridSize_spinCtrl;
 		wxStaticText* m_staticText31;
-		wxSpinCtrl* m_spinCtrl2;
+		wxSpinCtrl* m_viewportSettings_gridSpacing_spinCtrl;
 		wxStaticText* m_staticText322;
-		wxColourPickerCtrl* m_colourPicker1;
+		wxColourPickerCtrl* m_viewportSettings_gridColor_colourPicker;
 		wxPanel* m_meshDB_panel;
 		wxSplitterWindow* m_splitter51;
 		wxPanel* m_panel28;
 		wxButton* m_mesh_importMesh_button;
 		wxButton* m_mesh_removeMesh_button;
+		wxButton* m_mesh_saveMesh_button;
 		wxListBox* m_mesh_mesh_listBox;
 		wxPanel* m_panel291;
 		wxPanel* m_panel41;
@@ -122,9 +127,10 @@ class Serenity3D_Frame : public wxFrame
 		wxStaticText* m_staticText323;
 		wxPanel* m_panel35;
 		wxScrolledWindow* m_setMaterial_scrolledWindow;
-		wxPropertyGrid* m_mesh_material_propertyGrid;
-		wxPGProperty* m_propertyGridItem25;
-		wxPGProperty* m_propertyGridItem26;
+		wxButton* m_button51;
+		wxButton* m_button52;
+		wxButton* m_button53;
+		wxListBox* m_mesh_materialList_listBox;
 		wxPanel* m_mesh_animationPreview_panel;
 		wxToolBar* m_toolBar2;
 		wxToolBarToolBase* m_mesh_meshAnimation_play_tool;
@@ -144,19 +150,21 @@ class Serenity3D_Frame : public wxFrame
 		wxTextCtrl* m_mesh_animationEndFrame_textCtrl;
 		wxStaticText* m_staticText2712;
 		wxTextCtrl* m_mesh_animationSpeed_textCtrl;
-		wxPanel* m_panel36;
+		wxPanel* m_materialDB_panel;
 		wxSplitterWindow* m_splitter4;
 		wxPanel* m_panel37;
 		wxButton* m_material_newMaterial_button;
-		wxButton* m_button231;
+		wxButton* m_material_loadMaterial_button;
 		wxButton* m_material_saveMaterial_button;
-		wxButton* m_button24;
+		wxButton* m_material_removeMaterial_button;
 		wxListBox* m_material_material_listBox;
 		wxPanel* m_panel38;
 		wxPanel* m_panel391;
 		wxScrolledWindow* m_scrolledWindow3;
 		wxStaticText* m_staticText34;
 		wxTextCtrl* m_material_id_textCtrl;
+		wxStaticText* m_staticText421;
+		wxTextCtrl* m_material_materialFile_textCtrl;
 		wxStaticText* m_staticText35;
 		wxComboBox* m_material_type_comboBox;
 		wxStaticText* m_staticText36;
@@ -197,16 +205,33 @@ class Serenity3D_Frame : public wxFrame
 		wxPanel* m_panel411;
 		wxPanel* m_material_materialPreview_panel;
 		wxAuiToolBar* m_auiToolBar2;
-		wxAuiToolBarItem* m_material_previewSpotLight_tool;
+		wxAuiToolBarItem* m_material_previewNoLight_tool;
+		wxAuiToolBarItem* m_material_previewDirectionLight_tool;
 		wxAuiToolBarItem* m_material_previewPointLight_tool;
+		wxAuiToolBarItem* m_materialPreviewMesh_tool;
+		wxAuiToolBarItem* m_materialPreviewSettings_tool;
 		wxPanel* m_panel42;
 		wxStaticText* m_staticText57;
 		wxButton* m_material_addTextureLevel_button;
 		wxButton* m_material_removeTextureLevel_button;
-		wxPropertyGrid* m_material_textureLevel_propertyGrid;
-		wxPGProperty* m_propertyGridItem23;
-		wxPanel* m_panel441;
-		wxStaticBitmap* m_material_texturePreview_bitmap;
+		wxButton* m_material_setTextureLevel_button;
+		wxListBox* m_material_textureLevel_listBox;
+		wxPanel* m_textureDB_panel;
+		wxSplitterWindow* m_splitter5;
+		wxPanel* m_panel39;
+		wxButton* m_texture_addTexture_button;
+		wxButton* m_texture_removeTexture_button;
+		wxListBox* m_texture_textureList_listBox;
+		wxPanel* m_panel402;
+		wxStaticText* m_staticText40;
+		wxTextCtrl* m_texture_textureID_textCtrl;
+		wxStaticText* m_staticText42;
+		wxTextCtrl* m_texture_textureFile_textCtrl;
+		wxStaticText* m_staticText432;
+		wxCheckBox* m_texture_useColorKey_checkBox;
+		wxStaticText* m_staticText41;
+		wxColourPickerCtrl* m_texture_colorKey_colourPicker;
+		wxPanel* m_texture_texturePreview_panel;
 		wxStatusBar* m_statusBar1;
 		wxToolBar* m_toolBar1;
 		wxToolBarToolBase* m_tool1;
@@ -217,6 +242,8 @@ class Serenity3D_Frame : public wxFrame
 
 		// Virtual event handlers, override them in your derived class
 		virtual void OnNewProjectMenuSelection( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnLoadProjectMenuSelection( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnMainEditorNotebookPageChanged( wxAuiNotebookEvent& event ) { event.Skip(); }
 		virtual void OnS3DSelectClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnS3DBoxClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnS3DMoveClicked( wxCommandEvent& event ) { event.Skip(); }
@@ -234,9 +261,62 @@ class Serenity3D_Frame : public wxFrame
 		virtual void OnS3DSphereClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnS3DPathClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnViewComboSelect( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnMeshImportButtonClick( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnProjectPropertiesNotebookChanged( wxAuiNotebookEvent& event ) { event.Skip(); }
+		virtual void On_Mesh_Load_ButtonClick( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Mesh_Remove_ButtonClick( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Mesh_Save_ButtonClick( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Mesh_MeshList_Select( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Mesh_AddMaterial( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Mesh_RemoveMaterial( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Mesh_SetMaterial( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAnimationPreviewSize( wxSizeEvent& event ) { event.Skip(); }
-		virtual void OnAnimationStopClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Mesh_previewPlay( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Mesh_previewStop( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Mesh_NewAnimation( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Mesh_DeleteAnimation( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Mesh_AnimationList_Select( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Mesh_Animation_AnimationID( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Mesh_Animation_StartFrame( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Mesh_Animation_EndFrame( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Mesh_Animation_Speed( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Material_NewMaterial_ButtonClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Material_LoadMaterial_ButtonClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Material_SaveMaterial_ButtonClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Material_RemoveMaterial_ButtonClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Material_MaterialList_Select( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Material_MaterialID_Update( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Material_MaterialType_Update( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Material_Ambient_Update( wxColourPickerEvent& event ) { event.Skip(); }
+		virtual void On_Material_Diffuse_Update( wxColourPickerEvent& event ) { event.Skip(); }
+		virtual void On_Material_Emissive_Update( wxColourPickerEvent& event ) { event.Skip(); }
+		virtual void On_Material_Specular_Update( wxColourPickerEvent& event ) { event.Skip(); }
+		virtual void On_Material_AntiAlias_Update( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Material_BackfaceCulling_Update( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Material_FrontfaceCulling_Update( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Material_BlendFactor_Update( wxSpinDoubleEvent& event ) { event.Skip(); }
+		virtual void On_Material_BlendMode_Update( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Material_ColorMask_Update( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Material_ColorMode_Update( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Material_Fog_Update( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Material_GouradShading_Update( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Material_Lighting_Update( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Material_Normalize_Update( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Material_PointCloud_Update( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Material_Shineness_Update( wxSpinEvent& event ) { event.Skip(); }
+		virtual void On_Material_previewNoLight_Selected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Material_previewDirectionlight_Selected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Material_previewPointlight_Selected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnSetMaterialPreviewMesh( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Material_previewSettings_Selected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Material_AddTextureLevel_ButtonClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Material_RemoveTextureLevel_ButtonClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Material_SetTextureLevel_ButtonClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Texture_AddTexture_ButtonClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Texture_RemoveTexture_ButtonClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Texture_TextureList_Select( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Texture_TextureID_Update( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Texture_UseColorkey_Update( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Texture_Colorkey_Update( wxColourPickerEvent& event ) { event.Skip(); }
 		virtual void OnPlayClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnStopClicked( wxCommandEvent& event ) { event.Skip(); }
 
@@ -261,7 +341,7 @@ class Serenity3D_Frame : public wxFrame
 
 		void m_splitter51OnIdle( wxIdleEvent& )
 		{
-			m_splitter51->SetSashPosition( 300 );
+			m_splitter51->SetSashPosition( 176 );
 			m_splitter51->Disconnect( wxEVT_IDLE, wxIdleEventHandler( Serenity3D_Frame::m_splitter51OnIdle ), NULL, this );
 		}
 
@@ -271,140 +351,226 @@ class Serenity3D_Frame : public wxFrame
 			m_splitter4->Disconnect( wxEVT_IDLE, wxIdleEventHandler( Serenity3D_Frame::m_splitter4OnIdle ), NULL, this );
 		}
 
+		void m_splitter5OnIdle( wxIdleEvent& )
+		{
+			m_splitter5->SetSashPosition( 291 );
+			m_splitter5->Disconnect( wxEVT_IDLE, wxIdleEventHandler( Serenity3D_Frame::m_splitter5OnIdle ), NULL, this );
+		}
+
 };
 
 ///////////////////////////////////////////////////////////////////////////////
-/// Class StageCanvasSettings_Frame
+/// Class NewProject_Dialog
 ///////////////////////////////////////////////////////////////////////////////
-class StageCanvasSettings_Frame : public wxFrame
+class NewProject_Dialog : public wxDialog
 {
 	private:
 
 	protected:
-		wxPanel* m_panel33;
-		wxScrolledWindow* m_scrolledWindow1;
-		wxPanel* m_panel34;
-		wxStaticText* m_staticText9;
-		wxStaticText* m_staticText10;
-		wxTextCtrl* m_textCtrl1;
-		wxComboBox* m_comboBox4;
-		wxButton* m_button3;
-		wxButton* m_button2;
-		wxPanel* m_panel341;
-		wxStaticText* m_staticText91;
-		wxStaticText* m_staticText101;
-		wxTextCtrl* m_textCtrl11;
-		wxComboBox* m_comboBox41;
-		wxButton* m_button31;
-		wxButton* m_button21;
-		wxPanel* m_panel342;
-		wxStaticText* m_staticText92;
-		wxStaticText* m_staticText102;
-		wxTextCtrl* m_textCtrl12;
-		wxComboBox* m_comboBox42;
-		wxButton* m_button32;
-		wxButton* m_button22;
-		wxPanel* m_panel343;
-		wxStaticText* m_staticText93;
-		wxStaticText* m_staticText103;
-		wxTextCtrl* m_textCtrl13;
-		wxComboBox* m_comboBox43;
-		wxButton* m_button33;
+		wxPanel* m_panel61;
+		wxStaticText* m_staticText65;
+		wxTextCtrl* m_projectName_textCtrl;
+		wxStaticText* m_staticText66;
+		wxDirPickerCtrl* m_projectLocation_dirPicker;
+		wxButton* m_cancel_button;
+		wxButton* m_create_button;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void OnCancelButtonClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnCreateButtonClicked( wxCommandEvent& event ) { event.Skip(); }
+
+
+	public:
+
+		NewProject_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("New Project"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 390,178 ), long style = wxDEFAULT_DIALOG_STYLE );
+
+		~NewProject_Dialog();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class NewOctree_Dialog
+///////////////////////////////////////////////////////////////////////////////
+class NewOctree_Dialog : public wxDialog
+{
+	private:
+
+	protected:
+		wxPanel* m_panel38;
+		wxStaticText* m_staticText33;
+		wxTextCtrl* m_actorID_textCtrl;
+		wxStaticText* m_staticText34;
+		wxTextCtrl* m_selectedMesh_textCtrl;
+		wxButton* m_find_button;
+		wxListBox* m_mesh_listBox;
+		wxButton* m_cancel_button;
+		wxButton* m_create_button;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void OnCancelButtonClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnCreateButtonClicked( wxCommandEvent& event ) { event.Skip(); }
+
+
+	public:
+
+		NewOctree_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("New Octree Actor"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 534,346 ), long style = wxDEFAULT_DIALOG_STYLE );
+
+		~NewOctree_Dialog();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class AddTexture_Dialog
+///////////////////////////////////////////////////////////////////////////////
+class AddTexture_Dialog : public wxDialog
+{
+	private:
+
+	protected:
+		wxCheckListBox* m_files_checkList;
+		wxButton* m_button19;
+		wxButton* m_button20;
 		wxButton* m_button23;
-		wxStdDialogButtonSizer* m_sdbSizer1;
-		wxButton* m_sdbSizer1OK;
-		wxButton* m_sdbSizer1Cancel;
+		wxButton* m_button24;
+		wxButton* m_button21;
+		wxButton* m_button22;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void OnSelectAll( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnDeselectAll( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnShowDuplicates( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnHideDuplicates( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnLoad( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnCancel( wxCommandEvent& event ) { event.Skip(); }
+
 
 	public:
 
-		StageCanvasSettings_Frame( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Canvas Settings"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 682,420 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
+		AddTexture_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Add Textures"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 549,374 ), long style = wxDEFAULT_DIALOG_STYLE );
 
-		~StageCanvasSettings_Frame();
+		~AddTexture_Dialog();
 
 };
 
 ///////////////////////////////////////////////////////////////////////////////
-/// Class MyFrame3
+/// Class SetMaterialTextureLevel_Dialog
 ///////////////////////////////////////////////////////////////////////////////
-class MyFrame3 : public wxFrame
+class SetMaterialTextureLevel_Dialog : public wxDialog
 {
 	private:
 
 	protected:
-		wxPanel* m_panel38;
-		wxStaticText* m_staticText32;
-		wxStaticText* m_staticText33;
-		wxTextCtrl* m_textCtrl11;
-		wxStaticText* m_staticText34;
-		wxTextCtrl* m_textCtrl12;
-		wxButton* m_button17;
-		wxListBox* m_listBox3;
-		wxButton* m_button18;
+		wxSearchCtrl* m_findTexture_searchCtrl;
+		wxListBox* m_textureList_listBox;
+		wxButton* m_setTexture_button;
+		wxButton* m_cancel_button;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void OnSearch( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnSetTexture( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnCancel( wxCommandEvent& event ) { event.Skip(); }
+
+
+	public:
+
+		SetMaterialTextureLevel_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Set Texture Level"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 513,304 ), long style = wxDEFAULT_DIALOG_STYLE );
+
+		~SetMaterialTextureLevel_Dialog();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class SetMaterialPreviewMesh_Dialog
+///////////////////////////////////////////////////////////////////////////////
+class SetMaterialPreviewMesh_Dialog : public wxDialog
+{
+	private:
+
+	protected:
+		wxSearchCtrl* m_findMesh_searchCtrl;
+		wxListBox* m_meshList_listBox;
+		wxButton* m_setMesh_button;
+		wxButton* m_cube_button;
+		wxButton* m_sphere_button;
+		wxButton* m_cancel_button;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void OnSearch( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnSetMesh( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnDefaultCube( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnDefaultSphere( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnCancel( wxCommandEvent& event ) { event.Skip(); }
+
+
+	public:
+
+		SetMaterialPreviewMesh_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Set Material Preview Mesh"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 475,273 ), long style = wxDEFAULT_DIALOG_STYLE );
+
+		~SetMaterialPreviewMesh_Dialog();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class MaterialPreviewSettings_Dialog
+///////////////////////////////////////////////////////////////////////////////
+class MaterialPreviewSettings_Dialog : public wxDialog
+{
+	private:
+
+	protected:
+		wxStaticText* m_staticText50;
+		wxTextCtrl* m_cameraSpeed_textCtrl;
+		wxStaticText* m_staticText51;
+		wxTextCtrl* m_cameraDistance_textCtrl;
+		wxStaticLine* m_staticline1;
+		wxStaticText* m_staticText52;
+		wxTextCtrl* m_lightRadius_textCtrl;
+		wxButton* m_apply_button;
+		wxButton* m_cancel_button;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void OnApply( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnCancel( wxCommandEvent& event ) { event.Skip(); }
+
+
+	public:
+
+		MaterialPreviewSettings_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Material Preview Settings"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 497,223 ), long style = wxDEFAULT_DIALOG_STYLE );
+
+		~MaterialPreviewSettings_Dialog();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class AddMaterial_Dialog
+///////////////////////////////////////////////////////////////////////////////
+class AddMaterial_Dialog : public wxDialog
+{
+	private:
+
+	protected:
+		wxCheckListBox* m_files_checkList;
 		wxButton* m_button19;
+		wxButton* m_button20;
+		wxButton* m_button23;
+		wxButton* m_button24;
+		wxButton* m_button21;
+		wxButton* m_button22;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void OnSelectAll( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnDeselectAll( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnShowDuplicates( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnHideDuplicates( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnLoad( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnCancel( wxCommandEvent& event ) { event.Skip(); }
+
 
 	public:
 
-		MyFrame3( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Create Octree Actor"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 500,300 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
+		AddMaterial_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Load Materials"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 505,372 ), long style = wxDEFAULT_DIALOG_STYLE );
 
-		~MyFrame3();
-
-};
-
-///////////////////////////////////////////////////////////////////////////////
-/// Class MyFrame31
-///////////////////////////////////////////////////////////////////////////////
-class MyFrame31 : public wxFrame
-{
-	private:
-
-	protected:
-		wxPanel* m_panel38;
-		wxStaticText* m_staticText32;
-		wxStaticText* m_staticText33;
-		wxTextCtrl* m_textCtrl11;
-		wxStaticText* m_staticText34;
-		wxTextCtrl* m_textCtrl12;
-		wxButton* m_button17;
-		wxListBox* m_listBox3;
-		wxButton* m_button18;
-		wxButton* m_button19;
-
-	public:
-
-		MyFrame31( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Create Octree Actor"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 500,300 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
-
-		~MyFrame31();
-
-};
-
-///////////////////////////////////////////////////////////////////////////////
-/// Class MyFrame5
-///////////////////////////////////////////////////////////////////////////////
-class MyFrame5 : public wxFrame
-{
-	private:
-
-	protected:
-		wxPanel* m_setMaterial_panel;
-		wxPanel* m_materialLabel_panel;
-		wxStaticText* m_materialNumber_staticText;
-		wxPanel* m_materialID_panel;
-		wxComboBox* m_materialID_comboBox;
-		wxPanel* m_setMaterial_panel1;
-		wxPanel* m_materialLabel_panel1;
-		wxStaticText* m_materialNumber_staticText1;
-		wxPanel* m_materialID_panel1;
-		wxComboBox* m_materialID_comboBox1;
-		wxPropertyGrid* m_propertyGrid2;
-		wxPGProperty* m_propertyGridItem1;
-		wxPGProperty* m_propertyGridItem2;
-		wxPGProperty* m_propertyGridItem3;
-
-	public:
-
-		MyFrame5( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 733,653 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
-
-		~MyFrame5();
+		~AddMaterial_Dialog();
 
 };
 

@@ -14,6 +14,11 @@ struct serenity_project_dict_obj
 	wxString val;
 };
 
+struct serenity_project_file_obj
+{
+	std::vector<serenity_project_dict_obj> dict;
+};
+
 class serenity_project
 {
 public:
@@ -24,24 +29,55 @@ public:
 	std::vector<rc_material> materials;
 	std::vector<rc_texture> textures;
 	std::vector<rc_mesh> meshes;
+	std::vector<rc_an8> anim8or_projects;
+
+	std::vector<int> tmp_mesh_index;
+
 	uint32_t grid_color;
+	irr::IrrlichtDevice* device;
 
 	wxFileName project_path;
+	std::string project_name;
 
-	serenity_project(std::string project_file);
+	int active_stage;
+
+	serenity_project(std::string project_file, std::string p_name, irr::IrrlichtDevice* scene_device);
 	serenity_project()
 	{
 		setDefaults();
 	}
 	~serenity_project();
 
-	int load_stage(std::vector<serenity_project_dict_obj> stage_param);
+	void reload_assets();
+
+	int load_stage(std::vector<serenity_project_dict_obj> stage_param, bool isActive=false);
 	void save_stage(int stage_id);
 	void remove_stage(int stage_id);
+
+	wxString genTextureID(); //generate a texture id name if needed
+	wxString genMaterialID(); //generate a material id name if needed
+	wxString genMaterialFileName(wxString tmp_name);
+	wxString genMeshID(); //generate a mesh id name if needed
+	wxString genMeshAnimationID(int mesh_index); //generate a mesh id name if needed
+	wxString genAN8ID(); //generate a anim8or project id name if needed
+
+	int load_texture(std::vector<serenity_project_dict_obj> stage_param, int reload_index=-1);
+	int load_an8(std::vector<serenity_project_dict_obj> stage_param, int reload_index=-1);
+	int load_mesh(std::vector<serenity_project_dict_obj> stage_param, int m_index=-1, int reload_index=-1);
+	int load_material(std::vector<serenity_project_dict_obj> stage_param, int reload_index=-1);
+	rc_material loadMaterialFile(wxString mfile, wxString mID);
+	bool save_material(int material_index);
+
+	void remove_texture(int t_index);
+
+	void clearProject();
+	void init_project(std::vector<serenity_project_dict_obj> param);
 
 	void setGridVisible(bool flag);
 	void setGridSize(float g_size);
 	void setGridSpacing(float g_spacing);
+
+	std::vector<serenity_project_file_obj> getParams(wxString p_data);
 
 	void setDefaults()
 	{

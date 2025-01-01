@@ -34,9 +34,8 @@ Save Stage
 
 [Animation Format]
 
-Animation  id=id_name  start_frame=f  end_frame=f  speed=fps
-Animation  id=id_name  start_frame=f  end_frame=f  speed=fps
-Animation  id=id_name  start_frame=f  end_frame=f  speed=fps
+id=id_name  start_frame=f  end_frame=f  speed=fps
+id=id_name  start_frame=f  end_frame=f  speed=fps
 etc.
 
 
@@ -48,7 +47,7 @@ etc.
 * diffuse_color=color
 * emissive_color=color
 * specular_color=color
-* anti_alias=aa_level
+* anti_alias=aa_mode
 * backface_culling=flag
 * blend_factor=bf
 * blend_mode=mode
@@ -72,11 +71,13 @@ etc.
 ------[Resources]-------
 
 	* Image id=id_name file=relative_path
-	* Image id=id_name file=relative_path
+	* Image id=id_name file=relative_path color_key=-1
 	etc.
 
 	* Mesh id=id_name  file=relative_path
+	* Mesh id=id_name  file=relative_path  ani_file=animation_file
 	* Mesh id=id_name  zip=relative_path  file=filename
+	* Mesh id=id_name  file=relative_path  material=material_id   material=material_id   material=[NULL]  etc.
 	etc.
 
 	* AN8 id=id_name file=relative_path
@@ -98,7 +99,7 @@ etc.
 * Sky  type=DOME  dome=image_id
 
 	
-* Actor  type=ANIMATED  
+* Actor  type=ANIMATED  id=actor_id 
 	* mesh=mesh_id  
 	* anim=anim_id  
 	* loops=num_loops  
@@ -110,7 +111,7 @@ etc.
 	* shadow=flag  
 	* auto_culling=flag
 
-* Actor  type=OCTREE
+* Actor  type=OCTREE  id=actor_id 
 	* mesh=mesh_id  
 	* material=material_id
 	* pos_x=x  pos_y=y  pos_z=z  
@@ -120,7 +121,7 @@ etc.
 	* shadow=flag  
 	* auto_culling=flag
 	
-* Actor  type=CUBE
+* Actor  type=CUBE  id=actor_id 
 	* cube_size=size
 	* material=material_id
 	* pos_x=x  pos_y=y  pos_z=z  
@@ -130,7 +131,7 @@ etc.
 	* shadow=flag  
 	* auto_culling=flag
 	
-* Actor  type=SPHERE
+* Actor  type=SPHERE  id=actor_id 
 	* radius=r
 	* material=material_id
 	* pos_x=x  pos_y=y  pos_z=z  
@@ -140,7 +141,7 @@ etc.
 	* shadow=flag  
 	* auto_culling=flag
 	
-* Actor  type=BILLBOARD
+* Actor  type=BILLBOARD  id=actor_id 
 	* material=material_id
 	* pos_x=x  pos_y=y  pos_z=z  
 	* rot_x=rx  rot_y=ry  rot_z=rz  
@@ -149,7 +150,7 @@ etc.
 	* shadow=flag  
 	* auto_culling=flag
 	
-* Actor  type=LIGHT
+* Actor  type=LIGHT  id=actor_id 
 	* material=material_id
 	* pos_x=x  pos_y=y  pos_z=z  
 	* rot_x=rx  rot_y=ry  rot_z=rz  
@@ -161,7 +162,7 @@ etc.
 	* angle=light_angle
 	* falloff=n
 	
-* Actor  type=PARTICLE
+* Actor  type=PARTICLE  id=actor_id 
 	* material=material_id
 	* pos_x=x  pos_y=y  pos_z=z  
 	* rot_x=rx  rot_y=ry  rot_z=rz  
@@ -176,7 +177,7 @@ etc.
 	* ambient=color
 	* specular=color
 	
-* Actor  type=TERRAIN
+* Actor  type=TERRAIN  id=actor_id 
 	* file=hmap_file
 	* material=material_id
 	* pos_x=x  pos_y=y  pos_z=z  
@@ -185,7 +186,7 @@ etc.
 	* visible=flag  
 	* cast_shadow=flag
 	
-* Actor  type=WATER
+* Actor  type=WATER  id=actor_id 
 	* mesh=mesh_id  
 	* wave_height=h
 	* wave_speed=sp

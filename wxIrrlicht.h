@@ -100,6 +100,7 @@ class wxIrrlicht : public wxControl {
 
         viewport_camera camera[4];
         int active_camera = 0;
+        double material_view_camera_speed = 1;
         int num_views = 1; //will either be 1 or 4
 
         font_obj font[MAX_FONTS];
@@ -115,6 +116,10 @@ class wxIrrlicht : public wxControl {
         void irr_SetFont(int font_id);
 
         irr::video::ITexture* back_buffer;
+
+
+        int window_type = 0;
+        irr::video::ITexture* view2D_texture;
 
 	//protected:
         void OnPaint(wxPaintEvent& event);

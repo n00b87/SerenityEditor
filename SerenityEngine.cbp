@@ -35,9 +35,10 @@
 			<Add option="`wx-config --cflags` `pkg-config --cflags gtk+-3.0`" />
 			<Add directory="/home/n00b/Projects/irrlicht-svn/include" />
 			<Add directory="/usr/include/freetype2" />
+			<Add directory="/home/n00b/Projects/an8-parser" />
 		</Compiler>
 		<Linker>
-			<Add option="`wx-config --libs std,stc,aui,propgrid,ribbon,richtext` `pkg-config --libs gtk+-3.0` -lfreetype" />
+			<Add option="`wx-config --libs std,stc,aui,propgrid,ribbon,richtext` `pkg-config --libs gtk+-3.0` -lfreetype -Wl,--allow-multiple-definition" />
 			<Add library="EGL" />
 			<Add library="GL" />
 			<Add library="Xxf86vm" />
@@ -46,10 +47,20 @@
 		</Linker>
 		<Unit filename="CGridSceneNode.cpp" />
 		<Unit filename="CGridSceneNode.h" />
+		<Unit filename="MeshTab_SetMaterialSelection.cpp" />
+		<Unit filename="MeshTab_SetMaterialSelection.h" />
 		<Unit filename="Serenity3D_Editor.cpp" />
 		<Unit filename="Serenity3D_Editor.h" />
 		<Unit filename="SerenityEditorSerenity3D_Frame.cpp" />
 		<Unit filename="SerenityEditorSerenity3D_Frame.h" />
+		<Unit filename="SerenityEditor_AddTexture_Dialog.cpp" />
+		<Unit filename="SerenityEditor_AddTexture_Dialog.h" />
+		<Unit filename="SerenityEditor_NewOctree_Dialog.cpp" />
+		<Unit filename="SerenityEditor_NewOctree_Dialog.h" />
+		<Unit filename="SerenityEditor_NewProject_Dialog.cpp" />
+		<Unit filename="SerenityEditor_NewProject_Dialog.h" />
+		<Unit filename="SerenityEditor_SetMaterialTextureLevel_Dialog.cpp" />
+		<Unit filename="SerenityEditor_SetMaterialTextureLevel_Dialog.h" />
 		<Unit filename="SerenityEngineApp.cpp" />
 		<Unit filename="SerenityEngineApp.h" />
 		<Unit filename="SerenityEngineMain.cpp" />

@@ -6,7 +6,13 @@
 #include "engine_base.h"
 #include "rc_stage.h"
 #include "rc_defines.h"
-#include "MeshTab_SetMaterialSelection.h"
+#include "SerenityEditor_NewProject_Dialog.h"
+#include "SerenityEditor_NewOctree_Dialog.h"
+#include "SerenityEditor_AddTexture_Dialog.h"
+#include "SerenityEditor_SetMaterialTextureLevel_Dialog.h"
+#include "SerenityEditor_MaterialPreviewSettings_Dialog.h"
+#include "SerenityEditor_SetMaterialPreviewMesh_Dialog.h"
+#include "SerenityEditor_AddMaterial_Dialog.h"
 
 SerenityEditorSerenity3D_Frame::SerenityEditorSerenity3D_Frame( wxWindow* parent )
 :
@@ -53,6 +59,9 @@ Serenity3D_Frame( parent )
 	stage_window->InitIrr();
 	stage_window->StartRendering();
 
+	stage_window->window_type = RC_IRR_WINDOW_NAV3D;
+	stage_window->SetViews(RC_CAMERA_VIEW_FRONT);
+
 	irr::IrrlichtDevice* device = stage_window->GetDevice();
 	irr::video::IVideoDriver* driver = device->getVideoDriver();
 	irr::scene::ISceneManager* smgr = device->getSceneManager();
@@ -89,31 +98,353 @@ Serenity3D_Frame( parent )
 	stage_window->camera[3].camera.setPosition(0, 30, -40);
 	stage_window->camera[3].camera.setRotation(0, 5, 0);
 
+	current_window = stage_window;
 
-	//b_setMaterial_Sizer = new wxBoxSizer( wxVERTICAL );
-	//m_setMaterial_scrolledWindow->SetSizer(b_setMaterial_Sizer);
-	//m_setMaterial_scrolledWindow->Layout();
-	//m_setMaterial_scrolledWindow->Fit();
 
-	//m_mesh_material_propertyGrid->SetSplitterPosition(90);
+	//----------MATERIALS TAB--------------------------
+
+	//MATERIAL TYPES
+	rc_addMaterialType("MATERIAL_TYPE_DETAIL_MAP", irr::video::EMT_DETAIL_MAP);
+	rc_addMaterialType("MATERIAL_TYPE_LIGHTMAP", irr::video::EMT_LIGHTMAP);
+	rc_addMaterialType("MATERIAL_TYPE_LIGHTMAP_ADD", irr::video::EMT_LIGHTMAP_ADD);
+	rc_addMaterialType("MATERIAL_TYPE_LIGHTMAP_LIGHTING", irr::video::EMT_LIGHTMAP_LIGHTING);
+	rc_addMaterialType("MATERIAL_TYPE_LIGHTMAP_LIGHTING_M2", irr::video::EMT_LIGHTMAP_LIGHTING_M2);
+	rc_addMaterialType("MATERIAL_TYPE_LIGHTMAP_LIGHTING_M4", irr::video::EMT_LIGHTMAP_LIGHTING_M4);
+	rc_addMaterialType("MATERIAL_TYPE_LIGHTMAP_M2", irr::video::EMT_LIGHTMAP_M2);
+	rc_addMaterialType("MATERIAL_TYPE_LIGHTMAP_M4", irr::video::EMT_LIGHTMAP_M4);
+	rc_addMaterialType("MATERIAL_TYPE_NORMAL_MAP_SOLID", irr::video::EMT_NORMAL_MAP_SOLID);
+	rc_addMaterialType("MATERIAL_TYPE_NORMAL_MAP_TRANSPARENT_ADD_COLOR", irr::video::EMT_NORMAL_MAP_TRANSPARENT_ADD_COLOR);
+	rc_addMaterialType("MATERIAL_TYPE_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA", irr::video::EMT_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA);
+	rc_addMaterialType("MATERIAL_TYPE_ONETEXTURE_BLEND", irr::video::EMT_ONETEXTURE_BLEND);
+	rc_addMaterialType("MATERIAL_TYPE_PARALLAX_MAP_SOLID", irr::video::EMT_PARALLAX_MAP_SOLID);
+	rc_addMaterialType("MATERIAL_TYPE_PARALLAX_MAP_TRANSPARENT_ADD_COLOR", irr::video::EMT_PARALLAX_MAP_TRANSPARENT_ADD_COLOR);
+	rc_addMaterialType("MATERIAL_TYPE_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA", irr::video::EMT_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA);
+	rc_addMaterialType("MATERIAL_TYPE_REFLECTION_2_LAYER", irr::video::EMT_REFLECTION_2_LAYER);
+	rc_addMaterialType("MATERIAL_TYPE_SOLID", irr::video::EMT_SOLID);
+	rc_addMaterialType("MATERIAL_TYPE_SOLID_2_LAYER", irr::video::EMT_SOLID_2_LAYER);
+	rc_addMaterialType("MATERIAL_TYPE_SPHERE_MAP", irr::video::EMT_SPHERE_MAP);
+	rc_addMaterialType("MATERIAL_TYPE_TRANSPARENT_ADD_COLOR", irr::video::EMT_TRANSPARENT_ADD_COLOR);
+	rc_addMaterialType("MATERIAL_TYPE_TRANSPARENT_ALPHA_CHANNEL", irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL);
+	rc_addMaterialType("MATERIAL_TYPE_TRANSPARENT_ALPHA_CHANNEL_REF", irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL_REF);
+	rc_addMaterialType("MATERIAL_TYPE_TRANSPARENT_REFLECTION_2_LAYER", irr::video::EMT_TRANSPARENT_REFLECTION_2_LAYER);
+	rc_addMaterialType("MATERIAL_TYPE_TRANSPARENT_VERTEX_ALPHA", irr::video::EMT_TRANSPARENT_VERTEX_ALPHA);
+
+	m_material_type_comboBox->Clear();
+	for(int i = 0; i < rc_material_types_list.size(); i++)
+	{
+		m_material_type_comboBox->Insert(wxString::FromUTF8(rc_material_types_list[i].key.c_str()), i);
+	}
+
+
+	//ANTI ALIAS
+	rc_addAntiAliasType("ANTI_ALIAS_ALPHA_TO_COVERAGE", irr::video::EAAM_ALPHA_TO_COVERAGE);
+	rc_addAntiAliasType("ANTI_ALIAS_FULL_BASIC", irr::video::EAAM_FULL_BASIC);
+	rc_addAntiAliasType("ANTI_ALIAS_LINE_SMOOTH", irr::video::EAAM_LINE_SMOOTH);
+	rc_addAntiAliasType("ANTI_ALIAS_OFF", irr::video::EAAM_OFF);
+	rc_addAntiAliasType("ANTI_ALIAS_POINT_SMOOTH", irr::video::EAAM_POINT_SMOOTH);
+	rc_addAntiAliasType("ANTI_ALIAS_QUALITY", irr::video::EAAM_QUALITY);
+	rc_addAntiAliasType("ANTI_ALIAS_SIMPLE", irr::video::EAAM_SIMPLE);
+
+	m_material_antiAlias_comboBox->Clear();
+	for(int i = 0; i < rc_anti_alias_types_list.size(); i++)
+	{
+		m_material_antiAlias_comboBox->Insert(wxString::FromUTF8(rc_anti_alias_types_list[i].key.c_str()), i);
+	}
+
+
+	//BLEND MODE
+	rc_addBlendModeType("BLENDMODE_ADD", irr::video::EBO_ADD);
+	rc_addBlendModeType("BLENDMODE_MAX", irr::video::EBO_MAX);
+	rc_addBlendModeType("BLENDMODE_MAX_ALPHA", irr::video::EBO_MAX_ALPHA);
+	rc_addBlendModeType("BLENDMODE_MAX_FACTOR", irr::video::EBO_MAX_FACTOR);
+	rc_addBlendModeType("BLENDMODE_MIN", irr::video::EBO_MIN);
+	rc_addBlendModeType("BLENDMODE_MIN_ALPHA", irr::video::EBO_MIN_ALPHA);
+	rc_addBlendModeType("BLENDMODE_MIN_FACTOR", irr::video::EBO_MIN_FACTOR);
+	rc_addBlendModeType("BLENDMODE_NONE", irr::video::EBO_NONE);
+	rc_addBlendModeType("BLENDMODE_REVSUBTRACT", irr::video::EBO_REVSUBTRACT);
+	rc_addBlendModeType("BLENDMODE_SUBTRACT", irr::video::EBO_SUBTRACT);
+
+	m_material_blendMode_comboBox->Clear();
+	for(int i = 0; i < rc_blendmode_types_list.size(); i++)
+	{
+		m_material_blendMode_comboBox->Insert(wxString::FromUTF8(rc_blendmode_types_list[i].key.c_str()), i);
+	}
+
+
+	//COLOR MASK
+	rc_addColorMaskType("COLORMASK_ALL", irr::video::ECP_ALL);
+	rc_addColorMaskType("COLORMASK_ALPHA", irr::video::ECP_ALPHA);
+	rc_addColorMaskType("COLORMASK_BLUE", irr::video::ECP_BLUE);
+	rc_addColorMaskType("COLORMASK_GREEN", irr::video::ECP_GREEN);
+	rc_addColorMaskType("COLORMASK_NONE", irr::video::ECP_NONE);
+	rc_addColorMaskType("COLORMASK_RED", irr::video::ECP_RED);
+	rc_addColorMaskType("COLORMASK_RGB", irr::video::ECP_RGB);
+
+	m_material_colorMask_comboBox->Clear();
+	for(int i = 0; i < rc_colormask_types_list.size(); i++)
+	{
+		m_material_colorMask_comboBox->Insert(wxString::FromUTF8(rc_colormask_types_list[i].key.c_str()), i);
+	}
+
+	//COLOR MODE
+	rc_addColorModeType("COLOR_MODE_AMBIENT", irr::video::ECM_AMBIENT);
+	rc_addColorModeType("COLOR_MODE_DIFFUSE", irr::video::ECM_DIFFUSE);
+	rc_addColorModeType("COLOR_MODE_DIFFUSE_AND_AMBIENT", irr::video::ECM_DIFFUSE_AND_AMBIENT);
+	rc_addColorModeType("COLOR_MODE_EMISSIVE", irr::video::ECM_EMISSIVE);
+	rc_addColorModeType("COLOR_MODE_NONE", irr::video::ECM_NONE);
+	rc_addColorModeType("COLOR_MODE_SPECULAR", irr::video::ECM_SPECULAR);
+
+	m_material_colorMode_comboBox->Clear();
+	for(int i = 0; i < rc_colormode_types_list.size(); i++)
+	{
+		m_material_colorMode_comboBox->Insert(wxString::FromUTF8(rc_colormode_types_list[i].key.c_str()), i);
+	}
+
+	material_preview_camera_distance = 15;
+	material_preview_camera_speed = 1;
 }
 
-void SerenityEditorSerenity3D_Frame::OnPlayClicked( wxCommandEvent& event )
+bool SerenityEditorSerenity3D_Frame::isValidID(wxString id_name, int id_type, int mesh_index)
 {
+	if(id_name.compare(_(""))==0)
+		return false;
+
+	if(id_name.substr(0, 1).IsNumber())
+		return false;
+
+	for(int i = 0; i < id_name.length(); i++)
+	{
+		wxString id_char = id_name.substr(i,1);
+
+		if(id_char.compare(_(" "))==0 || id_char.compare(_("\t"))==0 || id_char.compare(_("`"))==0 || id_char.compare(_("~"))==0 ||
+		   id_char.compare(_("!"))==0 || id_char.compare(_("@"))==0 || id_char.compare(_("#"))==0 || id_char.compare(_("$"))==0 || id_char.compare(_("%"))==0 ||
+		   id_char.compare(_("^"))==0 || id_char.compare(_("&"))==0 || id_char.compare(_("*"))==0 || id_char.compare(_("("))==0 || id_char.compare(_(")"))==0 ||
+		   id_char.compare(_("-"))==0 || id_char.compare(_("="))==0 || id_char.compare(_("+"))==0 || id_char.compare(_("["))==0 ||
+		   id_char.compare(_("]"))==0 || id_char.compare(_("{"))==0 || id_char.compare(_("}"))==0 || id_char.compare(_("|"))==0 || id_char.compare(_("\\"))==0 ||
+		   id_char.compare(_(";"))==0 || id_char.compare(_(":"))==0 || id_char.compare(_("'"))==0 || id_char.compare(_("\""))==0 || id_char.compare(_(","))==0 ||
+		   id_char.compare(_("<"))==0 || id_char.compare(_(">"))==0 || id_char.compare(_("."))==0 || id_char.compare(_("/"))==0 || id_char.compare(_("?"))==0)
+			return false;
+	}
+
+	//Need to make sure id_name does not exists already.
+	//Since IDs are just variables in a program, id can't match any existing ID in texture, material, mesh, animation, or actor
+
+	id_name = id_name.Lower();
+	wxString p_id = _("");
+	int id_count = 0;
+
+	if(id_type == RC_ID_TEXTURE)
+	{
+		//Check textures
+		for(int i = 0; i < project.textures.size(); i++)
+		{
+			p_id = wxString::FromUTF8(project.textures[i].id_name.c_str());
+			p_id = p_id.Lower();
+
+			if(p_id.compare(_(""))==0)
+				continue;
+
+			if(p_id.compare(id_name) == 0)
+			{
+				id_count++;
+
+				if(id_count > 1)
+					break;
+			}
+		}
+
+		if(id_count > 1)
+		{
+			wxMessageBox(_("Texture ID matches existing ID"));
+			return false;
+		}
+	}
+
+
+	if(id_type == RC_ID_MATERIAL)
+	{
+		//Check materials
+		for(int i = 0; i < project.materials.size(); i++)
+		{
+			p_id = wxString::FromUTF8(project.materials[i].id_name.c_str());
+			p_id = p_id.Lower();
+
+			if(p_id.compare(_(""))==0)
+				continue;
+
+			if(p_id.compare(id_name) == 0)
+			{
+				id_count++;
+
+				if(id_count > 1)
+					break;
+			}
+		}
+
+		if(id_count > 1)
+		{
+			wxMessageBox(_("Material ID matches existing ID"));
+			return false;
+		}
+	}
+
+
+	if(id_type == RC_ID_MESH)
+	{
+		//Check meshes
+		for(int i = 0; i < project.meshes.size(); i++)
+		{
+			p_id = wxString::FromUTF8(project.meshes[i].id_name.c_str());
+			p_id = p_id.Lower();
+
+			if(p_id.compare(_(""))==0)
+				continue;
+
+			if(p_id.compare(id_name) == 0)
+			{
+				id_count++;
+
+				if(id_count > 1)
+					break;
+			}
+		}
+
+		if(id_count > 1)
+		{
+			wxMessageBox(_("Mesh ID matches existing ID"));
+			return false;
+		}
+	}
+
+
+	if(id_type == RC_ID_ANIMATION)
+	{
+		//Check animations
+		for(int i = 0; i < project.meshes[mesh_index].animation.size(); i++)
+		{
+			p_id = wxString::FromUTF8(project.meshes[mesh_index].animation[i].id_name.c_str());
+			p_id = p_id.Lower();
+
+			if(p_id.compare(_(""))==0)
+				continue;
+
+			if(p_id.compare(id_name) == 0)
+			{
+				id_count++;
+
+				if(id_count > 1)
+					break;
+			}
+		}
+
+		if(id_count > 1)
+		{
+			wxMessageBox(_("Animation ID matches existing ID"));
+			return false;
+		}
+	}
+
+
+	return true;
 }
 
-void SerenityEditorSerenity3D_Frame::OnStopClicked( wxCommandEvent& event )
+void SerenityEditorSerenity3D_Frame::createIrrlichtStageWindow()
 {
-    //wxMessageBox(_("Panel Size = ") + wxString::Format(_("%i"), m_panel44->GetClientSize().GetWidth()));
+	m_stageViewport_panel->SetFocus();
 
-    //wxMessageBox(_("Start Constructor"));
+	stage_window=new wxIrrlicht(m_stageViewport_panel, wxID_ANY, false, wxPoint(ClientW(0), ClientH(0)), wxGetDisplaySize());
+	stage_window->window_type = RC_IRR_WINDOW_NAV3D;
+	stage_window->InitIrr();
+	stage_window->StartRendering();
+
+	irr::IrrlichtDevice* device = stage_window->GetDevice();
+	irr::video::IVideoDriver* driver = device->getVideoDriver();
+	irr::scene::ISceneManager* smgr = device->getSceneManager();
+	irr::gui::IGUIEnvironment* guienv = device->getGUIEnvironment();
+
+
+	//gridSceneNode->drop();  // added to scene already, that still has a reference
+
+	irr::scene::IAnimatedMesh* mesh = smgr->getMesh("media/sydney.md2");
+	if (!mesh)
+	{
+		wxMessageBox(_("No dice"));
+		//device->drop();
+		return;
+	}
+	irr::scene::IAnimatedMeshSceneNode* node = smgr->addAnimatedMeshSceneNode( mesh );
+
+	if (node)
+	{
+		node->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+		node->setMD2Animation(irr::scene::EMAT_STAND);
+		node->setMaterialTexture( 0, driver->getTexture("media/sydney.bmp") );
+	}
+
+	stage_window->num_views = current_stage_settings.num_views;
+
+	if(stage_window->num_views == 1)
+	{
+		switch(current_stage_settings.camera[0].pov)
+		{
+			case RC_CAMERA_VIEW_FRONT: m_stagePOV_comboBox->SetValue(_("Front")); break;
+			case RC_CAMERA_VIEW_RIGHT: m_stagePOV_comboBox->SetValue(_("Right")); break;
+			case RC_CAMERA_VIEW_TOP: m_stagePOV_comboBox->SetValue(_("Top")); break;
+			case RC_CAMERA_VIEW_PERSPECTIVE: m_stagePOV_comboBox->SetValue(_("Perspective")); break;
+		}
+	}
+	else
+	{
+		m_stagePOV_comboBox->SetValue(_("All"));
+	}
+
+	stage_window->camera[0].pov = current_stage_settings.camera[0].pov;
+	stage_window->camera[1].pov = current_stage_settings.camera[1].pov;
+	stage_window->camera[2].pov = current_stage_settings.camera[2].pov;
+	stage_window->camera[3].pov = current_stage_settings.camera[3].pov;
+
+	stage_window->camera[0].camera.setPosition(current_stage_settings.camera[0].position.x,
+											   current_stage_settings.camera[0].position.y,
+											   current_stage_settings.camera[0].position.z);
+
+	stage_window->camera[0].camera.setRotation(current_stage_settings.camera[0].rotation.x,
+											   current_stage_settings.camera[0].rotation.y,
+											   current_stage_settings.camera[0].rotation.z);
+
+	stage_window->camera[1].camera.setPosition(current_stage_settings.camera[1].position.x,
+											   current_stage_settings.camera[1].position.y,
+											   current_stage_settings.camera[1].position.z);
+
+	stage_window->camera[1].camera.setRotation(current_stage_settings.camera[1].rotation.x,
+											   current_stage_settings.camera[1].rotation.y,
+											   current_stage_settings.camera[1].rotation.z);
+
+	stage_window->camera[2].camera.setPosition(current_stage_settings.camera[2].position.x,
+											   current_stage_settings.camera[2].position.y,
+											   current_stage_settings.camera[2].position.z);
+
+	stage_window->camera[2].camera.setRotation(current_stage_settings.camera[2].rotation.x,
+											   current_stage_settings.camera[2].rotation.y,
+											   current_stage_settings.camera[2].rotation.z);
+
+	stage_window->camera[3].camera.setPosition(current_stage_settings.camera[3].position.x,
+											   current_stage_settings.camera[3].position.y,
+											   current_stage_settings.camera[3].position.z);
+
+	stage_window->camera[3].camera.setRotation(current_stage_settings.camera[3].rotation.x,
+											   current_stage_settings.camera[3].rotation.y,
+											   current_stage_settings.camera[3].rotation.z);
+
+	stage_window->SetCameraViewParam();
+}
+
+void SerenityEditorSerenity3D_Frame::createIrrlichtAnimationWindow()
+{
+	m_mesh_animationPreview_panel->SetFocus();
+
     animation_window=new wxIrrlicht(m_mesh_animationPreview_panel, wxID_ANY, false, wxPoint(ClientW(0), ClientH(0)), wxGetDisplaySize());
-		//irrTst->SetBackgroundColour(wxColour("red"));
-		wxMessageBox(_("Start Frame"));
-		irr::SIrrlichtCreationParameters params;
-		params.WindowSize.set(m_mesh_animationPreview_panel->GetClientSize().GetWidth(), m_mesh_animationPreview_panel->GetClientSize().GetHeight());
-		params.DriverType = irr::video::EDT_BURNINGSVIDEO;
-		animation_window->InitIrr(&params);
+		animation_window->window_type = RC_IRR_WINDOW_NAV3D;
+		animation_window->InitIrr();
 		animation_window->StartRendering();
 
 		irr::IrrlichtDevice* device = animation_window->GetDevice();
@@ -137,20 +468,357 @@ void SerenityEditorSerenity3D_Frame::OnStopClicked( wxCommandEvent& event )
             node->setMaterialTexture( 0, driver->getTexture("media/sydney.bmp") );
         }
 
-		smgr->addCameraSceneNode(0, irr::core::vector3df(0,30,-40), irr::core::vector3df(0,5,0));
+		animation_window->camera[0].camera.setPosition(0, 0, -100);
+		animation_window->camera[0].camera.setRotation(0, 0, 0);
+
+		animation_window->SetViews(RC_CAMERA_VIEW_PERSPECTIVE);
+}
+
+void SerenityEditorSerenity3D_Frame::createIrrlichtMaterialWindow()
+{
+	m_material_materialPreview_panel->SetFocus();
+
+    material_window=new wxIrrlicht(m_material_materialPreview_panel, wxID_ANY, false, wxPoint(ClientW(0), ClientH(0)), wxGetDisplaySize());
+		material_window->window_type = RC_IRR_WINDOW_MATERIAL;
+		material_window->InitIrr();
+		material_window->StartRendering();
+
+		material_window->material_view_camera_speed = 1;
+
+		irr::IrrlichtDevice* device = material_window->GetDevice();
+		irr::video::IVideoDriver* driver = device->getVideoDriver();
+        irr::scene::ISceneManager* smgr = device->getSceneManager();
+        irr::gui::IGUIEnvironment* guienv = device->getGUIEnvironment();
+
+        test_material_mesh = smgr->addCubeSceneNode();
+
+        test_material_light = smgr->addLightSceneNode();
+        test_material_light->setPosition(irr::core::vector3df(0, 30, 30));
+        test_material_light->setRadius(30);
+
+		material_window->camera[0].camera.setPosition(0, 7, -1 * material_preview_camera_distance);
+		material_window->camera[0].camera.setRotation(26, 0, 0);
+
+		material_window->SetViews(RC_CAMERA_VIEW_PERSPECTIVE);
+}
+
+void SerenityEditorSerenity3D_Frame::createIrrlichtTextureWindow()
+{
+	m_texture_texturePreview_panel->SetFocus();
+
+    texture_window=new wxIrrlicht(m_texture_texturePreview_panel, wxID_ANY, false, wxPoint(ClientW(0), ClientH(0)), wxGetDisplaySize());
+    texture_window->window_type = RC_IRR_WINDOW_VIEW2D;
+		texture_window->InitIrr();
+		texture_window->StartRendering();
+
+		texture_window->camera[0].camera.setPosition(0, 0, -10);
+		texture_window->camera[0].camera.setRotation(0, 0, 0);
+
+		texture_window->SetViews(RC_CAMERA_VIEW_FRONT);
+}
+
+void SerenityEditorSerenity3D_Frame::OnProjectPropertiesNotebookChanged( wxAuiNotebookEvent& event )
+{
+	//wxMessageBox(_("PROJECT PROPETIES HAS CHANGED EVENT"));
+	//event.Skip();
+}
+
+void SerenityEditorSerenity3D_Frame::OnMainEditorNotebookPageChanged( wxAuiNotebookEvent& event )
+{
+	//wxMessageBox(_("Changing Main AUI notebook"));
+
+	//Make Sure material ID is valid on current material
+	if(materialTab_selected_material_project_index >= 0 && materialTab_selected_material_project_index < project.materials.size())
+	{
+		if(!isValidID(wxString::FromUTF8(project.materials[materialTab_selected_material_project_index].id_name.c_str()), RC_ID_MATERIAL))
+		{
+			wxMessageBox(_("Warning: Material ID is invalid. A default Material ID will be generated."));
+			project.materials[materialTab_selected_material_project_index].id_name = project.genMaterialID().ToStdString();
+		}
+	}
+
+	//Make Sure texture ID is valid on current texture
+	if(textureTab_selected_texture_project_index >= 0 && textureTab_selected_texture_project_index < project.textures.size())
+	{
+		if(!isValidID(wxString::FromUTF8(project.textures[textureTab_selected_texture_project_index].id_name.c_str()), RC_ID_TEXTURE))
+		{
+			wxMessageBox(_("Warning: Texture ID is invalid. A default Texture ID will be generated."));
+			project.textures[textureTab_selected_texture_project_index].id_name = project.genTextureID().ToStdString();
+		}
+	}
+
+
+	//Make Sure mesh ID is valid on current mesh
+	if(meshTab_selected_mesh_project_index >= 0 && meshTab_selected_mesh_project_index < project.meshes.size())
+	{
+		int n = meshTab_selected_mesh_project_index;
+
+		if(!isValidID(wxString::FromUTF8(project.meshes[n].id_name.c_str()), RC_ID_MESH))
+		{
+			wxMessageBox(_("Warning: Mesh ID is invalid. A default Mesh ID will be generated."));
+			project.meshes[n].id_name = project.genMeshID().ToStdString();
+		}
+
+		//Make Sure animation ID is valid on current texture
+		if(meshTab_active_animation_index >= 0 && meshTab_active_animation_index < project.meshes[n].animation.size())
+		{
+			if(!isValidID(wxString::FromUTF8(project.meshes[n].animation[meshTab_active_animation_index].id_name), RC_ID_ANIMATION, n))
+			{
+				wxMessageBox(_("Warning: Animation ID is invalid. A default Animation ID will be generated."));
+				project.meshes[n].animation[meshTab_active_animation_index].id_name = project.genMeshAnimationID(n).ToStdString();
+				//wxMessageBox(_("NEW ID: ") + project.meshes[n].animation[meshTab_active_animation_index].id_name);
+			}
+		}
+	}
+
+
+	if(current_window)
+	{
+		if(stage_window)
+		{
+			current_stage_settings.num_views = stage_window->num_views;
+
+			current_stage_settings.camera[0].pov = stage_window->camera[0].pov;
+			current_stage_settings.camera[1].pov = stage_window->camera[1].pov;
+			current_stage_settings.camera[2].pov = stage_window->camera[2].pov;
+			current_stage_settings.camera[3].pov = stage_window->camera[3].pov;
+
+			current_stage_settings.camera[0].position.x = stage_window->camera[0].camera.x;
+			current_stage_settings.camera[0].position.y = stage_window->camera[0].camera.y;
+			current_stage_settings.camera[0].position.z = stage_window->camera[0].camera.z;
+
+			current_stage_settings.camera[0].rotation.x = stage_window->camera[0].camera.rx;
+			current_stage_settings.camera[0].rotation.y = stage_window->camera[0].camera.ry;
+			current_stage_settings.camera[0].rotation.z = stage_window->camera[0].camera.rz;
+
+			current_stage_settings.camera[1].position.x = stage_window->camera[1].camera.x;
+			current_stage_settings.camera[1].position.y = stage_window->camera[1].camera.y;
+			current_stage_settings.camera[1].position.z = stage_window->camera[1].camera.z;
+
+			current_stage_settings.camera[1].rotation.x = stage_window->camera[1].camera.rx;
+			current_stage_settings.camera[1].rotation.y = stage_window->camera[1].camera.ry;
+			current_stage_settings.camera[1].rotation.z = stage_window->camera[1].camera.rz;
+
+			current_stage_settings.camera[2].position.x = stage_window->camera[2].camera.x;
+			current_stage_settings.camera[2].position.y = stage_window->camera[2].camera.y;
+			current_stage_settings.camera[2].position.z = stage_window->camera[2].camera.z;
+
+			current_stage_settings.camera[2].rotation.x = stage_window->camera[2].camera.rx;
+			current_stage_settings.camera[2].rotation.y = stage_window->camera[2].camera.ry;
+			current_stage_settings.camera[2].rotation.z = stage_window->camera[2].camera.rz;
+
+			current_stage_settings.camera[3].position.x = stage_window->camera[3].camera.x;
+			current_stage_settings.camera[3].position.y = stage_window->camera[3].camera.y;
+			current_stage_settings.camera[3].position.z = stage_window->camera[3].camera.z;
+
+			current_stage_settings.camera[3].rotation.x = stage_window->camera[3].camera.rx;
+			current_stage_settings.camera[3].rotation.y = stage_window->camera[3].camera.ry;
+			current_stage_settings.camera[3].rotation.z = stage_window->camera[3].camera.rz;
+		}
+		project.clearProject();
+		current_window->GetDevice()->closeDevice();
+		current_window->Close();
+		delete current_window;
+		current_window = NULL;
+	}
+
+	stage_window = NULL;
+	animation_window = NULL;
+	material_window = NULL;
+	texture_window = NULL;
+
+	int page_index = event.GetSelection();
+
+	if(page_index < 0 || page_index >= m_editorMain_auinotebook->GetPageCount())
+	{
+		wxMessageBox(_("Failed to create render device"));
+		return;
+	}
+
+	wxPanel* new_panel = (wxPanel*)m_editorMain_auinotebook->GetPage(page_index);
+
+	if(new_panel == m_stage_panel)
+	{
+		createIrrlichtStageWindow();
+		current_window = stage_window;
+	}
+	else if(new_panel == m_meshDB_panel)
+	{
+		createIrrlichtAnimationWindow();
+		current_window = animation_window;
+	}
+	else if(new_panel == m_materialDB_panel)
+	{
+		createIrrlichtMaterialWindow();
+		current_window = material_window;
+	}
+	else if(new_panel == m_textureDB_panel)
+	{
+		createIrrlichtTextureWindow();
+		current_window = texture_window;
+	}
+
+	reloadResources();
+
+	current_window->force_refresh();
+}
+
+void SerenityEditorSerenity3D_Frame::reloadResources()
+{
+	if(!current_window)
+		return;
+
+	if(!project.project_path.Exists())
+		return;
+
+	//project = serenity_project(project.project_path.GetAbsolutePath().ToStdString(), "", current_window->GetDevice());
+	project.device = current_window->GetDevice();
+	project.reload_assets();
+
+	current_window->view2D_texture = NULL;
+
+	//wxMessageBox(_("RELOAD COMPLETE"));
+
+	m_material_material_listBox->Clear();
+	m_mesh_mesh_listBox->Clear();
+	m_texture_textureList_listBox->Clear();
+	m_material_textureLevel_listBox->Clear();
+
+	//populate materials from project
+	for(int i = 0; i < project.materials.size(); i++)
+	{
+		if(project.materials[i].id_name.compare(_(""))!=0)
+			m_material_material_listBox->AppendAndEnsureVisible(wxString::FromUTF8(project.materials[i].id_name.c_str()));
+	}
+
+	//populate mesh from project
+	for(int i = 0; i < project.meshes.size(); i++)
+	{
+		if(project.meshes[i].id_name.compare(_(""))!=0)
+			m_mesh_mesh_listBox->AppendAndEnsureVisible(wxString::FromUTF8(project.meshes[i].id_name.c_str()));
+	}
+
+	//populate textures from project
+	for(int i = 0; i < project.textures.size(); i++)
+	{
+		if(project.textures[i].id_name.compare(_(""))!=0)
+			m_texture_textureList_listBox->AppendAndEnsureVisible(wxString::FromUTF8(project.textures[i].id_name.c_str()));
+	}
+}
+
+void SerenityEditorSerenity3D_Frame::OnPlayClicked( wxCommandEvent& event )
+{
+	animation_window->GetDevice()->closeDevice();
+	animation_window->Close();
+	delete animation_window;
+
+	m_stageViewport_panel->SetFocus();
+
+	stage_window=new wxIrrlicht(m_stageViewport_panel, wxID_ANY, false, wxPoint(ClientW(0), ClientH(0)), m_stageViewport_panel->GetClientSize());
+	//irrTst->SetBackgroundColour(wxColour("red"));
+
+	stage_window->InitIrr();
+	stage_window->StartRendering();
+
+	irr::IrrlichtDevice* device = stage_window->GetDevice();
+	irr::video::IVideoDriver* driver = device->getVideoDriver();
+	irr::scene::ISceneManager* smgr = device->getSceneManager();
+	irr::gui::IGUIEnvironment* guienv = device->getGUIEnvironment();
+
+
+	//gridSceneNode->drop();  // added to scene already, that still has a reference
+
+	irr::scene::IAnimatedMesh* mesh = smgr->getMesh("media/sydney.md2");
+	if (!mesh)
+	{
+		wxMessageBox(_("No dice"));
+		//device->drop();
+		return;
+	}
+	irr::scene::IAnimatedMeshSceneNode* node = smgr->addAnimatedMeshSceneNode( mesh );
+
+	if (node)
+	{
+		node->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+		node->setMD2Animation(irr::scene::EMAT_STAND);
+		node->setMaterialTexture( 0, driver->getTexture("media/sydney.bmp") );
+	}
+
+	stage_window->camera[0].camera.setPosition(0, 0, -100);
+	stage_window->camera[0].camera.setRotation(0, 0, 0);
+
+	stage_window->camera[1].camera.setPosition(-100, 0, 0);
+	stage_window->camera[1].camera.setRotation(0, 90, 0);
+
+	stage_window->camera[2].camera.setPosition(0, 100, 0);
+	stage_window->camera[2].camera.setRotation(90, 0, 0);
+
+	stage_window->camera[3].camera.setPosition(0, 30, -40);
+	stage_window->camera[3].camera.setRotation(0, 5, 0);
+}
+
+void SerenityEditorSerenity3D_Frame::OnStopClicked( wxCommandEvent& event )
+{
+	stage_window->GetDevice()->closeDevice();
+	stage_window->Close();
+
+	delete stage_window;
+
+	m_mesh_animationPreview_panel->SetFocus();
+
+    //wxMessageBox(_("Panel Size = ") + wxString::Format(_("%i"), m_mesh_animationPreview_panel->GetClientSize().GetWidth()));
+
+    //wxMessageBox(_("Start Constructor"));
+    animation_window=new wxIrrlicht(m_mesh_animationPreview_panel, wxID_ANY, false, wxPoint(ClientW(0), ClientH(0)), wxGetDisplaySize());
+		//irrTst->SetBackgroundColour(wxColour("red"));
+		wxMessageBox(_("Start Frame"));
+		irr::SIrrlichtCreationParameters params;
+		params.WindowSize.set(m_mesh_animationPreview_panel->GetClientSize().GetWidth(), m_mesh_animationPreview_panel->GetClientSize().GetHeight());
+		params.DriverType = irr::video::EDT_BURNINGSVIDEO;
+		animation_window->InitIrr();
+		animation_window->StartRendering();
+
+		//animation_window->SetViews(RC_CAMERA_VIEW_PERSPECTIVE);
+
+		irr::IrrlichtDevice* device = animation_window->GetDevice();
+		irr::video::IVideoDriver* driver = device->getVideoDriver();
+        irr::scene::ISceneManager* smgr = device->getSceneManager();
+        irr::gui::IGUIEnvironment* guienv = device->getGUIEnvironment();
+
+        irr::scene::IAnimatedMesh* mesh = smgr->getMesh("media/sydney.md2");
+        if (!mesh)
+        {
+            wxMessageBox(_("No dice"));
+            //device->drop();
+            return;
+        }
+        irr::scene::IAnimatedMeshSceneNode* node = smgr->addAnimatedMeshSceneNode( mesh );
+
+        if (node)
+        {
+            node->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+            node->setMD2Animation(irr::scene::EMAT_STAND);
+            node->setMaterialTexture( 0, driver->getTexture("media/sydney.bmp") );
+        }
+
+		//smgr->addCameraSceneNode(0, irr::core::vector3df(0,30,-40), irr::core::vector3df(0,5,0));
+
+		animation_window->camera[0].camera.setPosition(0, 0, -100);
+		animation_window->camera[0].camera.setRotation(0, 0, 0);
+
+		animation_window->camera[1].camera.setPosition(-100, 0, 0);
+		animation_window->camera[1].camera.setRotation(0, 90, 0);
+
+		animation_window->camera[2].camera.setPosition(0, 100, 0);
+		animation_window->camera[2].camera.setRotation(90, 0, 0);
+
+		animation_window->camera[3].camera.setPosition(0, 30, -40);
+		animation_window->camera[3].camera.setRotation(0, 5, 0);
+
+		animation_window->SetViews(RC_CAMERA_VIEW_PERSPECTIVE);
 
 
     //wxMessageBox(_("IrrTst Size = ") + wxString::Format(_("%i"), irrTst->GetClientSize().GetWidth()));
-}
-
-void SerenityEditorSerenity3D_Frame::OnAnimationStopClicked( wxCommandEvent& event )
-{
-
-}
-
-void SerenityEditorSerenity3D_Frame::OnAnimationPreviewSize( wxSizeEvent& event )
-{
-
 }
 
 
@@ -248,6 +916,9 @@ void SerenityEditorSerenity3D_Frame::OnS3DDumpClicked( wxCommandEvent& event )
 {
 	stage_tools_selection = getStageToolIndex(m_s3d_octreeActor_tool);
 	updateToolSelection();
+
+	SerenityEditor_NewOctree_Dialog* create_octree_win = new SerenityEditor_NewOctree_Dialog(this, &project);
+	create_octree_win->ShowModal();
 }
 
 void SerenityEditorSerenity3D_Frame::OnS3DWizClicked( wxCommandEvent& event )
@@ -310,14 +981,62 @@ void SerenityEditorSerenity3D_Frame::OnS3DModeCameraClicked( wxCommandEvent& eve
 	viewport_mode = RC_VIEWPORT_MODE_CAMERA;
 }
 
-void SerenityEditorSerenity3D_Frame::OnNewProjectMenuSelection( wxCommandEvent& event )
+void SerenityEditorSerenity3D_Frame::clearScene()
 {
-	project = serenity_project("/home/n00b/test/stp/test.snprj");
+	if(!current_window)
+		return;
+
+	irr::scene::ISceneManager* smgr = current_window->GetDevice()->getSceneManager();
 }
 
+void SerenityEditorSerenity3D_Frame::OnNewProjectMenuSelection( wxCommandEvent& event )
+{
+	SerenityEditor_NewProject_Dialog* create_project_win = new SerenityEditor_NewProject_Dialog(this);
+	create_project_win->ShowModal();
+
+	if(create_project_win->createFlag)
+	{
+		project.clearProject();
+		project = serenity_project(create_project_win->project_file.GetAbsolutePath().ToStdString(), create_project_win->project_name.ToStdString(), current_window->GetDevice());
+	}
+}
+
+void SerenityEditorSerenity3D_Frame::OnLoadProjectMenuSelection( wxCommandEvent& event )
+{
+	project.clearProject();
+
+	if(!current_window)
+		return;
+
+	project = serenity_project("/home/n00b/test/stp/test.snprj", "", current_window->GetDevice());
+
+	m_material_material_listBox->Clear();
+	m_mesh_mesh_listBox->Clear();
+	m_texture_textureList_listBox->Clear();
+	m_material_textureLevel_listBox->Clear();
+
+	//populate materials from project
+	for(int i = 0; i < project.materials.size(); i++)
+	{
+		m_material_material_listBox->AppendAndEnsureVisible(wxString::FromUTF8(project.materials[i].id_name.c_str()));
+	}
+
+	//populate mesh from project
+	for(int i = 0; i < project.meshes.size(); i++)
+	{
+		m_mesh_mesh_listBox->AppendAndEnsureVisible(wxString::FromUTF8(project.meshes[i].id_name.c_str()));
+	}
+
+	//populate textures from project
+	for(int i = 0; i < project.textures.size(); i++)
+	{
+		m_texture_textureList_listBox->AppendAndEnsureVisible(wxString::FromUTF8(project.textures[i].id_name.c_str()));
+	}
+}
 
 void SerenityEditorSerenity3D_Frame::OnStageViewportMouse( wxMouseEvent& event )
 {
+	return;
 	//if(wxString::Format(_("%d"), event.GetEventType()).compare("10227")!=0 && wxString::Format(_("%d"), event.GetEventType()).compare("10226")!=0
 	  // && wxString::Format(_("%d"), event.GetEventType()).compare("10228")!=0)
 		//wxMessageBox(_("EVT DEBUG: ") + wxString::Format(_("%d"), event.GetEventType()));
@@ -369,6 +1088,8 @@ void SerenityEditorSerenity3D_Frame::OnStageViewportMouse( wxMouseEvent& event )
 
 void SerenityEditorSerenity3D_Frame::OnStageContainerMouse( wxMouseEvent& event )
 {
+	return;
+
 	if(wxString::Format(_("%d"), event.GetEventType()).compare("10220")==0)
 		wxMessageBox(_("LEFT"));
 
@@ -384,12 +1105,12 @@ void SerenityEditorSerenity3D_Frame::OnStageContainerMouse( wxMouseEvent& event 
 
 void SerenityEditorSerenity3D_Frame::OnStageViewportSetFocus( wxFocusEvent& event )
 {
-	wxMessageBox(_("SET"));
+	//wxMessageBox(_("SET"));
 }
 
 void SerenityEditorSerenity3D_Frame::OnStageViewportKillFocus( wxFocusEvent& event )
 {
-	wxMessageBox(_("KILL"));
+	//wxMessageBox(_("KILL"));
 }
 
 
@@ -450,29 +1171,1276 @@ void SerenityEditorSerenity3D_Frame::OnViewComboSelect( wxCommandEvent& event )
 }
 
 
+//---------------Mesh Tab------------------------
+
+void SerenityEditorSerenity3D_Frame::On_Mesh_AnimationList_Select( wxCommandEvent& event )
+{
+	if(meshTab_selected_mesh_project_index >= 0 && meshTab_selected_mesh_project_index < project.meshes.size())
+	{
+		int n = meshTab_selected_mesh_project_index;
+
+		//Make Sure animation ID is valid on current texture
+		if(meshTab_active_animation_index >= 0 && meshTab_active_animation_index < project.meshes[n].animation.size())
+		{
+			if(!isValidID(wxString::FromUTF8(project.meshes[n].animation[meshTab_active_animation_index].id_name), RC_ID_ANIMATION, n))
+			{
+				wxMessageBox(_("Warning: Animation ID is invalid. A default Animation ID will be generated."));
+
+				wxString id_name = m_mesh_animationID_textCtrl->GetValue();
+
+				for(int i = 0; i < m_mesh_meshAnimation_listBox->GetCount(); i++)
+				{
+					if(m_mesh_meshAnimation_listBox->GetString(i).compare(id_name)==0)
+					{
+						project.meshes[n].animation[meshTab_active_animation_index].id_name = project.genMeshAnimationID(n).ToStdString();
+						m_mesh_meshAnimation_listBox->SetString(i, wxString::FromUTF8(project.meshes[n].animation[meshTab_active_animation_index].id_name));
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	if(meshTab_selected_mesh_project_index < 0 || meshTab_selected_mesh_project_index >= project.meshes.size())
+	{
+		wxMessageBox(_("ERROR: Could not find mesh id"));
+		return;
+	}
+
+	wxString id_name = event.GetString();
+
+	int n = meshTab_selected_mesh_project_index;
+
+	meshTab_active_animation_index = -1;
+
+	for(int i = 0; i < project.meshes[n].animation.size(); i++)
+	{
+		if(project.meshes[n].animation[i].id_name.compare(id_name.ToStdString())==0)
+		{
+			meshTab_active_animation_index = i;
+			break;
+		}
+	}
+
+	int an_index = meshTab_active_animation_index;
+
+	if(an_index < 0)
+		return;
+
+	m_mesh_animationID_textCtrl->SetValue( wxString::FromUTF8(project.meshes[n].animation[an_index].id_name.c_str()));
+	m_mesh_animationStartFrame_textCtrl->SetValue( wxString::Format(_("%d"), project.meshes[n].animation[an_index].start_frame));
+	m_mesh_animationEndFrame_textCtrl->SetValue( wxString::Format(_("%d"), project.meshes[n].animation[an_index].end_frame));
+	m_mesh_animationSpeed_textCtrl->SetValue( wxString::FromDouble(project.meshes[n].animation[an_index].speed));
+
+	event.Skip();
+}
+
+void SerenityEditorSerenity3D_Frame::On_Mesh_Animation_AnimationID( wxCommandEvent& event )
+{
+	if(meshTab_selected_mesh_project_index < 0 || meshTab_selected_mesh_project_index >= project.meshes.size())
+	{
+		wxMessageBox(_("ERROR: Could not find mesh id"));
+		return;
+	}
+
+	int n = meshTab_selected_mesh_project_index;
+
+	if(meshTab_active_animation_index < 0 || meshTab_active_animation_index >= project.meshes[n].animation.size())
+	{
+		//wxMessageBox(_("ERROR: Could not find animation id"));
+		return;
+	}
+
+	wxString id_name = wxString::FromUTF8(project.meshes[n].animation[meshTab_active_animation_index].id_name);
+
+	for(int i = 0; i < m_mesh_meshAnimation_listBox->GetCount(); i++)
+	{
+		if(m_mesh_meshAnimation_listBox->GetString(i).compare(id_name)==0)
+		{
+			m_mesh_meshAnimation_listBox->SetString(i, event.GetString());
+			project.meshes[n].animation[meshTab_active_animation_index].id_name = event.GetString().ToStdString();
+			break;
+		}
+	}
+}
+
+void SerenityEditorSerenity3D_Frame::On_Mesh_Animation_StartFrame( wxCommandEvent& event )
+{
+	if(meshTab_selected_mesh_project_index < 0 || meshTab_selected_mesh_project_index >= project.meshes.size())
+	{
+		wxMessageBox(_("ERROR: Could not find mesh id"));
+		return;
+	}
+
+	int n = meshTab_selected_mesh_project_index;
+
+	if(meshTab_active_animation_index < 0 || meshTab_active_animation_index >= project.meshes[n].animation.size())
+	{
+		//wxMessageBox(_("ERROR: Could not find animation id"));
+		return;
+	}
+
+	event.GetString().ToInt(&project.meshes[n].animation[meshTab_active_animation_index].start_frame);
+}
+
+void SerenityEditorSerenity3D_Frame::On_Mesh_Animation_EndFrame( wxCommandEvent& event )
+{
+	if(meshTab_selected_mesh_project_index < 0 || meshTab_selected_mesh_project_index >= project.meshes.size())
+	{
+		wxMessageBox(_("ERROR: Could not find mesh id"));
+		return;
+	}
+
+	int n = meshTab_selected_mesh_project_index;
+
+	if(meshTab_active_animation_index < 0 || meshTab_active_animation_index >= project.meshes[n].animation.size())
+	{
+		//wxMessageBox(_("ERROR: Could not find animation id"));
+		return;
+	}
+
+	event.GetString().ToInt(&project.meshes[n].animation[meshTab_active_animation_index].end_frame);
+}
+
+void SerenityEditorSerenity3D_Frame::On_Mesh_Animation_Speed( wxCommandEvent& event )
+{
+	if(meshTab_selected_mesh_project_index < 0 || meshTab_selected_mesh_project_index >= project.meshes.size())
+	{
+		wxMessageBox(_("ERROR: Could not find mesh id"));
+		return;
+	}
+
+	int n = meshTab_selected_mesh_project_index;
+
+	if(meshTab_active_animation_index < 0 || meshTab_active_animation_index >= project.meshes[n].animation.size())
+	{
+		//wxMessageBox(_("ERROR: Could not find animation id"));
+		return;
+	}
+
+	double dval = 0;
+	event.GetString().ToDouble(&dval);
+	project.meshes[n].animation[meshTab_active_animation_index].speed = dval;
+}
+
+void SerenityEditorSerenity3D_Frame::On_Mesh_MeshList_Select( wxCommandEvent& event )
+{
+	if(meshTab_selected_mesh_project_index >= 0 && meshTab_selected_mesh_project_index < project.meshes.size())
+	{
+		int n = meshTab_selected_mesh_project_index;
+
+		if(!isValidID(wxString::FromUTF8(project.meshes[n].id_name.c_str()), RC_ID_MESH))
+		{
+			wxMessageBox(_("Warning: Mesh ID is invalid. A default Mesh ID will be generated."));
+			project.meshes[n].id_name = project.genMeshID().ToStdString();
+		}
+
+		//Make Sure animation ID is valid on current texture
+		if(meshTab_active_animation_index >= 0 && meshTab_active_animation_index < project.meshes[n].animation.size())
+		{
+			if(!isValidID(wxString::FromUTF8(project.meshes[n].animation[meshTab_active_animation_index].id_name), RC_ID_ANIMATION, n))
+			{
+				wxMessageBox(_("Warning: Animation ID is invalid. A default Animation ID will be generated."));
+				project.meshes[n].animation[meshTab_active_animation_index].id_name = project.genMeshAnimationID(n).ToStdString();
+			}
+		}
+	}
+
+	meshTab_active_animation_index = -1;
+
+	meshTab_selected_mesh_project_index = -1;
+	wxString id_name = event.GetString();
+
+	for(int i = 0; i < project.meshes.size(); i++)
+	{
+		if(project.meshes[i].id_name.compare(id_name.ToStdString())==0)
+		{
+			meshTab_selected_mesh_project_index = i;
+			break;
+		}
+	}
+
+	int n = meshTab_selected_mesh_project_index;
+
+	m_mesh_meshID_textCtrl->SetValue(wxString::FromUTF8(project.meshes[n].id_name));
+	m_mesh_meshFile_textCtrl->SetValue(wxString::FromUTF8(project.meshes[n].file));
+
+
+	m_mesh_materialList_listBox->Clear();
+
+	for(int i = 0; i < project.meshes[n].material_index.size(); i++)
+	{
+		int mat_index = project.meshes[n].material_index[i];
+
+		if(mat_index >= 0 && mat_index < project.materials.size())
+		{
+			if(project.materials[mat_index].id_name.compare(_(""))==0)
+				m_mesh_materialList_listBox->AppendAndEnsureVisible( _("Material ") + wxString::Format(_("%d"), i) + _(":"));
+			else
+				m_mesh_materialList_listBox->AppendAndEnsureVisible( _("Material ") + wxString::Format(_("%d"), i) + _(":   ") + wxString::FromUTF8(project.materials[mat_index].id_name) );
+		}
+		else
+			m_mesh_materialList_listBox->AppendAndEnsureVisible( _("Material ") + wxString::Format(_("%d"), i) + _(":"));
+	}
+
+	m_mesh_meshAnimation_listBox->Clear();
+
+	for(int i = 0; i < project.meshes[n].animation.size(); i++)
+	{
+		if(project.meshes[n].animation[i].id_name.compare("")==0)
+			continue;
+
+		m_mesh_meshAnimation_listBox->AppendAndEnsureVisible(wxString::FromUTF8(project.meshes[n].animation[i].id_name));
+	}
+
+	m_mesh_animationID_textCtrl->SetValue(_(""));
+	m_mesh_animationStartFrame_textCtrl->SetValue(_(""));
+	m_mesh_animationEndFrame_textCtrl->SetValue(_(""));
+	m_mesh_animationSpeed_textCtrl->SetValue(_(""));
+}
+
+void SerenityEditorSerenity3D_Frame::On_Mesh_Load_ButtonClick( wxCommandEvent& event )
+{
+}
+
+void SerenityEditorSerenity3D_Frame::On_Mesh_Remove_ButtonClick( wxCommandEvent& event )
+{
+}
+
+void SerenityEditorSerenity3D_Frame::On_Mesh_Save_ButtonClick( wxCommandEvent& event )
+{
+}
+
+void SerenityEditorSerenity3D_Frame::On_Mesh_AddMaterial( wxCommandEvent& event )
+{
+}
+
+void SerenityEditorSerenity3D_Frame::On_Mesh_RemoveMaterial( wxCommandEvent& event )
+{
+}
+
+void SerenityEditorSerenity3D_Frame::On_Mesh_SetMaterial( wxCommandEvent& event )
+{
+}
+
+void SerenityEditorSerenity3D_Frame::On_Mesh_previewPlay( wxCommandEvent& event )
+{
+}
+
+void SerenityEditorSerenity3D_Frame::On_Mesh_previewStop( wxCommandEvent& event )
+{
+}
+
+void SerenityEditorSerenity3D_Frame::On_Mesh_NewAnimation( wxCommandEvent& event )
+{
+}
+
+void SerenityEditorSerenity3D_Frame::On_Mesh_DeleteAnimation( wxCommandEvent& event )
+{
+}
+
+
+
 void SerenityEditorSerenity3D_Frame::clearMeshMaterialList()
 {
-	b_setMaterial_Sizer->Clear(true);
 }
 
 void SerenityEditorSerenity3D_Frame::appendMeshMaterialList(int material_index)
 {
-	MT_SetMaterialPanel* mpanel = new MT_SetMaterialPanel(m_setMaterial_scrolledWindow, &project);
-	mpanel->updateMaterialOptions();
+}
 
-	if(material_index >= 0 && material_index < project.materials.size())
+
+//------------MATERIALS TAB--------------------
+void SerenityEditorSerenity3D_Frame::On_Material_NewMaterial_ButtonClicked( wxCommandEvent& event )
+{
+	rc_material new_material;
+	new_material.id_name = project.genMaterialID().ToStdString();
+	new_material.file = new_material.id_name + ".snmtl";
+
+	project.materials.push_back(new_material);
+
+	m_material_material_listBox->AppendAndEnsureVisible(wxString::FromUTF8(new_material.id_name));
+}
+
+void SerenityEditorSerenity3D_Frame::On_Material_LoadMaterial_ButtonClicked( wxCommandEvent& event )
+{
+	SerenityEditor_AddMaterial_Dialog* dialog = new SerenityEditor_AddMaterial_Dialog(this);
+
+	for(int i = 0; i < project.materials.size(); i++)
 	{
+		if(project.materials[i].file.compare(_(""))!=0)
+			dialog->project_files.push_back(wxString::FromUTF8(project.materials[i].file));
 	}
 
-	b_setMaterial_Sizer->Add( mpanel, 0, wxALL, 0 );
+	dialog->material_path = project.project_path;
+	dialog->material_path.AppendDir(_("materials"));
+	dialog->material_path.SetFullName(_(""));
+	dialog->refresh_list();
 
-	mesh_material_items.push_back(mpanel);
+	dialog->ShowModal();
 
-	m_setMaterial_scrolledWindow->Layout();
-	m_setMaterial_scrolledWindow->Fit();
+
+	std::vector<serenity_project_dict_obj> param;
+	serenity_project_dict_obj param_obj;
+
+	for(int i = 0; i < dialog->selected_files.size(); i++)
+	{
+		param.clear();
+
+		param_obj.key = _("Material");
+		param_obj.val = _("");
+		param.push_back(param_obj);
+
+		param_obj.key = _("id");
+		param_obj.val = project.genMaterialID();
+		param.push_back(param_obj);
+
+		param_obj.key = _("file");
+		param_obj.val = dialog->selected_files[i];
+
+		bool mat_file_inUse = false;
+
+		//flag file already in use
+		for(int mf = 0; mf < project.materials.size(); mf++)
+		{
+			if(project.materials[mf].file.compare(param_obj.val)==0)
+			{
+				mat_file_inUse = true;
+				break;
+			}
+		}
+
+		param.push_back(param_obj);
+
+		int mat_index = project.load_material(param);
+
+		if(mat_file_inUse)
+		{
+			wxString tmp_name = wxString::FromUTF8(project.materials[mat_index].file.c_str());
+			tmp_name.Replace(_(".snmtl"), _(""));
+			project.materials[mat_index].file = project.genMaterialFileName(tmp_name).ToStdString();
+		}
+
+		if(mat_index < 0 || mat_index >= project.materials.size())
+		{
+			wxMessageBox(_("Failed to Load Material (") + dialog->selected_files[i] + _(")"));
+		}
+	}
+
+	refreshMaterialList();
 }
 
-void SerenityEditorSerenity3D_Frame::OnMeshImportButtonClick( wxCommandEvent& event )
+void SerenityEditorSerenity3D_Frame::On_Material_SaveMaterial_ButtonClicked( wxCommandEvent& event )
 {
+	project.save_material(materialTab_selected_material_project_index);
+}
+
+void SerenityEditorSerenity3D_Frame::refreshMaterialList()
+{
+	m_material_material_listBox->Clear();
+
+	for(int i = 0; i < project.materials.size(); i++)
+	{
+		if(project.materials[i].id_name.compare(_(""))!=0)
+			m_material_material_listBox->AppendAndEnsureVisible(wxString::FromUTF8(project.materials[i].id_name));
+	}
+}
+
+void SerenityEditorSerenity3D_Frame::On_Material_RemoveMaterial_ButtonClicked( wxCommandEvent& event )
+{
+	if(materialTab_selected_material_project_index < 0 || materialTab_selected_material_project_index >= project.materials.size())
+	{
+		return;
+	}
+
+	for(int i = 0; i < project.meshes.size(); i++)
+	{
+		for(int m = 0; m < project.meshes[i].material_index.size(); m++)
+		{
+			if(project.meshes[i].material_index[m] == materialTab_selected_material_project_index)
+			{
+				project.meshes[i].material_index[m] = -1;
+			}
+		}
+	}
+
+	project.materials[materialTab_selected_material_project_index].id_name = "";
+	project.materials[materialTab_selected_material_project_index].file = "";
+	project.materials[materialTab_selected_material_project_index].texture_id.clear();
+
+	refreshMaterialList();
+
+	materialTab_selected_material_project_index = -1;
+
+	event.Skip();
+}
+
+
+void SerenityEditorSerenity3D_Frame::On_Material_MaterialList_Select( wxCommandEvent& event )
+{
+	if(materialTab_selected_material_project_index >= 0 && materialTab_selected_material_project_index < project.materials.size())
+	{
+		if(!isValidID(wxString::FromUTF8(project.materials[materialTab_selected_material_project_index].id_name.c_str()), RC_ID_MATERIAL))
+		{
+			wxMessageBox(_("Warning: Material ID is invalid. A default Material ID will be generated."));
+			project.materials[materialTab_selected_material_project_index].id_name = project.genMaterialID().ToStdString();
+
+			refreshMaterialList();
+		}
+	}
+
+	materialTab_selected_material_project_index = -1;
+	wxString id_name = event.GetString();
+
+	for(int i = 0; i < project.materials.size(); i++)
+	{
+		if(id_name.compare(wxString::FromUTF8(project.materials[i].id_name))==0)
+		{
+			materialTab_selected_material_project_index = i;
+		}
+	}
+
+	if(materialTab_selected_material_project_index < 0 || materialTab_selected_material_project_index >= project.materials.size())
+	{
+		wxMessageBox(_("Material (") + id_name + _(") does not match a project material id"));
+		return;
+	}
+
+	int n = materialTab_selected_material_project_index;
+
+	m_material_id_textCtrl->SetValue(wxString::FromUTF8(project.materials[n].id_name));
+
+	m_material_materialFile_textCtrl->SetValue(wxString::FromUTF8(project.materials[n].file));
+
+	for(int i = 0; i < rc_material_types_list.size(); i++)
+	{
+		if(project.materials[n].material.MaterialType == rc_material_types_list[i].val)
+		{
+			m_material_type_comboBox->SetValue(wxString::FromUTF8(rc_material_types_list[i].key));
+			break;
+		}
+	}
+
+	wxColor ambient(project.materials[n].material.AmbientColor.getRed(),
+					project.materials[n].material.AmbientColor.getGreen(),
+					project.materials[n].material.AmbientColor.getBlue(),
+					project.materials[n].material.AmbientColor.getAlpha());
+	m_material_ambient_colourPicker->SetColour(ambient);
+
+	wxColor diffuse(project.materials[n].material.DiffuseColor.getRed(),
+					project.materials[n].material.DiffuseColor.getGreen(),
+					project.materials[n].material.DiffuseColor.getBlue(),
+					project.materials[n].material.DiffuseColor.getAlpha());
+	m_material_diffuse_colourPicker->SetColour(diffuse);
+
+	wxColor emissive(project.materials[n].material.EmissiveColor.getRed(),
+					 project.materials[n].material.EmissiveColor.getGreen(),
+					 project.materials[n].material.EmissiveColor.getBlue(),
+					 project.materials[n].material.EmissiveColor.getAlpha());
+	m_material_emissive_colourPicker->SetColour(emissive);
+
+	wxColor specular(project.materials[n].material.SpecularColor.getRed(),
+					 project.materials[n].material.SpecularColor.getGreen(),
+					 project.materials[n].material.SpecularColor.getBlue(),
+					 project.materials[n].material.SpecularColor.getAlpha());
+	m_material_specular_colourPicker->SetColour(specular);
+
+
+	for(int i = 0; i < rc_anti_alias_types_list.size(); i++)
+	{
+		if(project.materials[n].material.AntiAliasing == rc_anti_alias_types_list[i].val)
+		{
+			m_material_antiAlias_comboBox->SetValue(wxString::FromUTF8(rc_anti_alias_types_list[i].key));
+			break;
+		}
+	}
+
+
+	m_material_backFaceCulling_checkBox->SetValue(project.materials[n].material.BackfaceCulling);
+
+	m_material_frontFaceCulling_checkBox->SetValue(project.materials[n].material.FrontfaceCulling);
+
+	m_material_blendFactor_spinCtrlDouble->SetValue(project.materials[n].material.BlendFactor);
+
+
+	for(int i = 0; i < rc_blendmode_types_list.size(); i++)
+	{
+		if(project.materials[n].material.BlendOperation == rc_blendmode_types_list[i].val)
+		{
+			m_material_blendMode_comboBox->SetValue(wxString::FromUTF8(rc_blendmode_types_list[i].key));
+			break;
+		}
+	}
+
+
+	for(int i = 0; i < rc_colormask_types_list.size(); i++)
+	{
+		if(project.materials[n].material.ColorMask == rc_colormask_types_list[i].val)
+		{
+			m_material_colorMask_comboBox->SetValue(wxString::FromUTF8(rc_colormask_types_list[i].key));
+			break;
+		}
+	}
+
+
+	for(int i = 0; i < rc_colormode_types_list.size(); i++)
+	{
+		if(project.materials[n].material.ColorMaterial == rc_colormode_types_list[i].val)
+		{
+			m_material_colorMode_comboBox->SetValue(wxString::FromUTF8(rc_colormode_types_list[i].key));
+			break;
+		}
+	}
+
+
+	m_material_fog_checkBox->SetValue(project.materials[n].material.FogEnable);
+
+	m_material_gouradShading_checkBox->SetValue(project.materials[n].material.GouraudShading);
+
+	m_material_lighting_checkBox->SetValue(project.materials[n].material.Lighting);
+
+	m_material_normalize_checkBox->SetValue(project.materials[n].material.NormalizeNormals);
+
+	m_material_pointCloud_checkBox->SetValue(project.materials[n].material.PointCloud);
+
+	m_material_shineness_spinCtrl->SetValue(project.materials[n].material.Shininess);
+
+
+	//TEXTURE LEVELS
+	setMaterialTextureLevels();
+
+	updateTestMesh();
+
+	event.Skip();
+}
+
+void SerenityEditorSerenity3D_Frame::updateTestMesh()
+{
+	int n = materialTab_selected_material_project_index;
+
+	if(n < 0 || n >= project.materials.size())
+		return;
+
+	if(test_material_mesh && current_window)
+	{
+		test_material_mesh->getMaterial(0) = project.materials[n].material;
+	}
+}
+
+void SerenityEditorSerenity3D_Frame::setMaterialTextureLevels()
+{
+	m_material_textureLevel_listBox->Clear();
+	texture_levels.clear();
+
+	if(materialTab_selected_material_project_index < 0 || materialTab_selected_material_project_index >= project.materials.size())
+		return;
+
+	int n = materialTab_selected_material_project_index;
+
+	for(int i = 0; i < project.materials[n].texture_id.size(); i++)
+	{
+		Serenity_TextureLevel tx_level;
+		tx_level.level = i;
+
+		wxString texture_id_name = _("[NULL]");
+		wxString texture_file = _("");
+		if(project.materials[n].texture_id[i] >= 0 && project.materials[n].texture_id[i] < project.textures.size())
+		{
+			texture_id_name = wxString::FromUTF8(project.textures[ project.materials[n].texture_id[i] ].id_name);
+			texture_file = wxString::FromUTF8(project.textures[ project.materials[n].texture_id[i] ].file);
+		}
+
+		wxString property_name = _("TEXTURE ") + wxString::Format(_("%d"), i) + _(":   ") + texture_id_name;
+		m_material_textureLevel_listBox->AppendAndEnsureVisible(property_name);
+		tx_level.list_item = property_name;
+		texture_levels.push_back(tx_level);
+		//tx_level.property_item = m_material_textureLevel_propertyGrid->Append( new wxImageFileProperty( property_name, wxT("Propety_Name") ) );
+	}
+}
+
+
+void SerenityEditorSerenity3D_Frame::On_Material_MaterialID_Update( wxCommandEvent& event )
+{
+	if(materialTab_selected_material_project_index < 0 || materialTab_selected_material_project_index >= project.materials.size())
+	{
+		return;
+	}
+
+
+	int n = materialTab_selected_material_project_index;
+
+	project.materials[n].id_name = m_material_id_textCtrl->GetValue().ToStdString();
+
+	int current_list_item = m_material_material_listBox->GetSelection();
+
+	if(current_list_item < 0 && current_list_item >= m_material_material_listBox->GetCount())
+		return;
+
+	m_material_material_listBox->SetString(current_list_item, wxString::FromUTF8(project.materials[n].id_name.c_str()));
+
+	m_material_material_listBox->Update();
 
 }
+
+void SerenityEditorSerenity3D_Frame::On_Material_MaterialType_Update( wxCommandEvent& event )
+{
+	int n = materialTab_selected_material_project_index;
+
+	if(n < 0 || n >= project.materials.size())
+		return;
+
+	for(int i = 0; i < rc_material_types_list.size(); i++)
+	{
+		if(rc_material_types_list[i].key.compare(m_material_type_comboBox->GetValue().ToStdString())==0)
+		{
+			project.materials[n].material.MaterialType = rc_material_types_list[i].val;
+			break;
+		}
+	}
+
+	updateTestMesh();
+}
+
+void SerenityEditorSerenity3D_Frame::On_Material_Ambient_Update( wxColourPickerEvent& event )
+{
+	int n = materialTab_selected_material_project_index;
+
+	if(n < 0 || n >= project.materials.size())
+		return;
+
+	project.materials[n].material.AmbientColor = irr::video::SColor(m_material_ambient_colourPicker->GetColour().GetAlpha(),
+																	m_material_ambient_colourPicker->GetColour().GetRed(),
+																	m_material_ambient_colourPicker->GetColour().GetGreen(),
+																	m_material_ambient_colourPicker->GetColour().GetBlue());
+
+	updateTestMesh();
+}
+
+void SerenityEditorSerenity3D_Frame::On_Material_Diffuse_Update( wxColourPickerEvent& event )
+{
+	int n = materialTab_selected_material_project_index;
+
+	if(n < 0 || n >= project.materials.size())
+		return;
+
+	project.materials[n].material.DiffuseColor = irr::video::SColor(m_material_diffuse_colourPicker->GetColour().GetAlpha(),
+																	m_material_diffuse_colourPicker->GetColour().GetRed(),
+																	m_material_diffuse_colourPicker->GetColour().GetGreen(),
+																	m_material_diffuse_colourPicker->GetColour().GetBlue());
+
+	updateTestMesh();
+}
+
+void SerenityEditorSerenity3D_Frame::On_Material_Emissive_Update( wxColourPickerEvent& event )
+{
+	int n = materialTab_selected_material_project_index;
+
+	if(n < 0 || n >= project.materials.size())
+		return;
+
+	project.materials[n].material.EmissiveColor = irr::video::SColor(m_material_emissive_colourPicker->GetColour().GetAlpha(),
+																	 m_material_emissive_colourPicker->GetColour().GetRed(),
+																	 m_material_emissive_colourPicker->GetColour().GetGreen(),
+																	 m_material_emissive_colourPicker->GetColour().GetBlue());
+
+	updateTestMesh();
+}
+
+void SerenityEditorSerenity3D_Frame::On_Material_Specular_Update( wxColourPickerEvent& event )
+{
+	int n = materialTab_selected_material_project_index;
+
+	if(n < 0 || n >= project.materials.size())
+		return;
+
+	project.materials[n].material.SpecularColor = irr::video::SColor(m_material_specular_colourPicker->GetColour().GetAlpha(),
+																	 m_material_specular_colourPicker->GetColour().GetRed(),
+																	 m_material_specular_colourPicker->GetColour().GetGreen(),
+																	 m_material_specular_colourPicker->GetColour().GetBlue());
+
+	updateTestMesh();
+}
+
+void SerenityEditorSerenity3D_Frame::On_Material_AntiAlias_Update( wxCommandEvent& event )
+{
+	int n = materialTab_selected_material_project_index;
+
+	if(n < 0 || n >= project.materials.size())
+		return;
+
+	for(int i = 0; i < rc_anti_alias_types_list.size(); i++)
+	{
+		if(m_material_antiAlias_comboBox->GetValue().compare(wxString::FromUTF8(rc_anti_alias_types_list[i].key))==0)
+		{
+			project.materials[n].material.AntiAliasing = rc_anti_alias_types_list[i].val;
+			break;
+		}
+	}
+
+	updateTestMesh();
+}
+
+void SerenityEditorSerenity3D_Frame::On_Material_BackfaceCulling_Update( wxCommandEvent& event )
+{
+	int n = materialTab_selected_material_project_index;
+
+	if(n < 0 || n >= project.materials.size())
+		return;
+
+	project.materials[n].material.BackfaceCulling = m_material_backFaceCulling_checkBox->GetValue();
+
+	updateTestMesh();
+}
+
+void SerenityEditorSerenity3D_Frame::On_Material_FrontfaceCulling_Update( wxCommandEvent& event )
+{
+	int n = materialTab_selected_material_project_index;
+
+	if(n < 0 || n >= project.materials.size())
+		return;
+
+	project.materials[n].material.FrontfaceCulling = m_material_frontFaceCulling_checkBox->GetValue();
+
+	updateTestMesh();
+}
+
+void SerenityEditorSerenity3D_Frame::On_Material_BlendFactor_Update( wxSpinDoubleEvent& event )
+{
+	int n = materialTab_selected_material_project_index;
+
+	if(n < 0 || n >= project.materials.size())
+		return;
+
+	project.materials[n].material.BlendFactor = m_material_blendFactor_spinCtrlDouble->GetValue();
+
+	updateTestMesh();
+}
+
+void SerenityEditorSerenity3D_Frame::On_Material_BlendMode_Update( wxCommandEvent& event )
+{
+	int n = materialTab_selected_material_project_index;
+
+	if(n < 0 || n >= project.materials.size())
+		return;
+
+	for(int i = 0; i < rc_blendmode_types_list.size(); i++)
+	{
+		if(m_material_blendMode_comboBox->GetValue().compare(wxString::FromUTF8(rc_blendmode_types_list[i].key))==0)
+		{
+			project.materials[n].material.BlendOperation = rc_blendmode_types_list[i].val;
+			break;
+		}
+	}
+
+	updateTestMesh();
+}
+
+void SerenityEditorSerenity3D_Frame::On_Material_ColorMask_Update( wxCommandEvent& event )
+{
+	int n = materialTab_selected_material_project_index;
+
+	if(n < 0 || n >= project.materials.size())
+		return;
+
+	for(int i = 0; i < rc_colormask_types_list.size(); i++)
+	{
+		if(m_material_colorMask_comboBox->GetValue().compare( wxString::FromUTF8(rc_colormask_types_list[i].key)) == 0)
+		{
+			project.materials[n].material.ColorMask = rc_colormask_types_list[i].val;
+			break;
+		}
+	}
+
+	updateTestMesh();
+}
+
+void SerenityEditorSerenity3D_Frame::On_Material_ColorMode_Update( wxCommandEvent& event )
+{
+	int n = materialTab_selected_material_project_index;
+
+	if(n < 0 || n >= project.materials.size())
+		return;
+
+	for(int i = 0; i < rc_colormode_types_list.size(); i++)
+	{
+		if(m_material_colorMode_comboBox->GetValue().compare( wxString::FromUTF8(rc_colormode_types_list[i].key) ) == 0)
+		{
+			project.materials[n].material.ColorMaterial = rc_colormode_types_list[i].val;
+			break;
+		}
+	}
+
+	updateTestMesh();
+}
+
+void SerenityEditorSerenity3D_Frame::On_Material_Fog_Update( wxCommandEvent& event )
+{
+	int n = materialTab_selected_material_project_index;
+
+	project.materials[n].material.FogEnable = m_material_fog_checkBox->GetValue();
+
+	updateTestMesh();
+}
+
+void SerenityEditorSerenity3D_Frame::On_Material_GouradShading_Update( wxCommandEvent& event )
+{
+	int n = materialTab_selected_material_project_index;
+
+	if(n < 0 || n >= project.materials.size())
+		return;
+
+	project.materials[n].material.GouraudShading = m_material_gouradShading_checkBox->GetValue();
+}
+
+void SerenityEditorSerenity3D_Frame::On_Material_Lighting_Update( wxCommandEvent& event )
+{
+	int n = materialTab_selected_material_project_index;
+
+	if(n < 0 || n >= project.materials.size())
+		return;
+
+	project.materials[n].material.Lighting = m_material_lighting_checkBox->GetValue();
+
+	updateTestMesh();
+}
+
+void SerenityEditorSerenity3D_Frame::On_Material_Normalize_Update( wxCommandEvent& event )
+{
+	int n = materialTab_selected_material_project_index;
+
+	if(n < 0 || n >= project.materials.size())
+		return;
+
+	project.materials[n].material.NormalizeNormals = m_material_normalize_checkBox->GetValue();
+
+	updateTestMesh();
+}
+
+void SerenityEditorSerenity3D_Frame::On_Material_PointCloud_Update( wxCommandEvent& event )
+{
+	int n = materialTab_selected_material_project_index;
+
+	if(n < 0 || n >= project.materials.size())
+		return;
+
+	project.materials[n].material.PointCloud = m_material_pointCloud_checkBox->GetValue();
+
+	updateTestMesh();
+}
+
+
+void SerenityEditorSerenity3D_Frame::On_Material_Shineness_Update( wxSpinEvent& event )
+{
+	int n = materialTab_selected_material_project_index;
+
+	if(n < 0 || n >= project.materials.size())
+		return;
+
+	project.materials[n].material.Shininess = m_material_shineness_spinCtrl->GetValue();
+
+	updateTestMesh();
+}
+
+void SerenityEditorSerenity3D_Frame::On_Material_previewNoLight_Selected( wxCommandEvent& event )
+{
+	if(!test_material_light)
+		return;
+
+	test_material_light->setVisible(false);
+}
+
+void SerenityEditorSerenity3D_Frame::On_Material_previewDirectionlight_Selected( wxCommandEvent& event )
+{
+	if(!test_material_light)
+		return;
+
+	test_material_light->setVisible(true);
+	test_material_light->setRotation(irr::core::vector3df(-20, 0, 0));
+	test_material_light->setLightType(irr::video::ELT_DIRECTIONAL);
+}
+
+void SerenityEditorSerenity3D_Frame::On_Material_previewPointlight_Selected( wxCommandEvent& event )
+{
+	if(!test_material_light)
+		return;
+
+	test_material_light->setVisible(true);
+	test_material_light->setLightType(irr::video::ELT_POINT);
+}
+
+void SerenityEditorSerenity3D_Frame::OnSetMaterialPreviewMesh( wxCommandEvent& event )
+{
+	if(!current_window)
+		return;
+
+	SerenityEditor_SetMaterialPreviewMesh_Dialog* dialog = new SerenityEditor_SetMaterialPreviewMesh_Dialog(this);
+
+	for(int i = 0; i < project.meshes.size(); i++)
+	{
+		dialog->mesh_list.push_back(project.meshes[i].id_name);
+	}
+
+	dialog->refresh_list();
+
+	dialog->ShowModal();
+
+	wxString id_name = dialog->selected_mesh_id;
+
+	if(id_name.compare(_(""))==0)
+		return;
+
+	if(test_material_mesh)
+		test_material_mesh->remove();
+
+	test_material_mesh = NULL;
+
+	if(id_name.compare(_("[DEFAULT_CUBE]"))==0)
+	{
+		test_material_mesh = current_window->GetDevice()->getSceneManager()->addCubeSceneNode();
+	}
+	else if(id_name.compare(_("[DEFAULT_SPHERE]"))==0)
+	{
+		test_material_mesh = current_window->GetDevice()->getSceneManager()->addSphereSceneNode();
+	}
+	else
+	{
+		for(int i = 0; i < project.meshes.size(); i++)
+		{
+			if(project.meshes[i].id_name.compare(id_name.ToStdString())==0)
+			{
+				if(project.meshes[i].mesh)
+				{
+					test_material_mesh = current_window->GetDevice()->getSceneManager()->addMeshSceneNode(project.meshes[i].mesh);
+					break;
+				}
+			}
+		}
+	}
+
+	if(test_material_mesh)
+	{
+		updateTestMesh();
+	}
+}
+
+void SerenityEditorSerenity3D_Frame::On_Material_previewSettings_Selected( wxCommandEvent& event )
+{
+	if(!material_window)
+		return;
+
+	SerenityEditor_MaterialPreviewSettings_Dialog * dialog = new SerenityEditor_MaterialPreviewSettings_Dialog(this);
+
+	double light_radius = 0;
+
+	if(test_material_light)
+		light_radius = test_material_light->getRadius();
+
+	dialog->setFields(material_preview_camera_speed, material_preview_camera_distance, light_radius);
+
+	dialog->ShowModal();
+
+	if(!dialog->apply_changes)
+		return;
+
+	material_preview_camera_speed = dialog->camera_speed;
+	material_preview_camera_distance = ( dialog->camera_distance < 0 ? dialog->camera_distance * -1: dialog->camera_distance );
+
+	if(material_window)
+	{
+		material_window->camera[0].camera.setPosition(0, 7, -1 * material_preview_camera_distance);
+		material_window->camera[0].camera.setRotation(26, 0, 0);
+		material_window->material_view_camera_speed = material_preview_camera_speed;
+	}
+
+	if(test_material_light)
+		test_material_light->setRadius(dialog->light_radius);
+}
+
+
+
+
+
+void SerenityEditorSerenity3D_Frame::On_Material_AddTextureLevel_ButtonClicked( wxCommandEvent& event )
+{
+	int n = materialTab_selected_material_project_index;
+
+	if(n < 0 || n >= project.materials.size())
+		return;
+
+	project.materials[n].texture_id.push_back(-1);
+	setMaterialTextureLevels();
+}
+
+void SerenityEditorSerenity3D_Frame::On_Material_RemoveTextureLevel_ButtonClicked( wxCommandEvent& event )
+{
+	int n = materialTab_selected_material_project_index;
+
+	if(n < 0 || n >= project.materials.size())
+		return;
+
+	int t_level = project.materials[n].texture_id.size()-1;
+
+	if(t_level < 0)
+		return;
+
+	project.materials[n].material.setTexture(t_level, NULL);
+	project.materials[n].texture_id.pop_back();
+	texture_levels.pop_back();
+
+	setMaterialTextureLevels();
+
+	updateTestMesh();
+}
+
+void SerenityEditorSerenity3D_Frame::On_Material_SetTextureLevel_ButtonClicked( wxCommandEvent& event )
+{
+	int n = materialTab_selected_material_project_index;
+
+	if(n < 0 || n >= project.materials.size())
+		return;
+
+	int t_level = m_material_textureLevel_listBox->GetSelection();
+
+	if(t_level < 0 || t_level >= project.materials[n].texture_id.size())
+		return;
+
+	SerenityEditor_SetMaterialTextureLevel_Dialog * dialog = new SerenityEditor_SetMaterialTextureLevel_Dialog(this);
+
+	for(int i = 0; i < project.textures.size(); i++)
+	{
+		if(project.textures[i].id_name.compare("")!=0)
+			dialog->id_list.push_back(wxString::FromUTF8(project.textures[i].id_name));
+	}
+
+	dialog->refresh_list();
+	dialog->ShowModal();
+
+	wxString selected_texture = dialog->selected_texture_id;
+
+	if(selected_texture.compare(_(""))==0)
+		return;
+
+
+	for(int i = 0; i < project.textures.size(); i++)
+	{
+		if(project.textures[i].id_name.compare(selected_texture.ToStdString())==0)
+		{
+			project.materials[n].texture_id[t_level] = i;
+			project.materials[n].material.setTexture(t_level, NULL);
+
+			if(project.textures[i].texture)
+				project.materials[n].material.setTexture(t_level, project.textures[i].texture);
+
+			break;
+		}
+	}
+
+	setMaterialTextureLevels();
+
+	updateTestMesh();
+}
+
+
+//-------------------TEXTURE TAB-------------------------
+
+
+void SerenityEditorSerenity3D_Frame::On_Texture_AddTexture_ButtonClicked( wxCommandEvent& event )
+{
+	SerenityEditor_AddTexture_Dialog * dialog = new SerenityEditor_AddTexture_Dialog(this);
+
+	dialog->texture_path = project.project_path;
+	dialog->texture_path.AppendDir(_("textures"));
+	dialog->texture_path.SetFullName(_(""));
+
+	for(int i = 0; i < project.textures.size(); i++)
+	{
+		dialog->project_files.push_back(wxString::FromUTF8(project.textures[i].file));
+	}
+
+	dialog->refresh_list();
+	dialog->ShowModal();
+
+	std::vector<serenity_project_dict_obj> param;
+	serenity_project_dict_obj param_obj;
+
+	for(int i = 0; i < dialog->selected_files.size(); i++)
+	{
+		param.clear();
+
+		param_obj.key = _("Image");
+		param_obj.val = _("");
+		param.push_back(param_obj);
+
+		param_obj.key = _("id");
+		param_obj.val = project.genTextureID();
+		param.push_back(param_obj);
+
+		param_obj.key = _("file");
+		param_obj.val = dialog->selected_files[i];
+		param.push_back(param_obj);
+
+		int img_index = project.load_texture(param);
+
+		if(img_index >= 0 && img_index < project.textures.size())
+		{
+			m_texture_textureList_listBox->AppendAndEnsureVisible(wxString::FromUTF8(project.textures[img_index].id_name));
+		}
+		else
+		{
+			wxMessageBox(_("Failed to Load Image (") + dialog->selected_files[i] + _(")"));
+		}
+	}
+
+}
+
+void SerenityEditorSerenity3D_Frame::On_Texture_RemoveTexture_ButtonClicked( wxCommandEvent& event )
+{
+	int current_selection = m_texture_textureList_listBox->GetSelection();
+
+	int t_index = textureTab_selected_texture_project_index;
+
+	current_window->view2D_texture = NULL;
+
+	if(current_selection < 0 || current_selection >= m_texture_textureList_listBox->GetCount())
+		return;
+
+	project.remove_texture(t_index);
+
+	m_texture_textureList_listBox->Clear();
+
+	//populate textures from project
+	for(int i = 0; i < project.textures.size(); i++)
+	{
+		if(project.textures[i].id_name.compare("") != 0)
+			m_texture_textureList_listBox->AppendAndEnsureVisible(wxString::FromUTF8(project.textures[i].id_name));
+	}
+
+	int new_selection = -1;
+	if(current_selection < m_texture_textureList_listBox->GetCount())
+	{
+		m_texture_textureList_listBox->SetSelection(current_selection);
+		new_selection = current_selection;
+	}
+	else if(m_texture_textureList_listBox->GetCount() > 0)
+	{
+		m_texture_textureList_listBox->SetSelection(m_texture_textureList_listBox->GetCount()-1);
+		new_selection = m_texture_textureList_listBox->GetSelection();
+	}
+
+	if(new_selection >= 0)
+	{
+		wxString t_select = m_texture_textureList_listBox->GetString(new_selection);
+		current_window->view2D_texture = NULL;
+		for(int i = 0; i < project.textures.size(); i++)
+		{
+			if(project.textures[i].id_name.compare(t_select.ToStdString())==0)
+			{
+				textureTab_selected_texture_project_index = i;
+
+				if(current_window)
+					current_window->view2D_texture = project.textures[i].texture;
+
+				break;
+			}
+		}
+	}
+	else
+		textureTab_selected_texture_project_index = -1;
+}
+
+void SerenityEditorSerenity3D_Frame::On_Texture_TextureList_Select( wxCommandEvent& event )
+{
+	//Make Sure texture ID is valid on current texture
+	if(textureTab_selected_texture_project_index >= 0 && textureTab_selected_texture_project_index < project.textures.size())
+	{
+		if(!isValidID(wxString::FromUTF8(project.textures[textureTab_selected_texture_project_index].id_name), RC_ID_TEXTURE))
+		{
+			wxMessageBox(_("Warning: Texture ID is invalid. A default Texture ID will be generated."));
+			project.textures[textureTab_selected_texture_project_index].id_name = project.genTextureID().ToStdString();
+
+			wxMessageBox(_("NEW ID: ") + wxString::FromUTF8(project.textures[textureTab_selected_texture_project_index].id_name.c_str()));
+
+			m_texture_textureList_listBox->Clear();
+
+			for(int i = 0; i < project.textures.size(); i++)
+			{
+				m_texture_textureList_listBox->AppendAndEnsureVisible(wxString::FromUTF8(project.textures[i].id_name));
+			}
+		}
+	}
+
+	textureTab_selected_texture_project_index = -1;
+	wxString id_name = event.GetString();
+
+	for(int i = 0; i < project.textures.size(); i++)
+	{
+		if(id_name.compare(wxString::FromUTF8(project.textures[i].id_name))==0)
+		{
+			textureTab_selected_texture_project_index = i;
+		}
+	}
+
+	if(textureTab_selected_texture_project_index < 0)
+	{
+		wxMessageBox(_("Texture (") + id_name + _(") does not match a project texture id"));
+		return;
+	}
+
+	int n = textureTab_selected_texture_project_index;
+
+	m_texture_textureID_textCtrl->SetValue(wxString::FromUTF8(project.textures[n].id_name));
+	m_texture_textureFile_textCtrl->SetValue(wxString::FromUTF8(project.textures[n].file));
+	m_texture_useColorKey_checkBox->SetValue(project.textures[n].use_colorKey);
+
+	wxColor color_key(project.textures[n].colorkey.getRed(),
+					  project.textures[n].colorkey.getGreen(),
+					  project.textures[n].colorkey.getBlue(),
+					  project.textures[n].colorkey.getAlpha());
+	m_texture_colorKey_colourPicker->SetColour(color_key);
+
+	if(current_window)
+	{
+		current_window->view2D_texture = project.textures[n].texture;
+	}
+}
+
+void SerenityEditorSerenity3D_Frame::On_Texture_TextureID_Update( wxCommandEvent& event )
+{
+	wxString id_name = m_texture_textureID_textCtrl->GetValue();
+
+	int n = textureTab_selected_texture_project_index;
+
+	if(n < 0 || n >= project.textures.size())
+		return;
+
+	int listbox_index = m_texture_textureList_listBox->GetSelection();
+	if(listbox_index < 0 || listbox_index >= m_texture_textureList_listBox->GetCount())
+		return;
+
+	project.textures[n].id_name = id_name.ToStdString();
+	m_texture_textureList_listBox->SetString(listbox_index, id_name);
+}
+
+void SerenityEditorSerenity3D_Frame::On_Texture_UseColorkey_Update( wxCommandEvent& event )
+{
+	int n = textureTab_selected_texture_project_index;
+
+	if(n < 0 || n >= project.textures.size())
+		return;
+
+	project.textures[n].use_colorKey = event.IsChecked();
+}
+
+void SerenityEditorSerenity3D_Frame::On_Texture_Colorkey_Update( wxColourPickerEvent& event )
+{
+	int n = textureTab_selected_texture_project_index;
+
+	if(n < 0 || n >= project.textures.size())
+		return;
+
+	project.textures[n].colorkey = irr::video::SColor(event.GetColour().Alpha(),
+													  event.GetColour().Red(),
+													  event.GetColour().Green(),
+													  event.GetColour().Blue());
+}
+
