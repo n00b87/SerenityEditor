@@ -32,7 +32,8 @@ void SerenityEditor_SetMaterialTextureLevel_Dialog::OnSearch( wxCommandEvent& ev
 
 void SerenityEditor_SetMaterialTextureLevel_Dialog::OnSetTexture( wxCommandEvent& event )
 {
-	selected_texture_id = m_textureList_listBox->GetString( m_textureList_listBox->GetSelection() );
+	if(m_textureList_listBox->GetSelection() >= 0 && m_textureList_listBox->GetSelection() < m_textureList_listBox->GetCount() )
+		selected_texture_id = m_textureList_listBox->GetString( m_textureList_listBox->GetSelection() );
 	Close();
 }
 

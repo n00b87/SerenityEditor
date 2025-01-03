@@ -13,6 +13,11 @@
 #include "SerenityEditor_MaterialPreviewSettings_Dialog.h"
 #include "SerenityEditor_SetMaterialPreviewMesh_Dialog.h"
 #include "SerenityEditor_AddMaterial_Dialog.h"
+#include "SerenityEditor_SetMeshMaterialLevel_Dialog.h"
+#include "SerenityEditor_AddMesh_Dialog.h"
+#include "SerenityEditor_CreateStageGroup_Dialog.h"
+#include "SerenityEditor_DeleteGroupAlert_Dialog.h"
+#include "SerenityEditor_EditStageGroup_Dialog.h"
 
 SerenityEditorSerenity3D_Frame::SerenityEditorSerenity3D_Frame( wxWindow* parent )
 :
@@ -66,25 +71,6 @@ Serenity3D_Frame( parent )
 	irr::video::IVideoDriver* driver = device->getVideoDriver();
 	irr::scene::ISceneManager* smgr = device->getSceneManager();
 	irr::gui::IGUIEnvironment* guienv = device->getGUIEnvironment();
-
-
-	//gridSceneNode->drop();  // added to scene already, that still has a reference
-
-	irr::scene::IAnimatedMesh* mesh = smgr->getMesh("media/sydney.md2");
-	if (!mesh)
-	{
-		wxMessageBox(_("No dice"));
-		//device->drop();
-		return;
-	}
-	irr::scene::IAnimatedMeshSceneNode* node = smgr->addAnimatedMeshSceneNode( mesh );
-
-	if (node)
-	{
-		node->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-		node->setMD2Animation(irr::scene::EMAT_STAND);
-		node->setMaterialTexture( 0, driver->getTexture("media/sydney.bmp") );
-	}
 
 	stage_window->camera[0].camera.setPosition(0, 0, -100);
 	stage_window->camera[0].camera.setRotation(0, 0, 0);
@@ -201,7 +187,41 @@ Serenity3D_Frame( parent )
 	}
 
 	material_preview_camera_distance = 15;
-	material_preview_camera_speed = 1;
+	material_preview_camera_speed = 0.2;
+
+	meshTab_preview_obj.node = NULL;
+
+	project.setGridColor( irr::video::SColor(255, 70, 70, 70).color );
+	project.setGridSize(2500);
+	project.setGridSpacing(100);
+	project.grid_visible = true;
+
+	m_viewportSettings_showGrid_checkBox->SetValue(project.grid_visible);
+	m_viewportSettings_gridSize_spinCtrl->SetValue(project.grid_size);
+	m_viewportSettings_gridSpacing_spinCtrl->SetValue(project.grid_spacing);
+	m_viewportSettings_gridColor_colourPicker->SetColour( wxColour(70, 70, 70, 255) );
+
+	editor_path = wxStandardPaths::Get().GetExecutablePath();
+
+	wxFileName image_fname(editor_path);
+	image_fname.AppendDir(_("icons"));
+
+	project.project_name = "No Project Loaded";
+
+	stage_tree_imageList = new wxImageList(16,16,true);
+    stage_tree_rootImage = stage_tree_imageList->Add(wxArtProvider::GetBitmap( wxART_FOLDER, wxART_MENU ));;
+    stage_tree_stageImage  = stage_tree_imageList->Add(wxArtProvider::GetBitmap( wxART_FOLDER, wxART_MENU ));
+    stage_tree_assetImage = stage_tree_imageList->Add(wxArtProvider::GetBitmap( wxART_NORMAL_FILE, wxART_MENU ));
+	stage_tree_lightImage = stage_tree_assetImage;
+	stage_tree_particleImage = stage_tree_assetImage;
+	stage_tree_terrainImage = stage_tree_assetImage;
+	stage_tree_primitiveImage = stage_tree_assetImage;
+	stage_tree_pathImage = stage_tree_assetImage;
+	stage_tree_groupImage = stage_tree_stageImage;
+
+    m_project_stage_treeCtrl->AssignImageList(stage_tree_imageList);
+
+	stage_tree_root = m_project_stage_treeCtrl->AddRoot(wxString::FromUTF8(project.project_name), stage_tree_rootImage);
 }
 
 bool SerenityEditorSerenity3D_Frame::isValidID(wxString id_name, int id_type, int mesh_index)
@@ -354,6 +374,14 @@ void SerenityEditorSerenity3D_Frame::createIrrlichtStageWindow()
 
 	stage_window=new wxIrrlicht(m_stageViewport_panel, wxID_ANY, false, wxPoint(ClientW(0), ClientH(0)), wxGetDisplaySize());
 	stage_window->window_type = RC_IRR_WINDOW_NAV3D;
+
+	//wxMessageBox(_("PRE:") + wxString::Format(_("%d"), (int)project.grid_size) + _(", ") + wxString::Format(_("%d"), (int)project.grid_spacing) + _(", ") + wxString::Format(_("%d"), (int)project.grid_visible));
+
+	stage_window->grid_color = project.grid_color;
+	stage_window->grid_size = project.grid_size;
+	stage_window->grid_spacing = project.grid_spacing;
+	stage_window->grid_visible = project.grid_visible;
+
 	stage_window->InitIrr();
 	stage_window->StartRendering();
 
@@ -362,24 +390,7 @@ void SerenityEditorSerenity3D_Frame::createIrrlichtStageWindow()
 	irr::scene::ISceneManager* smgr = device->getSceneManager();
 	irr::gui::IGUIEnvironment* guienv = device->getGUIEnvironment();
 
-
-	//gridSceneNode->drop();  // added to scene already, that still has a reference
-
-	irr::scene::IAnimatedMesh* mesh = smgr->getMesh("media/sydney.md2");
-	if (!mesh)
-	{
-		wxMessageBox(_("No dice"));
-		//device->drop();
-		return;
-	}
-	irr::scene::IAnimatedMeshSceneNode* node = smgr->addAnimatedMeshSceneNode( mesh );
-
-	if (node)
-	{
-		node->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-		node->setMD2Animation(irr::scene::EMAT_STAND);
-		node->setMaterialTexture( 0, driver->getTexture("media/sydney.bmp") );
-	}
+	//wxMessageBox(_("Grid Visible: ") + (stage_window->grid_visible ? _("true") : _("false")));
 
 	stage_window->num_views = current_stage_settings.num_views;
 
@@ -438,12 +449,99 @@ void SerenityEditorSerenity3D_Frame::createIrrlichtStageWindow()
 	stage_window->SetCameraViewParam();
 }
 
+void SerenityEditorSerenity3D_Frame::updatePreviewMesh()
+{
+	int n = meshTab_selected_mesh_project_index;
+
+	if(!animation_window)
+		return;
+
+	irr::IrrlichtDevice* device = animation_window->GetDevice();
+	irr::video::IVideoDriver* driver = device->getVideoDriver();
+	irr::scene::ISceneManager* smgr = device->getSceneManager();
+	irr::gui::IGUIEnvironment* guienv = device->getGUIEnvironment();
+
+	if(n < 0 || n >= project.meshes.size())
+		return;
+
+
+	if(!project.meshes[n].mesh)
+		return;
+
+
+	//delete scene and make scene node of currently selected mesh
+	if(n != meshTab_preview_obj.project_mesh_index)
+	{
+		if(meshTab_preview_obj.node)
+			meshTab_preview_obj.node->remove();
+		meshTab_preview_obj.node = NULL;
+		meshTab_preview_obj.project_mesh_index = n;
+
+	}
+
+	if(!meshTab_preview_obj.node)
+	{
+		meshTab_preview_obj.node = smgr->addAnimatedMeshSceneNode(project.meshes[n].mesh);
+
+		if(!meshTab_preview_obj.node)
+			return;
+
+		int bb_height = meshTab_preview_obj.node->getBoundingBox().MaxEdge.Y - meshTab_preview_obj.node->getBoundingBox().MinEdge.Y;
+		int distance = meshTab_preview_obj.node->getAbsolutePosition().Z - bb_height;
+		int cy = meshTab_preview_obj.node->getBoundingBox().MaxEdge.Y + (distance/2);
+		current_window->camera[0].camera.setPosition(0, cy, distance);
+	}
+
+	//Set Materials
+	for(int i = 0; i < project.meshes[n].material_index.size(); i++)
+	{
+		if(project.meshes[n].material_index[i] >= 0 && project.meshes[n].material_index[i] < project.materials.size())
+		{
+			int mat_index = project.meshes[n].material_index[i];
+			if(project.materials[mat_index].id_name.compare("")!=0)
+			{
+				meshTab_preview_obj.node->getMaterial(i) = project.materials[mat_index].material;
+			}
+			else
+			{
+				meshTab_preview_obj.node->getMaterial(i) = irr::video::SMaterial();
+			}
+		}
+		else
+		{
+			meshTab_preview_obj.node->getMaterial(i) = irr::video::SMaterial();
+		}
+	}
+
+	//Set Animation
+	if(meshTab_isPlaying && meshTab_preview_obj.animation_change && meshTab_preview_obj.node != NULL)
+	{
+		if(project.meshes[n].isMD2 && (meshTab_active_animation_index >= 0 && meshTab_active_animation_index < irr::scene::EMAT_COUNT))
+		{
+			meshTab_preview_obj.node->setMD2Animation(project.meshes[n].animation[meshTab_active_animation_index].md2_animation);
+		}
+		else if(meshTab_active_animation_index >= 0 && meshTab_active_animation_index < project.meshes[n].animation.size())
+		{
+			int start_frame = project.meshes[n].animation[meshTab_active_animation_index].start_frame;
+			int end_frame = project.meshes[n].animation[meshTab_active_animation_index].end_frame;
+			double speed = project.meshes[n].animation[meshTab_active_animation_index].speed;
+			meshTab_preview_obj.node->setFrameLoop(start_frame, end_frame);
+			meshTab_preview_obj.node->setAnimationSpeed(speed);
+			meshTab_preview_obj.animation_change = false;
+		}
+	}
+	else if(meshTab_preview_obj.node != NULL)
+	{
+		meshTab_preview_obj.node->setFrameLoop(0, 0);
+	}
+}
+
 void SerenityEditorSerenity3D_Frame::createIrrlichtAnimationWindow()
 {
 	m_mesh_animationPreview_panel->SetFocus();
 
     animation_window=new wxIrrlicht(m_mesh_animationPreview_panel, wxID_ANY, false, wxPoint(ClientW(0), ClientH(0)), wxGetDisplaySize());
-		animation_window->window_type = RC_IRR_WINDOW_NAV3D;
+		animation_window->window_type = RC_IRR_WINDOW_ANIMATION;
 		animation_window->InitIrr();
 		animation_window->StartRendering();
 
@@ -452,26 +550,13 @@ void SerenityEditorSerenity3D_Frame::createIrrlichtAnimationWindow()
         irr::scene::ISceneManager* smgr = device->getSceneManager();
         irr::gui::IGUIEnvironment* guienv = device->getGUIEnvironment();
 
-        irr::scene::IAnimatedMesh* mesh = smgr->getMesh("media/sydney.md2");
-        if (!mesh)
-        {
-            wxMessageBox(_("No dice"));
-            //device->drop();
-            return;
-        }
-        irr::scene::IAnimatedMeshSceneNode* node = smgr->addAnimatedMeshSceneNode( mesh );
-
-        if (node)
-        {
-            node->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-            node->setMD2Animation(irr::scene::EMAT_STAND);
-            node->setMaterialTexture( 0, driver->getTexture("media/sydney.bmp") );
-        }
-
 		animation_window->camera[0].camera.setPosition(0, 0, -100);
 		animation_window->camera[0].camera.setRotation(0, 0, 0);
 
 		animation_window->SetViews(RC_CAMERA_VIEW_PERSPECTIVE);
+
+		meshTab_preview_obj.node = NULL;
+		meshTab_preview_obj.project_mesh_index = -1;
 }
 
 void SerenityEditorSerenity3D_Frame::createIrrlichtMaterialWindow()
@@ -483,7 +568,7 @@ void SerenityEditorSerenity3D_Frame::createIrrlichtMaterialWindow()
 		material_window->InitIrr();
 		material_window->StartRendering();
 
-		material_window->material_view_camera_speed = 1;
+		material_window->material_view_camera_speed = material_preview_camera_speed;
 
 		irr::IrrlichtDevice* device = material_window->GetDevice();
 		irr::video::IVideoDriver* driver = device->getVideoDriver();
@@ -494,7 +579,7 @@ void SerenityEditorSerenity3D_Frame::createIrrlichtMaterialWindow()
 
         test_material_light = smgr->addLightSceneNode();
         test_material_light->setPosition(irr::core::vector3df(0, 30, 30));
-        test_material_light->setRadius(30);
+        test_material_light->setRadius(material_preview_light_radius);
 
 		material_window->camera[0].camera.setPosition(0, 7, -1 * material_preview_camera_distance);
 		material_window->camera[0].camera.setRotation(26, 0, 0);
@@ -635,17 +720,35 @@ void SerenityEditorSerenity3D_Frame::OnMainEditorNotebookPageChanged( wxAuiNoteb
 		return;
 	}
 
+	project.grid_size = m_viewportSettings_gridSize_spinCtrl->GetValue();
+	project.grid_spacing = m_viewportSettings_gridSpacing_spinCtrl->GetValue();
+	project.grid_color = irr::video::SColor(m_viewportSettings_gridColor_colourPicker->GetColour().GetAlpha(),
+											m_viewportSettings_gridColor_colourPicker->GetColour().GetRed(),
+											m_viewportSettings_gridColor_colourPicker->GetColour().GetGreen(),
+											m_viewportSettings_gridColor_colourPicker->GetColour().GetBlue()).color;
+	project.grid_visible = m_viewportSettings_showGrid_checkBox->GetValue();
+
 	wxPanel* new_panel = (wxPanel*)m_editorMain_auinotebook->GetPage(page_index);
 
 	if(new_panel == m_stage_panel)
 	{
 		createIrrlichtStageWindow();
 		current_window = stage_window;
+
+		//current_window->setGridSize(project.grid_size);
+		//current_window->setGridSpacing(project.grid_spacing);
+		//current_window->setGridColor(project.grid_color);
 	}
 	else if(new_panel == m_meshDB_panel)
 	{
 		createIrrlichtAnimationWindow();
 		current_window = animation_window;
+
+		int list_count = m_mesh_mesh_listBox->GetCount();
+		int list_item = m_mesh_mesh_listBox->GetSelection();
+		list_item = ( (list_item < 0 || list_item >= list_count) ? 0 : list_item);
+		if(list_item < list_count)
+			m_mesh_mesh_listBox->SetSelection(list_item);
 	}
 	else if(new_panel == m_materialDB_panel)
 	{
@@ -708,117 +811,80 @@ void SerenityEditorSerenity3D_Frame::reloadResources()
 
 void SerenityEditorSerenity3D_Frame::OnPlayClicked( wxCommandEvent& event )
 {
-	animation_window->GetDevice()->closeDevice();
-	animation_window->Close();
-	delete animation_window;
 
-	m_stageViewport_panel->SetFocus();
-
-	stage_window=new wxIrrlicht(m_stageViewport_panel, wxID_ANY, false, wxPoint(ClientW(0), ClientH(0)), m_stageViewport_panel->GetClientSize());
-	//irrTst->SetBackgroundColour(wxColour("red"));
-
-	stage_window->InitIrr();
-	stage_window->StartRendering();
-
-	irr::IrrlichtDevice* device = stage_window->GetDevice();
-	irr::video::IVideoDriver* driver = device->getVideoDriver();
-	irr::scene::ISceneManager* smgr = device->getSceneManager();
-	irr::gui::IGUIEnvironment* guienv = device->getGUIEnvironment();
-
-
-	//gridSceneNode->drop();  // added to scene already, that still has a reference
-
-	irr::scene::IAnimatedMesh* mesh = smgr->getMesh("media/sydney.md2");
-	if (!mesh)
-	{
-		wxMessageBox(_("No dice"));
-		//device->drop();
-		return;
-	}
-	irr::scene::IAnimatedMeshSceneNode* node = smgr->addAnimatedMeshSceneNode( mesh );
-
-	if (node)
-	{
-		node->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-		node->setMD2Animation(irr::scene::EMAT_STAND);
-		node->setMaterialTexture( 0, driver->getTexture("media/sydney.bmp") );
-	}
-
-	stage_window->camera[0].camera.setPosition(0, 0, -100);
-	stage_window->camera[0].camera.setRotation(0, 0, 0);
-
-	stage_window->camera[1].camera.setPosition(-100, 0, 0);
-	stage_window->camera[1].camera.setRotation(0, 90, 0);
-
-	stage_window->camera[2].camera.setPosition(0, 100, 0);
-	stage_window->camera[2].camera.setRotation(90, 0, 0);
-
-	stage_window->camera[3].camera.setPosition(0, 30, -40);
-	stage_window->camera[3].camera.setRotation(0, 5, 0);
 }
 
 void SerenityEditorSerenity3D_Frame::OnStopClicked( wxCommandEvent& event )
 {
-	stage_window->GetDevice()->closeDevice();
-	stage_window->Close();
 
-	delete stage_window;
-
-	m_mesh_animationPreview_panel->SetFocus();
-
-    //wxMessageBox(_("Panel Size = ") + wxString::Format(_("%i"), m_mesh_animationPreview_panel->GetClientSize().GetWidth()));
-
-    //wxMessageBox(_("Start Constructor"));
-    animation_window=new wxIrrlicht(m_mesh_animationPreview_panel, wxID_ANY, false, wxPoint(ClientW(0), ClientH(0)), wxGetDisplaySize());
-		//irrTst->SetBackgroundColour(wxColour("red"));
-		wxMessageBox(_("Start Frame"));
-		irr::SIrrlichtCreationParameters params;
-		params.WindowSize.set(m_mesh_animationPreview_panel->GetClientSize().GetWidth(), m_mesh_animationPreview_panel->GetClientSize().GetHeight());
-		params.DriverType = irr::video::EDT_BURNINGSVIDEO;
-		animation_window->InitIrr();
-		animation_window->StartRendering();
-
-		//animation_window->SetViews(RC_CAMERA_VIEW_PERSPECTIVE);
-
-		irr::IrrlichtDevice* device = animation_window->GetDevice();
-		irr::video::IVideoDriver* driver = device->getVideoDriver();
-        irr::scene::ISceneManager* smgr = device->getSceneManager();
-        irr::gui::IGUIEnvironment* guienv = device->getGUIEnvironment();
-
-        irr::scene::IAnimatedMesh* mesh = smgr->getMesh("media/sydney.md2");
-        if (!mesh)
-        {
-            wxMessageBox(_("No dice"));
-            //device->drop();
-            return;
-        }
-        irr::scene::IAnimatedMeshSceneNode* node = smgr->addAnimatedMeshSceneNode( mesh );
-
-        if (node)
-        {
-            node->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-            node->setMD2Animation(irr::scene::EMAT_STAND);
-            node->setMaterialTexture( 0, driver->getTexture("media/sydney.bmp") );
-        }
-
-		//smgr->addCameraSceneNode(0, irr::core::vector3df(0,30,-40), irr::core::vector3df(0,5,0));
-
-		animation_window->camera[0].camera.setPosition(0, 0, -100);
-		animation_window->camera[0].camera.setRotation(0, 0, 0);
-
-		animation_window->camera[1].camera.setPosition(-100, 0, 0);
-		animation_window->camera[1].camera.setRotation(0, 90, 0);
-
-		animation_window->camera[2].camera.setPosition(0, 100, 0);
-		animation_window->camera[2].camera.setRotation(90, 0, 0);
-
-		animation_window->camera[3].camera.setPosition(0, 30, -40);
-		animation_window->camera[3].camera.setRotation(0, 5, 0);
-
-		animation_window->SetViews(RC_CAMERA_VIEW_PERSPECTIVE);
+}
 
 
-    //wxMessageBox(_("IrrTst Size = ") + wxString::Format(_("%i"), irrTst->GetClientSize().GetWidth()));
+//--------------PROJECT STAGE SETTINGS-------------------------------
+void SerenityEditorSerenity3D_Frame::On_Stage_NewGroup( wxCommandEvent& event )
+{
+	SerenityEditor_CreateStageGroup_Dialog* dialog = new SerenityEditor_CreateStageGroup_Dialog(this);
+
+	dialog->ShowModal();
+}
+
+void SerenityEditorSerenity3D_Frame::On_Stage_DeleteGroup( wxCommandEvent& event )
+{
+	SerenityEditor_DeleteGroupAlert_Dialog* dialog = new SerenityEditor_DeleteGroupAlert_Dialog(this);
+
+	dialog->ShowModal();
+}
+
+void SerenityEditorSerenity3D_Frame::On_Stage_EditGroup( wxCommandEvent& event )
+{
+	SerenityEditor_EditStageGroup_Dialog* dialog = new SerenityEditor_EditStageGroup_Dialog(this);
+
+	dialog->ShowModal();
+}
+
+
+void SerenityEditorSerenity3D_Frame::On_Stage_StageNodeActivated( wxTreeEvent& event )
+{
+}
+
+void SerenityEditorSerenity3D_Frame::On_Stage_StageNodeSelected( wxTreeEvent& event )
+{
+	//wxMessageBox(_("SELECTED"));
+}
+
+void SerenityEditorSerenity3D_Frame::On_StageSettings_ShowGrid( wxCommandEvent& event )
+{
+	project.grid_visible = event.IsChecked();
+
+	if(stage_window)
+		stage_window->grid_visible = project.grid_visible;
+}
+
+void SerenityEditorSerenity3D_Frame::On_StageSettings_SetGridSize( wxSpinEvent& event )
+{
+	project.grid_size = event.GetValue();
+
+	if(stage_window)
+		stage_window->setGridSize(project.grid_size);
+}
+
+void SerenityEditorSerenity3D_Frame::On_StageSettings_SetGridSpacing( wxSpinEvent& event )
+{
+	project.grid_spacing = event.GetValue();
+
+	if(stage_window)
+		stage_window->setGridSpacing(project.grid_spacing);
+}
+
+void SerenityEditorSerenity3D_Frame::On_StageSettings_SetGridColor( wxColourPickerEvent& event )
+{
+	project.grid_color = irr::video::SColor( event.GetColour().GetAlpha(),
+											 event.GetColour().GetRed(),
+											 event.GetColour().GetGreen(),
+											 event.GetColour().GetBlue() ).color;
+
+	if(stage_window)
+		stage_window->setGridColor(project.grid_color);
 }
 
 
@@ -1001,12 +1067,12 @@ void SerenityEditorSerenity3D_Frame::OnNewProjectMenuSelection( wxCommandEvent& 
 	}
 }
 
-void SerenityEditorSerenity3D_Frame::OnLoadProjectMenuSelection( wxCommandEvent& event )
+bool SerenityEditorSerenity3D_Frame::load_project(wxFileName pfile)
 {
 	project.clearProject();
 
 	if(!current_window)
-		return;
+		return false;
 
 	project = serenity_project("/home/n00b/test/stp/test.snprj", "", current_window->GetDevice());
 
@@ -1032,6 +1098,85 @@ void SerenityEditorSerenity3D_Frame::OnLoadProjectMenuSelection( wxCommandEvent&
 	{
 		m_texture_textureList_listBox->AppendAndEnsureVisible(wxString::FromUTF8(project.textures[i].id_name.c_str()));
 	}
+
+	//populate stages from project
+    m_project_stage_treeCtrl->SetItemText(stage_tree_root, wxString::FromUTF8(project.project_name));
+    m_project_stage_treeCtrl->DeleteChildren(stage_tree_root);
+    stage_tree_nodes.clear();
+
+	for(int i = 0; i < project.stages.size(); i++)
+	{
+		if(project.stages[i].id_name.compare("") != 0)
+		{
+			Serenity_StageNode tree_node;
+			tree_node.active = false;
+			tree_node.project_index = i;
+			tree_node.node_type = RC_STAGE_NODE_STAGE;
+			tree_node.stage_group = 0;
+			tree_node.group_label = wxString::FromUTF8(project.stages[i].id_name);
+			tree_node.parent_item = stage_tree_root;
+			tree_node.tree_item = m_project_stage_treeCtrl->AppendItem(stage_tree_root, wxString::FromUTF8(project.stages[i].id_name), stage_tree_stageImage);
+
+			int stage_index = stage_tree_nodes.size();
+			stage_tree_nodes.push_back(tree_node);
+
+			for(int group_index = 0; group_index < project.stages[i].groups.size(); group_index++)
+			{
+				Serenity_StageNode s_group;
+				s_group.node_type = RC_STAGE_NODE_GROUP;
+				s_group.group_label = wxString::FromUTF8(project.stages[i].groups[group_index].label);
+				s_group.parent_item = tree_node.tree_item;
+				s_group.active = false;
+				s_group.project_index = -1;
+				s_group.tree_item = m_project_stage_treeCtrl->AppendItem(tree_node.tree_item, s_group.group_label, stage_tree_groupImage);
+				stage_tree_nodes[stage_index].groups.push_back(s_group);
+				//wxMessageBox(_("Group: ") + s_group.group_label);
+			}
+
+			for(int ac_index = 0; ac_index < project.stages[i].actors.size(); ac_index++)
+			{
+				Serenity_StageNode s_actor_node;
+				s_actor_node.node_type = RC_STAGE_NODE_ACTOR;
+				s_actor_node.group_label = project.stages[i].actors[ac_index].group_name;
+				s_actor_node.active = false;
+				s_actor_node.project_index = ac_index; //index in stage.actors
+
+				int a_group_index = -1;
+				if(project.stages[i].actors[ac_index].group_name.compare("") != 0)
+				{
+					//search for actors group
+					for(int g = 0; g < stage_tree_nodes[stage_index].groups.size(); g++)
+					{
+						if(stage_tree_nodes[stage_index].groups[g].group_label.compare(s_actor_node.group_label) == 0)
+						{
+							a_group_index = g;
+							break;
+						}
+					}
+				}
+
+				if(a_group_index >= 0)
+					s_actor_node.parent_item = stage_tree_nodes[stage_index].groups[a_group_index].tree_item;
+				else
+					s_actor_node.parent_item = tree_node.tree_item;
+
+				s_actor_node.tree_item = m_project_stage_treeCtrl->AppendItem(s_actor_node.parent_item, wxString::FromUTF8(project.stages[i].actors[ac_index].id_name), stage_tree_assetImage );
+				stage_tree_nodes[stage_index].actors.push_back(s_actor_node);
+			}
+		}
+	}
+
+    m_project_stage_treeCtrl->Expand(stage_tree_root);
+    m_project_stage_treeCtrl->SetDoubleBuffered(true);
+
+    return true;
+}
+
+void SerenityEditorSerenity3D_Frame::OnLoadProjectMenuSelection( wxCommandEvent& event )
+{
+	load_project(_("/home/n00b/test/stp/test.snprj"));
+
+	return;
 }
 
 void SerenityEditorSerenity3D_Frame::OnStageViewportMouse( wxMouseEvent& event )
@@ -1227,10 +1372,23 @@ void SerenityEditorSerenity3D_Frame::On_Mesh_AnimationList_Select( wxCommandEven
 	if(an_index < 0)
 		return;
 
-	m_mesh_animationID_textCtrl->SetValue( wxString::FromUTF8(project.meshes[n].animation[an_index].id_name.c_str()));
-	m_mesh_animationStartFrame_textCtrl->SetValue( wxString::Format(_("%d"), project.meshes[n].animation[an_index].start_frame));
-	m_mesh_animationEndFrame_textCtrl->SetValue( wxString::Format(_("%d"), project.meshes[n].animation[an_index].end_frame));
-	m_mesh_animationSpeed_textCtrl->SetValue( wxString::FromDouble(project.meshes[n].animation[an_index].speed));
+	if(project.meshes[n].isMD2 && (meshTab_active_animation_index < irr::scene::EMAT_COUNT))
+	{
+		m_mesh_animationID_textCtrl->SetValue( wxString::FromUTF8(project.meshes[n].animation[an_index].id_name.c_str()));
+		m_mesh_animationStartFrame_textCtrl->SetValue( wxString::Format(_("%d"), -1));
+		m_mesh_animationEndFrame_textCtrl->SetValue( wxString::Format(_("%d"), -1));
+		m_mesh_animationSpeed_textCtrl->SetValue( wxString::FromDouble(-1));
+	}
+	else
+	{
+		m_mesh_animationID_textCtrl->SetValue( wxString::FromUTF8(project.meshes[n].animation[an_index].id_name.c_str()));
+		m_mesh_animationStartFrame_textCtrl->SetValue( wxString::Format(_("%d"), project.meshes[n].animation[an_index].start_frame));
+		m_mesh_animationEndFrame_textCtrl->SetValue( wxString::Format(_("%d"), project.meshes[n].animation[an_index].end_frame));
+		m_mesh_animationSpeed_textCtrl->SetValue( wxString::FromDouble(project.meshes[n].animation[an_index].speed));
+	}
+
+	meshTab_preview_obj.animation_change = true;
+	updatePreviewMesh();
 
 	event.Skip();
 }
@@ -1250,6 +1408,9 @@ void SerenityEditorSerenity3D_Frame::On_Mesh_Animation_AnimationID( wxCommandEve
 		//wxMessageBox(_("ERROR: Could not find animation id"));
 		return;
 	}
+
+	if(project.meshes[n].isMD2 && (meshTab_active_animation_index < irr::scene::EMAT_COUNT))
+		return;
 
 	wxString id_name = wxString::FromUTF8(project.meshes[n].animation[meshTab_active_animation_index].id_name);
 
@@ -1280,6 +1441,12 @@ void SerenityEditorSerenity3D_Frame::On_Mesh_Animation_StartFrame( wxCommandEven
 		return;
 	}
 
+	if(project.meshes[n].isMD2 && (meshTab_active_animation_index < irr::scene::EMAT_COUNT))
+		return;
+
+	meshTab_preview_obj.animation_change = true;
+	updatePreviewMesh();
+
 	event.GetString().ToInt(&project.meshes[n].animation[meshTab_active_animation_index].start_frame);
 }
 
@@ -1298,6 +1465,12 @@ void SerenityEditorSerenity3D_Frame::On_Mesh_Animation_EndFrame( wxCommandEvent&
 		//wxMessageBox(_("ERROR: Could not find animation id"));
 		return;
 	}
+
+	if(project.meshes[n].isMD2 && (meshTab_active_animation_index < irr::scene::EMAT_COUNT))
+		return;
+
+	meshTab_preview_obj.animation_change = true;
+	updatePreviewMesh();
 
 	event.GetString().ToInt(&project.meshes[n].animation[meshTab_active_animation_index].end_frame);
 }
@@ -1318,9 +1491,15 @@ void SerenityEditorSerenity3D_Frame::On_Mesh_Animation_Speed( wxCommandEvent& ev
 		return;
 	}
 
+	if(project.meshes[n].isMD2 && (meshTab_active_animation_index < irr::scene::EMAT_COUNT))
+		return;
+
 	double dval = 0;
 	event.GetString().ToDouble(&dval);
 	project.meshes[n].animation[meshTab_active_animation_index].speed = dval;
+
+	meshTab_preview_obj.animation_change = true;
+	updatePreviewMesh();
 }
 
 void SerenityEditorSerenity3D_Frame::On_Mesh_MeshList_Select( wxCommandEvent& event )
@@ -1397,46 +1576,361 @@ void SerenityEditorSerenity3D_Frame::On_Mesh_MeshList_Select( wxCommandEvent& ev
 	m_mesh_animationStartFrame_textCtrl->SetValue(_(""));
 	m_mesh_animationEndFrame_textCtrl->SetValue(_(""));
 	m_mesh_animationSpeed_textCtrl->SetValue(_(""));
+
+	if(animation_window)
+	{
+		animation_window->camera[0].camera.setPosition(0, 0, -100);
+		animation_window->camera[0].camera.setRotation(0, 0, 0);
+	}
+
+	meshTab_preview_obj.animation_change = true;
+	updatePreviewMesh();
 }
 
 void SerenityEditorSerenity3D_Frame::On_Mesh_Load_ButtonClick( wxCommandEvent& event )
 {
+	SerenityEditor_AddMesh_Dialog* dialog = new SerenityEditor_AddMesh_Dialog(this);
+
+	dialog->model_path = project.project_path;
+	dialog->model_path.AppendDir(_("models"));
+	dialog->model_path.SetFullName(_(""));
+
+	for(int i = 0; i < project.meshes.size(); i++)
+	{
+		if(project.meshes[i].file.compare("")!=0)
+			dialog->project_files.push_back(project.meshes[i].file);
+	}
+
+	dialog->refresh_list();
+
+	dialog->ShowModal();
+
+	wxFileName fname = project.project_path;
+	fname.AppendDir(_("data"));
+
+	std::vector<serenity_project_dict_obj> param;
+	serenity_project_dict_obj p_obj;
+
+	wxString id_name = _("");
+
+	for(int i = 0; i < dialog->selected_files.size(); i++)
+	{
+		p_obj.key = _("Mesh");
+		p_obj.val = _("");
+		param.push_back(p_obj);
+
+		p_obj.key = _("id");
+		id_name = project.genMeshID();
+		p_obj.val = id_name;
+		param.push_back(p_obj);
+
+		p_obj.key = _("file");
+		p_obj.val = dialog->selected_files[i];
+		param.push_back(p_obj);
+
+		fname.SetFullName(id_name + _(".snmd"));
+		if(fname.Exists())
+			wxRemoveFile(fname.GetAbsolutePath());
+
+		fname.SetFullName(id_name + _(".sna"));
+		if(fname.Exists())
+			wxRemoveFile(fname.GetAbsolutePath());
+
+		int mesh_index = project.load_mesh(param);
+
+		if(mesh_index >= 0)
+		{
+			if(project.meshes[mesh_index].id_name.compare("")!=0)
+				m_mesh_mesh_listBox->AppendAndEnsureVisible(wxString::FromUTF8(project.meshes[mesh_index].id_name));
+		}
+	}
+
+	project.resolve_materialReferences();
 }
 
 void SerenityEditorSerenity3D_Frame::On_Mesh_Remove_ButtonClick( wxCommandEvent& event )
 {
+	int n = meshTab_selected_mesh_project_index;
+
+	if(n < 0 || n >= project.meshes.size())
+		return;
+
+	if(project.meshes[n].mesh)
+	{
+		//project.meshes[n].mesh->drop();
+	}
+
+	project.meshes[n].mesh = NULL;
+
+	wxFileName fname = project.project_path;
+	fname.AppendDir(_("data"));
+
+	fname.SetFullName(wxString::FromUTF8(project.meshes[n].id_name) + _(".snmd"));
+	if(fname.Exists())
+		wxRemoveFile(fname.GetAbsolutePath());
+
+	fname.SetFullName(wxString::FromUTF8(project.meshes[n].id_name) + _(".sna"));
+	if(fname.Exists())
+		wxRemoveFile(fname.GetAbsolutePath());
+
+	project.meshes[n].id_name = "";
+	project.meshes[n].file = "";
+
+	m_mesh_mesh_listBox->Clear();
+
+	for(int i = 0; i < project.meshes.size(); i++)
+	{
+		if(project.meshes[i].id_name.compare("") != 0)
+		{
+			m_mesh_mesh_listBox->AppendAndEnsureVisible(wxString::FromUTF8(project.meshes[i].id_name));
+		}
+	}
+
+	m_mesh_mesh_listBox->Update();
+
+	meshTab_selected_mesh_project_index = -1;
+	meshTab_active_animation_index = -1;
+	meshTab_isPlaying = false;
+
+	meshTab_preview_obj.animation_change = true;
+
+	updatePreviewMesh();
 }
 
 void SerenityEditorSerenity3D_Frame::On_Mesh_Save_ButtonClick( wxCommandEvent& event )
 {
+	if(project.save_mesh_properties(meshTab_selected_mesh_project_index))
+	{
+		wxMessageBox(_("Saved Mesh Properties on Mesh(") + wxString::FromUTF8(project.meshes[meshTab_selected_mesh_project_index].id_name) + _(")"));
+	}
+	else
+	{
+		wxMessageBox(_("Failed to saved Mesh Properties on Mesh(") + wxString::FromUTF8(project.meshes[meshTab_selected_mesh_project_index].id_name) + _(")"));
+	}
+}
+
+void SerenityEditorSerenity3D_Frame::On_Mesh_MeshID( wxCommandEvent& event )
+{
+	if(meshTab_selected_mesh_project_index < 0 || meshTab_selected_mesh_project_index >= project.meshes.size())
+	{
+		return;
+	}
+
+
+	int n = meshTab_selected_mesh_project_index;
+
+	project.meshes[n].id_name = m_mesh_meshID_textCtrl->GetValue().ToStdString();
+
+	int current_list_item = m_mesh_mesh_listBox->GetSelection();
+
+	if(current_list_item < 0 && current_list_item >= m_mesh_mesh_listBox->GetCount())
+		return;
+
+	m_mesh_mesh_listBox->SetString(current_list_item, wxString::FromUTF8(project.meshes[n].id_name.c_str()));
+
+	m_mesh_mesh_listBox->Update();
 }
 
 void SerenityEditorSerenity3D_Frame::On_Mesh_AddMaterial( wxCommandEvent& event )
 {
+	if(meshTab_selected_mesh_project_index < 0 || meshTab_selected_mesh_project_index >= project.meshes.size())
+		return;
+
+	int n = meshTab_selected_mesh_project_index;
+
+	int mat_num = project.meshes[n].material_index.size();
+	project.meshes[n].material_index.push_back(-1);
+
+	m_mesh_materialList_listBox->AppendAndEnsureVisible( _("Material ") + wxString::Format(_("%d"), mat_num) + _(":") );
 }
 
 void SerenityEditorSerenity3D_Frame::On_Mesh_RemoveMaterial( wxCommandEvent& event )
 {
+	if(meshTab_selected_mesh_project_index < 0 || meshTab_selected_mesh_project_index >= project.meshes.size())
+		return;
+
+	int n = meshTab_selected_mesh_project_index;
+
+	project.meshes[n].material_index.pop_back();
+
+	m_mesh_materialList_listBox->Clear();
+
+	for(int i = 0; i < project.meshes[n].material_index.size(); i++)
+	{
+		int mat_index = project.meshes[n].material_index[i];
+
+		if(mat_index >= 0 && mat_index < project.materials.size())
+		{
+			if(project.materials[mat_index].id_name.compare(_(""))==0)
+				m_mesh_materialList_listBox->AppendAndEnsureVisible( _("Material ") + wxString::Format(_("%d"), i) + _(":"));
+			else
+				m_mesh_materialList_listBox->AppendAndEnsureVisible( _("Material ") + wxString::Format(_("%d"), i) + _(":   ") + wxString::FromUTF8(project.materials[mat_index].id_name) );
+		}
+		else
+			m_mesh_materialList_listBox->AppendAndEnsureVisible( _("Material ") + wxString::Format(_("%d"), i) + _(":"));
+	}
+
+	updatePreviewMesh();
 }
 
 void SerenityEditorSerenity3D_Frame::On_Mesh_SetMaterial( wxCommandEvent& event )
 {
+	if(meshTab_selected_mesh_project_index < 0 || meshTab_selected_mesh_project_index >= project.meshes.size())
+		return;
+
+	int n = meshTab_selected_mesh_project_index;
+
+	int mat_num = m_mesh_materialList_listBox->GetSelection();
+
+	if(mat_num < 0 || mat_num >= m_mesh_materialList_listBox->GetCount())
+		return;
+
+	if(mat_num >= project.meshes[n].material_index.size())
+		return;
+
+	SerenityEditor_SetMeshMaterialLevel_Dialog* dialog = new SerenityEditor_SetMeshMaterialLevel_Dialog(this);
+
+	for(int i = 0; i < project.materials.size(); i++)
+	{
+		if(project.materials[i].id_name.compare("")!=0)
+			dialog->id_list.push_back( wxString::FromUTF8(project.materials[i].id_name));
+	}
+
+	dialog->refresh_list();
+	dialog->ShowModal();
+
+	if(dialog->selected_material_id.compare(_("")) != 0)
+	{
+		m_mesh_materialList_listBox->Clear();
+
+		wxString id_name = dialog->selected_material_id;
+
+		for(int i = 0; i < project.materials.size(); i++)
+		{
+			if(project.materials[i].id_name.compare(id_name.ToStdString())==0)
+			{
+				project.meshes[n].material_index[mat_num] = i;
+				break;
+			}
+		}
+
+		for(int i = 0; i < project.meshes[n].material_index.size(); i++)
+		{
+			int mat_index = project.meshes[n].material_index[i];
+
+			if(mat_index >= 0 && mat_index < project.materials.size())
+			{
+				if(project.materials[mat_index].id_name.compare(_(""))==0)
+					m_mesh_materialList_listBox->AppendAndEnsureVisible( _("Material ") + wxString::Format(_("%d"), i) + _(":"));
+				else
+					m_mesh_materialList_listBox->AppendAndEnsureVisible( _("Material ") + wxString::Format(_("%d"), i) + _(":   ") + wxString::FromUTF8(project.materials[mat_index].id_name) );
+			}
+			else
+				m_mesh_materialList_listBox->AppendAndEnsureVisible( _("Material ") + wxString::Format(_("%d"), i) + _(":"));
+		}
+	}
+
+	updatePreviewMesh();
+}
+
+void SerenityEditorSerenity3D_Frame::On_Mesh_Material_Clear( wxCommandEvent& event )
+{
+	if(meshTab_selected_mesh_project_index < 0 || meshTab_selected_mesh_project_index >= project.meshes.size())
+		return;
+
+	int n = meshTab_selected_mesh_project_index;
+
+	int mat_num = m_mesh_materialList_listBox->GetSelection();
+
+	if(mat_num < 0 || mat_num >= m_mesh_materialList_listBox->GetCount())
+		return;
+
+	if(mat_num >= project.meshes[n].material_index.size())
+		return;
+
+
+	m_mesh_materialList_listBox->SetString(mat_num, _("Material ") + wxString::Format(_("%d"), mat_num) + _(":"));
+	project.meshes[n].material_index[mat_num] = -1;
+
+	updatePreviewMesh();
 }
 
 void SerenityEditorSerenity3D_Frame::On_Mesh_previewPlay( wxCommandEvent& event )
 {
+	meshTab_isPlaying = true;
+	meshTab_preview_obj.animation_change = true;
+	updatePreviewMesh();
 }
 
 void SerenityEditorSerenity3D_Frame::On_Mesh_previewStop( wxCommandEvent& event )
 {
+	meshTab_isPlaying = false;
+	meshTab_preview_obj.animation_change = true;
+	updatePreviewMesh();
 }
 
 void SerenityEditorSerenity3D_Frame::On_Mesh_NewAnimation( wxCommandEvent& event )
 {
+	if(meshTab_selected_mesh_project_index < 0 || meshTab_selected_mesh_project_index >= project.meshes.size())
+		return;
+
+	int n = meshTab_selected_mesh_project_index;
+
+	rc_animation animation_obj;
+	animation_obj.id_name = project.genMeshAnimationID(n).ToStdString();
+	animation_obj.start_frame = 0;
+	animation_obj.end_frame = 0;
+	animation_obj.speed = 0;
+
+	project.meshes[n].animation.push_back(animation_obj);
+	m_mesh_meshAnimation_listBox->AppendAndEnsureVisible(animation_obj.id_name);
 }
 
 void SerenityEditorSerenity3D_Frame::On_Mesh_DeleteAnimation( wxCommandEvent& event )
 {
+	if(meshTab_selected_mesh_project_index < 0 || meshTab_selected_mesh_project_index >= project.meshes.size())
+		return;
+
+	int n = meshTab_selected_mesh_project_index;
+
+	int ani_index = meshTab_active_animation_index;
+	int list_item = m_mesh_meshAnimation_listBox->GetSelection();
+
+	if(ani_index < 0 || ani_index >= project.meshes[n].animation.size())
+		return;
+
+	project.meshes[n].animation[ani_index].id_name = "";
+
+	m_mesh_meshAnimation_listBox->Clear();
+
+	for(int i = 0; i < project.meshes[n].animation.size(); i++)
+	{
+		if(project.meshes[n].animation[i].id_name.compare("") != 0)
+		{
+			m_mesh_meshAnimation_listBox->AppendAndEnsureVisible(project.meshes[n].animation[i].id_name);
+		}
+	}
+
+	if(list_item >= m_mesh_meshAnimation_listBox->GetCount())
+	{
+		list_item = m_mesh_meshAnimation_listBox->GetCount()-1;
+	}
+
+	meshTab_active_animation_index = -1;
+	if(list_item >= 0)
+	{
+		m_mesh_meshAnimation_listBox->SetSelection(list_item);
+		std::string id_name = m_mesh_meshAnimation_listBox->GetString(list_item).ToStdString();
+
+		for(int i = 0; i < project.meshes[n].animation.size(); i++)
+		{
+			if(project.meshes[n].animation[i].id_name.compare(id_name)==0)
+			{
+				meshTab_active_animation_index = i;
+				break;
+			}
+		}
+	}
 }
 
 
@@ -2130,12 +2624,7 @@ void SerenityEditorSerenity3D_Frame::On_Material_previewSettings_Selected( wxCom
 
 	SerenityEditor_MaterialPreviewSettings_Dialog * dialog = new SerenityEditor_MaterialPreviewSettings_Dialog(this);
 
-	double light_radius = 0;
-
-	if(test_material_light)
-		light_radius = test_material_light->getRadius();
-
-	dialog->setFields(material_preview_camera_speed, material_preview_camera_distance, light_radius);
+	dialog->setFields(material_preview_camera_speed, material_preview_camera_distance, material_preview_light_radius);
 
 	dialog->ShowModal();
 
@@ -2144,6 +2633,7 @@ void SerenityEditorSerenity3D_Frame::On_Material_previewSettings_Selected( wxCom
 
 	material_preview_camera_speed = dialog->camera_speed;
 	material_preview_camera_distance = ( dialog->camera_distance < 0 ? dialog->camera_distance * -1: dialog->camera_distance );
+	material_preview_light_radius = dialog->light_radius;
 
 	if(material_window)
 	{
@@ -2153,7 +2643,7 @@ void SerenityEditorSerenity3D_Frame::On_Material_previewSettings_Selected( wxCom
 	}
 
 	if(test_material_light)
-		test_material_light->setRadius(dialog->light_radius);
+		test_material_light->setRadius(material_preview_light_radius);
 }
 
 

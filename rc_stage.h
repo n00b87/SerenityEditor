@@ -28,6 +28,8 @@ struct rc_animation
 	int start_frame = 0;
 	int end_frame = 0;
 	float speed = 0;
+
+	irr::scene::EMD2_ANIMATION_TYPE md2_animation;
 };
 
 struct rc_an8
@@ -50,10 +52,15 @@ struct rc_mesh
 	bool isZipped;
 	std::string zip_file;
 	std::string ani_file;
+	bool isMD2;
 
 	std::vector<std::string> ref_material_id; //this is only used as a place holder when loading meshes but material_index should be used everywhere else
 	std::string ref_an8_id; //same as ref_material_id
 };
+
+#define SN_LIGHT_TYPE_POINT			0
+#define SN_LIGHT_TYPE_SPOT			1
+#define SN_LIGHT_TYPE_DIRECTIONAL	2
 
 #define SN_ACTOR_TYPE_ANIMATED	0
 #define SN_ACTOR_TYPE_OCTREE	1
@@ -70,17 +77,44 @@ struct rc_actor
 {
 	std::string id_name;
 	int type;
-	rc_mesh mesh;
+	std::string group_name;
+	int mesh_index; //project index
 	irr::scene::ISceneNode* node; //cast to object type
 	irr::core::vector3df position;
 	irr::core::vector3df rotation;
 	irr::core::vector3df scale;
+	int override_material_index; //if less than 0 then mesh material is used
+	int animation_index; //if less than 0 then frame 0 is set
+	int num_loops;
+	bool visible;
+	bool hasShadow;
+	bool isCastingShadow; //LIGHTS ONLY
+	bool auto_culling;
+	double cube_size;
+	double radius;
+	int texture_index; //in project
+	int light_type;
+	double angle;
+	double falloff;
+	irr::video::SColor ambient;
+	irr::video::SColor emissive;
+	irr::video::SColor diffuse;
+	irr::video::SColor specular;
+	std::string terrain_hmap_file;
+	double wave_height;
+	double wave_length;
+	double wave_speed;
 };
 
 struct rc_waypoint
 {
 	irr::core::vector3df position;
 
+};
+
+struct rc_group
+{
+	std::string label;
 };
 
 struct rc_path
@@ -134,19 +168,14 @@ void rc_addColorModeType(std::string rc_cmode_val, irr::video::E_COLOR_MATERIAL 
 class rc_stage
 {
 	public:
-		std::vector<int> material;
-		std::vector<int> texture;
-		std::vector<int> mesh;
-		std::vector<rc_actor> animated_actors;
-		std::vector<rc_actor> octree_actors;
-		std::vector<rc_actor> light_actors;
-		std::vector<rc_actor> billboard_actors;
-		std::vector<rc_actor> terrain_actors;
-		std::vector<rc_actor> water_actors;
-		std::vector<rc_actor> particle_actors;
-		std::vector<rc_actor> cube_actors;
-		std::vector<rc_actor> sphere_actors;
-		std::vector<rc_actor> plane_actors;
+		std::string id_name;
+		std::string file;
+
+		bool wireframe = false; //this will be applied to all actors in the stage
+
+		std::vector<rc_actor> actors;
+
+		std::vector<rc_group> groups;
 
 
 		bool idIsActive;

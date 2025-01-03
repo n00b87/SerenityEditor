@@ -157,10 +157,16 @@ actual_params->WindowId = (HWND)this->GetHandle();
 	camera[0].pov = RC_CAMERA_VIEW_FRONT;
 	m_pDriver->makeColorKeyTexture(camera[0].ui_layer, irr::video::SColor(0,0,0,0));
 
+	camera[0].gridSceneNode = NULL;
 	camera[0].gridSceneNode = new CGridSceneNode(m_pSceneManager->getRootSceneNode(), m_pSceneManager, -1, 1);
-	camera[0].gridSceneNode->setGridsSize( irr::core::dimension2df(grid_size, grid_size));
-	camera[0].gridSceneNode->getGrid(0).setSpacing( grid_spacing );
-	camera[0].gridSceneNode->getGrid(0).setGridColor(grid_color);
+	if(camera[0].gridSceneNode)
+	{
+		camera[0].gridSceneNode->setGridsSize( irr::core::dimension2df(grid_size, grid_size));
+		camera[0].gridSceneNode->getGrid(0).setSpacing( grid_spacing );
+		camera[0].gridSceneNode->getGrid(0).setGridColor(grid_color);
+	}
+	else
+		wxMessageBox(_("Error: Scene Camera could not be created"));
 
 	camera[1].camera.init(m_pSceneManager, 0, 0, 0);
 	camera[1].texture = m_pDriver->addRenderTargetTexture(irr::core::dimension2d<irr::u32>((irr::u32)2048, (irr::u32)2048), "rt", ECF_A8R8G8B8);
@@ -168,10 +174,16 @@ actual_params->WindowId = (HWND)this->GetHandle();
 	camera[1].pov = RC_CAMERA_VIEW_RIGHT;
 	m_pDriver->makeColorKeyTexture(camera[1].ui_layer, irr::video::SColor(0,0,0,0));
 
+	camera[1].gridSceneNode = NULL;
 	camera[1].gridSceneNode = new CGridSceneNode(m_pSceneManager->getRootSceneNode(), m_pSceneManager, -1, 1);
-	camera[1].gridSceneNode->setGridsSize( irr::core::dimension2df(grid_size, grid_size));
-	camera[1].gridSceneNode->getGrid(0).setSpacing( grid_spacing );
-	camera[1].gridSceneNode->getGrid(0).setGridColor(grid_color);
+	if(camera[0].gridSceneNode)
+	{
+		camera[1].gridSceneNode->setGridsSize( irr::core::dimension2df(grid_size, grid_size));
+		camera[1].gridSceneNode->getGrid(0).setSpacing( grid_spacing );
+		camera[1].gridSceneNode->getGrid(0).setGridColor(grid_color);
+	}
+	else
+		wxMessageBox(_("Error: Scene Camera could not be created"));
 
 	camera[2].camera.init(m_pSceneManager, 0, 0, 0);
 	camera[2].texture = m_pDriver->addRenderTargetTexture(irr::core::dimension2d<irr::u32>((irr::u32)2048, (irr::u32)2048), "rt", ECF_A8R8G8B8);
@@ -179,10 +191,16 @@ actual_params->WindowId = (HWND)this->GetHandle();
 	camera[2].pov = RC_CAMERA_VIEW_TOP;
 	m_pDriver->makeColorKeyTexture(camera[2].ui_layer, irr::video::SColor(0,0,0,0));
 
+	camera[2].gridSceneNode = NULL;
 	camera[2].gridSceneNode = new CGridSceneNode(m_pSceneManager->getRootSceneNode(), m_pSceneManager, -1, 1);
-	camera[2].gridSceneNode->setGridsSize( irr::core::dimension2df(grid_size, grid_size));
-	camera[2].gridSceneNode->getGrid(0).setSpacing( grid_spacing );
-	camera[2].gridSceneNode->getGrid(0).setGridColor(grid_color);
+	if(camera[2].gridSceneNode)
+	{
+		camera[2].gridSceneNode->setGridsSize( irr::core::dimension2df(grid_size, grid_size));
+		camera[2].gridSceneNode->getGrid(0).setSpacing( grid_spacing );
+		camera[2].gridSceneNode->getGrid(0).setGridColor(grid_color);
+	}
+	else
+		wxMessageBox(_("Error: Scene Camera could not be created"));
 
 	camera[3].camera.init(m_pSceneManager, 0, 0, 0);
 	camera[3].texture = m_pDriver->addRenderTargetTexture(irr::core::dimension2d<irr::u32>((irr::u32)2048, (irr::u32)2048), "rt", ECF_A8R8G8B8);
@@ -190,10 +208,16 @@ actual_params->WindowId = (HWND)this->GetHandle();
 	camera[3].pov = RC_CAMERA_VIEW_PERSPECTIVE;
 	m_pDriver->makeColorKeyTexture(camera[3].ui_layer, irr::video::SColor(0,0,0,0));
 
+	camera[3].gridSceneNode = NULL;
 	camera[3].gridSceneNode = new CGridSceneNode(m_pSceneManager->getRootSceneNode(), m_pSceneManager, -1, 1);
-	camera[3].gridSceneNode->setGridsSize( irr::core::dimension2df(grid_size, grid_size));
-	camera[3].gridSceneNode->getGrid(0).setSpacing( grid_spacing );
-	camera[3].gridSceneNode->getGrid(0).setGridColor(grid_color);
+	if(camera[3].gridSceneNode)
+	{
+		camera[3].gridSceneNode->setGridsSize( irr::core::dimension2df(grid_size, grid_size));
+		camera[3].gridSceneNode->getGrid(0).setSpacing( grid_spacing );
+		camera[3].gridSceneNode->getGrid(0).setGridColor(grid_color);
+	}
+	else
+		wxMessageBox(_("Error: Scene Camera could not be created"));
 
 	num_views = 4;
 	SetCameraViewParam();
@@ -202,6 +226,8 @@ actual_params->WindowId = (HWND)this->GetHandle();
 
 	m_init = true;
 
+	//wxMessageBox(_("GS:") + wxString::Format(_("%d"), (int)grid_size) + _(", ") + wxString::Format(_("%d"), (int)grid_spacing) + _(", ") + wxString::Format(_("%d"), (int)grid_color.color));
+
 	if(init_params && (actual_params->DriverType == EDT_BURNINGSVIDEO || actual_params->DriverType == EDT_SOFTWARE))
 	{
 		force_refresh();
@@ -209,26 +235,55 @@ actual_params->WindowId = (HWND)this->GetHandle();
 
 }//InitIrr()
 
+void wxIrrlicht::setGridSize(irr::f32 g_size)
+{
+	grid_size = g_size;
 
-void wxIrrlicht::InitIrr(irr::IrrlichtDevice* device) {
+	for(int i = 0; i < 4; i++)
+	{
+		camera[i].gridSceneNode->setGridsSize( irr::core::dimension2df(g_size, g_size));
+	}
+}
 
-    m_pDevice = device;
+void wxIrrlicht::setGridSpacing(irr::f32 g_spacing)
+{
+	grid_spacing = g_spacing;
 
-	m_pDriver = m_pDevice->getVideoDriver();
-	m_pSceneManager = m_pDevice->getSceneManager();
-	m_pGuiEnvironment = m_pDevice->getGUIEnvironment();
+	for(int i = 0; i < 4; i++)
+	{
+		camera[i].gridSceneNode->getGrid(0).setSpacing( g_spacing );
+	}
+}
 
-	dimension2d<u32> irrSize(GetClientSize().GetX(), GetClientSize().GetY());
-    m_pDriver->OnResize(irrSize);
+void wxIrrlicht::setGridColor(irr::u32 g_color)
+{
+	grid_color = irr::video::SColor(g_color);
 
-    parent_window->Connect( wxEVT_SIZE, wxSizeEventHandler( wxIrrlicht::OnParentSize ), NULL, this );
-    m_forceWindowActive = true;
-    rendering = false;
-	Refresh();
+	for(int i = 0; i < 4; i++)
+	{
+		camera[i].gridSceneNode->getGrid(0).setGridColor(irr::video::SColor(g_color));
+	}
+}
 
-	m_init = true;
-
-}//InitIrr()
+//void wxIrrlicht::InitIrr(irr::IrrlichtDevice* device) {
+//
+//    m_pDevice = device;
+//
+//	m_pDriver = m_pDevice->getVideoDriver();
+//	m_pSceneManager = m_pDevice->getSceneManager();
+//	m_pGuiEnvironment = m_pDevice->getGUIEnvironment();
+//
+//	dimension2d<u32> irrSize(GetClientSize().GetX(), GetClientSize().GetY());
+//    m_pDriver->OnResize(irrSize);
+//
+//    parent_window->Connect( wxEVT_SIZE, wxSizeEventHandler( wxIrrlicht::OnParentSize ), NULL, this );
+//    m_forceWindowActive = true;
+//    rendering = false;
+//	Refresh();
+//
+//	m_init = true;
+//
+//}//InitIrr()
 
 void wxIrrlicht::SetCameraViewParam()
 {
@@ -383,7 +438,9 @@ void wxIrrlicht::OnRender() {
 			}
 			else
 			{
-				camera[i].gridSceneNode->setVisible(true);
+				if(window_type != RC_IRR_WINDOW_ANIMATION)
+					camera[i].gridSceneNode->setVisible(grid_visible);
+
 				m_pDriver->setRenderTarget(camera[i].texture, true, true, irr::video::SColor(255,170,170,170));
 
 				m_pSceneManager->setActiveCamera(camera[i].camera.camera);
@@ -624,6 +681,59 @@ void wxIrrlicht::force_refresh()
 	Refresh();
 }
 
+void wxIrrlicht::AnimationPreview_Update()
+{
+	wxMouseState  mouse_state = wxGetMouseState();
+
+	int px = mouse_state.GetPosition().x - this->GetScreenPosition().x;
+	int py = mouse_state.GetPosition().y - this->GetScreenPosition().y;
+
+	int pw = this->GetSize().GetWidth();
+	int ph = this->GetSize().GetHeight();
+
+
+	if(mouse_state.MiddleIsDown())
+	{
+		if(!(middle_drag_init||left_drag_init||right_drag_init))
+		{
+
+			if( px >= 0 && px < pw && py >= 0 && py < ph )
+			{
+				middle_drag_init = true;
+				//this->CaptureMouse();
+				this->SetFocusFromKbd();
+				//HIDE_CURSOR;
+				//this->WarpPointer(px + (pw/2), py + (ph/2));
+				drag_start.x = px;// + (pw/2);
+				drag_start.y = py;// + (ph/2);
+			}
+		}
+		else if(middle_drag_init)
+		{
+
+			int drag_w = pw/2;
+			int drag_h = ph/2;
+
+			int delta_x = px - drag_start.x;
+			int delta_y = py - drag_start.y;
+
+			irr::core::vector3df cam_pos = camera[0].camera.camera->getAbsolutePosition();
+			cam_pos.rotateXZBy(-delta_x, irr::core::vector3df(0,cam_pos.Y,0));
+			camera[0].camera.setPosition(cam_pos.X, cam_pos.Y, cam_pos.Z);
+			camera[0].camera.setRotation(camera[0].camera.rx, camera[0].camera.ry+delta_x, camera[0].camera.rz);
+
+			drag_start.x = px;
+			drag_start.y = py;
+		}
+	}
+	else if( (!mouse_state.MiddleIsDown()) && middle_drag_init )
+	{
+		//SHOW_CURSOR;
+		//this->ReleaseMouse();
+		middle_drag_init = false;
+		//wxMessageBox(_("RELEASE"));
+	}
+}
 
 void wxIrrlicht::OnUpdate()
 {
@@ -634,6 +744,11 @@ void wxIrrlicht::OnUpdate()
 		cam_pos.rotateXZBy(material_view_camera_speed, irr::core::vector3df(0,cam_pos.Y,0));
 		camera[0].camera.setPosition(cam_pos.X, cam_pos.Y, cam_pos.Z);
 		camera[0].camera.setRotation(camera[0].camera.rx, camera[0].camera.ry-material_view_camera_speed, camera[0].camera.rz);
+		return;
+	}
+	else if(window_type == RC_IRR_WINDOW_ANIMATION)
+	{
+		AnimationPreview_Update();
 		return;
 	}
 
@@ -662,16 +777,16 @@ void wxIrrlicht::OnUpdate()
 		}
 	}
 
-	if(mouse_state.RightIsDown())
-	{
-		wxMessageBox(_("POS: ") + wxString::Format(_("%d"), (int)camera[0].camera.x) + _(", ") +
-								  wxString::Format(_("%d"), (int)camera[0].camera.y) + _(", ") +
-								  wxString::Format(_("%d"), (int)camera[0].camera.z));
-
-		wxMessageBox(_("ROT: ") + wxString::Format(_("%d"), (int)camera[0].camera.rx) + _(", ") +
-								  wxString::Format(_("%d"), (int)camera[0].camera.ry) + _(", ") +
-								  wxString::Format(_("%d"), (int)camera[0].camera.rz));
-	}
+//	if(mouse_state.RightIsDown())
+//	{
+//		wxMessageBox(_("POS: ") + wxString::Format(_("%d"), (int)camera[0].camera.x) + _(", ") +
+//								  wxString::Format(_("%d"), (int)camera[0].camera.y) + _(", ") +
+//								  wxString::Format(_("%d"), (int)camera[0].camera.z));
+//
+//		wxMessageBox(_("ROT: ") + wxString::Format(_("%d"), (int)camera[0].camera.rx) + _(", ") +
+//								  wxString::Format(_("%d"), (int)camera[0].camera.ry) + _(", ") +
+//								  wxString::Format(_("%d"), (int)camera[0].camera.rz));
+//	}
 
 
 

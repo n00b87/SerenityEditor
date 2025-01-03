@@ -24,8 +24,9 @@
 #include <wx/stattext.h>
 #include <wx/combobox.h>
 #include <wx/panel.h>
+#include <wx/bmpbuttn.h>
+#include <wx/button.h>
 #include <wx/treectrl.h>
-#include <wx/notebook.h>
 #include <wx/propgrid/propgrid.h>
 #include <wx/propgrid/advprops.h>
 #include <wx/splitter.h>
@@ -34,16 +35,15 @@
 #include <wx/clrpicker.h>
 #include <wx/scrolwin.h>
 #include <wx/aui/auibook.h>
-#include <wx/button.h>
 #include <wx/listbox.h>
 #include <wx/textctrl.h>
 #include <wx/toolbar.h>
 #include <wx/statusbr.h>
 #include <wx/frame.h>
-#include <wx/filepicker.h>
-#include <wx/dialog.h>
-#include <wx/checklst.h>
 #include <wx/srchctrl.h>
+#include <wx/dialog.h>
+#include <wx/filepicker.h>
+#include <wx/checklst.h>
 #include <wx/statline.h>
 
 ///////////////////////////////////////////////////////////////////////////
@@ -92,11 +92,11 @@ class Serenity3D_Frame : public wxFrame
 		wxPanel* m_project_stages_panel;
 		wxSplitterWindow* m_splitter6;
 		wxPanel* m_panel305;
-		wxNotebook* m_project_abstraction_notebook;
 		wxPanel* m_panel44;
+		wxBitmapButton* m_bpButton4;
+		wxBitmapButton* m_bpButton5;
+		wxBitmapButton* m_bpButton6;
 		wxTreeCtrl* m_project_stage_treeCtrl;
-		wxPanel* m_panel452;
-		wxTreeCtrl* m_project_object_treeCtrl;
 		wxPanel* m_panel311;
 		wxPropertyGrid* m_project_propertyGrid;
 		wxScrolledWindow* m_scrolledWindow2;
@@ -130,6 +130,7 @@ class Serenity3D_Frame : public wxFrame
 		wxButton* m_button51;
 		wxButton* m_button52;
 		wxButton* m_button53;
+		wxButton* m_clear_button;
 		wxListBox* m_mesh_materialList_listBox;
 		wxPanel* m_mesh_animationPreview_panel;
 		wxToolBar* m_toolBar2;
@@ -262,13 +263,24 @@ class Serenity3D_Frame : public wxFrame
 		virtual void OnS3DPathClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnViewComboSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnProjectPropertiesNotebookChanged( wxAuiNotebookEvent& event ) { event.Skip(); }
+		virtual void On_Stage_NewGroup( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Stage_DeleteGroup( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Stage_EditGroup( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Stage_StageNodeActivated( wxTreeEvent& event ) { event.Skip(); }
+		virtual void On_Stage_StageNodeSelected( wxTreeEvent& event ) { event.Skip(); }
+		virtual void On_StageSettings_ShowGrid( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_StageSettings_SetGridSize( wxSpinEvent& event ) { event.Skip(); }
+		virtual void On_StageSettings_SetGridSpacing( wxSpinEvent& event ) { event.Skip(); }
+		virtual void On_StageSettings_SetGridColor( wxColourPickerEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_Load_ButtonClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_Remove_ButtonClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_Save_ButtonClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_MeshList_Select( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Mesh_MeshID( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_AddMaterial( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_RemoveMaterial( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_SetMaterial( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Mesh_Material_Clear( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAnimationPreviewSize( wxSizeEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_previewPlay( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_previewStop( wxCommandEvent& event ) { event.Skip(); }
@@ -341,7 +353,7 @@ class Serenity3D_Frame : public wxFrame
 
 		void m_splitter51OnIdle( wxIdleEvent& )
 		{
-			m_splitter51->SetSashPosition( 176 );
+			m_splitter51->SetSashPosition( 300 );
 			m_splitter51->Disconnect( wxEVT_IDLE, wxIdleEventHandler( Serenity3D_Frame::m_splitter51OnIdle ), NULL, this );
 		}
 
@@ -356,6 +368,33 @@ class Serenity3D_Frame : public wxFrame
 			m_splitter5->SetSashPosition( 291 );
 			m_splitter5->Disconnect( wxEVT_IDLE, wxIdleEventHandler( Serenity3D_Frame::m_splitter5OnIdle ), NULL, this );
 		}
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class SetMeshMaterialLevel_Dialog
+///////////////////////////////////////////////////////////////////////////////
+class SetMeshMaterialLevel_Dialog : public wxDialog
+{
+	private:
+
+	protected:
+		wxSearchCtrl* m_findMaterial_searchCtrl;
+		wxListBox* m_materialList_listBox;
+		wxButton* m_setMaterial_button;
+		wxButton* m_cancel_button;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void OnSearch( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnSetMaterial( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnCancel( wxCommandEvent& event ) { event.Skip(); }
+
+
+	public:
+
+		SetMeshMaterialLevel_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Set Material Level"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 513,304 ), long style = wxDEFAULT_DIALOG_STYLE );
+
+		~SetMeshMaterialLevel_Dialog();
 
 };
 
@@ -571,6 +610,154 @@ class AddMaterial_Dialog : public wxDialog
 		AddMaterial_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Load Materials"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 505,372 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~AddMaterial_Dialog();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class AddMesh_Dialog
+///////////////////////////////////////////////////////////////////////////////
+class AddMesh_Dialog : public wxDialog
+{
+	private:
+
+	protected:
+		wxCheckListBox* m_files_checkList;
+		wxButton* m_button19;
+		wxButton* m_button20;
+		wxButton* m_button23;
+		wxButton* m_button24;
+		wxButton* m_button21;
+		wxButton* m_button22;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void OnSelectAll( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnDeselectAll( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnShowDuplicates( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnHideDuplicates( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnLoad( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnCancel( wxCommandEvent& event ) { event.Skip(); }
+
+
+	public:
+
+		AddMesh_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Add Meshes"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 549,374 ), long style = wxDEFAULT_DIALOG_STYLE );
+
+		~AddMesh_Dialog();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class AddArchiveSource_Dialog
+///////////////////////////////////////////////////////////////////////////////
+class AddArchiveSource_Dialog : public wxDialog
+{
+	private:
+
+	protected:
+		wxStaticText* m_staticText49;
+		wxListBox* m_listBox12;
+		wxStaticText* m_staticText50;
+		wxTextCtrl* m_textCtrl19;
+		wxButton* m_button72;
+		wxButton* m_button73;
+
+	public:
+
+		AddArchiveSource_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Load From Archive"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 498,239 ), long style = wxDEFAULT_DIALOG_STYLE );
+
+		~AddArchiveSource_Dialog();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class CreateStageGroup_Dialog
+///////////////////////////////////////////////////////////////////////////////
+class CreateStageGroup_Dialog : public wxDialog
+{
+	private:
+
+	protected:
+		wxStaticText* m_staticText48;
+		wxTextCtrl* m_groupName_textCtrl;
+		wxButton* m_button54;
+		wxButton* m_button55;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void OnCreate( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnCancel( wxCommandEvent& event ) { event.Skip(); }
+
+
+	public:
+
+		CreateStageGroup_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Create New Group"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 408,125 ), long style = wxDEFAULT_DIALOG_STYLE );
+
+		~CreateStageGroup_Dialog();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class DeleteGroupAlert_Dialog
+///////////////////////////////////////////////////////////////////////////////
+class DeleteGroupAlert_Dialog : public wxDialog
+{
+	private:
+
+	protected:
+		wxStaticText* m_deleteGroupName_staticText;
+		wxStaticText* m_staticText50;
+		wxButton* m_button56;
+		wxButton* m_button57;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void OnDelete( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnCancel( wxCommandEvent& event ) { event.Skip(); }
+
+
+	public:
+
+		DeleteGroupAlert_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Delete Group"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE );
+
+		~DeleteGroupAlert_Dialog();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class EditStageGroup_Dialog
+///////////////////////////////////////////////////////////////////////////////
+class EditStageGroup_Dialog : public wxDialog
+{
+	private:
+
+	protected:
+		wxStaticText* m_stageLabel_staticText;
+		wxCheckListBox* m_stageList_checkList;
+		wxButton* m_button58;
+		wxButton* m_button59;
+		wxButton* m_button62;
+		wxButton* m_button63;
+		wxStaticText* m_groupLabel_staticText;
+		wxCheckListBox* m_groupList_checkList;
+		wxButton* m_button60;
+		wxButton* m_button61;
+		wxButton* m_button64;
+		wxButton* m_button65;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void OnStageSelectAll( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnStageDeselectAll( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnAdd( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnRemove( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnGroupSelectAll( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnGroupDeselectAll( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnApply( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnCancel( wxCommandEvent& event ) { event.Skip(); }
+
+
+	public:
+
+		EditStageGroup_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Edit Group"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 659,488 ), long style = wxDEFAULT_DIALOG_STYLE );
+
+		~EditStageGroup_Dialog();
 
 };
 

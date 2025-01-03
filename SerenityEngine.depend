@@ -1,8 +1,8 @@
 # depslib dependency file v1.0
-1735714322 source:/home/n00b/Projects/SerenityEngine/Serenity3D_Editor.cpp
+1735934248 source:/home/n00b/Projects/SerenityEngine/Serenity3D_Editor.cpp
 	"Serenity3D_Editor.h"
 
-1735714322 /home/n00b/Projects/SerenityEngine/Serenity3D_Editor.h
+1735935557 /home/n00b/Projects/SerenityEngine/Serenity3D_Editor.h
 	<wx/artprov.h>
 	<wx/xrc/xmlres.h>
 	<wx/string.h>
@@ -20,8 +20,9 @@
 	<wx/stattext.h>
 	<wx/combobox.h>
 	<wx/panel.h>
+	<wx/bmpbuttn.h>
+	<wx/button.h>
 	<wx/treectrl.h>
-	<wx/notebook.h>
 	<wx/propgrid/propgrid.h>
 	<wx/propgrid/advprops.h>
 	<wx/splitter.h>
@@ -30,16 +31,15 @@
 	<wx/clrpicker.h>
 	<wx/scrolwin.h>
 	<wx/aui/auibook.h>
-	<wx/button.h>
 	<wx/listbox.h>
 	<wx/textctrl.h>
 	<wx/toolbar.h>
 	<wx/statusbr.h>
 	<wx/frame.h>
-	<wx/filepicker.h>
-	<wx/dialog.h>
-	<wx/checklst.h>
 	<wx/srchctrl.h>
+	<wx/dialog.h>
+	<wx/filepicker.h>
+	<wx/checklst.h>
 	<wx/statline.h>
 
 1648163323 /usr/include/wx-3.0/wx/artprov.h
@@ -1431,7 +1431,7 @@
 	"wx/icon.h"
 	"wx/aui/auibook.h"
 
-1735759266 source:/home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.cpp
+1735935196 source:/home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.cpp
 	<wx/stdpaths.h>
 	<irrlicht.h>
 	"wxIrrlicht.h"
@@ -1447,11 +1447,17 @@
 	"SerenityEditor_MaterialPreviewSettings_Dialog.h"
 	"SerenityEditor_SetMaterialPreviewMesh_Dialog.h"
 	"SerenityEditor_AddMaterial_Dialog.h"
+	"SerenityEditor_SetMeshMaterialLevel_Dialog.h"
+	"SerenityEditor_AddMesh_Dialog.h"
+	"SerenityEditor_CreateStageGroup_Dialog.h"
+	"SerenityEditor_DeleteGroupAlert_Dialog.h"
+	"SerenityEditor_EditStageGroup_Dialog.h"
 
-1735752847 /home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.h
+1735934965 /home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.h
 	<vector>
 	<wx/propgrid/propgrid.h>
 	<wx/propgrid/advprops.h>
+	<wx/treectrl.h>
 	"Serenity3D_Editor.h"
 	"wxIrrlicht.h"
 	"engine_base.h"
@@ -2185,7 +2191,7 @@
 
 1704201762 /usr/include/x86_64-linux-gnu/bits/types/struct_statx.h
 
-1735670810 source:/home/n00b/Projects/SerenityEngine/wxIrrlicht.cpp
+1735923338 source:/home/n00b/Projects/SerenityEngine/wxIrrlicht.cpp
 	<wx/wx.h>
 	<windows.h>
 	<gdk/gdk.h>
@@ -5365,7 +5371,7 @@
 
 1720630994 /usr/include/gtk-3.0/gtk/gtk-autocleanups.h
 
-1735670787 /home/n00b/Projects/SerenityEngine/wxIrrlicht.h
+1735920283 /home/n00b/Projects/SerenityEngine/wxIrrlicht.h
 	<windows.h>
 	<irrlicht.h>
 	<wx/wx.h>
@@ -9665,13 +9671,13 @@
 1734930714 /home/n00b/Projects/SerenityEngine/CGridSceneNode.h
 	"irrlicht.h"
 
-1735592054 source:/home/n00b/Projects/SerenityEngine/rc_stage.cpp
+1735883154 source:/home/n00b/Projects/SerenityEngine/rc_stage.cpp
 	<vector>
 	<irrlicht.h>
 	"engine_base.h"
 	"rc_stage.h"
 
-1735715574 /home/n00b/Projects/SerenityEngine/engine_base.h
+1735882587 /home/n00b/Projects/SerenityEngine/engine_base.h
 	<wx/wx.h>
 	<wx/filename.h>
 	<vector>
@@ -9679,7 +9685,7 @@
 	<cinttypes>
 	"rc_stage.h"
 
-1735711262 /home/n00b/Projects/SerenityEngine/rc_stage.h
+1735922221 /home/n00b/Projects/SerenityEngine/rc_stage.h
 	<vector>
 	<irrlicht.h>
 	"an8parser.h"
@@ -9694,7 +9700,7 @@
 
 1699484035 /usr/include/wx-3.2/wx/unix/stdpaths.h
 
-1735717182 source:/home/n00b/Projects/SerenityEngine/engine_base.cpp
+1735891198 source:/home/n00b/Projects/SerenityEngine/engine_base.cpp
 	<wx/wx.h>
 	<wx/filename.h>
 	<vector>
@@ -9702,7 +9708,7 @@
 	"engine_base.h"
 	"an8parser.h"
 
-1735753795 /home/n00b/Projects/SerenityEngine/rc_defines.h
+1735786565 /home/n00b/Projects/SerenityEngine/rc_defines.h
 
 1735235876 /home/n00b/Projects/SerenityEngine/camera.h
 	<irrlicht.h>
@@ -9917,7 +9923,7 @@
 	<wx/wx.h>
 	"Serenity3D_Editor.h"
 
-1735620497 source:/home/n00b/Projects/SerenityEngine/SerenityEditor_SetMaterialTextureLevel_Dialog.cpp
+1735766771 source:/home/n00b/Projects/SerenityEngine/SerenityEditor_SetMaterialTextureLevel_Dialog.cpp
 	"SerenityEditor_SetMaterialTextureLevel_Dialog.h"
 
 1699484035 /usr/include/wx-3.2/wx/statline.h
@@ -9954,5 +9960,38 @@
 	"SerenityEditor_AddMaterial_Dialog.h"
 
 1735681965 /home/n00b/Projects/SerenityEngine/SerenityEditor_AddMaterial_Dialog.h
+	"Serenity3D_Editor.h"
+
+1735766340 /home/n00b/Projects/SerenityEngine/SerenityEditor_SetMeshMaterialLevel_Dialog.h
+	"Serenity3D_Editor.h"
+
+1735766771 source:/home/n00b/Projects/SerenityEngine/SerenityEditor_SetMeshMaterialLevel_Dialog.cpp
+	"SerenityEditor_SetMeshMaterialLevel_Dialog.h"
+
+1735834858 source:/home/n00b/Projects/SerenityEngine/SerenityEditor_AddMesh_Dialog.cpp
+	<wx/dir.h>
+	"SerenityEditor_AddMesh_Dialog.h"
+
+1735834531 /home/n00b/Projects/SerenityEngine/SerenityEditor_AddMesh_Dialog.h
+	<wx/wx.h>
+	<vector>
+	"Serenity3D_Editor.h"
+
+1735934297 source:/home/n00b/Projects/SerenityEngine/SerenityEditor_CreateStageGroup_Dialog.cpp
+	"SerenityEditor_CreateStageGroup_Dialog.h"
+
+1735934297 /home/n00b/Projects/SerenityEngine/SerenityEditor_CreateStageGroup_Dialog.h
+	"Serenity3D_Editor.h"
+
+1735934297 source:/home/n00b/Projects/SerenityEngine/SerenityEditor_DeleteGroupAlert_Dialog.cpp
+	"SerenityEditor_DeleteGroupAlert_Dialog.h"
+
+1735934297 /home/n00b/Projects/SerenityEngine/SerenityEditor_DeleteGroupAlert_Dialog.h
+	"Serenity3D_Editor.h"
+
+1735934297 source:/home/n00b/Projects/SerenityEngine/SerenityEditor_EditStageGroup_Dialog.cpp
+	"SerenityEditor_EditStageGroup_Dialog.h"
+
+1735934297 /home/n00b/Projects/SerenityEngine/SerenityEditor_EditStageGroup_Dialog.h
 	"Serenity3D_Editor.h"
 

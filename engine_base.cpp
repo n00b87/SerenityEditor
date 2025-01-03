@@ -255,56 +255,8 @@ void serenity_project::init_project(std::vector<serenity_project_dict_obj> param
 	}
 }
 
-int serenity_project::load_stage(std::vector<serenity_project_dict_obj> stage_param, bool isActive)
+void serenity_project::resolve_materialReferences()
 {
-	if(stage_param.size() < 3)
-		return -1;
-
-	wxString id_name = _("");
-	wxFileName fname = project_path;
-	fname.SetFullName(_(""));
-
-	fname.AppendDir(_("stages"));
-
-	for(int i = 0; i < stage_param.size(); i++)
-	{
-		if(stage_param[i].key.compare(_("file"))==0)
-		{
-			fname.SetFullName(stage_param[i].val);
-		}
-	}
-
-	//wxMessageBox(_("Stage Path:") + fname.GetAbsolutePath());
-
-	if(!fname.Exists())
-		return -1;
-
-	wxFile st_file(fname.GetAbsolutePath());
-	wxString content;
-	st_file.ReadAll(&content);
-	st_file.Close();
-
-	std::vector<serenity_project_file_obj> st_obj = getParams(content);
-
-	for(int i = 0; i < st_obj.size(); i++)
-	{
-		if(st_obj[i].dict[0].key.compare(_("Image"))==0)
-			load_texture(st_obj[i].dict);
-		else if(st_obj[i].dict[0].key.compare(_("Mesh"))==0)
-			load_mesh(st_obj[i].dict);
-		else if(st_obj[i].dict[0].key.compare(_("AN8"))==0)
-			load_an8(st_obj[i].dict);
-		else if(st_obj[i].dict[0].key.compare(_("Material"))==0)
-			load_material(st_obj[i].dict);
-	}
-
-	//attempt to reload an8 meshes that were missing an8 projects the first time
-	std::vector<serenity_project_dict_obj> tmp_param; //This is just an empty vector because its a required parameter for load_mesh()
-	for(int i = 0; i < tmp_mesh_index.size(); i++)
-	{
-		load_mesh(tmp_param, tmp_mesh_index[i]);
-	}
-
 	//resolve material ids to indices in meshes
 	for(int i = 0; i < meshes.size(); i++)
 	{
@@ -331,9 +283,95 @@ int serenity_project::load_stage(std::vector<serenity_project_dict_obj> stage_pa
 
 		meshes[i].ref_material_id.clear();
 	}
+}
 
+int serenity_project::load_stage(std::vector<serenity_project_dict_obj> stage_param, bool isActive)
+{
+	if(stage_param.size() < 3)
+		return -1;
 
-	return 0;
+	wxString id_name = _("");
+	wxFileName fname = project_path;
+	fname.SetFullName(_(""));
+
+	fname.AppendDir(_("stages"));
+
+	rc_stage p_stage;
+
+	for(int i = 0; i < stage_param.size(); i++)
+	{
+		if(stage_param[i].key.compare(_("file"))==0)
+		{
+			fname.SetFullName(stage_param[i].val);
+			p_stage.file = stage_param[i].val.ToStdString();
+		}
+		else if(stage_param[i].key.compare(_("id"))==0)
+		{
+			p_stage.id_name = stage_param[i].val.ToStdString();
+		}
+	}
+
+	//wxMessageBox(_("Stage Path:") + fname.GetAbsolutePath());
+
+	if(!fname.Exists())
+		return -1;
+
+	wxFile st_file(fname.GetAbsolutePath());
+	wxString content;
+	st_file.ReadAll(&content);
+	st_file.Close();
+
+	std::vector<serenity_project_file_obj> st_obj = getParams(content);
+
+	for(int i = 0; i < st_obj.size(); i++)
+	{
+		if(st_obj[i].dict[0].key.compare(_("Image"))==0)
+			load_texture(st_obj[i].dict);
+		else if(st_obj[i].dict[0].key.compare(_("Mesh"))==0)
+			load_mesh(st_obj[i].dict);
+		else if(st_obj[i].dict[0].key.compare(_("AN8"))==0)
+			load_an8(st_obj[i].dict);
+		else if(st_obj[i].dict[0].key.compare(_("Material"))==0)
+			load_material(st_obj[i].dict);
+		else if(st_obj[i].dict[0].key.compare(_("Actor"))==0)
+		{
+			rc_actor p_actor = load_actor(st_obj[i].dict);
+
+			if(p_actor.id_name.compare("") != 0)
+				p_stage.actors.push_back(p_actor);
+		}
+		else if(st_obj[i].dict[0].key.compare(_("Group"))==0)
+		{
+			rc_group p_group;
+
+			for(int n_item = 0; n_item < st_obj[i].dict.size(); n_item++)
+			{
+				if(st_obj[i].dict[n_item].key.compare(_("label"))==0)
+				{
+					p_group.label = st_obj[i].dict[n_item].val.ToStdString();
+					break;
+				}
+			}
+
+			if(p_group.label.compare("") != 0)
+				p_stage.groups.push_back(p_group);
+		}
+	}
+
+	//attempt to reload an8 meshes that were missing an8 projects the first time
+	std::vector<serenity_project_dict_obj> tmp_param; //This is just an empty vector because its a required parameter for load_mesh()
+	for(int i = 0; i < tmp_mesh_index.size(); i++)
+	{
+		load_mesh(tmp_param, tmp_mesh_index[i]);
+	}
+
+	//resolve material ids to indices in meshes
+	resolve_materialReferences();
+
+	int stage_index = stages.size();
+	stages.push_back(p_stage);
+
+	return stage_index;
 }
 
 void serenity_project::save_stage(int stage_id)
@@ -346,17 +384,192 @@ void serenity_project::remove_stage(int stage_id)
 
 void serenity_project::setGridSize(float g_size)
 {
+	grid_size = g_size;
 }
 
 void serenity_project::setGridSpacing(float g_spacing)
 {
+	grid_spacing = g_spacing;
 }
 
 void serenity_project::setGridVisible(bool flag)
 {
+	grid_visible = flag;
 }
 
+void serenity_project::setGridColor(uint32_t color)
+{
+	grid_color = color;
+}
 
+wxString serenity_project::getLightTypeString(int light_type)
+{
+	switch(light_type)
+	{
+		case SN_LIGHT_TYPE_DIRECTIONAL: return _("DIRECTIONAL");
+		case SN_LIGHT_TYPE_POINT: return _("POINT");
+		case SN_LIGHT_TYPE_SPOT: return _("SPOT");
+	}
+	return _("");
+}
+
+int serenity_project::getLightType(wxString light_type_string)
+{
+	if(light_type_string.compare(_("DIRECTIONAL"))==0)
+		return SN_LIGHT_TYPE_DIRECTIONAL;
+	else if(light_type_string.compare(_("POINT"))==0)
+		return SN_LIGHT_TYPE_POINT;
+	else if(light_type_string.compare(_("SPOT"))==0)
+		return SN_LIGHT_TYPE_SPOT;
+
+	return -1;
+}
+
+wxString serenity_project::getActorTypeString(int actor_type)
+{
+	switch(actor_type)
+	{
+		case SN_ACTOR_TYPE_ANIMATED: return _("ANIMATED");
+		case SN_ACTOR_TYPE_OCTREE:	return _("OCTREE");
+		case SN_ACTOR_TYPE_LIGHT:	return _("LIGHT");
+		case SN_ACTOR_TYPE_BILLBOARD: return _("BILLBOARD");
+		case SN_ACTOR_TYPE_TERRAIN: return _("TERRAIN");
+		case SN_ACTOR_TYPE_WATER:	return _("WATER");
+		case SN_ACTOR_TYPE_PARTICLE:	return _("PARTICLE");
+		case SN_ACTOR_TYPE_CUBE:	return _("CUBE");
+		case SN_ACTOR_TYPE_SPHERE:	return _("SPHERE");
+		case SN_ACTOR_TYPE_PLANE:	return _("PLANE");
+	}
+	return _("");
+}
+
+int serenity_project::getActorType(wxString actor_type_string)
+{
+	if(actor_type_string.compare(_("ANIMATED"))==0)
+		return SN_ACTOR_TYPE_ANIMATED;
+	else if(actor_type_string.compare(_("OCTREE"))==0)
+		return SN_ACTOR_TYPE_OCTREE;
+	else if(actor_type_string.compare(_("LIGHT"))==0)
+		return SN_ACTOR_TYPE_LIGHT;
+	else if(actor_type_string.compare(_("BILLBOARD"))==0)
+		return SN_ACTOR_TYPE_BILLBOARD;
+	else if(actor_type_string.compare(_("TERRAIN"))==0)
+		return SN_ACTOR_TYPE_TERRAIN;
+	else if(actor_type_string.compare(_("WATER"))==0)
+		return SN_ACTOR_TYPE_WATER;
+	else if(actor_type_string.compare(_("PARTICLE"))==0)
+		return SN_ACTOR_TYPE_PARTICLE;
+	else if(actor_type_string.compare(_("CUBE"))==0)
+		return SN_ACTOR_TYPE_CUBE;
+	else if(actor_type_string.compare(_("SPHERE"))==0)
+		return SN_ACTOR_TYPE_SPHERE;
+	else if(actor_type_string.compare(_("PLANE"))==0)
+		return SN_ACTOR_TYPE_PLANE;
+
+	return -1;
+}
+
+rc_actor serenity_project::load_actor(std::vector<serenity_project_dict_obj> param)
+{
+	rc_actor p_actor;
+
+	double pos_x, pos_y, pos_z, rot_x, rot_y, rot_z, scale_x, scale_y, scale_z;
+
+	for(int i = 0; i < param.size(); i++)
+	{
+		if(param[i].key.compare(_("type"))==0)
+			p_actor.type = getActorType(param[i].val.ToStdString());
+		else if(param[i].key.compare(_("id"))==0)
+			p_actor.id_name = param[i].val.ToStdString();
+		else if(param[i].key.compare(_("group"))==0)
+			p_actor.group_name = param[i].val.ToStdString();
+		else if(param[i].key.compare(_("mesh"))==0)
+			param[i].val.ToInt(&p_actor.mesh_index);
+		else if(param[i].key.compare(_("pos_x"))==0)
+			param[i].val.ToDouble(&pos_x);
+		else if(param[i].key.compare(_("pos_y"))==0)
+			param[i].val.ToDouble(&pos_y);
+		else if(param[i].key.compare(_("pos_z"))==0)
+			param[i].val.ToDouble(&pos_z);
+		else if(param[i].key.compare(_("rot_x"))==0)
+			param[i].val.ToDouble(&rot_x);
+		else if(param[i].key.compare(_("rot_y"))==0)
+			param[i].val.ToDouble(&rot_y);
+		else if(param[i].key.compare(_("rot_z"))==0)
+			param[i].val.ToDouble(&rot_z);
+		else if(param[i].key.compare(_("scale_x"))==0)
+			param[i].val.ToDouble(&scale_x);
+		else if(param[i].key.compare(_("scale_y"))==0)
+			param[i].val.ToDouble(&scale_y);
+		else if(param[i].key.compare(_("scale_z"))==0)
+			param[i].val.ToDouble(&scale_z);
+		else if(param[i].key.compare(_("material"))==0)
+			param[i].val.ToInt(&p_actor.override_material_index);
+		else if(param[i].key.compare(_("animation"))==0)
+			param[i].val.ToInt(&p_actor.animation_index);
+		else if(param[i].key.compare(_("num_loops"))==0)
+			param[i].val.ToInt(&p_actor.num_loops);
+		else if(param[i].key.compare(_("visible"))==0)
+			p_actor.visible = (param[i].val.compare(_("true"))==0 ? true : false);
+		else if(param[i].key.compare(_("shadow"))==0)
+			p_actor.hasShadow = (param[i].val.compare(_("true"))==0 ? true : false);
+		else if(param[i].key.compare(_("cast_shadow"))==0)
+			p_actor.isCastingShadow = (param[i].val.compare(_("true"))==0 ? true : false);
+		else if(param[i].key.compare(_("auto_culling"))==0)
+			p_actor.auto_culling = (param[i].val.compare(_("true"))==0 ? true : false);
+		else if(param[i].key.compare(_("cube_size"))==0)
+			param[i].val.ToDouble(&p_actor.cube_size);
+		else if(param[i].key.compare(_("radius"))==0)
+			param[i].val.ToDouble(&p_actor.radius);
+		else if(param[i].key.compare(_("texture_index"))==0)
+			param[i].val.ToInt(&p_actor.texture_index);
+		else if(param[i].key.compare(_("light_type"))==0)
+			p_actor.light_type = getLightType(param[i].val);
+		else if(param[i].key.compare(_("angle"))==0)
+			param[i].val.ToDouble(&p_actor.angle);
+		else if(param[i].key.compare(_("falloff"))==0)
+			param[i].val.ToDouble(&p_actor.falloff);
+		else if(param[i].key.compare(_("ambient"))==0)
+		{
+			irr::u32 c = 0;
+			param[i].val.ToUInt(&c);
+			p_actor.ambient = irr::video::SColor(c);
+		}
+		else if(param[i].key.compare(_("emissive"))==0)
+		{
+			irr::u32 c = 0;
+			param[i].val.ToUInt(&c);
+			p_actor.emissive = irr::video::SColor(c);
+		}
+		else if(param[i].key.compare(_("diffuse"))==0)
+		{
+			irr::u32 c = 0;
+			param[i].val.ToUInt(&c);
+			p_actor.diffuse = irr::video::SColor(c);
+		}
+		else if(param[i].key.compare(_("specular"))==0)
+		{
+			irr::u32 c = 0;
+			param[i].val.ToUInt(&c);
+			p_actor.specular = irr::video::SColor(c);
+		}
+		else if(param[i].key.compare(_("terrain_hmap_file"))==0)
+			p_actor.terrain_hmap_file = param[i].val.ToStdString();
+		else if(param[i].key.compare(_("wave_height"))==0)
+			param[i].val.ToDouble(&p_actor.wave_height);
+		else if(param[i].key.compare(_("wave_length"))==0)
+			param[i].val.ToDouble(&p_actor.wave_length);
+		else if(param[i].key.compare(_("wave_speed"))==0)
+			param[i].val.ToDouble(&p_actor.wave_speed);
+	}
+
+	p_actor.position = irr::core::vector3df(pos_x, pos_y, pos_z);
+	p_actor.rotation = irr::core::vector3df(rot_x, rot_y, rot_z);
+	p_actor.scale = irr::core::vector3df(scale_x, scale_y, scale_z);
+	p_actor.node = NULL;
+
+	return p_actor;
+}
 
 int serenity_project::load_texture(std::vector<serenity_project_dict_obj> param, int reload_index)
 {
@@ -518,6 +731,7 @@ int serenity_project::load_mesh(std::vector<serenity_project_dict_obj> param, in
 	rc_mesh p_mesh;
 	p_mesh.ref_an8_id = "";
 	p_mesh.isAN8Scene = false;
+	p_mesh.isMD2 = false;
 
 	bool in_zip = false;
 	wxString zip_file = "";
@@ -532,10 +746,6 @@ int serenity_project::load_mesh(std::vector<serenity_project_dict_obj> param, in
 				id_name = param[i].val;
 			else if(param[i].key.compare(_("file"))==0)
 				file_name = param[i].val;
-			else if(param[i].key.compare(_("ani_file"))==0)
-				ani_file = param[i].val;
-			else if(param[i].key.compare(_("material"))==0)
-				p_mesh.ref_material_id.push_back(param[i].val.ToStdString());
 			else if(param[i].key.compare(_("an8"))==0)
 			{
 				p_mesh.isAN8Scene = true;
@@ -617,11 +827,116 @@ int serenity_project::load_mesh(std::vector<serenity_project_dict_obj> param, in
 		p_mesh.mesh = device->getSceneManager()->getMesh(fname.GetAbsolutePath().ToStdString().c_str());
 
 
-	//Load animation
-	if(ani_file.compare(_(""))!=0)
+
+	//Load Material
+	load_material_list(&p_mesh, id_name + _(".snmd"));
+
+	//Check if MD2
+	if(p_mesh.file.length() > 4)
 	{
-		fname.SetFullName(ani_file);
-		wxFile af(fname.GetAbsolutePath());
+		wxString ext = wxString::FromUTF8(p_mesh.file.substr(p_mesh.file.length()-4, 4)); //Checking extension in wxFileName is sometimes unreliable
+
+		if(ext.Lower().compare(_(".md2")) == 0)
+			p_mesh.isMD2 = true;
+	}
+
+	//Load MD2 animations if MD2 file
+	if(p_mesh.isMD2)
+	{
+		rc_animation animation_obj;
+
+		animation_obj.id_name = "MD2_STAND";
+		animation_obj.md2_animation = irr::scene::EMAT_STAND;
+		p_mesh.animation.push_back(animation_obj);
+
+		animation_obj.id_name = "MD2_RUN";
+		animation_obj.md2_animation = irr::scene::EMAT_RUN;
+		p_mesh.animation.push_back(animation_obj);
+
+		animation_obj.id_name = "MD2_ATTACK";
+		animation_obj.md2_animation = irr::scene::EMAT_ATTACK;
+		p_mesh.animation.push_back(animation_obj);
+
+		animation_obj.id_name = "MD2_PAIN_A";
+		animation_obj.md2_animation = irr::scene::EMAT_PAIN_A;
+		p_mesh.animation.push_back(animation_obj);
+
+		animation_obj.id_name = "MD2_PAIN_B";
+		animation_obj.md2_animation = irr::scene::EMAT_PAIN_B;
+		p_mesh.animation.push_back(animation_obj);
+
+		animation_obj.id_name = "MD2_PAIN_C";
+		animation_obj.md2_animation = irr::scene::EMAT_PAIN_C;
+		p_mesh.animation.push_back(animation_obj);
+
+		animation_obj.id_name = "MD2_JUMP";
+		animation_obj.md2_animation = irr::scene::EMAT_JUMP;
+		p_mesh.animation.push_back(animation_obj);
+
+		animation_obj.id_name = "MD2_FLIP";
+		animation_obj.md2_animation = irr::scene::EMAT_FLIP;
+		p_mesh.animation.push_back(animation_obj);
+
+		animation_obj.id_name = "MD2_SALUTE";
+		animation_obj.md2_animation = irr::scene::EMAT_SALUTE;
+		p_mesh.animation.push_back(animation_obj);
+
+		animation_obj.id_name = "MD2_FALLBACK";
+		animation_obj.md2_animation = irr::scene::EMAT_FALLBACK;
+		p_mesh.animation.push_back(animation_obj);
+
+		animation_obj.id_name = "MD2_WAVE";
+		animation_obj.md2_animation = irr::scene::EMAT_WAVE;
+		p_mesh.animation.push_back(animation_obj);
+
+		animation_obj.id_name = "MD2_POINT";
+		animation_obj.md2_animation = irr::scene::EMAT_POINT;
+		p_mesh.animation.push_back(animation_obj);
+
+		animation_obj.id_name = "MD2_CROUCH_STAND";
+		animation_obj.md2_animation = irr::scene::EMAT_CROUCH_STAND;
+		p_mesh.animation.push_back(animation_obj);
+
+		animation_obj.id_name = "MD2_CROUCH_WALK";
+		animation_obj.md2_animation = irr::scene::EMAT_CROUCH_WALK;
+		p_mesh.animation.push_back(animation_obj);
+
+		animation_obj.id_name = "MD2_CROUCH_ATTACK";
+		animation_obj.md2_animation = irr::scene::EMAT_CROUCH_ATTACK;
+		p_mesh.animation.push_back(animation_obj);
+
+		animation_obj.id_name = "MD2_CROUCH_PAIN";
+		animation_obj.md2_animation = irr::scene::EMAT_CROUCH_PAIN;
+		p_mesh.animation.push_back(animation_obj);
+
+		animation_obj.id_name = "MD2_CROUCH_DEATH";
+		animation_obj.md2_animation = irr::scene::EMAT_CROUCH_DEATH;
+		p_mesh.animation.push_back(animation_obj);
+
+		animation_obj.id_name = "MD2_DEATH_FALLBACK";
+		animation_obj.md2_animation = irr::scene::EMAT_DEATH_FALLBACK;
+		p_mesh.animation.push_back(animation_obj);
+
+		animation_obj.id_name = "MD2_DEATH_FALLFORWARD";
+		animation_obj.md2_animation = irr::scene::EMAT_DEATH_FALLFORWARD;
+		p_mesh.animation.push_back(animation_obj);
+
+		animation_obj.id_name = "MD2_DEATH_FALLBACKSLOW";
+		animation_obj.md2_animation = irr::scene::EMAT_DEATH_FALLBACKSLOW;
+		p_mesh.animation.push_back(animation_obj);
+
+		animation_obj.id_name = "MD2_BOOM";
+		animation_obj.md2_animation = irr::scene::EMAT_BOOM;
+		p_mesh.animation.push_back(animation_obj);
+	}
+
+	//Load animation
+	wxFileName dpath = project_path;
+	dpath.AppendDir(_("data"));
+	dpath.SetFullName(id_name + _(".sna"));
+	if(dpath.Exists())
+	{
+		wxFile af(dpath.GetAbsolutePath());
 
 		if(af.IsOpened())
 		{
@@ -1498,4 +1813,105 @@ bool serenity_project::save_material(int material_index)
 	mat_file.Close();
 
 	return true;
+}
+
+bool serenity_project::save_mesh_properties(int mesh_index)
+{
+	if(mesh_index < 0 || mesh_index >= meshes.size())
+		return false;
+
+	rc_mesh p_mesh = meshes[mesh_index];
+
+	if(p_mesh.id_name.compare("")==0)
+		return false;
+
+	wxFileName fname = project_path;
+	fname.AppendDir(_("data"));
+	fname.SetFullName(wxString::FromUTF8(p_mesh.id_name) + _(".snmd"));
+
+	wxFile md_file(fname.GetAbsolutePath(), wxFile::write);
+
+	if(!md_file.IsOpened())
+		return false;
+
+	for(int i = 0; i < p_mesh.material_index.size(); i++)
+	{
+		if(p_mesh.material_index[i] < 0 || p_mesh.material_index[i] >= materials.size())
+		{
+			md_file.Write(_("material=[NULL]; \n"));
+			continue;
+		}
+
+		if(materials[ p_mesh.material_index[i] ].id_name.compare("") == 0)
+		{
+			md_file.Write(_("material=[NULL]; \n"));
+			continue;
+		}
+
+		md_file.Write(_("material=") + materials[ p_mesh.material_index[i] ].id_name + _("; \n"));
+	}
+
+
+	md_file.Close();
+
+
+	fname.SetFullName(wxString::FromUTF8(p_mesh.id_name) + _(".sna"));
+
+	wxFile ani_file(fname.GetAbsolutePath(), wxFile::write);
+
+	if(!ani_file.IsOpened())
+		return false;
+
+	for(int i = 0; i < p_mesh.animation.size(); i++)
+	{
+		if(p_mesh.isMD2 && i < irr::scene::EMAT_COUNT)  //Not adding default MD2 animations since it would only duplicate them on load
+			continue;
+
+		if(p_mesh.animation[i].id_name.compare("") != 0)
+		{
+			ani_file.Write(_("id=") + wxString::FromUTF8(p_mesh.animation[i].id_name) + _(" "));
+			ani_file.Write(_("start=") + wxString::Format(_("%d"), p_mesh.animation[i].start_frame) + _(" "));
+			ani_file.Write(_("end=") + wxString::Format(_("%d"), p_mesh.animation[i].end_frame) + _(" "));
+			ani_file.Write(_("speed=") + wxString::FromDouble((double)p_mesh.animation[i].speed) + _("; \n"));
+		}
+	}
+
+	ani_file.Close();
+
+	return true;
+}
+
+
+void serenity_project::load_material_list(rc_mesh* p_mesh, wxString ml_file)
+{
+	wxFileName fname = project_path;
+	fname.AppendDir(_("data"));
+	fname.SetFullName(ml_file);
+
+	if(!fname.Exists())
+	{
+		//wxMessageBox(_("Material List Not found"));
+		return;
+	}
+
+	wxFile mfile(fname.GetAbsolutePath());
+
+	if(!mfile.IsOpened())
+		return;
+
+	wxString content;
+	mfile.ReadAll(&content);
+
+	mfile.Close();
+
+	std::vector<serenity_project_file_obj> file_obj = getParams(content);
+
+	for(int i = 0; i < file_obj.size(); i++)
+	{
+		if(file_obj[i].dict.size() > 0)
+		{
+			if(file_obj[i].dict[0].key.compare(_("material"))==0)
+				p_mesh->ref_material_id.push_back(file_obj[i].dict[0].val.ToStdString());
+		}
+	}
 }

@@ -65,8 +65,18 @@ public:
 	int load_an8(std::vector<serenity_project_dict_obj> stage_param, int reload_index=-1);
 	int load_mesh(std::vector<serenity_project_dict_obj> stage_param, int m_index=-1, int reload_index=-1);
 	int load_material(std::vector<serenity_project_dict_obj> stage_param, int reload_index=-1);
+	rc_actor load_actor(std::vector<serenity_project_dict_obj> stage_param);
+
+	wxString getActorTypeString(int actor_type);
+	int getActorType(wxString actor_type_string);
+	wxString getLightTypeString(int light_type);
+	int getLightType(wxString light_type_string);
+
+	void load_material_list(rc_mesh* p_mesh, wxString ml_file);
 	rc_material loadMaterialFile(wxString mfile, wxString mID);
 	bool save_material(int material_index);
+	bool save_mesh_properties(int mesh_index);
+	void resolve_materialReferences();
 
 	void remove_texture(int t_index);
 
@@ -76,6 +86,7 @@ public:
 	void setGridVisible(bool flag);
 	void setGridSize(float g_size);
 	void setGridSpacing(float g_spacing);
+	void setGridColor(uint32_t color);
 
 	std::vector<serenity_project_file_obj> getParams(wxString p_data);
 

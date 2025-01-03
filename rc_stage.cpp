@@ -75,14 +75,5 @@ void rc_stage::clearActorVector(std::vector<rc_actor>& actor_vector)
 
 void rc_stage::clearStage()
 {
-	clearActorVector(animated_actors);
-	clearActorVector(octree_actors);
-	clearActorVector(light_actors);
-	clearActorVector(billboard_actors);
-	clearActorVector(terrain_actors);
-	clearActorVector(water_actors);
-	clearActorVector(particle_actors);
-	clearActorVector(cube_actors);
-	clearActorVector(sphere_actors);
-	clearActorVector(plane_actors);
+	clearActorVector(actors);
 }

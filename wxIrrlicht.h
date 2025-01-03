@@ -77,7 +77,7 @@ class wxIrrlicht : public wxControl {
 		~wxIrrlicht();
 
         void InitIrr(irr::SIrrlichtCreationParameters* init_params = 0);
-        void InitIrr(irr::IrrlichtDevice* device);
+        //void InitIrr(irr::IrrlichtDevice* device);
 
         void StartRendering(int milliseconds = 10);
         void StopRendering();
@@ -100,15 +100,20 @@ class wxIrrlicht : public wxControl {
 
         viewport_camera camera[4];
         int active_camera = 0;
-        double material_view_camera_speed = 1;
+        double material_view_camera_speed = 0.2;
         int num_views = 1; //will either be 1 or 4
 
         font_obj font[MAX_FONTS];
         int active_font = -1;
 
-        int grid_size = 2500;
-        int grid_spacing = 100;
+        irr::f32 grid_size = 2500;
+        irr::f32 grid_spacing = 100;
         irr::video::SColor grid_color;
+        bool grid_visible = true;
+
+        void setGridSize(irr::f32 g_size);
+        void setGridSpacing(irr::f32 g_spacing);
+        void setGridColor(irr::u32 g_color);
 
         int irr_LoadFont(std::string font_file, int font_size);
         void irr_DrawText(std::string txt, int x, int y, irr::video::SColor color);
@@ -134,6 +139,8 @@ class wxIrrlicht : public wxControl {
         void SetViews(int view_flag, int view0_pov=-1, int view1_pov=-1, int view2_pov=-1, int view3_pov=-1);
 
         void OnUpdate();
+
+        void AnimationPreview_Update();
 
         irr::IrrlichtDevice* m_pDevice;
         irr::video::IVideoDriver* m_pDriver;

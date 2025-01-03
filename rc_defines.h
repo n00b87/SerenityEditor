@@ -12,6 +12,7 @@
 #define RC_IRR_WINDOW_NAV3D		0
 #define RC_IRR_WINDOW_MATERIAL	1
 #define RC_IRR_WINDOW_VIEW2D	2
+#define RC_IRR_WINDOW_ANIMATION	3
 
 #if defined(__WXGTK__)
 	#define HIDE_CURSOR wxSetCursor(wxCURSOR_BLANK)
