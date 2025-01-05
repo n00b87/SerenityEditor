@@ -1,4 +1,8 @@
 #include <wx/stdpaths.h>
+#include <wx/propgrid/manager.h>
+#include <wx/propgrid/propgridpagestate.h>
+#include <wx/propgrid/propgrid.h>
+#include <wx/propgrid/advprops.h>
 #include <irrlicht.h>
 #include "wxIrrlicht.h"
 #include "SerenityEditorSerenity3D_Frame.h"
@@ -701,6 +705,10 @@ void SerenityEditorSerenity3D_Frame::OnMainEditorNotebookPageChanged( wxAuiNoteb
 			current_stage_settings.camera[3].rotation.z = stage_window->camera[3].camera.rz;
 		}
 		project.clearProject();
+
+		for(int i = 0; i < project.stages.size(); i++)
+			project.stages[i].clearStage();
+
 		current_window->GetDevice()->closeDevice();
 		current_window->Close();
 		delete current_window;
@@ -764,6 +772,9 @@ void SerenityEditorSerenity3D_Frame::OnMainEditorNotebookPageChanged( wxAuiNoteb
 	reloadResources();
 
 	current_window->force_refresh();
+
+	if(stageTab_active_stage_project_index >= 0 && stageTab_active_stage_project_index < project.stages.size() && stage_window != NULL)
+		open_stage(stageTab_active_stage_project_index);
 }
 
 void SerenityEditorSerenity3D_Frame::reloadResources()
@@ -823,33 +834,620 @@ void SerenityEditorSerenity3D_Frame::OnStopClicked( wxCommandEvent& event )
 //--------------PROJECT STAGE SETTINGS-------------------------------
 void SerenityEditorSerenity3D_Frame::On_Stage_NewGroup( wxCommandEvent& event )
 {
+	if(stageTab_active_stage_project_index < 0 && stageTab_active_stage_project_index < project.stages.size())
+	{
+		return;
+	}
+
 	SerenityEditor_CreateStageGroup_Dialog* dialog = new SerenityEditor_CreateStageGroup_Dialog(this);
 
+	for(int i = 0; i < project.stages.size(); i++)
+	{
+		if(project.stages[i].id_name.compare("") != 0)
+		{
+			dialog->stages.push_back(wxString::FromUTF8(project.stages[i].id_name).Trim());
+		}
+	}
+
+	wxString selected_stage = _("");
+
+	wxTreeItemId selection = m_project_stage_treeCtrl->GetSelection();
+
+	int selected_stage_node_index = -1;
+
+	for(int i = 0; i < stage_tree_nodes.size(); i++)
+	{
+		int stage_index = stage_tree_nodes[i].project_index;
+
+		if(stage_tree_nodes[i].tree_item == selection)
+		{
+			if(stage_index >= 0 && stage_index < project.stages.size())
+			{
+				selected_stage = wxString::FromUTF8(project.stages[stage_index].id_name);
+				selected_stage_node_index = i;
+				break;
+			}
+		}
+
+		bool node_found = false;
+
+		for(int n = 0; n < stage_tree_nodes[i].actors.size(); n++)
+		{
+			if(stage_tree_nodes[i].actors[n].tree_item == selection)
+			{
+				node_found = true;
+				selected_stage = wxString::FromUTF8(project.stages[stage_index].id_name);
+				break;
+			}
+		}
+
+		if(!node_found)
+		{
+			for(int n = 0; n < stage_tree_nodes[i].groups.size(); n++)
+			{
+				if(stage_tree_nodes[i].groups[n].tree_item == selection)
+				{
+					node_found = true;
+					selected_stage = wxString::FromUTF8(project.stages[stage_index].id_name);
+					break;
+				}
+			}
+		}
+
+		if(node_found)
+		{
+			selected_stage_node_index = i;
+			break;
+		}
+	}
+
+	if(selected_stage_node_index < 0)
+		return;
+
+	dialog->selected_stage = selected_stage;
+
+	dialog->refresh_list();
+
 	dialog->ShowModal();
+
+
+
+	selected_stage = dialog->selected_stage;
+
+	selection = m_project_stage_treeCtrl->GetSelection();
+
+	selected_stage_node_index = -1;
+
+	for(int i = 0; i < stage_tree_nodes.size(); i++)
+	{
+		int project_index = stage_tree_nodes[i].project_index;
+
+		if(project_index >= 0 && project_index < project.stages.size())
+		{
+			if(project.stages[project_index].id_name.compare(selected_stage.ToStdString())==0)
+			{
+				selected_stage_node_index = i;
+				selection = stage_tree_nodes[i].tree_item;
+				break;
+			}
+		}
+	}
+
+	if(dialog->set_flag && (selected_stage_node_index < 0))
+	{
+		wxMessageBox(_("Create Group Error: No stage was selected for group"));
+		return;
+	}
+
+	if(dialog->set_flag)
+	{
+		wxString group_name = dialog->group_name;
+
+		if(group_name.Trim().compare(_(""))==0)
+		{
+			wxMessageBox(_("Group must have a label"));
+			return;
+		}
+
+		rc_group new_group;
+		new_group.label = group_name.Trim().ToStdString();
+
+		int stage_project_index = stage_tree_nodes[selected_stage_node_index].project_index;
+
+		if(stage_project_index < 0 || stage_project_index >= project.stages.size())
+		{
+			wxMessageBox(_("Create Group Error: Stage Id not found"));
+			return;
+		}
+
+		int stage_group_index = project.stages[stage_project_index].groups.size();
+
+		project.stages[stage_project_index].groups.push_back(new_group);
+
+		if(stage_tree_nodes[selected_stage_node_index].node_type == RC_STAGE_NODE_STAGE)
+		{
+			Serenity_StageNode group_node;
+			group_node.group_label = wxString::FromUTF8(new_group.label);
+			group_node.active = false;
+			group_node.actors.clear();
+			group_node.groups.clear();
+			group_node.node_type = RC_STAGE_NODE_GROUP;
+			group_node.parent_item = stage_tree_nodes[selected_stage_node_index].tree_item;
+			group_node.project_index = -1;
+			group_node.stage_group = stage_group_index;
+			group_node.tree_item = m_project_stage_treeCtrl->AppendItem(group_node.parent_item, group_node.group_label, stage_tree_groupImage);
+			stage_tree_nodes[selected_stage_node_index].groups.push_back(group_node);
+		}
+
+	}
+}
+
+bool SerenityEditorSerenity3D_Frame::delete_actor(int stage_index, int actor_stage_index)
+{
+	if(stage_index < 0 || stage_index >= project.stages.size())
+		return false;
+
+	if(actor_stage_index < 0 || actor_stage_index >= project.stages[stage_index].actors.size())
+		return false;
+
+	if(project.stages[stage_index].actors[actor_stage_index].node)
+		project.stages[stage_index].actors[actor_stage_index].node->remove();
+
+	project.stages[stage_index].actors[actor_stage_index].node = NULL;
+	project.stages[stage_index].actors[actor_stage_index].id_name = _("");
+	project.stages[stage_index].actors[actor_stage_index].group_name = _("");
+	project.stages[stage_index].actors[actor_stage_index].mesh_index = -1;
+	project.stages[stage_index].actors[actor_stage_index].type = -1;
+
+	return true;
 }
 
 void SerenityEditorSerenity3D_Frame::On_Stage_DeleteGroup( wxCommandEvent& event )
 {
 	SerenityEditor_DeleteGroupAlert_Dialog* dialog = new SerenityEditor_DeleteGroupAlert_Dialog(this);
 
+	wxTreeItemId selection = m_project_stage_treeCtrl->GetSelection();
+
+	int stage_node_index = -1;
+	int group_node_index = -1;
+
+	for(int i = 0; i < stage_tree_nodes.size(); i++)
+	{
+		for(int group_index = 0; group_index < stage_tree_nodes[i].groups.size(); group_index++)
+		{
+			if(stage_tree_nodes[i].groups[group_index].tree_item == selection)
+			{
+				stage_node_index = i;
+				group_node_index = group_index;
+				break;
+			}
+		}
+
+		if(group_node_index >= 0)
+			break;
+	}
+
+	if(group_node_index < 0)
+	{
+		wxMessageBox(_("Can't delete group. A group has not been selected"));
+		return;
+	}
+
+	if(stage_tree_nodes[stage_node_index].groups[group_node_index].node_type == RC_STAGE_NODE_NONE)
+		return;
+
+	dialog->setGroupName(stage_tree_nodes[stage_node_index].groups[group_node_index].group_label);
+
 	dialog->ShowModal();
+
+	if(!dialog->deleteFlag)
+		return;
+
+	//delete all actors in the selected group
+	wxTreeItemId group_item = stage_tree_nodes[stage_node_index].groups[group_node_index].tree_item;
+
+	for(int i = 0; i < stage_tree_nodes[stage_node_index].actors.size(); i++)
+	{
+		if(stage_tree_nodes[stage_node_index].actors[i].parent_item == group_item)
+		{
+			delete_actor(stage_tree_nodes[stage_node_index].project_index, stage_tree_nodes[stage_node_index].actors[i].project_index);
+			m_project_stage_treeCtrl->Delete(stage_tree_nodes[stage_node_index].actors[i].tree_item);
+			stage_tree_nodes[stage_node_index].actors[i].node_type = RC_STAGE_NODE_NONE;
+		}
+	}
+
+	int stage_p_index = stage_tree_nodes[stage_node_index].project_index;
+	if(stage_p_index >= 0 && stage_p_index < project.stages.size())
+	{
+		for(int i = 0; i < project.stages[ stage_p_index ].groups.size(); i++)
+		{
+			if(project.stages[ stage_p_index ].groups[i].label.compare(stage_tree_nodes[stage_node_index].groups[group_node_index].group_label.ToStdString())==0)
+			{
+				project.stages[ stage_p_index ].groups[i].label = "";
+				break;
+			}
+		}
+	}
+
+	m_project_stage_treeCtrl->Delete(group_item);
+	stage_tree_nodes[stage_node_index].groups[group_node_index].group_label = _("");
+	stage_tree_nodes[stage_node_index].groups[group_node_index].node_type = RC_STAGE_NODE_NONE;
 }
 
 void SerenityEditorSerenity3D_Frame::On_Stage_EditGroup( wxCommandEvent& event )
 {
 	SerenityEditor_EditStageGroup_Dialog* dialog = new SerenityEditor_EditStageGroup_Dialog(this);
 
+
+	wxTreeItemId selection = m_project_stage_treeCtrl->GetSelection();
+
+	int stage_node_index = -1;
+	int group_node_index = -1;
+
+
+	for(int i = 0; i < stage_tree_nodes.size(); i++)
+	{
+		for(int group_index = 0; group_index < stage_tree_nodes[i].groups.size(); group_index++)
+		{
+			if(stage_tree_nodes[i].groups[group_index].tree_item == selection)
+			{
+				stage_node_index = i;
+				group_node_index = group_index;
+				break;
+			}
+		}
+
+		if(group_node_index >= 0)
+			break;
+	}
+
+	if(group_node_index < 0)
+	{
+		wxMessageBox(_("Can't edit group. A group has not been selected"));
+		return;
+	}
+
+	if(stage_tree_nodes[stage_node_index].groups[group_node_index].node_type != RC_STAGE_NODE_GROUP)
+		return;
+
+	wxTreeItemId group_item = stage_tree_nodes[stage_node_index].groups[group_node_index].tree_item;
+
+	int p_stage_index = stage_tree_nodes[stage_node_index].project_index;
+
+	if(p_stage_index < 0 || p_stage_index >= project.stages.size())
+		return;
+
+	//Add actors to src and dst
+	for(int i = 0; i < stage_tree_nodes[stage_node_index].actors.size(); i++)
+	{
+		if(stage_tree_nodes[stage_node_index].actors[i].node_type == RC_STAGE_NODE_ACTOR) //will be set to RC_STAGE_NODE_NONE when yeeted
+		{
+			if(stage_tree_nodes[stage_node_index].actors[i].parent_item == group_item)
+			{
+				int actor_stage_index = stage_tree_nodes[stage_node_index].actors[i].project_index;
+
+				if(actor_stage_index >= 0 && actor_stage_index < project.stages[p_stage_index].actors.size())
+				{
+					if(project.stages[p_stage_index].actors[actor_stage_index].id_name.compare("") != 0)
+					{
+						dialog->dst_actors.push_back(wxString::FromUTF8(project.stages[p_stage_index].actors[actor_stage_index].id_name));
+					}
+				}
+			}
+			else
+			{
+				int actor_stage_index = stage_tree_nodes[stage_node_index].actors[i].project_index;
+
+				if(actor_stage_index >= 0 && actor_stage_index < project.stages[p_stage_index].actors.size())
+				{
+					if(project.stages[p_stage_index].actors[actor_stage_index].id_name.compare("") != 0)
+					{
+						dialog->src_actors.push_back(wxString::FromUTF8(project.stages[p_stage_index].actors[actor_stage_index].id_name));
+					}
+				}
+			}
+		}
+	}
+
+	if(stage_tree_nodes[stage_node_index].groups[group_node_index].group_label.Trim().compare(_(""))==0)
+		return;
+
+	dialog->group_name = stage_tree_nodes[stage_node_index].groups[group_node_index].group_label;
+
+	dialog->refresh_groupName();
+	dialog->refresh_list();
+
 	dialog->ShowModal();
+
+	if(!dialog->applyFlag)
+		return;
+
+	stage_tree_nodes[stage_node_index].groups[group_node_index].group_label = dialog->group_name;
+	m_project_stage_treeCtrl->SetItemText(group_item, dialog->group_name);
+
+	for(int i = 0; i < dialog->dst_actors.size(); i++)
+	{
+		wxString new_actor_id = dialog->dst_actors.Item(i);
+		for(int actor_node_index = 0; actor_node_index < stage_tree_nodes[stage_node_index].actors.size(); actor_node_index++)
+		{
+			if(stage_tree_nodes[stage_node_index].actors[actor_node_index].parent_item == group_item) //already in group
+				continue;
+
+			int actor_project_index = stage_tree_nodes[stage_node_index].actors[actor_node_index].project_index;
+
+			if(actor_project_index < 0 || actor_project_index >= project.stages[p_stage_index].actors.size())
+				continue;
+
+			if(project.stages[p_stage_index].actors[actor_project_index].id_name.compare(new_actor_id.ToStdString())==0)
+			{
+				m_project_stage_treeCtrl->Delete(stage_tree_nodes[stage_node_index].actors[actor_node_index].tree_item);
+				stage_tree_nodes[stage_node_index].actors[actor_node_index].tree_item = m_project_stage_treeCtrl->AppendItem(group_item, new_actor_id, stage_tree_assetImage);
+				stage_tree_nodes[stage_node_index].actors[actor_node_index].parent_item = group_item;
+				project.stages[p_stage_index].actors[actor_project_index].group_name = stage_tree_nodes[stage_node_index].groups[group_node_index].group_label.ToStdString();
+				break;
+			}
+		}
+	}
+
+	wxTreeItemId stage_item = stage_tree_nodes[stage_node_index].tree_item;
+
+	for(int i = 0; i < dialog->src_actors.size(); i++)
+	{
+		wxString src_actor_id = dialog->src_actors.Item(i);
+		for(int actor_node_index = 0; actor_node_index < stage_tree_nodes[stage_node_index].actors.size(); actor_node_index++)
+		{
+			if(stage_tree_nodes[stage_node_index].actors[actor_node_index].parent_item != group_item) //only want to continue if actor is currently in group but needs to be removed
+				continue;
+
+			//If it gets here, then actor is in group. If it matches the src_actor_id then it needs to be removed from group and added back to stage
+
+			int actor_project_index = stage_tree_nodes[stage_node_index].actors[actor_node_index].project_index;
+
+			if(actor_project_index < 0 || actor_project_index >= project.stages[p_stage_index].actors.size())
+				continue;
+
+			if(project.stages[p_stage_index].actors[actor_project_index].id_name.compare(src_actor_id.ToStdString())==0)
+			{
+				m_project_stage_treeCtrl->Delete(stage_tree_nodes[stage_node_index].actors[actor_node_index].tree_item);
+				stage_tree_nodes[stage_node_index].actors[actor_node_index].tree_item = m_project_stage_treeCtrl->AppendItem(stage_item, src_actor_id, stage_tree_assetImage);
+				stage_tree_nodes[stage_node_index].actors[actor_node_index].parent_item = stage_item;
+				project.stages[p_stage_index].actors[actor_project_index].group_name = "";
+				break;
+			}
+		}
+	}
 }
 
 
+void SerenityEditorSerenity3D_Frame::open_stage(int stage_project_index)
+{
+	if(stage_project_index < 0 || stage_project_index >= project.stages.size())
+		return;
+
+	int old_index = stageTab_active_stage_project_index;
+	stageTab_active_stage_project_index = -1;
+
+
+	if(!current_window)
+		return;
+
+
+	for(int i = 0; i < project.stages.size(); i++)
+		project.stages[i].clearStage();
+
+	irr::scene::ISceneManager* smgr = current_window->GetDevice()->getSceneManager();
+
+	for(int i = 0; i < project.stages[stage_project_index].actors.size(); i++)
+	{
+		switch(project.stages[stage_project_index].actors[i].type)
+		{
+			case SN_ACTOR_TYPE_ANIMATED:
+			{
+				int mesh_index = project.stages[stage_project_index].actors[i].mesh_index;
+
+				irr::scene::IAnimatedMesh* mesh = NULL;
+
+				if(mesh_index >= 0 && mesh_index < project.meshes.size())
+					mesh = project.meshes[mesh_index].mesh;
+
+				project.stages[stage_project_index].actors[i].node = NULL;
+
+				if(mesh)
+				{
+					project.stages[stage_project_index].actors[i].node = smgr->addAnimatedMeshSceneNode(mesh);
+				}
+
+
+				if(project.stages[stage_project_index].actors[i].node != NULL)
+				{
+					irr::scene::IAnimatedMeshSceneNode* node = (irr::scene::IAnimatedMeshSceneNode*)project.stages[stage_project_index].actors[i].node; //So I can type less
+
+					node->setPosition(project.stages[stage_project_index].actors[i].position);
+
+					//Apply Rotation in Y,X,Z order
+					node->setRotation( irr::core::vector3df(0, 0, 0) );
+
+					irr::core::vector3df rot;
+					irr::core::matrix4 m;
+					irr::core::matrix4 n;
+
+					//Rotate on Y
+					m.setRotationDegrees(node->getRotation());
+
+					rot.set(0, project.stages[stage_project_index].actors[i].rotation.Y, 0);
+
+					n.setRotationDegrees(rot);
+
+					m *= n;
+
+					node->setRotation( m.getRotationDegrees() );
+					node->updateAbsolutePosition();
+
+					//Rotate on X
+					m.setRotationDegrees(node->getRotation());
+
+					rot.set(project.stages[stage_project_index].actors[i].rotation.X, 0, 0);
+
+					n.setRotationDegrees(rot);
+
+					m *= n;
+
+					node->setRotation( m.getRotationDegrees() );
+					node->updateAbsolutePosition();
+
+					//Rotate on Z
+					m.setRotationDegrees(node->getRotation());
+
+					rot.set(0, 0, project.stages[stage_project_index].actors[i].rotation.Z);
+
+					n.setRotationDegrees(rot);
+
+					m *= n;
+
+					node->setRotation( m.getRotationDegrees() );
+					node->updateAbsolutePosition();
+
+					//Scale
+					node->setScale(project.stages[stage_project_index].actors[i].scale);
+
+					//Set starting animation
+					int animation_index = project.stages[stage_project_index].actors[i].animation_index;
+					if(animation_index < 0 || animation_index >= project.meshes[mesh_index].animation.size())
+					{
+						node->setFrameLoop(0, 0);
+					}
+					else if(project.meshes[mesh_index].isMD2)
+					{
+						node->setMD2Animation(project.meshes[mesh_index].animation[animation_index].md2_animation);
+						node->setAnimationSpeed(project.meshes[mesh_index].animation[animation_index].speed);
+					}
+					else
+					{
+						node->setFrameLoop(project.meshes[mesh_index].animation[animation_index].start_frame, project.meshes[mesh_index].animation[animation_index].end_frame);
+						node->setAnimationSpeed(project.meshes[mesh_index].animation[animation_index].speed);
+					}
+
+
+					node->setVisible(project.stages[stage_project_index].actors[i].visible);
+
+					node->setAutomaticCulling(project.stages[stage_project_index].actors[i].auto_culling);
+
+
+					//-----APPLY MATERIAL-----------
+					for(int i = 0; i < project.meshes[mesh_index].material_index.size(); i++)
+					{
+						if(project.meshes[mesh_index].material_index[i] >= 0 && project.meshes[mesh_index].material_index[i] < project.materials.size())
+						{
+							int mat_index = project.meshes[mesh_index].material_index[i];
+							if(project.materials[mat_index].id_name.compare("") != 0)
+								node->getMaterial(i) = project.materials[mat_index].material;
+							else
+								node->getMaterial(i) = irr::video::SMaterial();
+						}
+					}
+
+				}
+			}
+			break;
+		}
+	}
+
+	stageTab_active_stage_project_index = stage_project_index;
+}
+
 void SerenityEditorSerenity3D_Frame::On_Stage_StageNodeActivated( wxTreeEvent& event )
 {
+	if(project.stages.size() <= 0)
+		return;
+
+	for(int i = 0; i < stage_tree_nodes.size(); i++)
+	{
+		if(event.GetItem() == stage_tree_nodes[i].tree_item)
+		{
+			if(stage_tree_nodes[i].project_index != stageTab_active_stage_project_index)
+			{
+				open_stage(stage_tree_nodes[i].project_index);
+
+				for(int n = 0; n < stage_tree_nodes.size(); n++)
+					stage_tree_nodes[n].active = false;
+
+				stage_tree_nodes[i].active = true;
+				break;
+			}
+		}
+
+		//TODO: Check stage actors and groups activations here
+	}
 }
 
 void SerenityEditorSerenity3D_Frame::On_Stage_StageNodeSelected( wxTreeEvent& event )
 {
-	//wxMessageBox(_("SELECTED"));
+	wxTreeItemId selected_item = event.GetItem();
+	int stage_node_index = -1;
+	int group_node_index = -1;
+	int actor_node_index = -1;
+
+	int node_type = RC_STAGE_NODE_NONE;
+
+	for(int i = 0; i < stage_tree_nodes.size(); i++)
+	{
+		if(stage_tree_nodes[i].tree_item == selected_item)
+		{
+			node_type = RC_STAGE_NODE_STAGE;
+			stage_node_index = i;
+			break;
+		}
+
+		for(int actor = 0; actor < stage_tree_nodes[i].actors.size(); actor++)
+		{
+			if(stage_tree_nodes[i].actors[actor].tree_item == selected_item)
+			{
+				node_type = RC_STAGE_NODE_ACTOR;
+				stage_node_index = i;
+				actor_node_index = actor;
+				break;
+			}
+		}
+
+		for(int group = 0; group < stage_tree_nodes[i].groups.size(); group++)
+		{
+			if(stage_tree_nodes[i].groups[group].tree_item == selected_item)
+			{
+				node_type = RC_STAGE_NODE_GROUP;
+				stage_node_index = i;
+				group_node_index = group;
+				break;
+			}
+		}
+	}
+
+	switch(node_type)
+	{
+		case RC_STAGE_NODE_STAGE:
+		{
+			int stage_project_index = stage_tree_nodes[stage_node_index].project_index;
+
+		}
+		break;
+
+		case RC_STAGE_NODE_ACTOR:
+		{
+			int stage_project_index = stage_tree_nodes[stage_node_index].project_index;
+
+			m_stage_propertyGridManager->SelectPage(m_waterActorProperties_propertyGridPage);
+		}
+		break;
+
+		case RC_STAGE_NODE_GROUP:
+		{
+			int stage_project_index = stage_tree_nodes[stage_node_index].project_index;
+		}
+		break;
+
+		default:
+			m_stage_propertyGridManager->SelectPage(m_projectProperties_propertyGridPage);
+			m_projectProperties_propertyGridPage->GetPropertyByName(_("project_name"))->SetValueFromString(_("test"));
+	}
 }
 
 void SerenityEditorSerenity3D_Frame::On_StageSettings_ShowGrid( wxCommandEvent& event )

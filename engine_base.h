@@ -67,6 +67,11 @@ public:
 	int load_material(std::vector<serenity_project_dict_obj> stage_param, int reload_index=-1);
 	rc_actor load_actor(std::vector<serenity_project_dict_obj> stage_param);
 
+	int getMeshIndex(wxString mesh_id);
+	int getMaterialIndex(wxString material_id);
+	int getTextureIndex(wxString texture_id);
+	int getAnimationIndex(int mesh_index, wxString animation_id);
+
 	wxString getActorTypeString(int actor_type);
 	int getActorType(wxString actor_type_string);
 	wxString getLightTypeString(int light_type);

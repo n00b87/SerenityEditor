@@ -28,6 +28,7 @@
 #include <wx/button.h>
 #include <wx/treectrl.h>
 #include <wx/propgrid/propgrid.h>
+#include <wx/propgrid/manager.h>
 #include <wx/propgrid/advprops.h>
 #include <wx/splitter.h>
 #include <wx/checkbox.h>
@@ -93,12 +94,282 @@ class Serenity3D_Frame : public wxFrame
 		wxSplitterWindow* m_splitter6;
 		wxPanel* m_panel305;
 		wxPanel* m_panel44;
+		wxBitmapButton* m_bpButton41;
+		wxBitmapButton* m_bpButton51;
 		wxBitmapButton* m_bpButton4;
 		wxBitmapButton* m_bpButton5;
 		wxBitmapButton* m_bpButton6;
 		wxTreeCtrl* m_project_stage_treeCtrl;
 		wxPanel* m_panel311;
-		wxPropertyGrid* m_project_propertyGrid;
+		wxPropertyGridManager* m_stage_propertyGridManager;
+		wxPropertyGridPage* m_projectProperties_propertyGridPage;
+		wxPGProperty* m_propertyGridItem432;
+		wxPGProperty* m_propertyGridItem433;
+		wxPropertyGridPage* m_animatedActorProperties_propertyGridPage;
+		wxPGProperty* m_animatedActorPropertiesCat_propertyGridItem;
+		wxPGProperty* m_aniActorID_propertyGridItem;
+		wxPGProperty* m_propertyGridItem41;
+		wxPGProperty* m_propertyGridItem46;
+		wxPGProperty* m_propertyGridItem47;
+		wxPGProperty* m_propertyGridItem48;
+		wxPGProperty* m_propertyGridItem49;
+		wxPGProperty* m_propertyGridItem50;
+		wxPGProperty* m_propertyGridItem51;
+		wxPGProperty* m_propertyGridItem52;
+		wxPGProperty* m_propertyGridItem53;
+		wxPGProperty* m_propertyGridItem54;
+		wxPGProperty* m_propertyGridItem55;
+		wxPGProperty* m_propertyGridItem56;
+		wxPGProperty* m_propertyGridItem57;
+		wxPGProperty* m_propertyGridItem42;
+		wxPGProperty* m_propertyGridItem43;
+		wxPGProperty* m_propertyGridItem44;
+		wxPGProperty* m_propertyGridItem58;
+		wxPGProperty* m_propertyGridItem59;
+		wxPGProperty* m_propertyGridItem60;
+		wxPGProperty* m_propertyGridItem61;
+		wxPGProperty* m_propertyGridItem62;
+		wxPropertyGridPage* m_particleActorProperties_propertyGridPage;
+		wxPGProperty* m_animatedActorPropertiesCat_propertyGridItem111111;
+		wxPGProperty* m_aniActorID_propertyGridItem111111;
+		wxPGProperty* m_propertyGridItem2681;
+		wxPGProperty* m_propertyGridItem333;
+		wxPGProperty* m_propertyGridItem334;
+		wxPGProperty* m_propertyGridItem335;
+		wxPGProperty* m_propertyGridItem336;
+		wxPGProperty* m_propertyGridItem337;
+		wxPGProperty* m_propertyGridItem338;
+		wxPGProperty* m_propertyGridItem322;
+		wxPGProperty* m_propertyGridItem323;
+		wxPGProperty* m_propertyGridItem324;
+		wxPGProperty* m_propertyGridItem325;
+		wxPGProperty* m_propertyGridItem326;
+		wxPGProperty* m_propertyGridItem327;
+		wxPGProperty* m_propertyGridItem328;
+		wxPGProperty* m_propertyGridItem329;
+		wxPGProperty* m_propertyGridItem330;
+		wxPGProperty* m_propertyGridItem364;
+		wxPGProperty* m_propertyGridItem365;
+		wxPGProperty* m_propertyGridItem366;
+		wxPGProperty* m_propertyGridItem367;
+		wxPGProperty* m_propertyGridItem339;
+		wxPGProperty* m_propertyGridItem340;
+		wxPGProperty* m_propertyGridItem341;
+		wxPGProperty* m_propertyGridItem342;
+		wxPGProperty* m_propertyGridItem331;
+		wxPGProperty* m_propertyGridItem332;
+		wxPGProperty* m_propertyGridItem347;
+		wxPGProperty* m_propertyGridItem348;
+		wxPGProperty* m_propertyGridItem349;
+		wxPGProperty* m_propertyGridItem350;
+		wxPGProperty* m_propertyGridItem2691;
+		wxPGProperty* m_propertyGridItem343;
+		wxPGProperty* m_propertyGridItem321;
+		wxPGProperty* m_propertyGridItem2701;
+		wxPGProperty* m_propertyGridItem2721;
+		wxPGProperty* m_propertyGridItem344;
+		wxPGProperty* m_propertyGridItem345;
+		wxPGProperty* m_propertyGridItem346;
+		wxPGProperty* m_propertyGridItem2711;
+		wxPGProperty* m_propertyGridItem354;
+		wxPGProperty* m_propertyGridItem355;
+		wxPGProperty* m_propertyGridItem356;
+		wxPGProperty* m_propertyGridItem357;
+		wxPGProperty* m_propertyGridItem358;
+		wxPGProperty* m_propertyGridItem359;
+		wxPGProperty* m_propertyGridItem360;
+		wxPGProperty* m_propertyGridItem361;
+		wxPGProperty* m_propertyGridItem362;
+		wxPGProperty* m_propertyGridItem363;
+		wxPGProperty* m_propertyGridItem46111111;
+		wxPGProperty* m_propertyGridItem47111111;
+		wxPGProperty* m_propertyGridItem48111111;
+		wxPGProperty* m_propertyGridItem49111111;
+		wxPGProperty* m_propertyGridItem50111111;
+		wxPGProperty* m_propertyGridItem51111111;
+		wxPGProperty* m_propertyGridItem52111111;
+		wxPGProperty* m_propertyGridItem53111111;
+		wxPGProperty* m_propertyGridItem54111111;
+		wxPGProperty* m_propertyGridItem55111111;
+		wxPGProperty* m_propertyGridItem56111111;
+		wxPGProperty* m_propertyGridItem57111111;
+		wxPGProperty* m_propertyGridItem58111111;
+		wxPGProperty* m_propertyGridItem59111111;
+		wxPGProperty* m_propertyGridItem60111111;
+		wxPGProperty* m_propertyGridItem61111111;
+		wxPGProperty* m_propertyGridItem62111111;
+		wxPropertyGridPage* m_stageProperties_propertyGridPage;
+		wxPGProperty* m_propertyGridItem15;
+		wxPGProperty* m_stageID_propertyGridItem;
+		wxPGProperty* m_skyShape_propertyGridItem;
+		wxPGProperty* m_propertyGridItem21;
+		wxPGProperty* m_propertyGridItem14;
+		wxPGProperty* m_skyDome_hRes_propertyGridItem;
+		wxPGProperty* m_skyDome_vRes_propertyGridItem;
+		wxPGProperty* m_skyDomeTxPct_propertyGridItem;
+		wxPGProperty* m_skyDomeSpherePct_propertyGridItem;
+		wxPGProperty* m_skyDomeRadius_propertyGridItem;
+		wxPGProperty* m_skyBoxCat_propertyGridItem;
+		wxPGProperty* m_skyBoxTopImage_propertyGridItem;
+		wxPGProperty* m_skyBoxBottomImage_propertyGridItem;
+		wxPGProperty* m_skyBoxLeftImage_propertyGridItem;
+		wxPGProperty* m_skyBoxRightImage_propertyGridItem;
+		wxPGProperty* m_skyBoxFrontImage_propertyGridItem;
+		wxPGProperty* m_skyBoxBackImage_propertyGridItem;
+		wxPropertyGridPage* m_octreeActorProperties_propertyGridPage;
+		wxPGProperty* m_animatedActorPropertiesCat_propertyGridItem1;
+		wxPGProperty* m_aniActorID_propertyGridItem1;
+		wxPGProperty* m_propertyGridItem411;
+		wxPGProperty* m_propertyGridItem461;
+		wxPGProperty* m_propertyGridItem471;
+		wxPGProperty* m_propertyGridItem481;
+		wxPGProperty* m_propertyGridItem491;
+		wxPGProperty* m_propertyGridItem501;
+		wxPGProperty* m_propertyGridItem511;
+		wxPGProperty* m_propertyGridItem521;
+		wxPGProperty* m_propertyGridItem531;
+		wxPGProperty* m_propertyGridItem541;
+		wxPGProperty* m_propertyGridItem551;
+		wxPGProperty* m_propertyGridItem561;
+		wxPGProperty* m_propertyGridItem571;
+		wxPGProperty* m_propertyGridItem581;
+		wxPGProperty* m_propertyGridItem591;
+		wxPGProperty* m_propertyGridItem601;
+		wxPGProperty* m_propertyGridItem611;
+		wxPGProperty* m_propertyGridItem621;
+		wxPropertyGridPage* m_cubeActorProperties_propertyGridPage;
+		wxPGProperty* m_animatedActorPropertiesCat_propertyGridItem11;
+		wxPGProperty* m_aniActorID_propertyGridItem11;
+		wxPGProperty* m_propertyGridItem149;
+		wxPGProperty* m_propertyGridItem4611;
+		wxPGProperty* m_propertyGridItem4711;
+		wxPGProperty* m_propertyGridItem4811;
+		wxPGProperty* m_propertyGridItem4911;
+		wxPGProperty* m_propertyGridItem5011;
+		wxPGProperty* m_propertyGridItem5111;
+		wxPGProperty* m_propertyGridItem5211;
+		wxPGProperty* m_propertyGridItem5311;
+		wxPGProperty* m_propertyGridItem5411;
+		wxPGProperty* m_propertyGridItem5511;
+		wxPGProperty* m_propertyGridItem5611;
+		wxPGProperty* m_propertyGridItem5711;
+		wxPGProperty* m_propertyGridItem5811;
+		wxPGProperty* m_propertyGridItem5911;
+		wxPGProperty* m_propertyGridItem6011;
+		wxPGProperty* m_propertyGridItem6111;
+		wxPGProperty* m_propertyGridItem6211;
+		wxPropertyGridPage* m_sphereActorProperties_propertyGridPage;
+		wxPGProperty* m_animatedActorPropertiesCat_propertyGridItem111;
+		wxPGProperty* m_aniActorID_propertyGridItem111;
+		wxPGProperty* m_propertyGridItem1491;
+		wxPGProperty* m_propertyGridItem46111;
+		wxPGProperty* m_propertyGridItem47111;
+		wxPGProperty* m_propertyGridItem48111;
+		wxPGProperty* m_propertyGridItem49111;
+		wxPGProperty* m_propertyGridItem50111;
+		wxPGProperty* m_propertyGridItem51111;
+		wxPGProperty* m_propertyGridItem52111;
+		wxPGProperty* m_propertyGridItem53111;
+		wxPGProperty* m_propertyGridItem54111;
+		wxPGProperty* m_propertyGridItem55111;
+		wxPGProperty* m_propertyGridItem56111;
+		wxPGProperty* m_propertyGridItem57111;
+		wxPGProperty* m_propertyGridItem58111;
+		wxPGProperty* m_propertyGridItem59111;
+		wxPGProperty* m_propertyGridItem60111;
+		wxPGProperty* m_propertyGridItem61111;
+		wxPGProperty* m_propertyGridItem62111;
+		wxPropertyGridPage* m_billboardActorProperties_propertyGridPage;
+		wxPGProperty* m_animatedActorPropertiesCat_propertyGridItem1111;
+		wxPGProperty* m_aniActorID_propertyGridItem1111;
+		wxPGProperty* m_propertyGridItem461111;
+		wxPGProperty* m_propertyGridItem471111;
+		wxPGProperty* m_propertyGridItem481111;
+		wxPGProperty* m_propertyGridItem491111;
+		wxPGProperty* m_propertyGridItem501111;
+		wxPGProperty* m_propertyGridItem511111;
+		wxPGProperty* m_propertyGridItem521111;
+		wxPGProperty* m_propertyGridItem531111;
+		wxPGProperty* m_propertyGridItem541111;
+		wxPGProperty* m_propertyGridItem551111;
+		wxPGProperty* m_propertyGridItem561111;
+		wxPGProperty* m_propertyGridItem571111;
+		wxPGProperty* m_propertyGridItem581111;
+		wxPGProperty* m_propertyGridItem591111;
+		wxPGProperty* m_propertyGridItem601111;
+		wxPGProperty* m_propertyGridItem611111;
+		wxPGProperty* m_propertyGridItem621111;
+		wxPropertyGridPage* m_lightActorProperties_propertyGridPage;
+		wxPGProperty* m_animatedActorPropertiesCat_propertyGridItem11111;
+		wxPGProperty* m_aniActorID_propertyGridItem11111;
+		wxPGProperty* m_propertyGridItem268;
+		wxPGProperty* m_propertyGridItem269;
+		wxPGProperty* m_propertyGridItem270;
+		wxPGProperty* m_propertyGridItem271;
+		wxPGProperty* m_propertyGridItem272;
+		wxPGProperty* m_propertyGridItem4611111;
+		wxPGProperty* m_propertyGridItem4711111;
+		wxPGProperty* m_propertyGridItem4811111;
+		wxPGProperty* m_propertyGridItem4911111;
+		wxPGProperty* m_propertyGridItem5011111;
+		wxPGProperty* m_propertyGridItem5111111;
+		wxPGProperty* m_propertyGridItem5211111;
+		wxPGProperty* m_propertyGridItem5311111;
+		wxPGProperty* m_propertyGridItem5411111;
+		wxPGProperty* m_propertyGridItem5511111;
+		wxPGProperty* m_propertyGridItem5611111;
+		wxPGProperty* m_propertyGridItem5711111;
+		wxPGProperty* m_propertyGridItem5811111;
+		wxPGProperty* m_propertyGridItem5911111;
+		wxPGProperty* m_propertyGridItem6011111;
+		wxPGProperty* m_propertyGridItem6111111;
+		wxPGProperty* m_propertyGridItem6211111;
+		wxPropertyGridPage* m_terrainActorProperties_propertyGridPage;
+		wxPGProperty* m_animatedActorPropertiesCat_propertyGridItem112;
+		wxPGProperty* m_aniActorID_propertyGridItem112;
+		wxPGProperty* m_propertyGridItem1492;
+		wxPGProperty* m_propertyGridItem46112;
+		wxPGProperty* m_propertyGridItem47112;
+		wxPGProperty* m_propertyGridItem48112;
+		wxPGProperty* m_propertyGridItem49112;
+		wxPGProperty* m_propertyGridItem50112;
+		wxPGProperty* m_propertyGridItem51112;
+		wxPGProperty* m_propertyGridItem52112;
+		wxPGProperty* m_propertyGridItem53112;
+		wxPGProperty* m_propertyGridItem54112;
+		wxPGProperty* m_propertyGridItem55112;
+		wxPGProperty* m_propertyGridItem56112;
+		wxPGProperty* m_propertyGridItem57112;
+		wxPGProperty* m_propertyGridItem58112;
+		wxPGProperty* m_propertyGridItem59112;
+		wxPGProperty* m_propertyGridItem60112;
+		wxPGProperty* m_propertyGridItem61112;
+		wxPGProperty* m_propertyGridItem62112;
+		wxPropertyGridPage* m_waterActorProperties_propertyGridPage;
+		wxPGProperty* m_animatedActorPropertiesCat_propertyGridItem113;
+		wxPGProperty* m_aniActorID_propertyGridItem113;
+		wxPGProperty* m_propertyGridItem1493;
+		wxPGProperty* m_propertyGridItem428;
+		wxPGProperty* m_propertyGridItem429;
+		wxPGProperty* m_propertyGridItem430;
+		wxPGProperty* m_propertyGridItem431;
+		wxPGProperty* m_propertyGridItem46113;
+		wxPGProperty* m_propertyGridItem47113;
+		wxPGProperty* m_propertyGridItem48113;
+		wxPGProperty* m_propertyGridItem49113;
+		wxPGProperty* m_propertyGridItem50113;
+		wxPGProperty* m_propertyGridItem51113;
+		wxPGProperty* m_propertyGridItem52113;
+		wxPGProperty* m_propertyGridItem53113;
+		wxPGProperty* m_propertyGridItem54113;
+		wxPGProperty* m_propertyGridItem55113;
+		wxPGProperty* m_propertyGridItem56113;
+		wxPGProperty* m_propertyGridItem57113;
+		wxPGProperty* m_propertyGridItem58113;
+		wxPGProperty* m_propertyGridItem59113;
+		wxPGProperty* m_propertyGridItem60113;
+		wxPGProperty* m_propertyGridItem61113;
+		wxPGProperty* m_propertyGridItem62113;
 		wxScrolledWindow* m_scrolledWindow2;
 		wxPanel* m_panel422;
 		wxStaticText* m_staticText28;
@@ -677,6 +948,8 @@ class CreateStageGroup_Dialog : public wxDialog
 	private:
 
 	protected:
+		wxStaticText* m_staticText54;
+		wxComboBox* m_stage_comboBox;
 		wxStaticText* m_staticText48;
 		wxTextCtrl* m_groupName_textCtrl;
 		wxButton* m_button54;
@@ -689,7 +962,7 @@ class CreateStageGroup_Dialog : public wxDialog
 
 	public:
 
-		CreateStageGroup_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Create New Group"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 408,125 ), long style = wxDEFAULT_DIALOG_STYLE );
+		CreateStageGroup_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Create New Group"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 476,172 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~CreateStageGroup_Dialog();
 
@@ -729,6 +1002,8 @@ class EditStageGroup_Dialog : public wxDialog
 	private:
 
 	protected:
+		wxStaticText* m_staticText53;
+		wxTextCtrl* m_groupLabel_textCtrl;
 		wxStaticText* m_stageLabel_staticText;
 		wxCheckListBox* m_stageList_checkList;
 		wxButton* m_button58;
@@ -758,6 +1033,29 @@ class EditStageGroup_Dialog : public wxDialog
 		EditStageGroup_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Edit Group"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 659,488 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~EditStageGroup_Dialog();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class MyDialog14
+///////////////////////////////////////////////////////////////////////////////
+class MyDialog14 : public wxDialog
+{
+	private:
+
+	protected:
+		wxPropertyGridManager* m_propertyGridManager1;
+		wxPropertyGridPage* m_stage_propertyGridPage;
+		wxPGProperty* m_id_propertyGridItem;
+		wxPGProperty* m_propertyGridItem8;
+		wxPropertyGridPage* m_propertyGridPage2;
+		wxPropertyGridPage* m_propertyGridPage3;
+
+	public:
+
+		MyDialog14( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 462,379 ), long style = wxDEFAULT_DIALOG_STYLE );
+
+		~MyDialog14();
 
 };
 

@@ -18,6 +18,14 @@ class SerenityEditor_CreateStageGroup_Dialog : public CreateStageGroup_Dialog
 		void OnCreate( wxCommandEvent& event );
 		void OnCancel( wxCommandEvent& event );
 	public:
+		wxString group_name;
+		bool set_flag;
+
+		wxArrayString stages;
+		wxString selected_stage;
+
+		void refresh_list();
+
 		/** Constructor */
 		SerenityEditor_CreateStageGroup_Dialog( wxWindow* parent );
 	//// end generated class members

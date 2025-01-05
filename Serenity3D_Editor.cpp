@@ -200,6 +200,16 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	wxBoxSizer* bSizer163;
 	bSizer163 = new wxBoxSizer( wxHORIZONTAL );
 
+	m_bpButton41 = new wxBitmapButton( m_panel44, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW|wxBORDER_NONE );
+
+	m_bpButton41->SetBitmap( wxBitmap( wxT("icons/plus_stage.png"), wxBITMAP_TYPE_ANY ) );
+	bSizer163->Add( m_bpButton41, 0, wxALL|wxEXPAND, 5 );
+
+	m_bpButton51 = new wxBitmapButton( m_panel44, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW|wxBORDER_NONE );
+
+	m_bpButton51->SetBitmap( wxBitmap( wxT("icons/remove_stage.png"), wxBITMAP_TYPE_ANY ) );
+	bSizer163->Add( m_bpButton51, 0, wxALL|wxEXPAND, 5 );
+
 	m_bpButton4 = new wxBitmapButton( m_panel44, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW|wxBORDER_NONE );
 
 	m_bpButton4->SetBitmap( wxBitmap( wxT("icons/new-folder.png"), wxBITMAP_TYPE_ANY ) );
@@ -237,8 +247,288 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	wxBoxSizer* bSizer31;
 	bSizer31 = new wxBoxSizer( wxVERTICAL );
 
-	m_project_propertyGrid = new wxPropertyGrid(m_panel311, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxPG_DEFAULT_STYLE);
-	bSizer31->Add( m_project_propertyGrid, 1, wxALL|wxEXPAND, 5 );
+	m_stage_propertyGridManager = new wxPropertyGridManager(m_panel311, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxPGMAN_DEFAULT_STYLE|wxPG_SPLITTER_AUTO_CENTER);
+	m_stage_propertyGridManager->SetExtraStyle( wxPG_EX_MODE_BUTTONS );
+
+	m_projectProperties_propertyGridPage = m_stage_propertyGridManager->AddPage( wxT("Page"), wxNullBitmap );
+	m_propertyGridItem432 = m_projectProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Project") ) );
+	m_propertyGridItem433 = m_projectProperties_propertyGridPage->Append( new wxStringProperty( wxT("Name"), wxT("project_name") ) );
+
+	m_animatedActorProperties_propertyGridPage = m_stage_propertyGridManager->AddPage( wxT("Animated Actor Properties"), wxNullBitmap );
+	m_animatedActorPropertiesCat_propertyGridItem = m_animatedActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Animated Actor Properties"), wxT("actorPropertiesCat") ) );
+	m_aniActorID_propertyGridItem = m_animatedActorProperties_propertyGridPage->Append( new wxStringProperty( wxT("ID"), wxT("actor_id") ) );
+	m_propertyGridItem41 = m_animatedActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Mesh"), wxT("mesh_id") ) );
+	m_propertyGridItem46 = m_animatedActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Position") ) );
+	m_propertyGridItem47 = m_animatedActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("X"), wxT("pos_x") ) );
+	m_propertyGridItem48 = m_animatedActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("pos_y") ) );
+	m_propertyGridItem49 = m_animatedActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("pos_z") ) );
+	m_propertyGridItem50 = m_animatedActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Rotation") ) );
+	m_propertyGridItem51 = m_animatedActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("X"), wxT("rot_x") ) );
+	m_propertyGridItem52 = m_animatedActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("rot_y") ) );
+	m_propertyGridItem53 = m_animatedActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("rot_z") ) );
+	m_propertyGridItem54 = m_animatedActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Scale") ) );
+	m_propertyGridItem55 = m_animatedActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("X"), wxT("scale_x") ) );
+	m_propertyGridItem56 = m_animatedActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("scale_y") ) );
+	m_propertyGridItem57 = m_animatedActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("scale_z") ) );
+	m_propertyGridItem42 = m_animatedActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Animation"), wxT("ActorAnimationCat") ) );
+	m_propertyGridItem43 = m_animatedActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Init Animation"), wxT("init_animation_id") ) );
+	m_propertyGridItem44 = m_animatedActorProperties_propertyGridPage->Append( new wxIntProperty( wxT("Num Loops"), wxT("num_loops") ) );
+	m_propertyGridItem58 = m_animatedActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Render Properties") ) );
+	m_propertyGridItem59 = m_animatedActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Material"), wxT("material_id") ) );
+	m_propertyGridItem60 = m_animatedActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Visible"), wxT("visible") ) );
+	m_propertyGridItem61 = m_animatedActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Shadow"), wxT("shadow") ) );
+	m_propertyGridItem62 = m_animatedActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Auto Culling"), wxT("auto_culling") ) );
+
+	m_particleActorProperties_propertyGridPage = m_stage_propertyGridManager->AddPage( wxT("Particle Actor Properties"), wxNullBitmap );
+	m_animatedActorPropertiesCat_propertyGridItem111111 = m_particleActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Particle Properties"), wxT("actorPropertiesCat") ) );
+	m_aniActorID_propertyGridItem111111 = m_particleActorProperties_propertyGridPage->Append( new wxStringProperty( wxT("ID"), wxT("actor_id") ) );
+	m_propertyGridItem2681 = m_particleActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Particle Type"), wxT("particle_type") ) );
+	m_propertyGridItem333 = m_particleActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Min Size") ) );
+	m_propertyGridItem334 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Width"), wxT("min_width") ) );
+	m_propertyGridItem335 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Height"), wxT("min_height") ) );
+	m_propertyGridItem336 = m_particleActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Max Size") ) );
+	m_propertyGridItem337 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Width"), wxT("max_width") ) );
+	m_propertyGridItem338 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Height"), wxT("max_height") ) );
+	m_propertyGridItem322 = m_particleActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Color") ) );
+	m_propertyGridItem323 = m_particleActorProperties_propertyGridPage->Append( new wxColourProperty( wxT("Min Start"), wxT("min_start_color") ) );
+	m_propertyGridItem324 = m_particleActorProperties_propertyGridPage->Append( new wxColourProperty( wxT("Max Start"), wxT("max_start_color") ) );
+	m_propertyGridItem325 = m_particleActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Speed") ) );
+	m_propertyGridItem326 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Min Per Sec"), wxT("min_per_sec") ) );
+	m_propertyGridItem327 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Max Per Sec"), wxT("max_per_sec") ) );
+	m_propertyGridItem328 = m_particleActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Lifetime") ) );
+	m_propertyGridItem329 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Min Life (milliseconds)"), wxT("min_life") ) );
+	m_propertyGridItem330 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Max Life (milliseconds)"), wxT("max_life") ) );
+	m_propertyGridItem364 = m_particleActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Normal") ) );
+	m_propertyGridItem365 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("X"), wxT("normal_x") ) );
+	m_propertyGridItem366 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("normal_y") ) );
+	m_propertyGridItem367 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("normal_z") ) );
+	m_propertyGridItem339 = m_particleActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Direction") ) );
+	m_propertyGridItem340 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("X"), wxT("dir_x") ) );
+	m_propertyGridItem341 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("dir_y") ) );
+	m_propertyGridItem342 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("dir_z") ) );
+	m_propertyGridItem331 = m_particleActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Deviation") ) );
+	m_propertyGridItem332 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Max Angle"), wxT("max_angle") ) );
+	m_propertyGridItem347 = m_particleActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Circle Parameters") ) );
+	m_propertyGridItem348 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("X"), wxT("center_x") ) );
+	m_propertyGridItem349 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("center_y") ) );
+	m_propertyGridItem350 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("center_z") ) );
+	m_propertyGridItem2691 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Radius"), wxT("cylinder_radius") ) );
+	m_propertyGridItem343 = m_particleActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Mesh Settings") ) );
+	m_propertyGridItem321 = m_particleActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Mesh"), wxT("mesh") ) );
+	m_propertyGridItem2701 = m_particleActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Use Every Vertex"), wxT("use_every_vertex") ) );
+	m_propertyGridItem2721 = m_particleActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Use Normal Direction"), wxT("use_normal_direction") ) );
+	m_propertyGridItem344 = m_particleActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Use Normal Modifier"), wxT("use_normal_mod") ) );
+	m_propertyGridItem345 = m_particleActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Cylinder Settings") ) );
+	m_propertyGridItem346 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Length"), wxT("cylinder_length") ) );
+	m_propertyGridItem2711 = m_particleActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Use Outline Only"), wxT("use_outline_only") ) );
+	m_propertyGridItem354 = m_particleActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Min Box Size") ) );
+	m_propertyGridItem355 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("X"), wxT("min_box_x") ) );
+	m_propertyGridItem356 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("min_y") ) );
+	m_propertyGridItem357 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("min_z") ) );
+	m_propertyGridItem358 = m_particleActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Max Box Size") ) );
+	m_propertyGridItem359 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("X"), wxT("max_box_x") ) );
+	m_propertyGridItem360 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("max_box_y") ) );
+	m_propertyGridItem361 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("max_box_z") ) );
+	m_propertyGridItem362 = m_particleActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Ring Settings") ) );
+	m_propertyGridItem363 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Ring Thickness"), wxT("ring_thickness") ) );
+	m_propertyGridItem46111111 = m_particleActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Position") ) );
+	m_propertyGridItem47111111 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("X"), wxT("pos_x") ) );
+	m_propertyGridItem48111111 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("pos_y") ) );
+	m_propertyGridItem49111111 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("pos_z") ) );
+	m_propertyGridItem50111111 = m_particleActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Rotation") ) );
+	m_propertyGridItem51111111 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("X"), wxT("rot_x") ) );
+	m_propertyGridItem52111111 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("rot_y") ) );
+	m_propertyGridItem53111111 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("rot_z") ) );
+	m_propertyGridItem54111111 = m_particleActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Scale") ) );
+	m_propertyGridItem55111111 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("X"), wxT("scale_x") ) );
+	m_propertyGridItem56111111 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("scale_y") ) );
+	m_propertyGridItem57111111 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("scale_z") ) );
+	m_propertyGridItem58111111 = m_particleActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Render Properties") ) );
+	m_propertyGridItem59111111 = m_particleActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Material"), wxT("material_id") ) );
+	m_propertyGridItem60111111 = m_particleActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Visible"), wxT("visible") ) );
+	m_propertyGridItem61111111 = m_particleActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Shadow"), wxT("shadow") ) );
+	m_propertyGridItem62111111 = m_particleActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Auto Culling"), wxT("auto_culling") ) );
+
+	m_stageProperties_propertyGridPage = m_stage_propertyGridManager->AddPage( wxT("Stage Properties"), wxNullBitmap );
+	m_propertyGridItem15 = m_stageProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Stage Properties") ) );
+	m_stageID_propertyGridItem = m_stageProperties_propertyGridPage->Append( new wxStringProperty( wxT("ID"), wxT("StageID") ) );
+	m_skyShape_propertyGridItem = m_stageProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Sky Shape"), wxT("sky_shape") ) );
+	m_propertyGridItem21 = m_stageProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Sky Dome") ) );
+	m_propertyGridItem14 = m_stageProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Image"), wxT("sky_dome_image_id") ) );
+	m_skyDome_hRes_propertyGridItem = m_stageProperties_propertyGridPage->Append( new wxFloatProperty( wxT("H Res"), wxT("skydome_hRes") ) );
+	m_skyDome_vRes_propertyGridItem = m_stageProperties_propertyGridPage->Append( new wxFloatProperty( wxT("V Res"), wxT("skydome_vRes") ) );
+	m_skyDomeTxPct_propertyGridItem = m_stageProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Texture %"), wxT("texture_pct") ) );
+	m_skyDomeSpherePct_propertyGridItem = m_stageProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Sphere %"), wxT("sphere_pct") ) );
+	m_skyDomeRadius_propertyGridItem = m_stageProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Radius") ) );
+	m_skyBoxCat_propertyGridItem = m_stageProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Sky Box") ) );
+	m_skyBoxTopImage_propertyGridItem = m_stageProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Image (Top)"), wxT("skybox_top_image") ) );
+	m_skyBoxBottomImage_propertyGridItem = m_stageProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Image (Bottom)"), wxT("skybox_bottom_image") ) );
+	m_skyBoxLeftImage_propertyGridItem = m_stageProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Image (Left)"), wxT("skybox_left_image") ) );
+	m_skyBoxRightImage_propertyGridItem = m_stageProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Image (Right)"), wxT("skybox_right_image") ) );
+	m_skyBoxFrontImage_propertyGridItem = m_stageProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Image (Front)"), wxT("skybox_front_image") ) );
+	m_skyBoxBackImage_propertyGridItem = m_stageProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Image (Back)"), wxT("skybox_back_image") ) );
+
+	m_octreeActorProperties_propertyGridPage = m_stage_propertyGridManager->AddPage( wxT("Actor Properties"), wxNullBitmap );
+	m_animatedActorPropertiesCat_propertyGridItem1 = m_octreeActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Octree Actor Properties"), wxT("actorPropertiesCat") ) );
+	m_aniActorID_propertyGridItem1 = m_octreeActorProperties_propertyGridPage->Append( new wxStringProperty( wxT("ID"), wxT("actor_id") ) );
+	m_propertyGridItem411 = m_octreeActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Mesh"), wxT("mesh_id") ) );
+	m_propertyGridItem461 = m_octreeActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Position") ) );
+	m_propertyGridItem471 = m_octreeActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("X"), wxT("pos_x") ) );
+	m_propertyGridItem481 = m_octreeActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("pos_y") ) );
+	m_propertyGridItem491 = m_octreeActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("pos_z") ) );
+	m_propertyGridItem501 = m_octreeActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Rotation") ) );
+	m_propertyGridItem511 = m_octreeActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("X"), wxT("rot_x") ) );
+	m_propertyGridItem521 = m_octreeActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("rot_y") ) );
+	m_propertyGridItem531 = m_octreeActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("rot_z") ) );
+	m_propertyGridItem541 = m_octreeActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Scale") ) );
+	m_propertyGridItem551 = m_octreeActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("X"), wxT("scale_x") ) );
+	m_propertyGridItem561 = m_octreeActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("scale_y") ) );
+	m_propertyGridItem571 = m_octreeActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("scale_z") ) );
+	m_propertyGridItem581 = m_octreeActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Render Properties") ) );
+	m_propertyGridItem591 = m_octreeActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Material"), wxT("material_id") ) );
+	m_propertyGridItem601 = m_octreeActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Visible"), wxT("visible") ) );
+	m_propertyGridItem611 = m_octreeActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Shadow"), wxT("shadow") ) );
+	m_propertyGridItem621 = m_octreeActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Auto Culling"), wxT("auto_culling") ) );
+
+	m_cubeActorProperties_propertyGridPage = m_stage_propertyGridManager->AddPage( wxT("Actor Properties"), wxNullBitmap );
+	m_animatedActorPropertiesCat_propertyGridItem11 = m_cubeActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Cube Properties"), wxT("actorPropertiesCat") ) );
+	m_aniActorID_propertyGridItem11 = m_cubeActorProperties_propertyGridPage->Append( new wxStringProperty( wxT("ID"), wxT("actor_id") ) );
+	m_propertyGridItem149 = m_cubeActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Size"), wxT("cube_size") ) );
+	m_propertyGridItem4611 = m_cubeActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Position") ) );
+	m_propertyGridItem4711 = m_cubeActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("X"), wxT("pos_x") ) );
+	m_propertyGridItem4811 = m_cubeActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("pos_y") ) );
+	m_propertyGridItem4911 = m_cubeActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("pos_z") ) );
+	m_propertyGridItem5011 = m_cubeActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Rotation") ) );
+	m_propertyGridItem5111 = m_cubeActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("X"), wxT("rot_x") ) );
+	m_propertyGridItem5211 = m_cubeActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("rot_y") ) );
+	m_propertyGridItem5311 = m_cubeActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("rot_z") ) );
+	m_propertyGridItem5411 = m_cubeActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Scale") ) );
+	m_propertyGridItem5511 = m_cubeActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("X"), wxT("scale_x") ) );
+	m_propertyGridItem5611 = m_cubeActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("scale_y") ) );
+	m_propertyGridItem5711 = m_cubeActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("scale_z") ) );
+	m_propertyGridItem5811 = m_cubeActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Render Properties") ) );
+	m_propertyGridItem5911 = m_cubeActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Material"), wxT("material_id") ) );
+	m_propertyGridItem6011 = m_cubeActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Visible"), wxT("visible") ) );
+	m_propertyGridItem6111 = m_cubeActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Shadow"), wxT("shadow") ) );
+	m_propertyGridItem6211 = m_cubeActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Auto Culling"), wxT("auto_culling") ) );
+
+	m_sphereActorProperties_propertyGridPage = m_stage_propertyGridManager->AddPage( wxT("Actor Properties"), wxNullBitmap );
+	m_animatedActorPropertiesCat_propertyGridItem111 = m_sphereActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Sphere Properties"), wxT("actorPropertiesCat") ) );
+	m_aniActorID_propertyGridItem111 = m_sphereActorProperties_propertyGridPage->Append( new wxStringProperty( wxT("ID"), wxT("actor_id") ) );
+	m_propertyGridItem1491 = m_sphereActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Radius"), wxT("radius") ) );
+	m_propertyGridItem46111 = m_sphereActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Position") ) );
+	m_propertyGridItem47111 = m_sphereActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("X"), wxT("pos_x") ) );
+	m_propertyGridItem48111 = m_sphereActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("pos_y") ) );
+	m_propertyGridItem49111 = m_sphereActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("pos_z") ) );
+	m_propertyGridItem50111 = m_sphereActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Rotation") ) );
+	m_propertyGridItem51111 = m_sphereActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("X"), wxT("rot_x") ) );
+	m_propertyGridItem52111 = m_sphereActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("rot_y") ) );
+	m_propertyGridItem53111 = m_sphereActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("rot_z") ) );
+	m_propertyGridItem54111 = m_sphereActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Scale") ) );
+	m_propertyGridItem55111 = m_sphereActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("X"), wxT("scale_x") ) );
+	m_propertyGridItem56111 = m_sphereActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("scale_y") ) );
+	m_propertyGridItem57111 = m_sphereActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("scale_z") ) );
+	m_propertyGridItem58111 = m_sphereActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Render Properties") ) );
+	m_propertyGridItem59111 = m_sphereActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Material"), wxT("material_id") ) );
+	m_propertyGridItem60111 = m_sphereActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Visible"), wxT("visible") ) );
+	m_propertyGridItem61111 = m_sphereActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Shadow"), wxT("shadow") ) );
+	m_propertyGridItem62111 = m_sphereActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Auto Culling"), wxT("auto_culling") ) );
+
+	m_billboardActorProperties_propertyGridPage = m_stage_propertyGridManager->AddPage( wxT("Actor Properties"), wxNullBitmap );
+	m_animatedActorPropertiesCat_propertyGridItem1111 = m_billboardActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Billboard Properties"), wxT("actorPropertiesCat") ) );
+	m_aniActorID_propertyGridItem1111 = m_billboardActorProperties_propertyGridPage->Append( new wxStringProperty( wxT("ID"), wxT("actor_id") ) );
+	m_propertyGridItem461111 = m_billboardActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Position") ) );
+	m_propertyGridItem471111 = m_billboardActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("X"), wxT("pos_x") ) );
+	m_propertyGridItem481111 = m_billboardActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("pos_y") ) );
+	m_propertyGridItem491111 = m_billboardActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("pos_z") ) );
+	m_propertyGridItem501111 = m_billboardActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Rotation") ) );
+	m_propertyGridItem511111 = m_billboardActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("X"), wxT("rot_x") ) );
+	m_propertyGridItem521111 = m_billboardActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("rot_y") ) );
+	m_propertyGridItem531111 = m_billboardActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("rot_z") ) );
+	m_propertyGridItem541111 = m_billboardActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Scale") ) );
+	m_propertyGridItem551111 = m_billboardActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("X"), wxT("scale_x") ) );
+	m_propertyGridItem561111 = m_billboardActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("scale_y") ) );
+	m_propertyGridItem571111 = m_billboardActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("scale_z") ) );
+	m_propertyGridItem581111 = m_billboardActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Render Properties") ) );
+	m_propertyGridItem591111 = m_billboardActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Material"), wxT("material_id") ) );
+	m_propertyGridItem601111 = m_billboardActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Visible"), wxT("visible") ) );
+	m_propertyGridItem611111 = m_billboardActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Shadow"), wxT("shadow") ) );
+	m_propertyGridItem621111 = m_billboardActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Auto Culling"), wxT("auto_culling") ) );
+
+	m_lightActorProperties_propertyGridPage = m_stage_propertyGridManager->AddPage( wxT("Actor Properties"), wxNullBitmap );
+	m_animatedActorPropertiesCat_propertyGridItem11111 = m_lightActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Light Properties"), wxT("actorPropertiesCat") ) );
+	m_aniActorID_propertyGridItem11111 = m_lightActorProperties_propertyGridPage->Append( new wxStringProperty( wxT("ID"), wxT("actor_id") ) );
+	m_propertyGridItem268 = m_lightActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Light Type"), wxT("light_type") ) );
+	m_propertyGridItem269 = m_lightActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Radius"), wxT("radius") ) );
+	m_propertyGridItem270 = m_lightActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Angle"), wxT("angle") ) );
+	m_propertyGridItem271 = m_lightActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Fall Off"), wxT("falloff") ) );
+	m_propertyGridItem272 = m_lightActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Cast Shadow"), wxT("cast_shadow") ) );
+	m_propertyGridItem4611111 = m_lightActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Position") ) );
+	m_propertyGridItem4711111 = m_lightActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("X"), wxT("pos_x") ) );
+	m_propertyGridItem4811111 = m_lightActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("pos_y") ) );
+	m_propertyGridItem4911111 = m_lightActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("pos_z") ) );
+	m_propertyGridItem5011111 = m_lightActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Rotation") ) );
+	m_propertyGridItem5111111 = m_lightActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("X"), wxT("rot_x") ) );
+	m_propertyGridItem5211111 = m_lightActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("rot_y") ) );
+	m_propertyGridItem5311111 = m_lightActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("rot_z") ) );
+	m_propertyGridItem5411111 = m_lightActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Scale") ) );
+	m_propertyGridItem5511111 = m_lightActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("X"), wxT("scale_x") ) );
+	m_propertyGridItem5611111 = m_lightActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("scale_y") ) );
+	m_propertyGridItem5711111 = m_lightActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("scale_z") ) );
+	m_propertyGridItem5811111 = m_lightActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Render Properties") ) );
+	m_propertyGridItem5911111 = m_lightActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Material"), wxT("material_id") ) );
+	m_propertyGridItem6011111 = m_lightActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Visible"), wxT("visible") ) );
+	m_propertyGridItem6111111 = m_lightActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Shadow"), wxT("shadow") ) );
+	m_propertyGridItem6211111 = m_lightActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Auto Culling"), wxT("auto_culling") ) );
+
+	m_terrainActorProperties_propertyGridPage = m_stage_propertyGridManager->AddPage( wxT("Actor Properties"), wxNullBitmap );
+	m_animatedActorPropertiesCat_propertyGridItem112 = m_terrainActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Terrain Properties"), wxT("actorPropertiesCat") ) );
+	m_aniActorID_propertyGridItem112 = m_terrainActorProperties_propertyGridPage->Append( new wxStringProperty( wxT("ID"), wxT("actor_id") ) );
+	m_propertyGridItem1492 = m_terrainActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Height Map"), wxT("hmap_image_id") ) );
+	m_propertyGridItem46112 = m_terrainActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Position") ) );
+	m_propertyGridItem47112 = m_terrainActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("X"), wxT("pos_x") ) );
+	m_propertyGridItem48112 = m_terrainActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("pos_y") ) );
+	m_propertyGridItem49112 = m_terrainActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("pos_z") ) );
+	m_propertyGridItem50112 = m_terrainActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Rotation") ) );
+	m_propertyGridItem51112 = m_terrainActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("X"), wxT("rot_x") ) );
+	m_propertyGridItem52112 = m_terrainActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("rot_y") ) );
+	m_propertyGridItem53112 = m_terrainActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("rot_z") ) );
+	m_propertyGridItem54112 = m_terrainActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Scale") ) );
+	m_propertyGridItem55112 = m_terrainActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("X"), wxT("scale_x") ) );
+	m_propertyGridItem56112 = m_terrainActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("scale_y") ) );
+	m_propertyGridItem57112 = m_terrainActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("scale_z") ) );
+	m_propertyGridItem58112 = m_terrainActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Render Properties") ) );
+	m_propertyGridItem59112 = m_terrainActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Material"), wxT("material_id") ) );
+	m_propertyGridItem60112 = m_terrainActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Visible"), wxT("visible") ) );
+	m_propertyGridItem61112 = m_terrainActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Shadow"), wxT("shadow") ) );
+	m_propertyGridItem62112 = m_terrainActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Auto Culling"), wxT("auto_culling") ) );
+
+	m_waterActorProperties_propertyGridPage = m_stage_propertyGridManager->AddPage( wxT("Actor Properties"), wxNullBitmap );
+	m_animatedActorPropertiesCat_propertyGridItem113 = m_waterActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Water Properties"), wxT("actorPropertiesCat") ) );
+	m_aniActorID_propertyGridItem113 = m_waterActorProperties_propertyGridPage->Append( new wxStringProperty( wxT("ID"), wxT("actor_id") ) );
+	m_propertyGridItem1493 = m_waterActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Mesh"), wxT("mesh_id") ) );
+	m_propertyGridItem428 = m_waterActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Wave Settings") ) );
+	m_propertyGridItem429 = m_waterActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Height"), wxT("wave_height") ) );
+	m_propertyGridItem430 = m_waterActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Length"), wxT("wave_length") ) );
+	m_propertyGridItem431 = m_waterActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Speed"), wxT("wave_speed") ) );
+	m_propertyGridItem46113 = m_waterActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Position") ) );
+	m_propertyGridItem47113 = m_waterActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("X"), wxT("pos_x") ) );
+	m_propertyGridItem48113 = m_waterActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("pos_y") ) );
+	m_propertyGridItem49113 = m_waterActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("pos_z") ) );
+	m_propertyGridItem50113 = m_waterActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Rotation") ) );
+	m_propertyGridItem51113 = m_waterActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("X"), wxT("rot_x") ) );
+	m_propertyGridItem52113 = m_waterActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("rot_y") ) );
+	m_propertyGridItem53113 = m_waterActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("rot_z") ) );
+	m_propertyGridItem54113 = m_waterActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Scale") ) );
+	m_propertyGridItem55113 = m_waterActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("X"), wxT("scale_x") ) );
+	m_propertyGridItem56113 = m_waterActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("scale_y") ) );
+	m_propertyGridItem57113 = m_waterActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("scale_z") ) );
+	m_propertyGridItem58113 = m_waterActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Render Properties") ) );
+	m_propertyGridItem59113 = m_waterActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Material"), wxT("material_id") ) );
+	m_propertyGridItem60113 = m_waterActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Visible"), wxT("visible") ) );
+	m_propertyGridItem61113 = m_waterActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Shadow"), wxT("shadow") ) );
+	m_propertyGridItem62113 = m_waterActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Auto Culling"), wxT("auto_culling") ) );
+	bSizer31->Add( m_stage_propertyGridManager, 1, wxALL|wxEXPAND, 5 );
 
 
 	m_panel311->SetSizer( bSizer31 );
@@ -2216,6 +2506,19 @@ CreateStageGroup_Dialog::CreateStageGroup_Dialog( wxWindow* parent, wxWindowID i
 	wxBoxSizer* bSizer164;
 	bSizer164 = new wxBoxSizer( wxVERTICAL );
 
+	wxBoxSizer* bSizer159;
+	bSizer159 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText54 = new wxStaticText( this, wxID_ANY, wxT("Stage"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText54->Wrap( -1 );
+	bSizer159->Add( m_staticText54, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_stage_comboBox = new wxComboBox( this, wxID_ANY, wxT("Combo!"), wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	bSizer159->Add( m_stage_comboBox, 4, wxALL, 5 );
+
+
+	bSizer164->Add( bSizer159, 0, wxEXPAND, 5 );
+
 	wxBoxSizer* bSizer144;
 	bSizer144 = new wxBoxSizer( wxHORIZONTAL );
 
@@ -2350,6 +2653,19 @@ EditStageGroup_Dialog::EditStageGroup_Dialog( wxWindow* parent, wxWindowID id, c
 	wxBoxSizer* bSizer150;
 	bSizer150 = new wxBoxSizer( wxVERTICAL );
 
+	wxBoxSizer* bSizer159;
+	bSizer159 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText53 = new wxStaticText( this, wxID_ANY, wxT("Group Label"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText53->Wrap( -1 );
+	bSizer159->Add( m_staticText53, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_groupLabel_textCtrl = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer159->Add( m_groupLabel_textCtrl, 1, wxALL, 5 );
+
+
+	bSizer150->Add( bSizer159, 1, wxEXPAND, 5 );
+
 	wxBoxSizer* bSizer151;
 	bSizer151 = new wxBoxSizer( wxHORIZONTAL );
 
@@ -2473,4 +2789,34 @@ EditStageGroup_Dialog::~EditStageGroup_Dialog()
 	m_button64->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( EditStageGroup_Dialog::OnApply ), NULL, this );
 	m_button65->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( EditStageGroup_Dialog::OnCancel ), NULL, this );
 
+}
+
+MyDialog14::MyDialog14( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+	wxBoxSizer* bSizer160;
+	bSizer160 = new wxBoxSizer( wxVERTICAL );
+
+	m_propertyGridManager1 = new wxPropertyGridManager(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxPGMAN_DEFAULT_STYLE);
+	m_propertyGridManager1->SetExtraStyle( wxPG_EX_MODE_BUTTONS );
+
+	m_stage_propertyGridPage = m_propertyGridManager1->AddPage( wxT("Page"), wxNullBitmap );
+	m_id_propertyGridItem = m_stage_propertyGridPage->Append( new wxStringProperty( wxT("ID"), wxT("ID") ) );
+	m_propertyGridItem8 = m_stage_propertyGridPage->Append( new wxStringProperty( wxT("Name") ) );
+
+	m_propertyGridPage2 = m_propertyGridManager1->AddPage( wxT("Page"), wxNullBitmap );
+
+	m_propertyGridPage3 = m_propertyGridManager1->AddPage( wxT("Page"), wxNullBitmap );
+	bSizer160->Add( m_propertyGridManager1, 1, wxALL|wxEXPAND, 5 );
+
+
+	this->SetSizer( bSizer160 );
+	this->Layout();
+
+	this->Centre( wxBOTH );
+}
+
+MyDialog14::~MyDialog14()
+{
 }

@@ -171,15 +171,31 @@ etc.
 	* pos_x=x  pos_y=y  pos_z=z  
 	* rot_x=rx  rot_y=ry  rot_z=rz  
 	* scale_x=sx  scale_y=sy  scale_z=sz  
-	* visible=flag  
-	* cast_shadow=flag
-	* type=light_type
-	* radius=light_radius
-	* angle=light_angle
-	* falloff=n
-	* diffuse=color
-	* ambient=color
-	* specular=color
+	* visible=flag 
+	
+* dir_x=dx dir_y=dy dir_z=dz    a
+* use_every_vertex=flag		mesh
+* normal_dir_mod=n		mesh
+* mesh=id		mesh
+* use_normal_dir=flag		mesh
+* min_per_sec=n				a
+* max_per_sec=n				a
+* min_start_color=color		a
+* max_start_color=color		a
+* min_life=n				a
+* max_life=n				a
+* max_angle=n
+* min_start_width=n  min_start_height=n		a
+* max_start_width=n  max_start_height=n		a
+* center_x=x  center_y=y  center_z=z		cylinder, ring, sphere
+* radius	ring, sphere
+	* ring_thickness=n		ring
+	* box_min_x=x  box_min_y=y  box_min_z=z			box
+	* box_max_x=x  box_max_y=y  box_max_z=z			box
+	* normal_x=x  normal_y=y  normal_z=z		cylinder
+	* length=n		cylinder
+* use_outline_only=flag		cylinder
+	
 	
 * Actor  type=TERRAIN  id=actor_id 
 	* file=hmap_file
@@ -224,7 +240,7 @@ cast_shadow
 auto_culling
 cube_size
 radius
-texture_index
+texture
 light_type
 angle
 falloff
@@ -238,37 +254,8 @@ wave_length
 wave_speed
 
 
-else if(param[i].key.compare(_("type"))==0)
-else if(param[i].key.compare(_("id"))==0)
-else if(param[i].key.compare(_("mesh"))==0)
-else if(param[i].key.compare(_("pos_x"))==0)
-else if(param[i].key.compare(_("pos_y"))==0)
-else if(param[i].key.compare(_("pos_z"))==0)
-else if(param[i].key.compare(_("rot_x"))==0)
-else if(param[i].key.compare(_("rot_y"))==0)
-else if(param[i].key.compare(_("rot_z"))==0)
-else if(param[i].key.compare(_("scale_x"))==0)
-else if(param[i].key.compare(_("scale_y"))==0)
-else if(param[i].key.compare(_("scale_z"))==0)
-else if(param[i].key.compare(_("material"))==0)
-else if(param[i].key.compare(_("animation"))==0)
-else if(param[i].key.compare(_("num_loops"))==0)
-else if(param[i].key.compare(_("visible"))==0)
-else if(param[i].key.compare(_("shadow"))==0)
-else if(param[i].key.compare(_("cast_shadow"))==0)
-else if(param[i].key.compare(_("auto_culling"))==0)
-else if(param[i].key.compare(_("cube_size"))==0)
-else if(param[i].key.compare(_("radius"))==0)
-else if(param[i].key.compare(_("texture_index"))==0)
-else if(param[i].key.compare(_("light_type"))==0)
-else if(param[i].key.compare(_("angle"))==0)
-else if(param[i].key.compare(_("falloff"))==0)
-else if(param[i].key.compare(_("ambient"))==0)
-else if(param[i].key.compare(_("emissive"))==0)
-else if(param[i].key.compare(_("diffuse"))==0)
-else if(param[i].key.compare(_("specular"))==0)
-else if(param[i].key.compare(_("terrain_hmap_file"))==0)
-else if(param[i].key.compare(_("wave_height"))==0)
-else if(param[i].key.compare(_("wave_length"))==0)
-else if(param[i].key.compare(_("wave_speed"))==0)
-
+animation id
+texture id
+material id
+animation id
+mesh id

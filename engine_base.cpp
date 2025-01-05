@@ -469,11 +469,56 @@ int serenity_project::getActorType(wxString actor_type_string)
 	return -1;
 }
 
+int serenity_project::getMeshIndex(wxString mesh_id)
+{
+	for(int i = 0; i < meshes.size(); i++)
+	{
+		if(meshes[i].id_name.compare(mesh_id.ToStdString())==0)
+			return i;
+	}
+	return -1;
+}
+
+int serenity_project::getMaterialIndex(wxString material_id)
+{
+	for(int i = 0; i < materials.size(); i++)
+	{
+		if(materials[i].id_name.compare(material_id.ToStdString())==0)
+			return i;
+	}
+	return -1;
+}
+
+int serenity_project::getTextureIndex(wxString texture_id)
+{
+	for(int i = 0; i < textures.size(); i++)
+	{
+		if(textures[i].id_name.compare(texture_id.ToStdString())==0)
+			return i;
+	}
+	return -1;
+}
+
+int serenity_project::getAnimationIndex(int mesh_index, wxString animation_id)
+{
+	if(mesh_index < 0 || mesh_index >= meshes.size())
+		return -1;
+
+	for(int i = 0; i < meshes[mesh_index].animation.size(); i++)
+	{
+		if(meshes[mesh_index].animation[i].id_name.compare(animation_id.ToStdString())==0)
+			return i;
+	}
+	return -1;
+}
+
 rc_actor serenity_project::load_actor(std::vector<serenity_project_dict_obj> param)
 {
 	rc_actor p_actor;
 
 	double pos_x, pos_y, pos_z, rot_x, rot_y, rot_z, scale_x, scale_y, scale_z;
+
+	wxString animation_id = _(""); //storing this and getting it after reading args since mesh_index might not be read before animation_id
 
 	for(int i = 0; i < param.size(); i++)
 	{
@@ -484,7 +529,7 @@ rc_actor serenity_project::load_actor(std::vector<serenity_project_dict_obj> par
 		else if(param[i].key.compare(_("group"))==0)
 			p_actor.group_name = param[i].val.ToStdString();
 		else if(param[i].key.compare(_("mesh"))==0)
-			param[i].val.ToInt(&p_actor.mesh_index);
+			p_actor.mesh_index = getMeshIndex(param[i].val);
 		else if(param[i].key.compare(_("pos_x"))==0)
 			param[i].val.ToDouble(&pos_x);
 		else if(param[i].key.compare(_("pos_y"))==0)
@@ -504,9 +549,9 @@ rc_actor serenity_project::load_actor(std::vector<serenity_project_dict_obj> par
 		else if(param[i].key.compare(_("scale_z"))==0)
 			param[i].val.ToDouble(&scale_z);
 		else if(param[i].key.compare(_("material"))==0)
-			param[i].val.ToInt(&p_actor.override_material_index);
+			p_actor.override_material_index = getMaterialIndex(param[i].val);
 		else if(param[i].key.compare(_("animation"))==0)
-			param[i].val.ToInt(&p_actor.animation_index);
+			animation_id = param[i].val;
 		else if(param[i].key.compare(_("num_loops"))==0)
 			param[i].val.ToInt(&p_actor.num_loops);
 		else if(param[i].key.compare(_("visible"))==0)
@@ -521,8 +566,8 @@ rc_actor serenity_project::load_actor(std::vector<serenity_project_dict_obj> par
 			param[i].val.ToDouble(&p_actor.cube_size);
 		else if(param[i].key.compare(_("radius"))==0)
 			param[i].val.ToDouble(&p_actor.radius);
-		else if(param[i].key.compare(_("texture_index"))==0)
-			param[i].val.ToInt(&p_actor.texture_index);
+		else if(param[i].key.compare(_("texture"))==0)
+			p_actor.texture_index = getTextureIndex(param[i].val);
 		else if(param[i].key.compare(_("light_type"))==0)
 			p_actor.light_type = getLightType(param[i].val);
 		else if(param[i].key.compare(_("angle"))==0)
@@ -562,6 +607,8 @@ rc_actor serenity_project::load_actor(std::vector<serenity_project_dict_obj> par
 		else if(param[i].key.compare(_("wave_speed"))==0)
 			param[i].val.ToDouble(&p_actor.wave_speed);
 	}
+
+	p_actor.animation_index = getAnimationIndex(p_actor.mesh_index, animation_id);
 
 	p_actor.position = irr::core::vector3df(pos_x, pos_y, pos_z);
 	p_actor.rotation = irr::core::vector3df(rot_x, rot_y, rot_z);

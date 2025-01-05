@@ -18,6 +18,10 @@ class SerenityEditor_DeleteGroupAlert_Dialog : public DeleteGroupAlert_Dialog
 		void OnDelete( wxCommandEvent& event );
 		void OnCancel( wxCommandEvent& event );
 	public:
+		void setGroupName(wxString group_name);
+
+		bool deleteFlag;
+
 		/** Constructor */
 		SerenityEditor_DeleteGroupAlert_Dialog( wxWindow* parent );
 	//// end generated class members

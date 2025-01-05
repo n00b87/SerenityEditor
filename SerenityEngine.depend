@@ -1,8 +1,8 @@
 # depslib dependency file v1.0
-1735934248 source:/home/n00b/Projects/SerenityEngine/Serenity3D_Editor.cpp
+1736093774 source:/home/n00b/Projects/SerenityEngine/Serenity3D_Editor.cpp
 	"Serenity3D_Editor.h"
 
-1735935557 /home/n00b/Projects/SerenityEngine/Serenity3D_Editor.h
+1736093774 /home/n00b/Projects/SerenityEngine/Serenity3D_Editor.h
 	<wx/artprov.h>
 	<wx/xrc/xmlres.h>
 	<wx/string.h>
@@ -24,6 +24,7 @@
 	<wx/button.h>
 	<wx/treectrl.h>
 	<wx/propgrid/propgrid.h>
+	<wx/propgrid/manager.h>
 	<wx/propgrid/advprops.h>
 	<wx/splitter.h>
 	<wx/checkbox.h>
@@ -1431,8 +1432,12 @@
 	"wx/icon.h"
 	"wx/aui/auibook.h"
 
-1735935196 source:/home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.cpp
+1736094947 source:/home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.cpp
 	<wx/stdpaths.h>
+	<wx/propgrid/manager.h>
+	<wx/propgrid/propgridpagestate.h>
+	<wx/propgrid/propgrid.h>
+	<wx/propgrid/advprops.h>
 	<irrlicht.h>
 	"wxIrrlicht.h"
 	"SerenityEditorSerenity3D_Frame.h"
@@ -1453,7 +1458,7 @@
 	"SerenityEditor_DeleteGroupAlert_Dialog.h"
 	"SerenityEditor_EditStageGroup_Dialog.h"
 
-1735934965 /home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.h
+1736034321 /home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.h
 	<vector>
 	<wx/propgrid/propgrid.h>
 	<wx/propgrid/advprops.h>
@@ -9677,7 +9682,7 @@
 	"engine_base.h"
 	"rc_stage.h"
 
-1735882587 /home/n00b/Projects/SerenityEngine/engine_base.h
+1735957447 /home/n00b/Projects/SerenityEngine/engine_base.h
 	<wx/wx.h>
 	<wx/filename.h>
 	<vector>
@@ -9700,7 +9705,7 @@
 
 1699484035 /usr/include/wx-3.2/wx/unix/stdpaths.h
 
-1735891198 source:/home/n00b/Projects/SerenityEngine/engine_base.cpp
+1735957591 source:/home/n00b/Projects/SerenityEngine/engine_base.cpp
 	<wx/wx.h>
 	<wx/filename.h>
 	<vector>
@@ -9977,21 +9982,25 @@
 	<vector>
 	"Serenity3D_Editor.h"
 
-1735934297 source:/home/n00b/Projects/SerenityEngine/SerenityEditor_CreateStageGroup_Dialog.cpp
+1735967505 source:/home/n00b/Projects/SerenityEngine/SerenityEditor_CreateStageGroup_Dialog.cpp
 	"SerenityEditor_CreateStageGroup_Dialog.h"
 
-1735934297 /home/n00b/Projects/SerenityEngine/SerenityEditor_CreateStageGroup_Dialog.h
+1735964290 /home/n00b/Projects/SerenityEngine/SerenityEditor_CreateStageGroup_Dialog.h
 	"Serenity3D_Editor.h"
 
-1735934297 source:/home/n00b/Projects/SerenityEngine/SerenityEditor_DeleteGroupAlert_Dialog.cpp
+1735969907 source:/home/n00b/Projects/SerenityEngine/SerenityEditor_DeleteGroupAlert_Dialog.cpp
 	"SerenityEditor_DeleteGroupAlert_Dialog.h"
 
-1735934297 /home/n00b/Projects/SerenityEngine/SerenityEditor_DeleteGroupAlert_Dialog.h
+1735968672 /home/n00b/Projects/SerenityEngine/SerenityEditor_DeleteGroupAlert_Dialog.h
 	"Serenity3D_Editor.h"
 
-1735934297 source:/home/n00b/Projects/SerenityEngine/SerenityEditor_EditStageGroup_Dialog.cpp
+1736010336 source:/home/n00b/Projects/SerenityEngine/SerenityEditor_EditStageGroup_Dialog.cpp
 	"SerenityEditor_EditStageGroup_Dialog.h"
 
-1735934297 /home/n00b/Projects/SerenityEngine/SerenityEditor_EditStageGroup_Dialog.h
+1736008763 /home/n00b/Projects/SerenityEngine/SerenityEditor_EditStageGroup_Dialog.h
 	"Serenity3D_Editor.h"
+
+1699484035 /usr/include/wx-3.2/wx/propgrid/manager.h
+	"wx/defs.h"
+	"wx/propgrid/propgrid.h"
 

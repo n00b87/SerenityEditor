@@ -24,6 +24,16 @@ class SerenityEditor_EditStageGroup_Dialog : public EditStageGroup_Dialog
 		void OnApply( wxCommandEvent& event );
 		void OnCancel( wxCommandEvent& event );
 	public:
+		wxArrayString src_actors;
+		wxArrayString dst_actors;
+		wxString group_name;
+		wxString stage_id;
+
+		bool applyFlag;
+
+		void refresh_list();
+		void refresh_groupName();
+
 		/** Constructor */
 		SerenityEditor_EditStageGroup_Dialog( wxWindow* parent );
 	//// end generated class members

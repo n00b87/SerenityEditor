@@ -49,6 +49,7 @@ struct Serenity_PreviewMesh
 	bool animation_change;
 };
 
+#define RC_STAGE_NODE_NONE		0
 #define RC_STAGE_NODE_STAGE		1
 #define RC_STAGE_NODE_GROUP		2
 #define RC_STAGE_NODE_ACTOR		3
@@ -134,6 +135,15 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
 
 		void updateToolSelection();
 		int getStageToolIndex(wxAuiToolBarItem* toolbar_item);
+
+		void open_stage(int stage_project_index);
+
+		bool delete_actor(int stage_index, int actor_stage_index);
+
+		int stageTab_active_stage_project_index = -1;
+
+		void setAnimatedActorGrid(int stage_project_index, int actor_project_index);
+		void setAnimatedActorGrid(int stage_project_index, int actor_project_index);
 
 		//--------MESH TAB--------------
 		bool meshTab_isPlaying = false;
