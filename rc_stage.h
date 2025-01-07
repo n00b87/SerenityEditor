@@ -62,6 +62,15 @@ struct rc_mesh
 #define SN_LIGHT_TYPE_SPOT			1
 #define SN_LIGHT_TYPE_DIRECTIONAL	2
 
+
+#define SN_PARTICLE_TYPE_POINT		0
+#define SN_PARTICLE_TYPE_BOX		1
+#define SN_PARTICLE_TYPE_SPHERE		2
+#define SN_PARTICLE_TYPE_CYLINDER	3
+#define SN_PARTICLE_TYPE_MESH		4
+#define SN_PARTICLE_TYPE_RING		5
+
+
 #define SN_ACTOR_TYPE_ANIMATED	0
 #define SN_ACTOR_TYPE_OCTREE	1
 #define SN_ACTOR_TYPE_LIGHT		2
@@ -104,6 +113,35 @@ struct rc_actor
 	double wave_height;
 	double wave_length;
 	double wave_speed;
+	int particle_type;
+	irr::core::vector3df normal;
+	irr::core::vector3df direction;
+	irr::core::aabbox3df box;
+	irr::core::vector3df center;
+
+	bool use_every_vertex;
+	bool use_normal_direction;
+	bool use_normal_mod;
+
+	double cylinder_length;
+	bool use_outline_only;
+
+	double ring_thickness;
+
+	double min_width;
+	double min_height;
+
+	double max_width;
+	double max_height;
+
+	double min_per_sec;
+	double max_per_sec;
+
+	irr::video::SColor min_start_color;
+	irr::video::SColor max_start_color;
+
+	double min_life;
+	double max_life;
 };
 
 struct rc_waypoint
@@ -119,6 +157,31 @@ struct rc_group
 
 struct rc_path
 {
+};
+
+#define SN_SKY_TYPE_NONE	0
+#define SN_SKY_TYPE_BOX		1
+#define SN_SKY_TYPE_DOME	2
+
+
+struct rc_sky
+{
+	int type;
+
+	int dome_texture_index;
+
+	int left_texture_index;
+	int right_texture_index;
+	int top_texture_index;
+	int bottom_texture_index;
+	int front_texture_index;
+	int back_texture_index;
+
+	irr::u32 hRes;
+	irr::u32 vRes;
+	double txPCT;
+	double spherePCT;
+	double dome_radius;
 };
 
 struct rc_material_keyval_pair
@@ -176,6 +239,8 @@ class rc_stage
 		std::vector<rc_actor> actors;
 
 		std::vector<rc_group> groups;
+
+		rc_sky sky;
 
 
 		bool idIsActive;

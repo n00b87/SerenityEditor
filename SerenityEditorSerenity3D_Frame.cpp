@@ -1380,6 +1380,1129 @@ void SerenityEditorSerenity3D_Frame::On_Stage_StageNodeActivated( wxTreeEvent& e
 	}
 }
 
+void SerenityEditorSerenity3D_Frame::getGridAnimationList(int mesh_project_index, wxPGChoices* choices)
+{
+	choices->Clear();
+
+	choices->Add(_("NONE"));
+
+	if(mesh_project_index < 0 || mesh_project_index >= project.meshes.size())
+		return;
+
+
+	for(int i = 0; i < project.meshes[mesh_project_index].animation.size(); i++)
+	{
+		if(project.meshes[mesh_project_index].animation[i].id_name.compare("")!=0)
+		{
+			choices->Add(wxString::FromUTF8(project.meshes[mesh_project_index].animation[i].id_name));
+		}
+	}
+}
+
+void SerenityEditorSerenity3D_Frame::OnStagePropertyGridChanged( wxPropertyGridEvent& event )
+{
+	wxPGProperty* property = event.GetProperty();
+	wxString property_name = property->GetName();
+
+	int selected_page_index = m_stage_propertyGridManager->GetSelectedPage();
+	wxPropertyGridPage* page = m_stage_propertyGridManager->GetPage(selected_page_index);
+
+
+
+	if(property_name.compare(_("actor_id"))==0)
+	{
+		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
+			return;
+
+		if(stageTabGrid_current_actor < 0 || stageTabGrid_current_actor >= project.stages[stageTabGrid_current_stage].actors.size())
+			return;
+
+		int stage_index = stageTabGrid_current_stage;
+		int actor_index = stageTabGrid_current_actor;
+
+		project.stages[stage_index].actors[actor_index].id_name = page->GetProperty(_("actor_id"))->GetValueAsString();
+
+		if(!isValidID(project.stages[stage_index].actors[actor_index].id_name, RC_ID_ACTOR))
+		{
+			wxMessageBox(_("ActorID is invalid. A valid ID will be generated"));
+			project.stages[stage_index].actors[actor_index].id_name = project.genActorID(stage_index);
+			page->GetProperty(_("actor_id"))->SetValueFromString(wxString::FromUTF8(project.stages[stage_index].actors[actor_index].id_name));
+		}
+
+		//update all actor names in tree nodes
+		for(int i = 0; i < stage_tree_nodes.size(); i++)
+		{
+			int stage_project_index = stage_tree_nodes[i].project_index;
+
+			if(stage_project_index < 0)
+				continue;
+
+			for(int ac = 0; ac < stage_tree_nodes[i].actors.size(); ac++)
+			{
+				int actor_project_index = stage_tree_nodes[i].actors[ac].project_index;
+
+				if(actor_project_index < 0 || actor_project_index >= project.stages[stage_project_index].actors.size())
+					continue;
+
+				if(project.stages[stage_project_index].actors[actor_project_index].id_name.compare("")==0)
+					continue;
+
+				wxTreeItemId actor_item = stage_tree_nodes[i].actors[ac].tree_item;
+
+				wxString node_label = m_project_stage_treeCtrl->GetItemText(actor_item);
+
+				if(project.stages[stage_project_index].actors[actor_project_index].id_name.compare(node_label.ToStdString())!=0)
+				{
+					m_project_stage_treeCtrl->SetItemText(actor_item, wxString::FromUTF8(project.stages[stage_project_index].actors[actor_project_index].id_name));
+				}
+			}
+		}
+	}
+	else if(property_name.compare(_("animation_mesh_id"))==0)
+	{
+		//wxMessageBox(_("balls: ") + wxString::Format(_("%d"), stageTabGrid_current_stage) + _(", ") + wxString::Format(_("%d"), stageTabGrid_current_actor));
+		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
+			return;
+
+		if(stageTabGrid_current_actor < 0 || stageTabGrid_current_actor >= project.stages[stageTabGrid_current_stage].actors.size())
+			return;
+
+		//wxMessageBox(_("DO STUFF"));
+
+
+		wxString init_animation_id = _("NONE");
+
+		int stage_index = stageTabGrid_current_stage;
+		int actor_index = stageTabGrid_current_actor;
+
+		project.stages[stage_index].actors[actor_index].mesh_index = project.getMeshIndex(property->GetValueAsString());
+		project.stages[stage_index].actors[actor_index].animation_index = -1;
+		project.stages[stage_index].actors[actor_index].num_loops = -1;
+
+		int animation_index = -1;
+
+		int num_loops = project.stages[stage_index].actors[actor_index].num_loops;
+		int mesh_index = project.stages[stage_index].actors[actor_index].mesh_index;
+
+		wxPGChoices animation_choice;
+		getGridAnimationList(mesh_index, &animation_choice); //mesh_index error checking happens in the getGridAnimationList() function so I am not bothering here
+
+		page->GetPropertyByName(_("init_animation_id"))->SetChoices(animation_choice);
+
+		page->GetPropertyByName(_("init_animation_id"))->SetChoiceSelection(0);
+
+		page->GetPropertyByName(_("num_loops"))->SetValueFromInt(-1);
+	}
+	else if(property_name.compare(_("init_animation_id"))==0)
+	{
+		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
+			return;
+
+		if(stageTabGrid_current_actor < 0 || stageTabGrid_current_actor >= project.stages[stageTabGrid_current_stage].actors.size())
+			return;
+
+		wxString init_animation_id = _("NONE");
+
+		int stage_index = stageTabGrid_current_stage;
+		int actor_index = stageTabGrid_current_actor;
+
+		int mesh_index = project.stages[stage_index].actors[actor_index].mesh_index;
+		project.stages[stage_index].actors[actor_index].animation_index = project.getAnimationIndex(mesh_index, page->GetPropertyByName(_("init_animation_id"))->GetValueAsString());
+	}
+	else if(property_name.compare(_("num_loops"))==0)
+	{
+		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
+			return;
+
+		if(stageTabGrid_current_actor < 0 || stageTabGrid_current_actor >= project.stages[stageTabGrid_current_stage].actors.size())
+			return;
+
+		wxString init_animation_id = _("NONE");
+
+		int stage_index = stageTabGrid_current_stage;
+		int actor_index = stageTabGrid_current_actor;
+
+		project.stages[stage_index].actors[actor_index].num_loops = page->GetPropertyByName(_("num_loops"))->GetValue().GetInteger();
+	}
+	else if(property_name.compare(_("visible"))==0)
+	{
+		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
+			return;
+
+		if(stageTabGrid_current_actor < 0 || stageTabGrid_current_actor >= project.stages[stageTabGrid_current_stage].actors.size())
+			return;
+
+		int stage_index = stageTabGrid_current_stage;
+		int actor_index = stageTabGrid_current_actor;
+
+		project.stages[stage_index].actors[actor_index].visible = page->GetPropertyByName(_("visible"))->GetValue().GetBool();
+	}
+	else if(property_name.compare(_("shadow"))==0)
+	{
+		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
+			return;
+
+		if(stageTabGrid_current_actor < 0 || stageTabGrid_current_actor >= project.stages[stageTabGrid_current_stage].actors.size())
+			return;
+
+		int stage_index = stageTabGrid_current_stage;
+		int actor_index = stageTabGrid_current_actor;
+
+		project.stages[stage_index].actors[actor_index].hasShadow = page->GetPropertyByName(_("shadow"))->GetValue().GetBool();
+	}
+	else if(property_name.compare(_("auto_culling"))==0)
+	{
+		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
+			return;
+
+		if(stageTabGrid_current_actor < 0 || stageTabGrid_current_actor >= project.stages[stageTabGrid_current_stage].actors.size())
+			return;
+
+		int stage_index = stageTabGrid_current_stage;
+		int actor_index = stageTabGrid_current_actor;
+
+		project.stages[stage_index].actors[actor_index].auto_culling = page->GetPropertyByName(_("auto_culling"))->GetValue().GetBool();
+	}
+	else if(property_name.substr(0, 4).compare(_("pos_"))==0)
+	{
+		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
+			return;
+
+		if(stageTabGrid_current_actor < 0 || stageTabGrid_current_actor >= project.stages[stageTabGrid_current_stage].actors.size())
+			return;
+
+
+		int stage_index = stageTabGrid_current_stage;
+		int actor_index = stageTabGrid_current_actor;
+
+		project.stages[stage_index].actors[actor_index].position.X = page->GetPropertyByName(_("pos_x"))->GetValue().GetDouble();
+		project.stages[stage_index].actors[actor_index].position.Y = page->GetPropertyByName(_("pos_y"))->GetValue().GetDouble();
+		project.stages[stage_index].actors[actor_index].position.Z = page->GetPropertyByName(_("pos_z"))->GetValue().GetDouble();
+	}
+	else if(property_name.substr(0, 4).compare(_("rot_"))==0)
+	{
+		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
+			return;
+
+		if(stageTabGrid_current_actor < 0 || stageTabGrid_current_actor >= project.stages[stageTabGrid_current_stage].actors.size())
+			return;
+
+
+		int stage_index = stageTabGrid_current_stage;
+		int actor_index = stageTabGrid_current_actor;
+
+		project.stages[stage_index].actors[actor_index].rotation.X = page->GetPropertyByName(_("rot_x"))->GetValue().GetDouble();
+		project.stages[stage_index].actors[actor_index].rotation.Y = page->GetPropertyByName(_("rot_y"))->GetValue().GetDouble();
+		project.stages[stage_index].actors[actor_index].rotation.Z = page->GetPropertyByName(_("rot_z"))->GetValue().GetDouble();
+	}
+	else if(property_name.substr(0, 6).compare(_("scale_"))==0)
+	{
+		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
+			return;
+
+		if(stageTabGrid_current_actor < 0 || stageTabGrid_current_actor >= project.stages[stageTabGrid_current_stage].actors.size())
+			return;
+
+
+		int stage_index = stageTabGrid_current_stage;
+		int actor_index = stageTabGrid_current_actor;
+
+		project.stages[stage_index].actors[actor_index].scale.X = page->GetPropertyByName(_("scale_x"))->GetValue().GetDouble();
+		project.stages[stage_index].actors[actor_index].scale.Y = page->GetPropertyByName(_("scale_y"))->GetValue().GetDouble();
+		project.stages[stage_index].actors[actor_index].scale.Z = page->GetPropertyByName(_("scale_z"))->GetValue().GetDouble();
+	}
+	else if(property_name.compare(_("stage_id"))==0)
+	{
+		int stage_index = stageTabGrid_current_stage;
+		project.stages[stage_index].id_name = m_stageProperties_propertyGridPage->GetPropertyByName(_("stage_id"))->GetValueAsString();
+
+		if(!isValidID(wxString::FromUTF8(project.stages[stage_index].id_name), RC_ID_ANY))
+		{
+			wxMessageBox(_("StageID is invalid. A valid ID will be generated"));
+			project.stages[stage_index].id_name = project.genStageID();
+			page->GetProperty(_("stage_id"))->SetValueFromString(wxString::FromUTF8(project.stages[stage_index].id_name));
+		}
+
+		//update all actor names in tree nodes
+		for(int i = 0; i < stage_tree_nodes.size(); i++)
+		{
+			int stage_project_index = stage_tree_nodes[i].project_index;
+
+			if(stage_project_index < 0 || stage_project_index >= project.stages.size())
+				continue;
+
+			wxTreeItemId stage_item = stage_tree_nodes[i].tree_item;
+
+			m_project_stage_treeCtrl->SetItemText(stage_item, wxString::FromUTF8(project.stages[stage_project_index].id_name));
+		}
+	}
+	else if(property_name.compare(_("skydome_hRes"))==0)
+	{
+		int stage_index = stageTabGrid_current_stage;
+		project.stages[stage_index].sky.hRes = m_stageProperties_propertyGridPage->GetPropertyByName(_("skydome_hRes"))->GetValue().GetInteger();
+	}
+	else if(property_name.compare(_("skydome_vRes"))==0)
+	{
+		int stage_index = stageTabGrid_current_stage;
+		project.stages[stage_index].sky.vRes = m_stageProperties_propertyGridPage->GetPropertyByName(_("skydome_vRes"))->GetValue().GetInteger();
+	}
+	else if(property_name.compare(_("sky_texture_pct"))==0)
+	{
+		int stage_index = stageTabGrid_current_stage;
+		project.stages[stage_index].sky.txPCT = m_stageProperties_propertyGridPage->GetPropertyByName(_("sky_texture_pct"))->GetValue().GetDouble();
+	}
+	else if(property_name.compare(_("sky_sphere_pct"))==0)
+	{
+		int stage_index = stageTabGrid_current_stage;
+		project.stages[stage_index].sky.spherePCT = m_stageProperties_propertyGridPage->GetPropertyByName(_("sky_sphere_pct"))->GetValue().GetDouble();
+	}
+	else if(property_name.compare(_("sky_radius"))==0)
+	{
+		int stage_index = stageTabGrid_current_stage;
+		project.stages[stage_index].sky.dome_radius = m_stageProperties_propertyGridPage->GetPropertyByName(_("sky_radius"))->GetValue().GetDouble();
+	}
+	else if(property_name.compare(_("sky_shape"))==0)
+	{
+		int stage_index = stageTabGrid_current_stage;
+		wxString sky_selection = m_stageProperties_propertyGridPage->GetPropertyByName(_("sky_shape"))->GetValueAsString();
+		project.stages[stage_index].sky.type = project.getSkyType(sky_selection);
+	}
+	else if(property_name.compare(_("sky_dome_image_id"))==0)
+	{
+		int stage_index = stageTabGrid_current_stage;
+		wxString img_id = _("");
+
+		img_id = m_stageProperties_propertyGridPage->GetPropertyByName(_("sky_dome_image_id"))->GetValueAsString();
+		project.stages[stage_index].sky.dome_texture_index = project.getTextureIndex(img_id);
+	}
+	else if(property_name.compare(_("skybox_left_image"))==0)
+	{
+		int stage_index = stageTabGrid_current_stage;
+		wxString img_id = _("");
+
+		img_id = m_stageProperties_propertyGridPage->GetPropertyByName(_("skybox_left_image"))->GetValueAsString();
+		project.stages[stage_index].sky.left_texture_index = project.getTextureIndex(img_id);
+	}
+	else if(property_name.compare(_("skybox_right_image"))==0)
+	{
+		int stage_index = stageTabGrid_current_stage;
+		wxString img_id = _("");
+
+		img_id = m_stageProperties_propertyGridPage->GetPropertyByName(_("skybox_right_image"))->GetValueAsString();
+		project.stages[stage_index].sky.right_texture_index = project.getTextureIndex(img_id);
+	}
+	else if(property_name.compare(_("skybox_top_image"))==0)
+	{
+		int stage_index = stageTabGrid_current_stage;
+		wxString img_id = _("");
+
+		img_id = m_stageProperties_propertyGridPage->GetPropertyByName(_("skybox_top_image"))->GetValueAsString();
+		project.stages[stage_index].sky.top_texture_index = project.getTextureIndex(img_id);
+	}
+	else if(property_name.compare(_("skybox_bottom_image"))==0)
+	{
+		int stage_index = stageTabGrid_current_stage;
+		wxString img_id = _("");
+
+		img_id = m_stageProperties_propertyGridPage->GetPropertyByName(_("skybox_bottom_image"))->GetValueAsString();
+		project.stages[stage_index].sky.bottom_texture_index = project.getTextureIndex(img_id);
+	}
+	else if(property_name.compare(_("skybox_front_image"))==0)
+	{
+		int stage_index = stageTabGrid_current_stage;
+		wxString img_id = _("");
+
+		img_id = m_stageProperties_propertyGridPage->GetPropertyByName(_("skybox_front_image"))->GetValueAsString();
+		project.stages[stage_index].sky.front_texture_index = project.getTextureIndex(img_id);
+	}
+	else if(property_name.compare(_("skybox_back_image"))==0)
+	{
+		int stage_index = stageTabGrid_current_stage;
+		wxString img_id = _("");
+
+		img_id = m_stageProperties_propertyGridPage->GetPropertyByName(_("skybox_back_image"))->GetValueAsString();
+		project.stages[stage_index].sky.back_texture_index = project.getTextureIndex(img_id);
+	}
+	else if(property_name.compare(_("particle_mesh_id"))==0)
+	{
+		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
+			return;
+
+		if(stageTabGrid_current_actor < 0 || stageTabGrid_current_actor >= project.stages[stageTabGrid_current_stage].actors.size())
+			return;
+
+
+		int stage_index = stageTabGrid_current_stage;
+		int actor_index = stageTabGrid_current_actor;
+
+		project.stages[stage_index].actors[actor_index].mesh_index = project.getMeshIndex(property->GetValueAsString());;
+	}
+	else if(property_name.compare(_("particle_type"))==0)
+	{
+		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
+			return;
+
+		if(stageTabGrid_current_actor < 0 || stageTabGrid_current_actor >= project.stages[stageTabGrid_current_stage].actors.size())
+			return;
+
+
+		int stage_index = stageTabGrid_current_stage;
+		int actor_index = stageTabGrid_current_actor;
+
+		project.stages[stage_index].actors[actor_index].particle_type = project.getParticleType(property->GetValueAsString());;
+	}
+	else if(property_name.compare(_("use_every_vertex"))==0)
+	{
+		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
+			return;
+
+		if(stageTabGrid_current_actor < 0 || stageTabGrid_current_actor >= project.stages[stageTabGrid_current_stage].actors.size())
+			return;
+
+		int stage_index = stageTabGrid_current_stage;
+		int actor_index = stageTabGrid_current_actor;
+
+		project.stages[stage_index].actors[actor_index].use_every_vertex = page->GetPropertyByName(_("use_every_vertex"))->GetValue().GetBool();
+	}
+	else if(property_name.compare(_("use_normal_direction"))==0)
+	{
+		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
+			return;
+
+		if(stageTabGrid_current_actor < 0 || stageTabGrid_current_actor >= project.stages[stageTabGrid_current_stage].actors.size())
+			return;
+
+		int stage_index = stageTabGrid_current_stage;
+		int actor_index = stageTabGrid_current_actor;
+
+		project.stages[stage_index].actors[actor_index].use_normal_direction = page->GetPropertyByName(_("use_normal_direction"))->GetValue().GetBool();
+	}
+	else if(property_name.compare(_("use_normal_mod"))==0)
+	{
+		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
+			return;
+
+		if(stageTabGrid_current_actor < 0 || stageTabGrid_current_actor >= project.stages[stageTabGrid_current_stage].actors.size())
+			return;
+
+		int stage_index = stageTabGrid_current_stage;
+		int actor_index = stageTabGrid_current_actor;
+
+		project.stages[stage_index].actors[actor_index].use_normal_mod = page->GetPropertyByName(_("use_normal_mod"))->GetValue().GetBool();
+	}
+	else if(property_name.compare(_("use_outline_only"))==0)
+	{
+		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
+			return;
+
+		if(stageTabGrid_current_actor < 0 || stageTabGrid_current_actor >= project.stages[stageTabGrid_current_stage].actors.size())
+			return;
+
+		int stage_index = stageTabGrid_current_stage;
+		int actor_index = stageTabGrid_current_actor;
+
+		project.stages[stage_index].actors[actor_index].use_outline_only = page->GetPropertyByName(_("use_outline_only"))->GetValue().GetBool();
+	}
+	else if(property_name.compare(_("min_width"))==0)
+	{
+		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
+			return;
+
+		if(stageTabGrid_current_actor < 0 || stageTabGrid_current_actor >= project.stages[stageTabGrid_current_stage].actors.size())
+			return;
+
+		int stage_index = stageTabGrid_current_stage;
+		int actor_index = stageTabGrid_current_actor;
+
+		project.stages[stage_index].actors[actor_index].min_width = page->GetPropertyByName(_("min_width"))->GetValue().GetDouble();
+	}
+	else if(property_name.compare(_("min_height"))==0)
+	{
+		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
+			return;
+
+		if(stageTabGrid_current_actor < 0 || stageTabGrid_current_actor >= project.stages[stageTabGrid_current_stage].actors.size())
+			return;
+
+		int stage_index = stageTabGrid_current_stage;
+		int actor_index = stageTabGrid_current_actor;
+
+		project.stages[stage_index].actors[actor_index].min_height = page->GetPropertyByName(_("min_height"))->GetValue().GetDouble();
+	}
+	else if(property_name.compare(_("max_width"))==0)
+	{
+		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
+			return;
+
+		if(stageTabGrid_current_actor < 0 || stageTabGrid_current_actor >= project.stages[stageTabGrid_current_stage].actors.size())
+			return;
+
+		int stage_index = stageTabGrid_current_stage;
+		int actor_index = stageTabGrid_current_actor;
+
+		project.stages[stage_index].actors[actor_index].max_width = page->GetPropertyByName(_("max_width"))->GetValue().GetDouble();
+	}
+	else if(property_name.compare(_("max_height"))==0)
+	{
+		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
+			return;
+
+		if(stageTabGrid_current_actor < 0 || stageTabGrid_current_actor >= project.stages[stageTabGrid_current_stage].actors.size())
+			return;
+
+		int stage_index = stageTabGrid_current_stage;
+		int actor_index = stageTabGrid_current_actor;
+
+		project.stages[stage_index].actors[actor_index].max_height = page->GetPropertyByName(_("max_height"))->GetValue().GetDouble();
+	}
+	else if(property_name.compare(_("min_start_color"))==0)
+	{
+		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
+			return;
+
+		if(stageTabGrid_current_actor < 0 || stageTabGrid_current_actor >= project.stages[stageTabGrid_current_stage].actors.size())
+			return;
+
+		int stage_index = stageTabGrid_current_stage;
+		int actor_index = stageTabGrid_current_actor;
+
+		//wxColour color(page->GetPropertyByName(_("min_start_color"))->GetValue().GetWxObjectPtr()); //wxMessageBox(_("MSG: ") + page->GetPropertyByName(_("min_start_color"))->GetValue().GetString());
+		//wxColourPropertyValue* pcolval = wxDynamicCast(page->GetPropertyByName(_("min_start_color")).GetWxObjectPtr(), wxColourPropertyValue);
+		wxAny value = page->GetPropertyByName(_("min_start_color"))->GetValue();
+		wxColour color = value.As<wxColour>();
+		irr::u32 r = color.GetRed();
+		irr::u32 g = color.GetGreen();
+		irr::u32 b = color.GetBlue();
+		irr::u32 a = color.GetAlpha();
+		project.stages[stage_index].actors[actor_index].min_start_color = irr::video::SColor(a, r, g, b);
+	}
+	else if(property_name.compare(_("max_start_color"))==0)
+	{
+		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
+			return;
+
+		if(stageTabGrid_current_actor < 0 || stageTabGrid_current_actor >= project.stages[stageTabGrid_current_stage].actors.size())
+			return;
+
+		int stage_index = stageTabGrid_current_stage;
+		int actor_index = stageTabGrid_current_actor;
+
+		wxAny value = page->GetPropertyByName(_("max_start_color"))->GetValue();
+		wxColour color = value.As<wxColour>();
+		project.stages[stage_index].actors[actor_index].max_start_color = irr::video::SColor(color.GetAlpha(),
+																							 color.GetRed(),
+																							 color.GetGreen(),
+																							 color.GetBlue());
+	}
+	else if(property_name.compare(_("min_per_sec"))==0)
+	{
+		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
+			return;
+
+		if(stageTabGrid_current_actor < 0 || stageTabGrid_current_actor >= project.stages[stageTabGrid_current_stage].actors.size())
+			return;
+
+		int stage_index = stageTabGrid_current_stage;
+		int actor_index = stageTabGrid_current_actor;
+
+		project.stages[stage_index].actors[actor_index].min_per_sec = page->GetPropertyByName(_("min_per_sec"))->GetValue().GetDouble();
+	}
+	else if(property_name.compare(_("max_per_sec"))==0)
+	{
+		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
+			return;
+
+		if(stageTabGrid_current_actor < 0 || stageTabGrid_current_actor >= project.stages[stageTabGrid_current_stage].actors.size())
+			return;
+
+		int stage_index = stageTabGrid_current_stage;
+		int actor_index = stageTabGrid_current_actor;
+
+		project.stages[stage_index].actors[actor_index].max_per_sec = page->GetPropertyByName(_("max_per_sec"))->GetValue().GetDouble();
+	}
+	else if(property_name.compare(_("min_life"))==0)
+	{
+		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
+			return;
+
+		if(stageTabGrid_current_actor < 0 || stageTabGrid_current_actor >= project.stages[stageTabGrid_current_stage].actors.size())
+			return;
+
+		int stage_index = stageTabGrid_current_stage;
+		int actor_index = stageTabGrid_current_actor;
+
+		project.stages[stage_index].actors[actor_index].min_life = page->GetPropertyByName(_("min_life"))->GetValue().GetDouble();
+	}
+	else if(property_name.compare(_("max_life"))==0)
+	{
+		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
+			return;
+
+		if(stageTabGrid_current_actor < 0 || stageTabGrid_current_actor >= project.stages[stageTabGrid_current_stage].actors.size())
+			return;
+
+		int stage_index = stageTabGrid_current_stage;
+		int actor_index = stageTabGrid_current_actor;
+
+		project.stages[stage_index].actors[actor_index].max_life = page->GetPropertyByName(_("max_life"))->GetValue().GetDouble();
+	}
+	else if(property_name.compare(_("max_angle"))==0)
+	{
+		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
+			return;
+
+		if(stageTabGrid_current_actor < 0 || stageTabGrid_current_actor >= project.stages[stageTabGrid_current_stage].actors.size())
+			return;
+
+		int stage_index = stageTabGrid_current_stage;
+		int actor_index = stageTabGrid_current_actor;
+
+		project.stages[stage_index].actors[actor_index].angle = page->GetPropertyByName(_("max_angle"))->GetValue().GetDouble();
+	}
+	else if(property_name.substr(0, 7).compare(_("normal_"))==0)
+	{
+		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
+			return;
+
+		if(stageTabGrid_current_actor < 0 || stageTabGrid_current_actor >= project.stages[stageTabGrid_current_stage].actors.size())
+			return;
+
+
+		int stage_index = stageTabGrid_current_stage;
+		int actor_index = stageTabGrid_current_actor;
+
+		project.stages[stage_index].actors[actor_index].normal.X = page->GetPropertyByName(_("normal_x"))->GetValue().GetDouble();
+		project.stages[stage_index].actors[actor_index].normal.Y = page->GetPropertyByName(_("normal_y"))->GetValue().GetDouble();
+		project.stages[stage_index].actors[actor_index].normal.Z = page->GetPropertyByName(_("normal_z"))->GetValue().GetDouble();
+	}
+	else if(property_name.substr(0, 4).compare(_("dir_"))==0)
+	{
+		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
+			return;
+
+		if(stageTabGrid_current_actor < 0 || stageTabGrid_current_actor >= project.stages[stageTabGrid_current_stage].actors.size())
+			return;
+
+
+		int stage_index = stageTabGrid_current_stage;
+		int actor_index = stageTabGrid_current_actor;
+
+		project.stages[stage_index].actors[actor_index].direction.X = page->GetPropertyByName(_("dir_x"))->GetValue().GetDouble();
+		project.stages[stage_index].actors[actor_index].direction.Y = page->GetPropertyByName(_("dir_y"))->GetValue().GetDouble();
+		project.stages[stage_index].actors[actor_index].direction.Z = page->GetPropertyByName(_("dir_z"))->GetValue().GetDouble();
+	}
+	else if(property_name.substr(0, 7).compare(_("center_"))==0)
+	{
+		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
+			return;
+
+		if(stageTabGrid_current_actor < 0 || stageTabGrid_current_actor >= project.stages[stageTabGrid_current_stage].actors.size())
+			return;
+
+
+		int stage_index = stageTabGrid_current_stage;
+		int actor_index = stageTabGrid_current_actor;
+
+		project.stages[stage_index].actors[actor_index].center.X = page->GetPropertyByName(_("center_x"))->GetValue().GetDouble();
+		project.stages[stage_index].actors[actor_index].center.Y = page->GetPropertyByName(_("center_y"))->GetValue().GetDouble();
+		project.stages[stage_index].actors[actor_index].center.Z = page->GetPropertyByName(_("center_z"))->GetValue().GetDouble();
+	}
+	else if(property_name.compare(_("radius"))==0)
+	{
+		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
+			return;
+
+		if(stageTabGrid_current_actor < 0 || stageTabGrid_current_actor >= project.stages[stageTabGrid_current_stage].actors.size())
+			return;
+
+		int stage_index = stageTabGrid_current_stage;
+		int actor_index = stageTabGrid_current_actor;
+
+		project.stages[stage_index].actors[actor_index].radius = page->GetPropertyByName(_("radius"))->GetValue().GetDouble();
+	}
+	else if(property_name.compare(_("cylinder_length"))==0)
+	{
+		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
+			return;
+
+		if(stageTabGrid_current_actor < 0 || stageTabGrid_current_actor >= project.stages[stageTabGrid_current_stage].actors.size())
+			return;
+
+		int stage_index = stageTabGrid_current_stage;
+		int actor_index = stageTabGrid_current_actor;
+
+		project.stages[stage_index].actors[actor_index].cylinder_length = page->GetPropertyByName(_("cylinder_length"))->GetValue().GetDouble();
+	}
+	else if(property_name.compare(_("ring_thickness"))==0)
+	{
+		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
+			return;
+
+		if(stageTabGrid_current_actor < 0 || stageTabGrid_current_actor >= project.stages[stageTabGrid_current_stage].actors.size())
+			return;
+
+		int stage_index = stageTabGrid_current_stage;
+		int actor_index = stageTabGrid_current_actor;
+
+		project.stages[stage_index].actors[actor_index].ring_thickness = page->GetPropertyByName(_("ring_thickness"))->GetValue().GetDouble();
+	}
+	else if(property_name.substr(0, 8).compare(_("min_box_"))==0 || property_name.substr(0, 8).compare(_("max_box_"))==0)
+	{
+		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
+			return;
+
+		if(stageTabGrid_current_actor < 0 || stageTabGrid_current_actor >= project.stages[stageTabGrid_current_stage].actors.size())
+			return;
+
+		int stage_index = stageTabGrid_current_stage;
+		int actor_index = stageTabGrid_current_actor;
+
+		double min_x = page->GetPropertyByName(_("min_box_x"))->GetValue().GetDouble();
+		double min_y = page->GetPropertyByName(_("min_box_y"))->GetValue().GetDouble();
+		double min_z = page->GetPropertyByName(_("min_box_z"))->GetValue().GetDouble();
+
+		double max_x = page->GetPropertyByName(_("max_box_x"))->GetValue().GetDouble();
+		double max_y = page->GetPropertyByName(_("max_box_y"))->GetValue().GetDouble();
+		double max_z = page->GetPropertyByName(_("max_box_z"))->GetValue().GetDouble();
+
+		project.stages[stage_index].actors[actor_index].box = irr::core::aabbox3df(min_x, min_y, min_z, max_x, max_y, max_z);
+	}
+}
+
+void SerenityEditorSerenity3D_Frame::setAnimatedActorGrid(int stage_project_index, int actor_project_index)
+{
+	if(stage_project_index < 0 || stage_project_index >= project.stages.size())
+		return;
+
+	if(actor_project_index < 0 || actor_project_index >= project.stages[stage_project_index].actors.size())
+		return;
+
+	wxString id_name = project.stages[stage_project_index].actors[actor_project_index].id_name;
+
+	int mesh_index = project.stages[stage_project_index].actors[actor_project_index].mesh_index;
+	wxString mesh_id = ((mesh_index < 0 || mesh_index >= project.meshes.size()) ? _("NONE") : project.meshes[mesh_index].id_name);
+
+
+	//-------------Setting Actor ID---------------------------
+	m_animatedActorProperties_propertyGridPage->GetPropertyByName(_("actor_id"))->SetValueFromString(id_name);
+
+	//-------------Setting Mesh ID---------------------------
+	int mesh_selection = -1;
+
+	wxPGChoices mesh_choice;
+	mesh_choice.Clear();
+
+	mesh_choice.Add(_("NONE"));
+
+	for(int i = 0; i < project.meshes.size(); i++)
+	{
+		if(project.meshes[i].id_name.compare("")!=0)
+		{
+			int n = mesh_choice.GetCount();
+
+			if(project.meshes[i].id_name.compare(mesh_id.ToStdString())==0)
+				mesh_selection = n;
+
+			n++;
+
+			mesh_choice.Add(wxString::FromUTF8(project.meshes[i].id_name));
+		}
+	}
+
+	m_animatedActorProperties_propertyGridPage->GetPropertyByName(_("animation_mesh_id"))->SetChoices(mesh_choice);
+
+	if(mesh_selection >= 0)
+		m_animatedActorProperties_propertyGridPage->GetPropertyByName(_("animation_mesh_id"))->SetChoiceSelection(mesh_selection);
+
+	//-------------Setting Position---------------------------
+	irr::core::vector3df pos = project.stages[stage_project_index].actors[actor_project_index].position;
+	m_animatedActorProperties_propertyGridPage->GetPropertyByName(_("pos_x"))->SetValue(pos.X);
+	m_animatedActorProperties_propertyGridPage->GetPropertyByName(_("pos_y"))->SetValue(pos.Y);
+	m_animatedActorProperties_propertyGridPage->GetPropertyByName(_("pos_z"))->SetValue(pos.Z);
+
+	//-------------Setting Rotation---------------------------
+	irr::core::vector3df rot = project.stages[stage_project_index].actors[actor_project_index].rotation;
+	m_animatedActorProperties_propertyGridPage->GetPropertyByName(_("rot_x"))->SetValue(rot.X);
+	m_animatedActorProperties_propertyGridPage->GetPropertyByName(_("rot_y"))->SetValue(rot.Y);
+	m_animatedActorProperties_propertyGridPage->GetPropertyByName(_("rot_z"))->SetValue(rot.Z);
+
+	//-------------Setting Scale---------------------------
+	irr::core::vector3df scale = project.stages[stage_project_index].actors[actor_project_index].scale;
+	m_animatedActorProperties_propertyGridPage->GetPropertyByName(_("scale_x"))->SetValue(scale.X);
+	m_animatedActorProperties_propertyGridPage->GetPropertyByName(_("scale_y"))->SetValue(scale.Y);
+	m_animatedActorProperties_propertyGridPage->GetPropertyByName(_("scale_z"))->SetValue(scale.Z);
+
+	//-------------Animation Stuff-------------------------------
+	wxString init_animation_id = _("NONE");
+	int animation_index = project.stages[stage_project_index].actors[actor_project_index].animation_index;
+	int num_loops = project.stages[stage_project_index].actors[actor_project_index].num_loops;
+	if(mesh_index >= 0 && mesh_index < project.meshes.size())
+	{
+		if(animation_index >= 0 && animation_index < project.meshes[mesh_index].animation.size())
+		{
+			init_animation_id = project.meshes[mesh_index].animation[animation_index].id_name;
+		}
+	}
+
+
+	int animation_selection = (animation_index < 0 ? 0 : animation_index + 1); //0 will always be "NONE" and then every animation id after that
+
+	wxPGChoices animation_choice;
+	getGridAnimationList(mesh_index, &animation_choice);
+
+	m_animatedActorProperties_propertyGridPage->GetPropertyByName(_("init_animation_id"))->SetChoices(animation_choice);
+
+	m_animatedActorProperties_propertyGridPage->GetPropertyByName(_("init_animation_id"))->SetChoiceSelection(animation_selection);
+
+	m_animatedActorProperties_propertyGridPage->GetPropertyByName(_("num_loops"))->SetValueFromInt(num_loops);
+
+	//------------Render Settings------------------------------
+	bool visible_flag = project.stages[stage_project_index].actors[actor_project_index].visible;
+	m_animatedActorProperties_propertyGridPage->GetPropertyByName(_("visible"))-> wxPGProperty::SetValue(visible_flag);
+
+	bool shadow_flag = project.stages[stage_project_index].actors[actor_project_index].hasShadow;
+	m_animatedActorProperties_propertyGridPage->GetPropertyByName(_("shadow"))-> wxPGProperty::SetValue(shadow_flag);
+
+	bool auto_culling_flag = project.stages[stage_project_index].actors[actor_project_index].auto_culling;
+	m_animatedActorProperties_propertyGridPage->GetPropertyByName(_("auto_culling"))-> wxPGProperty::SetValue(auto_culling_flag);
+
+
+	//m_animatedActorProperties_propertyGridPage->GetPropertyByName(_("scale_x"))
+}
+
+void SerenityEditorSerenity3D_Frame::setOctreeActorGrid(int stage_project_index, int actor_project_index)
+{
+}
+
+void SerenityEditorSerenity3D_Frame::setBillboardActorGrid(int stage_project_index, int actor_project_index)
+{
+}
+
+void SerenityEditorSerenity3D_Frame::setLightActorGrid(int stage_project_index, int actor_project_index)
+{
+}
+
+void SerenityEditorSerenity3D_Frame::setTerrainActorGrid(int stage_project_index, int actor_project_index)
+{
+}
+
+void SerenityEditorSerenity3D_Frame::setWaterActorGrid(int stage_project_index, int actor_project_index)
+{
+}
+
+void SerenityEditorSerenity3D_Frame::setParticleActorGrid(int stage_project_index, int actor_project_index)
+{
+	if(stage_project_index < 0 || stage_project_index >= project.stages.size())
+		return;
+
+	if(actor_project_index < 0 || actor_project_index >= project.stages[stage_project_index].actors.size())
+		return;
+
+	wxString id_name = project.stages[stage_project_index].actors[actor_project_index].id_name;
+
+	int mesh_index = project.stages[stage_project_index].actors[actor_project_index].mesh_index;
+	wxString mesh_id = ((mesh_index < 0 || mesh_index >= project.meshes.size()) ? _("NONE") : project.meshes[mesh_index].id_name);
+
+
+	//-------------Setting Actor ID---------------------------
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("actor_id"))->SetValueFromString(id_name);
+
+	//-------------Setting Mesh ID---------------------------
+	int mesh_selection = -1;
+
+	wxPGChoices mesh_choice;
+	mesh_choice.Clear();
+
+	mesh_choice.Add(_("NONE"));
+
+	for(int i = 0; i < project.meshes.size(); i++)
+	{
+		if(project.meshes[i].id_name.compare("")!=0)
+		{
+			int n = mesh_choice.GetCount();
+
+			if(project.meshes[i].id_name.compare(mesh_id.ToStdString())==0)
+				mesh_selection = n;
+
+			n++;
+
+			mesh_choice.Add(wxString::FromUTF8(project.meshes[i].id_name));
+		}
+	}
+
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("particle_mesh_id"))->SetChoices(mesh_choice);
+
+	if(mesh_selection >= 0)
+		m_particleActorProperties_propertyGridPage->GetPropertyByName(_("particle_mesh_id"))->SetChoiceSelection(mesh_selection);
+
+
+	//-------------Particle Type----------------------------------
+	wxPGChoices particle_type_choice;
+	particle_type_choice.Clear();
+
+	particle_type_choice.Add(_("POINT"));
+	particle_type_choice.Add(_("BOX"));
+	particle_type_choice.Add(_("SPHERE"));
+	particle_type_choice.Add(_("CYLINDER"));
+	particle_type_choice.Add(_("MESH"));
+	particle_type_choice.Add(_("RING"));
+
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("particle_type"))->SetChoices(particle_type_choice);
+
+	if(project.stages[stage_project_index].actors[actor_project_index].particle_type > 5)
+		project.stages[stage_project_index].actors[actor_project_index].particle_type = 0;
+
+	int particle_type = project.stages[stage_project_index].actors[actor_project_index].particle_type;
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("particle_type"))->SetChoiceSelection(particle_type);
+
+	//-------------Setting Position---------------------------
+	irr::core::vector3df pos = project.stages[stage_project_index].actors[actor_project_index].position;
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("pos_x"))->SetValue(pos.X);
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("pos_y"))->SetValue(pos.Y);
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("pos_z"))->SetValue(pos.Z);
+
+	//-------------Setting Rotation---------------------------
+	irr::core::vector3df rot = project.stages[stage_project_index].actors[actor_project_index].rotation;
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("rot_x"))->SetValue(rot.X);
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("rot_y"))->SetValue(rot.Y);
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("rot_z"))->SetValue(rot.Z);
+
+	//-------------Setting Scale---------------------------
+	irr::core::vector3df scale = project.stages[stage_project_index].actors[actor_project_index].scale;
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("scale_x"))->SetValue(scale.X);
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("scale_y"))->SetValue(scale.Y);
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("scale_z"))->SetValue(scale.Z);
+
+	//------------Render Settings------------------------------
+	bool visible_flag = project.stages[stage_project_index].actors[actor_project_index].visible;
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("visible"))->SetValue(visible_flag);
+
+	bool shadow_flag = project.stages[stage_project_index].actors[actor_project_index].hasShadow;
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("shadow"))->SetValue(shadow_flag);
+
+	bool auto_culling_flag = project.stages[stage_project_index].actors[actor_project_index].auto_culling;
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("auto_culling"))->SetValue(auto_culling_flag);
+
+
+	//----------------SIZE----------------------------
+	double min_width = project.stages[stage_project_index].actors[actor_project_index].min_width;
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("min_width"))->SetValue(min_width);
+
+	double min_height = project.stages[stage_project_index].actors[actor_project_index].min_height;
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("min_height"))->SetValue(min_height);
+
+	double max_width = project.stages[stage_project_index].actors[actor_project_index].max_width;
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("max_width"))->SetValue(max_width);
+
+	double max_height = project.stages[stage_project_index].actors[actor_project_index].max_height;
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("max_height"))->SetValue(max_height);
+
+
+	//-----------------COLOR---------------------------------
+	irr::video::SColor c = project.stages[stage_project_index].actors[actor_project_index].min_start_color;
+	wxColour min_start_color(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha());
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("min_start_color"))->SetValueFromString(min_start_color.GetAsString());
+
+
+	c = project.stages[stage_project_index].actors[actor_project_index].max_start_color;
+	wxColour max_start_color(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha());
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("max_start_color"))->SetValueFromString(max_start_color.GetAsString());
+
+
+	//-----------------SPEED---------------------------
+	double min_per_sec = project.stages[stage_project_index].actors[actor_project_index].min_per_sec;
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("min_per_sec"))->SetValue(min_per_sec);
+
+	double max_per_sec = project.stages[stage_project_index].actors[actor_project_index].max_per_sec;
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("max_per_sec"))->SetValue(max_per_sec);
+
+
+	//-----------------LIFETIME---------------------------
+	double min_life = project.stages[stage_project_index].actors[actor_project_index].min_life;
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("min_life"))->SetValue(min_life);
+
+	double max_life = project.stages[stage_project_index].actors[actor_project_index].max_life;
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("max_life"))->SetValue(max_life);
+
+
+	//-------------------NORMAL------------------------
+	irr::core::vector3df normal = project.stages[stage_project_index].actors[actor_project_index].normal;
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("normal_x"))->SetValue(normal.X);
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("normal_y"))->SetValue(normal.Y);
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("normal_z"))->SetValue(normal.Z);
+
+
+	//-------------------DIRECTION------------------------
+	irr::core::vector3df direction = project.stages[stage_project_index].actors[actor_project_index].direction;
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("dir_x"))->SetValue(direction.X);
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("dir_y"))->SetValue(direction.Y);
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("dir_z"))->SetValue(direction.Z);
+
+
+	//--------------MAX ANGLE----------------
+	double max_angle = project.stages[stage_project_index].actors[actor_project_index].angle;
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("max_angle"))->SetValue(max_angle);
+
+
+	//-------------------CENTER------------------------
+	irr::core::vector3df center = project.stages[stage_project_index].actors[actor_project_index].center;
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("center_x"))->SetValue(center.X);
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("center_y"))->SetValue(center.Y);
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("center_z"))->SetValue(center.Z);
+
+
+	//--------------RADIUS----------------
+	double radius = project.stages[stage_project_index].actors[actor_project_index].radius;
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("radius"))->SetValue(radius);
+
+
+	//--------------CYLINDER FLAGS---------------------
+	bool use_every_vertex = project.stages[stage_project_index].actors[actor_project_index].use_every_vertex;
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("use_every_vertex"))->SetValue(use_every_vertex);
+
+	bool use_normal_direction = project.stages[stage_project_index].actors[actor_project_index].use_normal_direction;
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("use_normal_direction"))->SetValue(use_normal_direction);
+
+	bool use_normal_mod = project.stages[stage_project_index].actors[actor_project_index].use_normal_mod;
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("use_normal_mod"))->SetValue(use_normal_mod);
+
+	bool use_outline_only = project.stages[stage_project_index].actors[actor_project_index].use_outline_only;
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("use_outline_only"))->SetValue(use_outline_only);
+
+
+	double cylinder_length = project.stages[stage_project_index].actors[actor_project_index].cylinder_length;
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("cylinder_length"))->SetValue(cylinder_length);
+
+
+	irr::core::aabbox3d box = project.stages[stage_project_index].actors[actor_project_index].box;
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("min_box_x"))->SetValue(box.MinEdge.X);
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("min_box_y"))->SetValue(box.MinEdge.Y);
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("min_box_z"))->SetValue(box.MinEdge.Z);
+
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("max_box_x"))->SetValue(box.MaxEdge.X);
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("max_box_y"))->SetValue(box.MaxEdge.Y);
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("max_box_z"))->SetValue(box.MaxEdge.Z);
+
+
+	//--------------------RING------------------------
+	double ring_thickness = project.stages[stage_project_index].actors[actor_project_index].ring_thickness;
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("ring_thickness"))->SetValue(ring_thickness);
+}
+
+void SerenityEditorSerenity3D_Frame::setCubeActorGrid(int stage_project_index, int actor_project_index)
+{
+}
+
+void SerenityEditorSerenity3D_Frame::setSphereActorGrid(int stage_project_index, int actor_project_index)
+{
+}
+
+void SerenityEditorSerenity3D_Frame::setStageGrid(int stage_project_index)
+{
+	wxString stage_id = wxString::FromUTF8(project.stages[stage_project_index].id_name);
+
+	m_stageProperties_propertyGridPage->GetPropertyByName(_("stage_id"))->SetValueFromString(stage_id);
+
+
+	m_stageProperties_propertyGridPage->GetPropertyByName(_("skydome_hRes"))->SetValueFromInt(project.stages[stage_project_index].sky.hRes);
+	m_stageProperties_propertyGridPage->GetPropertyByName(_("skydome_vRes"))->SetValueFromInt(project.stages[stage_project_index].sky.vRes);
+
+	m_stageProperties_propertyGridPage->GetPropertyByName(_("sky_texture_pct"))->SetValue(project.stages[stage_project_index].sky.txPCT);
+
+	m_stageProperties_propertyGridPage->GetPropertyByName(_("sky_sphere_pct"))->SetValue(project.stages[stage_project_index].sky.spherePCT);
+	m_stageProperties_propertyGridPage->GetPropertyByName(_("sky_radius"))->SetValue(project.stages[stage_project_index].sky.dome_radius);
+
+	wxPGChoices sky_choice;
+	sky_choice.Clear();
+
+	sky_choice.Add(_("NONE"));
+	sky_choice.Add(_("BOX"));
+	sky_choice.Add(_("DOME"));
+
+
+	project.stages[stage_project_index].sky.type = ((project.stages[stage_project_index].sky.type < 0 || project.stages[stage_project_index].sky.type >= 3) ? 0 : project.stages[stage_project_index].sky.type);
+	m_stageProperties_propertyGridPage->GetPropertyByName(_("sky_shape"))->SetChoices(sky_choice);
+	m_stageProperties_propertyGridPage->GetPropertyByName(_("sky_shape"))->SetChoiceSelection(project.stages[stage_project_index].sky.type);
+
+
+	wxPGChoices texture_choice;
+	getGridTextureList(&texture_choice);
+
+	int tx_index = project.stages[stage_project_index].sky.dome_texture_index;
+	int tx_choice_selection = getGridTextureSelection(tx_index, &texture_choice);
+
+	m_stageProperties_propertyGridPage->GetPropertyByName(_("sky_dome_image_id"))->SetChoices(texture_choice);
+	m_stageProperties_propertyGridPage->GetPropertyByName(_("sky_dome_image_id"))->SetChoiceSelection(tx_choice_selection);
+
+	tx_index = project.stages[stage_project_index].sky.top_texture_index;
+	tx_choice_selection = getGridTextureSelection(tx_index, &texture_choice);
+	m_stageProperties_propertyGridPage->GetPropertyByName(_("skybox_top_image"))->SetChoices(texture_choice);
+	m_stageProperties_propertyGridPage->GetPropertyByName(_("skybox_top_image"))->SetChoiceSelection(tx_choice_selection);
+
+	tx_index = project.stages[stage_project_index].sky.bottom_texture_index;
+	tx_choice_selection = getGridTextureSelection(tx_index, &texture_choice);
+	m_stageProperties_propertyGridPage->GetPropertyByName(_("skybox_bottom_image"))->SetChoices(texture_choice);
+	m_stageProperties_propertyGridPage->GetPropertyByName(_("skybox_bottom_image"))->SetChoiceSelection(tx_choice_selection);
+
+	tx_index = project.stages[stage_project_index].sky.left_texture_index;
+	tx_choice_selection = getGridTextureSelection(tx_index, &texture_choice);
+	m_stageProperties_propertyGridPage->GetPropertyByName(_("skybox_left_image"))->SetChoices(texture_choice);
+	m_stageProperties_propertyGridPage->GetPropertyByName(_("skybox_left_image"))->SetChoiceSelection(tx_choice_selection);
+
+	tx_index = project.stages[stage_project_index].sky.right_texture_index;
+	tx_choice_selection = getGridTextureSelection(tx_index, &texture_choice);
+	m_stageProperties_propertyGridPage->GetPropertyByName(_("skybox_right_image"))->SetChoices(texture_choice);
+	m_stageProperties_propertyGridPage->GetPropertyByName(_("skybox_right_image"))->SetChoiceSelection(tx_choice_selection);
+
+	tx_index = project.stages[stage_project_index].sky.front_texture_index;
+	tx_choice_selection = getGridTextureSelection(tx_index, &texture_choice);
+	m_stageProperties_propertyGridPage->GetPropertyByName(_("skybox_front_image"))->SetChoices(texture_choice);
+	m_stageProperties_propertyGridPage->GetPropertyByName(_("skybox_front_image"))->SetChoiceSelection(tx_choice_selection);
+
+	tx_index = project.stages[stage_project_index].sky.back_texture_index;
+	tx_choice_selection = getGridTextureSelection(tx_index, &texture_choice);
+	m_stageProperties_propertyGridPage->GetPropertyByName(_("skybox_back_image"))->SetChoices(texture_choice);
+	m_stageProperties_propertyGridPage->GetPropertyByName(_("skybox_back_image"))->SetChoiceSelection(tx_choice_selection);
+}
+
+int SerenityEditorSerenity3D_Frame::getGridTextureSelection(int texture_project_index, wxPGChoices* choice)
+{
+	if(texture_project_index < 0 || texture_project_index >= project.textures.size())
+	{
+		return 0;
+	}
+
+	wxString tx_id_name = project.textures[texture_project_index].id_name;
+
+	if(tx_id_name.compare(_("")) == 0)
+		return 0;
+
+	for(int i = 0; i < choice->GetCount(); i++)
+	{
+		if(choice->GetLabel(i).compare(tx_id_name)==0)
+		{
+			return i;
+		}
+	}
+
+	return 0;
+}
+
+void SerenityEditorSerenity3D_Frame::getGridTextureList(wxPGChoices* choices)
+{
+	choices->Clear();
+
+	choices->Add(_("NONE"));
+
+	for(int i = 0; i < project.textures.size(); i++)
+	{
+		if(project.textures[i].id_name.compare("")!=0)
+		{
+			choices->Add(wxString::FromUTF8(project.textures[i].id_name));
+		}
+	}
+}
+
 void SerenityEditorSerenity3D_Frame::On_Stage_StageNodeSelected( wxTreeEvent& event )
 {
 	wxTreeItemId selected_item = event.GetItem();
@@ -1421,32 +2544,96 @@ void SerenityEditorSerenity3D_Frame::On_Stage_StageNodeSelected( wxTreeEvent& ev
 		}
 	}
 
+	stageTabGrid_current_stage = -1;
+	stageTabGrid_current_group = -1;
+	stageTabGrid_current_actor = -1;
+
 	switch(node_type)
 	{
 		case RC_STAGE_NODE_STAGE:
 		{
 			int stage_project_index = stage_tree_nodes[stage_node_index].project_index;
 
+			stageTabGrid_current_stage = stage_project_index;
+
+			m_stage_propertyGridManager->SelectPage(m_stageProperties_propertyGridPage);
+			setStageGrid(stage_project_index);
 		}
 		break;
 
 		case RC_STAGE_NODE_ACTOR:
 		{
 			int stage_project_index = stage_tree_nodes[stage_node_index].project_index;
+			int actor_stage_index = stage_tree_nodes[stage_node_index].actors[actor_node_index].project_index;
 
-			m_stage_propertyGridManager->SelectPage(m_waterActorProperties_propertyGridPage);
+			stageTabGrid_current_stage = stage_project_index;
+			stageTabGrid_current_actor = actor_stage_index;
+
+			if(project.stages[stage_project_index].actors[actor_stage_index].type == SN_ACTOR_TYPE_ANIMATED)
+			{
+				m_stage_propertyGridManager->SelectPage(m_animatedActorProperties_propertyGridPage);
+				setAnimatedActorGrid(stage_project_index, actor_stage_index);
+			}
+			else if(project.stages[stage_project_index].actors[actor_stage_index].type == SN_ACTOR_TYPE_OCTREE)
+			{
+				m_stage_propertyGridManager->SelectPage(m_octreeActorProperties_propertyGridPage);
+				setOctreeActorGrid(stage_project_index, actor_stage_index);
+			}
+			else if(project.stages[stage_project_index].actors[actor_stage_index].type == SN_ACTOR_TYPE_LIGHT)
+			{
+				m_stage_propertyGridManager->SelectPage(m_lightActorProperties_propertyGridPage);
+				setLightActorGrid(stage_project_index, actor_stage_index);
+			}
+			else if(project.stages[stage_project_index].actors[actor_stage_index].type == SN_ACTOR_TYPE_BILLBOARD)
+			{
+				m_stage_propertyGridManager->SelectPage(m_billboardActorProperties_propertyGridPage);
+				setBillboardActorGrid(stage_project_index, actor_stage_index);
+			}
+			else if(project.stages[stage_project_index].actors[actor_stage_index].type == SN_ACTOR_TYPE_TERRAIN)
+			{
+				m_stage_propertyGridManager->SelectPage(m_terrainActorProperties_propertyGridPage);
+				setTerrainActorGrid(stage_project_index, actor_stage_index);
+			}
+			else if(project.stages[stage_project_index].actors[actor_stage_index].type == SN_ACTOR_TYPE_WATER)
+			{
+				m_stage_propertyGridManager->SelectPage(m_waterActorProperties_propertyGridPage);
+				setWaterActorGrid(stage_project_index, actor_stage_index);
+			}
+			else if(project.stages[stage_project_index].actors[actor_stage_index].type == SN_ACTOR_TYPE_PARTICLE)
+			{
+				m_stage_propertyGridManager->SelectPage(m_particleActorProperties_propertyGridPage);
+				setParticleActorGrid(stage_project_index, actor_stage_index);
+			}
+			else if(project.stages[stage_project_index].actors[actor_stage_index].type == SN_ACTOR_TYPE_CUBE)
+			{
+				m_stage_propertyGridManager->SelectPage(m_cubeActorProperties_propertyGridPage);
+				setCubeActorGrid(stage_project_index, actor_stage_index);
+			}
+			else if(project.stages[stage_project_index].actors[actor_stage_index].type == SN_ACTOR_TYPE_SPHERE)
+			{
+				m_stage_propertyGridManager->SelectPage(m_sphereActorProperties_propertyGridPage);
+				setSphereActorGrid(stage_project_index, actor_stage_index);
+			}
+
+			//TODO PLANE ACTORS
+
 		}
 		break;
 
 		case RC_STAGE_NODE_GROUP:
 		{
 			int stage_project_index = stage_tree_nodes[stage_node_index].project_index;
+			int group_stage_index = stage_tree_nodes[stage_node_index].groups[group_node_index].project_index;
+
+			stageTabGrid_current_stage = stage_project_index;
+			stageTabGrid_current_group = group_stage_index;
 		}
 		break;
 
 		default:
 			m_stage_propertyGridManager->SelectPage(m_projectProperties_propertyGridPage);
-			m_projectProperties_propertyGridPage->GetPropertyByName(_("project_name"))->SetValueFromString(_("test"));
+
+			m_projectProperties_propertyGridPage->GetPropertyByName(_("project_name"))->SetValueFromString(project.project_name);
 	}
 }
 
@@ -2293,6 +3480,23 @@ void SerenityEditorSerenity3D_Frame::On_Mesh_Remove_ButtonClick( wxCommandEvent&
 	meshTab_preview_obj.animation_change = true;
 
 	updatePreviewMesh();
+
+
+	//set mesh for any actor using this mesh to -1
+	for(int i = 0; i < project.stages.size(); i++)
+	{
+		for(int ac = 0; ac < project.stages[i].actors.size(); ac++)
+		{
+			if(project.stages[i].actors[ac].id_name.compare(_(""))==0)
+				continue;
+
+			if(project.stages[i].actors[ac].mesh_index == n)
+			{
+				project.stages[i].actors[ac].mesh_index = -1;
+				project.stages[i].actors[ac].animation_index = -1;
+			}
+		}
+	}
 }
 
 void SerenityEditorSerenity3D_Frame::On_Mesh_Save_ButtonClick( wxCommandEvent& event )
@@ -2526,6 +3730,21 @@ void SerenityEditorSerenity3D_Frame::On_Mesh_DeleteAnimation( wxCommandEvent& ev
 			{
 				meshTab_active_animation_index = i;
 				break;
+			}
+		}
+	}
+
+	//set active animation for any actor using this mesh to -1
+	for(int i = 0; i < project.stages.size(); i++)
+	{
+		for(int ac = 0; ac < project.stages[i].actors.size(); ac++)
+		{
+			if(project.stages[i].actors[ac].id_name.compare(_(""))==0)
+				continue;
+
+			if(project.stages[i].actors[ac].mesh_index == n)
+			{
+				project.stages[i].actors[ac].animation_index = -1;
 			}
 		}
 	}

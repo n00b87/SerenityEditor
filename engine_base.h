@@ -60,22 +60,30 @@ public:
 	wxString genMeshID(); //generate a mesh id name if needed
 	wxString genMeshAnimationID(int mesh_index); //generate a mesh id name if needed
 	wxString genAN8ID(); //generate a anim8or project id name if needed
+	wxString genActorID(int stage_index);
+	wxString genStageID();
 
 	int load_texture(std::vector<serenity_project_dict_obj> stage_param, int reload_index=-1);
 	int load_an8(std::vector<serenity_project_dict_obj> stage_param, int reload_index=-1);
 	int load_mesh(std::vector<serenity_project_dict_obj> stage_param, int m_index=-1, int reload_index=-1);
 	int load_material(std::vector<serenity_project_dict_obj> stage_param, int reload_index=-1);
 	rc_actor load_actor(std::vector<serenity_project_dict_obj> stage_param);
+	rc_sky load_sky(std::vector<serenity_project_dict_obj> stage_param);
 
 	int getMeshIndex(wxString mesh_id);
 	int getMaterialIndex(wxString material_id);
 	int getTextureIndex(wxString texture_id);
 	int getAnimationIndex(int mesh_index, wxString animation_id);
 
+	wxString getSkyTypeString(int sky_type);
+	int getSkyType(wxString sky_type_string);
+
 	wxString getActorTypeString(int actor_type);
 	int getActorType(wxString actor_type_string);
 	wxString getLightTypeString(int light_type);
 	int getLightType(wxString light_type_string);
+	wxString getParticleTypeString(int particle_type);
+	int getParticleType(wxString particle_type_string);
 
 	void load_material_list(rc_mesh* p_mesh, wxString ml_file);
 	rc_material loadMaterialFile(wxString mfile, wxString mID);

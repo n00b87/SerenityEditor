@@ -52,11 +52,28 @@ void rc_addColorModeType(std::string rc_cmode_val, irr::video::E_COLOR_MATERIAL 
 rc_stage::rc_stage()
 {
 	idIsActive=true;
+
+	sky.left_texture_index = -1;
+	sky.right_texture_index = -1;
+	sky.top_texture_index = -1;
+	sky.bottom_texture_index = -1;
+	sky.front_texture_index = -1;
+	sky.back_texture_index = -1;
+	sky.dome_texture_index = -1;
+
+	sky.hRes = 0;
+	sky.vRes = 0;
+	sky.dome_radius = 0;
+	sky.spherePCT = 0;
+	sky.txPCT = 0;
+
+	sky.type = 0;
 }
 
 rc_stage::~rc_stage()
 {
 	idIsActive=false;
+	clearStage();
 }
 
 void rc_stage::clearActorVector(std::vector<rc_actor>& actor_vector)

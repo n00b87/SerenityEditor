@@ -142,8 +142,26 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
 
 		int stageTab_active_stage_project_index = -1;
 
+		int stageTabGrid_current_stage = -1;
+		int stageTabGrid_current_group = -1;
+		int stageTabGrid_current_actor = -1;
+
+		void getGridAnimationList(int mesh_project_index, wxPGChoices* choices);
+		void getGridMaterialList(int mesh_project_index, wxPGChoices* choices);
+		void getGridTextureList(wxPGChoices* choices);
+		int getGridTextureSelection(int texture_project_index, wxPGChoices* choice);
+
 		void setAnimatedActorGrid(int stage_project_index, int actor_project_index);
-		void setAnimatedActorGrid(int stage_project_index, int actor_project_index);
+		void setOctreeActorGrid(int stage_project_index, int actor_project_index);
+		void setBillboardActorGrid(int stage_project_index, int actor_project_index);
+		void setLightActorGrid(int stage_project_index, int actor_project_index);
+		void setTerrainActorGrid(int stage_project_index, int actor_project_index);
+		void setWaterActorGrid(int stage_project_index, int actor_project_index);
+		void setParticleActorGrid(int stage_project_index, int actor_project_index);
+		void setCubeActorGrid(int stage_project_index, int actor_project_index);
+		void setSphereActorGrid(int stage_project_index, int actor_project_index);
+
+		void setStageGrid(int stage_project_index);
 
 		//--------MESH TAB--------------
 		bool meshTab_isPlaying = false;
@@ -208,6 +226,8 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
 
 		void On_Stage_StageNodeActivated( wxTreeEvent& event );
 		void On_Stage_StageNodeSelected( wxTreeEvent& event );
+
+		void OnStagePropertyGridChanged( wxPropertyGridEvent& event );
 
 		void OnProjectPropertiesNotebookChanged( wxAuiNotebookEvent& event );
 

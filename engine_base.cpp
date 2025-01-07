@@ -340,6 +340,12 @@ int serenity_project::load_stage(std::vector<serenity_project_dict_obj> stage_pa
 			if(p_actor.id_name.compare("") != 0)
 				p_stage.actors.push_back(p_actor);
 		}
+		else if(st_obj[i].dict[0].key.compare(_("Sky"))==0)
+		{
+			rc_sky p_sky = load_sky(st_obj[i].dict);
+
+			p_stage.sky = p_sky;
+		}
 		else if(st_obj[i].dict[0].key.compare(_("Group"))==0)
 		{
 			rc_group p_group;
@@ -423,6 +429,38 @@ int serenity_project::getLightType(wxString light_type_string)
 		return SN_LIGHT_TYPE_SPOT;
 
 	return -1;
+}
+
+wxString serenity_project::getParticleTypeString(int particle_type)
+{
+	switch(particle_type)
+	{
+		case SN_PARTICLE_TYPE_POINT:	return _("POINT");
+		case SN_PARTICLE_TYPE_BOX:		return _("BOX");
+		case SN_PARTICLE_TYPE_SPHERE:	return _("SPHERE");
+		case SN_PARTICLE_TYPE_CYLINDER:	return _("CYLINDER");
+		case SN_PARTICLE_TYPE_MESH:		return _("MESH");
+		case SN_PARTICLE_TYPE_RING:		return _("RING");
+	}
+	return _("POINT");
+}
+
+int serenity_project::getParticleType(wxString particle_type_string)
+{
+	if(particle_type_string.compare(_("POINT"))==0)
+		return SN_PARTICLE_TYPE_POINT;
+	else if(particle_type_string.compare(_("BOX"))==0)
+		return SN_PARTICLE_TYPE_BOX;
+	else if(particle_type_string.compare(_("SPHERE"))==0)
+		return SN_PARTICLE_TYPE_SPHERE;
+	else if(particle_type_string.compare(_("CYLINDER"))==0)
+		return SN_PARTICLE_TYPE_CYLINDER;
+	else if(particle_type_string.compare(_("MESH"))==0)
+		return SN_PARTICLE_TYPE_MESH;
+	else if(particle_type_string.compare(_("RING"))==0)
+		return SN_PARTICLE_TYPE_RING;
+
+	return 0;
 }
 
 wxString serenity_project::getActorTypeString(int actor_type)
@@ -516,9 +554,72 @@ rc_actor serenity_project::load_actor(std::vector<serenity_project_dict_obj> par
 {
 	rc_actor p_actor;
 
-	double pos_x, pos_y, pos_z, rot_x, rot_y, rot_z, scale_x, scale_y, scale_z;
+	double pos_x, pos_y, pos_z, rot_x, rot_y, rot_z, scale_x, scale_y, scale_z, normal_x, normal_y, normal_z;
+	double dir_x, dir_y, dir_z, center_x, center_y, center_z, box_min_x, box_min_y, box_min_z, box_max_x, box_max_y, box_max_z;
 
 	wxString animation_id = _(""); //storing this and getting it after reading args since mesh_index might not be read before animation_id
+
+
+	p_actor.id_name = "";
+	p_actor.type = 0;
+	p_actor.group_name = "";
+	p_actor.mesh_index = -1; //project index
+	p_actor.node = NULL; //cast to object type
+	p_actor.position = irr::core::vector3df(0,0,0);
+	p_actor.rotation = irr::core::vector3df(0,0,0);
+	p_actor.scale = irr::core::vector3df(1,1,1);
+	p_actor.override_material_index = -1; //if less than 0 then mesh material is used
+	p_actor.animation_index = -1; //if less than 0 then frame 0 is set
+	p_actor.num_loops = -1;
+	p_actor.visible = true;
+	p_actor.hasShadow = true;
+	p_actor.isCastingShadow = true; //LIGHTS ONLY
+	p_actor.auto_culling = true;
+	p_actor.cube_size = 1;
+	p_actor.radius = 1;
+	p_actor.texture_index = -1; //in project
+	p_actor.light_type = SN_LIGHT_TYPE_POINT;
+	p_actor.angle = 0;
+	p_actor.falloff = 0;
+	p_actor.ambient = irr::video::SColor();
+	p_actor.emissive = irr::video::SColor();
+	p_actor.diffuse = irr::video::SColor();
+	p_actor.specular = irr::video::SColor();
+	p_actor.terrain_hmap_file = "";
+	p_actor.wave_height = 0;
+	p_actor.wave_length = 0;
+	p_actor.wave_speed = 0;
+	p_actor.particle_type = 0;
+	p_actor.normal = irr::core::vector3df(0,0,0);
+	p_actor.direction = irr::core::vector3df(0,0,0);
+	p_actor.box = irr::core::aabbox3df( irr::core::vector3df(0,0,0), irr::core::vector3df(0,0,0) );
+	p_actor.center = irr::core::vector3df(0,0,0);
+
+	p_actor.use_every_vertex = false;
+	p_actor.use_normal_direction = false;
+	p_actor.use_normal_mod = false;
+
+	p_actor.cylinder_length = 0;
+	p_actor.use_outline_only = false;
+
+	p_actor.ring_thickness = 0;
+
+	p_actor.min_width = 0;
+	p_actor.min_height = 0;
+
+	p_actor.max_width = 0;
+	p_actor.max_height = 0;
+
+	p_actor.min_per_sec = 0;
+	p_actor.max_per_sec = 0;
+
+	p_actor.min_start_color = irr::video::SColor();
+	p_actor.max_start_color = irr::video::SColor();
+
+	p_actor.min_life = 0;
+	p_actor.max_life = 0;
+
+
 
 	for(int i = 0; i < param.size(); i++)
 	{
@@ -570,6 +671,8 @@ rc_actor serenity_project::load_actor(std::vector<serenity_project_dict_obj> par
 			p_actor.texture_index = getTextureIndex(param[i].val);
 		else if(param[i].key.compare(_("light_type"))==0)
 			p_actor.light_type = getLightType(param[i].val);
+		else if(param[i].key.compare(_("particle_type"))==0)
+			p_actor.particle_type = getParticleType(param[i].val);
 		else if(param[i].key.compare(_("angle"))==0)
 			param[i].val.ToDouble(&p_actor.angle);
 		else if(param[i].key.compare(_("falloff"))==0)
@@ -606,6 +709,76 @@ rc_actor serenity_project::load_actor(std::vector<serenity_project_dict_obj> par
 			param[i].val.ToDouble(&p_actor.wave_length);
 		else if(param[i].key.compare(_("wave_speed"))==0)
 			param[i].val.ToDouble(&p_actor.wave_speed);
+		else if(param[i].key.compare(_("min_start_color"))==0)
+		{
+			irr::u32 c = 0;
+			param[i].val.ToUInt(&c);
+			p_actor.min_start_color = irr::video::SColor(c);
+		}
+		else if(param[i].key.compare(_("max_start_color"))==0)
+		{
+			irr::u32 c = 0;
+			param[i].val.ToUInt(&c);
+			p_actor.max_start_color = irr::video::SColor(c);
+		}
+		else if(param[i].key.compare(_("dir_x"))==0)
+			param[i].val.ToDouble(&dir_x);
+		else if(param[i].key.compare(_("dir_y"))==0)
+			param[i].val.ToDouble(&dir_y);
+		else if(param[i].key.compare(_("dir_z"))==0)
+			param[i].val.ToDouble(&dir_z);
+		else if(param[i].key.compare(_("center_x"))==0)
+			param[i].val.ToDouble(&center_x);
+		else if(param[i].key.compare(_("center_y"))==0)
+			param[i].val.ToDouble(&center_y);
+		else if(param[i].key.compare(_("center_z"))==0)
+			param[i].val.ToDouble(&center_z);
+		else if(param[i].key.compare(_("normal_x"))==0)
+			param[i].val.ToDouble(&normal_x);
+		else if(param[i].key.compare(_("normal_y"))==0)
+			param[i].val.ToDouble(&normal_y);
+		else if(param[i].key.compare(_("normal_z"))==0)
+			param[i].val.ToDouble(&normal_z);
+		else if(param[i].key.compare(_("box_min_x"))==0)
+			param[i].val.ToDouble(&box_min_x);
+		else if(param[i].key.compare(_("box_min_y"))==0)
+			param[i].val.ToDouble(&box_min_y);
+		else if(param[i].key.compare(_("box_min_z"))==0)
+			param[i].val.ToDouble(&box_min_z);
+		else if(param[i].key.compare(_("box_max_x"))==0)
+			param[i].val.ToDouble(&box_max_x);
+		else if(param[i].key.compare(_("box_max_y"))==0)
+			param[i].val.ToDouble(&box_max_y);
+		else if(param[i].key.compare(_("box_max_z"))==0)
+			param[i].val.ToDouble(&box_max_z);
+		else if(param[i].key.compare(_("use_every_vertex"))==0)
+			p_actor.use_every_vertex = (param[i].val.compare(_("true"))==0 ? true : false);
+		else if(param[i].key.compare(_("use_normal_direction"))==0)
+			p_actor.use_normal_direction = (param[i].val.compare(_("true"))==0 ? true : false);
+		else if(param[i].key.compare(_("use_normal_mod"))==0)
+			p_actor.use_normal_mod = (param[i].val.compare(_("true"))==0 ? true : false);
+		else if(param[i].key.compare(_("use_outline_only"))==0)
+			p_actor.use_outline_only = (param[i].val.compare(_("true"))==0 ? true : false);
+		else if(param[i].key.compare(_("length"))==0)
+			param[i].val.ToDouble(&p_actor.cylinder_length);
+		else if(param[i].key.compare(_("ring_thickness"))==0)
+			param[i].val.ToDouble(&p_actor.ring_thickness);
+		else if(param[i].key.compare(_("min_start_width"))==0)
+			param[i].val.ToDouble(&p_actor.min_width);
+		else if(param[i].key.compare(_("min_start_height"))==0)
+			param[i].val.ToDouble(&p_actor.min_height);
+		else if(param[i].key.compare(_("max_start_width"))==0)
+			param[i].val.ToDouble(&p_actor.max_width);
+		else if(param[i].key.compare(_("max_start_height"))==0)
+			param[i].val.ToDouble(&p_actor.max_height);
+		else if(param[i].key.compare(_("min_per_sec"))==0)
+			param[i].val.ToDouble(&p_actor.min_per_sec);
+		else if(param[i].key.compare(_("max_per_sec"))==0)
+			param[i].val.ToDouble(&p_actor.max_per_sec);
+		else if(param[i].key.compare(_("min_life"))==0)
+			param[i].val.ToDouble(&p_actor.min_life);
+		else if(param[i].key.compare(_("max_life"))==0)
+			param[i].val.ToDouble(&p_actor.max_life);
 	}
 
 	p_actor.animation_index = getAnimationIndex(p_actor.mesh_index, animation_id);
@@ -613,10 +786,96 @@ rc_actor serenity_project::load_actor(std::vector<serenity_project_dict_obj> par
 	p_actor.position = irr::core::vector3df(pos_x, pos_y, pos_z);
 	p_actor.rotation = irr::core::vector3df(rot_x, rot_y, rot_z);
 	p_actor.scale = irr::core::vector3df(scale_x, scale_y, scale_z);
+	p_actor.normal = irr::core::vector3df(normal_x, normal_y, normal_z);
+	p_actor.direction = irr::core::vector3df(dir_x, dir_y, dir_z);
+	p_actor.center = irr::core::vector3df(center_x, center_y, center_z);
+	p_actor.box = irr::core::aabbox3df(box_min_x, box_min_y, box_min_z, box_max_x, box_max_y, box_max_z);
+
 	p_actor.node = NULL;
 
 	return p_actor;
 }
+
+
+wxString serenity_project::getSkyTypeString(int sky_type)
+{
+	switch(sky_type)
+	{
+		case SN_SKY_TYPE_NONE: return _("NONE");
+		case SN_SKY_TYPE_BOX:  return _("BOX");
+		case SN_SKY_TYPE_DOME: return _("DOME");
+	}
+	return _("NONE");
+}
+
+int serenity_project::getSkyType(wxString sky_type_string)
+{
+	if(sky_type_string.compare(_("BOX"))==0)
+		return SN_SKY_TYPE_BOX;
+	else if(sky_type_string.compare(_("DOME"))==0)
+		return SN_SKY_TYPE_DOME;
+
+	return SN_SKY_TYPE_NONE;
+}
+
+rc_sky serenity_project::load_sky(std::vector<serenity_project_dict_obj> param)
+{
+	rc_sky p_sky;
+
+	for(int i = 0; i < param.size(); i++)
+	{
+		if(param[i].key.compare(_("type"))==0)
+			p_sky.type = getSkyType(param[i].val.ToStdString());
+		else if(param[i].key.compare(_("dome"))==0)
+			p_sky.dome_texture_index = getTextureIndex(param[i].val);
+		else if(param[i].key.compare(_("lf"))==0)
+			p_sky.left_texture_index = getTextureIndex(param[i].val);
+		else if(param[i].key.compare(_("rt"))==0)
+			p_sky.right_texture_index = getTextureIndex(param[i].val);
+		else if(param[i].key.compare(_("ft"))==0)
+			p_sky.front_texture_index = getTextureIndex(param[i].val);
+		else if(param[i].key.compare(_("bk"))==0)
+			p_sky.back_texture_index = getTextureIndex(param[i].val);
+		else if(param[i].key.compare(_("up"))==0)
+			p_sky.top_texture_index = getTextureIndex(param[i].val);
+		else if(param[i].key.compare(_("dn"))==0)
+			p_sky.bottom_texture_index = getTextureIndex(param[i].val);
+		else if(param[i].key.compare(_("h"))==0)
+		{
+			irr::u32 n = 0;
+			param[i].val.ToUInt(&n);
+			p_sky.hRes = n;
+		}
+		else if(param[i].key.compare(_("v"))==0)
+		{
+			irr::u32 n = 0;
+			param[i].val.ToUInt(&n);
+			p_sky.vRes = n;
+		}
+		else if(param[i].key.compare(_("tx_pct"))==0)
+		{
+			double n = 0;
+			param[i].val.ToDouble(&n);
+			p_sky.txPCT = n;
+		}
+		else if(param[i].key.compare(_("sp_pct"))==0)
+		{
+			double n = 0;
+			param[i].val.ToDouble(&n);
+			p_sky.spherePCT = n;
+		}
+		else if(param[i].key.compare(_("radius"))==0)
+		{
+			double n = 0;
+			param[i].val.ToDouble(&n);
+			p_sky.dome_radius = n;
+		}
+
+	}
+
+	return p_sky;
+}
+
 
 int serenity_project::load_texture(std::vector<serenity_project_dict_obj> param, int reload_index)
 {
@@ -1639,7 +1898,64 @@ wxString serenity_project::genAN8ID()
 }
 
 
+wxString serenity_project::genActorID(int stage_index)
+{
+	if(stage_index < 0 || stage_index >= stages.size())
+		return _("");
 
+	wxString tmp_name = _("actor_id");
+	wxString new_name = _("");
+
+	bool name_found = false;
+	int name_n = 0;
+
+	while(!name_found)
+	{
+		new_name = tmp_name + wxString::Format(_("%d"), name_n);
+		name_n++;
+
+		name_found = true;
+
+		for(int i = 0; i < stages[stage_index].actors.size(); i++)
+		{
+			if(stages[stage_index].actors[i].id_name.compare(new_name)==0)
+			{
+				name_found = false;
+				break;
+			}
+		}
+	}
+
+	return new_name;
+}
+
+wxString serenity_project::genStageID()
+{
+	wxString tmp_name = _("stage_id");
+	wxString new_name = _("");
+
+	bool name_found = false;
+	int name_n = 0;
+
+	while(!name_found)
+	{
+		new_name = tmp_name + wxString::Format(_("%d"), name_n);
+		name_n++;
+
+		name_found = true;
+
+		for(int i = 0; i < stages.size(); i++)
+		{
+			if(stages[i].id_name.compare(new_name)==0)
+			{
+				name_found = false;
+				break;
+			}
+		}
+	}
+
+	return new_name;
+}
 
 
 bool serenity_project::save_material(int material_index)

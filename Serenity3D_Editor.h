@@ -102,13 +102,13 @@ class Serenity3D_Frame : public wxFrame
 		wxTreeCtrl* m_project_stage_treeCtrl;
 		wxPanel* m_panel311;
 		wxPropertyGridManager* m_stage_propertyGridManager;
-		wxPropertyGridPage* m_projectProperties_propertyGridPage;
-		wxPGProperty* m_propertyGridItem432;
-		wxPGProperty* m_propertyGridItem433;
 		wxPropertyGridPage* m_animatedActorProperties_propertyGridPage;
 		wxPGProperty* m_animatedActorPropertiesCat_propertyGridItem;
 		wxPGProperty* m_aniActorID_propertyGridItem;
 		wxPGProperty* m_propertyGridItem41;
+		wxPGProperty* m_propertyGridItem42;
+		wxPGProperty* m_propertyGridItem43;
+		wxPGProperty* m_propertyGridItem44;
 		wxPGProperty* m_propertyGridItem46;
 		wxPGProperty* m_propertyGridItem47;
 		wxPGProperty* m_propertyGridItem48;
@@ -121,14 +121,13 @@ class Serenity3D_Frame : public wxFrame
 		wxPGProperty* m_propertyGridItem55;
 		wxPGProperty* m_propertyGridItem56;
 		wxPGProperty* m_propertyGridItem57;
-		wxPGProperty* m_propertyGridItem42;
-		wxPGProperty* m_propertyGridItem43;
-		wxPGProperty* m_propertyGridItem44;
 		wxPGProperty* m_propertyGridItem58;
-		wxPGProperty* m_propertyGridItem59;
 		wxPGProperty* m_propertyGridItem60;
 		wxPGProperty* m_propertyGridItem61;
 		wxPGProperty* m_propertyGridItem62;
+		wxPropertyGridPage* m_projectProperties_propertyGridPage;
+		wxPGProperty* m_propertyGridItem432;
+		wxPGProperty* m_propertyGridItem433;
 		wxPropertyGridPage* m_particleActorProperties_propertyGridPage;
 		wxPGProperty* m_animatedActorPropertiesCat_propertyGridItem111111;
 		wxPGProperty* m_aniActorID_propertyGridItem111111;
@@ -194,7 +193,6 @@ class Serenity3D_Frame : public wxFrame
 		wxPGProperty* m_propertyGridItem56111111;
 		wxPGProperty* m_propertyGridItem57111111;
 		wxPGProperty* m_propertyGridItem58111111;
-		wxPGProperty* m_propertyGridItem59111111;
 		wxPGProperty* m_propertyGridItem60111111;
 		wxPGProperty* m_propertyGridItem61111111;
 		wxPGProperty* m_propertyGridItem62111111;
@@ -233,7 +231,6 @@ class Serenity3D_Frame : public wxFrame
 		wxPGProperty* m_propertyGridItem561;
 		wxPGProperty* m_propertyGridItem571;
 		wxPGProperty* m_propertyGridItem581;
-		wxPGProperty* m_propertyGridItem591;
 		wxPGProperty* m_propertyGridItem601;
 		wxPGProperty* m_propertyGridItem611;
 		wxPGProperty* m_propertyGridItem621;
@@ -254,7 +251,6 @@ class Serenity3D_Frame : public wxFrame
 		wxPGProperty* m_propertyGridItem5611;
 		wxPGProperty* m_propertyGridItem5711;
 		wxPGProperty* m_propertyGridItem5811;
-		wxPGProperty* m_propertyGridItem5911;
 		wxPGProperty* m_propertyGridItem6011;
 		wxPGProperty* m_propertyGridItem6111;
 		wxPGProperty* m_propertyGridItem6211;
@@ -275,7 +271,6 @@ class Serenity3D_Frame : public wxFrame
 		wxPGProperty* m_propertyGridItem56111;
 		wxPGProperty* m_propertyGridItem57111;
 		wxPGProperty* m_propertyGridItem58111;
-		wxPGProperty* m_propertyGridItem59111;
 		wxPGProperty* m_propertyGridItem60111;
 		wxPGProperty* m_propertyGridItem61111;
 		wxPGProperty* m_propertyGridItem62111;
@@ -295,7 +290,6 @@ class Serenity3D_Frame : public wxFrame
 		wxPGProperty* m_propertyGridItem561111;
 		wxPGProperty* m_propertyGridItem571111;
 		wxPGProperty* m_propertyGridItem581111;
-		wxPGProperty* m_propertyGridItem591111;
 		wxPGProperty* m_propertyGridItem601111;
 		wxPGProperty* m_propertyGridItem611111;
 		wxPGProperty* m_propertyGridItem621111;
@@ -320,7 +314,6 @@ class Serenity3D_Frame : public wxFrame
 		wxPGProperty* m_propertyGridItem5611111;
 		wxPGProperty* m_propertyGridItem5711111;
 		wxPGProperty* m_propertyGridItem5811111;
-		wxPGProperty* m_propertyGridItem5911111;
 		wxPGProperty* m_propertyGridItem6011111;
 		wxPGProperty* m_propertyGridItem6111111;
 		wxPGProperty* m_propertyGridItem6211111;
@@ -341,7 +334,6 @@ class Serenity3D_Frame : public wxFrame
 		wxPGProperty* m_propertyGridItem56112;
 		wxPGProperty* m_propertyGridItem57112;
 		wxPGProperty* m_propertyGridItem58112;
-		wxPGProperty* m_propertyGridItem59112;
 		wxPGProperty* m_propertyGridItem60112;
 		wxPGProperty* m_propertyGridItem61112;
 		wxPGProperty* m_propertyGridItem62112;
@@ -366,7 +358,6 @@ class Serenity3D_Frame : public wxFrame
 		wxPGProperty* m_propertyGridItem56113;
 		wxPGProperty* m_propertyGridItem57113;
 		wxPGProperty* m_propertyGridItem58113;
-		wxPGProperty* m_propertyGridItem59113;
 		wxPGProperty* m_propertyGridItem60113;
 		wxPGProperty* m_propertyGridItem61113;
 		wxPGProperty* m_propertyGridItem62113;
@@ -539,6 +530,7 @@ class Serenity3D_Frame : public wxFrame
 		virtual void On_Stage_EditGroup( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Stage_StageNodeActivated( wxTreeEvent& event ) { event.Skip(); }
 		virtual void On_Stage_StageNodeSelected( wxTreeEvent& event ) { event.Skip(); }
+		virtual void OnStagePropertyGridChanged( wxPropertyGridEvent& event ) { event.Skip(); }
 		virtual void On_StageSettings_ShowGrid( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_StageSettings_SetGridSize( wxSpinEvent& event ) { event.Skip(); }
 		virtual void On_StageSettings_SetGridSpacing( wxSpinEvent& event ) { event.Skip(); }

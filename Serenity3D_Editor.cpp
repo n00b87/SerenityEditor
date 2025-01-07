@@ -250,14 +250,13 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_stage_propertyGridManager = new wxPropertyGridManager(m_panel311, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxPGMAN_DEFAULT_STYLE|wxPG_SPLITTER_AUTO_CENTER);
 	m_stage_propertyGridManager->SetExtraStyle( wxPG_EX_MODE_BUTTONS );
 
-	m_projectProperties_propertyGridPage = m_stage_propertyGridManager->AddPage( wxT("Page"), wxNullBitmap );
-	m_propertyGridItem432 = m_projectProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Project") ) );
-	m_propertyGridItem433 = m_projectProperties_propertyGridPage->Append( new wxStringProperty( wxT("Name"), wxT("project_name") ) );
-
 	m_animatedActorProperties_propertyGridPage = m_stage_propertyGridManager->AddPage( wxT("Animated Actor Properties"), wxNullBitmap );
-	m_animatedActorPropertiesCat_propertyGridItem = m_animatedActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Animated Actor Properties"), wxT("actorPropertiesCat") ) );
+	m_animatedActorPropertiesCat_propertyGridItem = m_animatedActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Animated Actor Properties") ) );
 	m_aniActorID_propertyGridItem = m_animatedActorProperties_propertyGridPage->Append( new wxStringProperty( wxT("ID"), wxT("actor_id") ) );
-	m_propertyGridItem41 = m_animatedActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Mesh"), wxT("mesh_id") ) );
+	m_propertyGridItem41 = m_animatedActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Mesh"), wxT("animation_mesh_id") ) );
+	m_propertyGridItem42 = m_animatedActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Animation"), wxT("ActorAnimationCat") ) );
+	m_propertyGridItem43 = m_animatedActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Init Animation"), wxT("init_animation_id") ) );
+	m_propertyGridItem44 = m_animatedActorProperties_propertyGridPage->Append( new wxIntProperty( wxT("Num Loops"), wxT("num_loops") ) );
 	m_propertyGridItem46 = m_animatedActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Position") ) );
 	m_propertyGridItem47 = m_animatedActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("X"), wxT("pos_x") ) );
 	m_propertyGridItem48 = m_animatedActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("pos_y") ) );
@@ -270,17 +269,17 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_propertyGridItem55 = m_animatedActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("X"), wxT("scale_x") ) );
 	m_propertyGridItem56 = m_animatedActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("scale_y") ) );
 	m_propertyGridItem57 = m_animatedActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("scale_z") ) );
-	m_propertyGridItem42 = m_animatedActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Animation"), wxT("ActorAnimationCat") ) );
-	m_propertyGridItem43 = m_animatedActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Init Animation"), wxT("init_animation_id") ) );
-	m_propertyGridItem44 = m_animatedActorProperties_propertyGridPage->Append( new wxIntProperty( wxT("Num Loops"), wxT("num_loops") ) );
 	m_propertyGridItem58 = m_animatedActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Render Properties") ) );
-	m_propertyGridItem59 = m_animatedActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Material"), wxT("material_id") ) );
 	m_propertyGridItem60 = m_animatedActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Visible"), wxT("visible") ) );
 	m_propertyGridItem61 = m_animatedActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Shadow"), wxT("shadow") ) );
 	m_propertyGridItem62 = m_animatedActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Auto Culling"), wxT("auto_culling") ) );
 
+	m_projectProperties_propertyGridPage = m_stage_propertyGridManager->AddPage( wxT("Page"), wxNullBitmap );
+	m_propertyGridItem432 = m_projectProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Project") ) );
+	m_propertyGridItem433 = m_projectProperties_propertyGridPage->Append( new wxStringProperty( wxT("Name"), wxT("project_name") ) );
+
 	m_particleActorProperties_propertyGridPage = m_stage_propertyGridManager->AddPage( wxT("Particle Actor Properties"), wxNullBitmap );
-	m_animatedActorPropertiesCat_propertyGridItem111111 = m_particleActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Particle Properties"), wxT("actorPropertiesCat") ) );
+	m_animatedActorPropertiesCat_propertyGridItem111111 = m_particleActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Particle Properties") ) );
 	m_aniActorID_propertyGridItem111111 = m_particleActorProperties_propertyGridPage->Append( new wxStringProperty( wxT("ID"), wxT("actor_id") ) );
 	m_propertyGridItem2681 = m_particleActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Particle Type"), wxT("particle_type") ) );
 	m_propertyGridItem333 = m_particleActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Min Size") ) );
@@ -312,9 +311,9 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_propertyGridItem348 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("X"), wxT("center_x") ) );
 	m_propertyGridItem349 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("center_y") ) );
 	m_propertyGridItem350 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("center_z") ) );
-	m_propertyGridItem2691 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Radius"), wxT("cylinder_radius") ) );
+	m_propertyGridItem2691 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Radius"), wxT("radius") ) );
 	m_propertyGridItem343 = m_particleActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Mesh Settings") ) );
-	m_propertyGridItem321 = m_particleActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Mesh"), wxT("mesh") ) );
+	m_propertyGridItem321 = m_particleActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Mesh"), wxT("particle_mesh_id") ) );
 	m_propertyGridItem2701 = m_particleActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Use Every Vertex"), wxT("use_every_vertex") ) );
 	m_propertyGridItem2721 = m_particleActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Use Normal Direction"), wxT("use_normal_direction") ) );
 	m_propertyGridItem344 = m_particleActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Use Normal Modifier"), wxT("use_normal_mod") ) );
@@ -323,8 +322,8 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_propertyGridItem2711 = m_particleActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Use Outline Only"), wxT("use_outline_only") ) );
 	m_propertyGridItem354 = m_particleActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Min Box Size") ) );
 	m_propertyGridItem355 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("X"), wxT("min_box_x") ) );
-	m_propertyGridItem356 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("min_y") ) );
-	m_propertyGridItem357 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("min_z") ) );
+	m_propertyGridItem356 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("min_box_y") ) );
+	m_propertyGridItem357 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("min_box_z") ) );
 	m_propertyGridItem358 = m_particleActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Max Box Size") ) );
 	m_propertyGridItem359 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("X"), wxT("max_box_x") ) );
 	m_propertyGridItem360 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("max_box_y") ) );
@@ -344,22 +343,21 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_propertyGridItem56111111 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("scale_y") ) );
 	m_propertyGridItem57111111 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("scale_z") ) );
 	m_propertyGridItem58111111 = m_particleActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Render Properties") ) );
-	m_propertyGridItem59111111 = m_particleActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Material"), wxT("material_id") ) );
 	m_propertyGridItem60111111 = m_particleActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Visible"), wxT("visible") ) );
 	m_propertyGridItem61111111 = m_particleActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Shadow"), wxT("shadow") ) );
 	m_propertyGridItem62111111 = m_particleActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Auto Culling"), wxT("auto_culling") ) );
 
 	m_stageProperties_propertyGridPage = m_stage_propertyGridManager->AddPage( wxT("Stage Properties"), wxNullBitmap );
 	m_propertyGridItem15 = m_stageProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Stage Properties") ) );
-	m_stageID_propertyGridItem = m_stageProperties_propertyGridPage->Append( new wxStringProperty( wxT("ID"), wxT("StageID") ) );
+	m_stageID_propertyGridItem = m_stageProperties_propertyGridPage->Append( new wxStringProperty( wxT("ID"), wxT("stage_id") ) );
 	m_skyShape_propertyGridItem = m_stageProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Sky Shape"), wxT("sky_shape") ) );
 	m_propertyGridItem21 = m_stageProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Sky Dome") ) );
 	m_propertyGridItem14 = m_stageProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Image"), wxT("sky_dome_image_id") ) );
 	m_skyDome_hRes_propertyGridItem = m_stageProperties_propertyGridPage->Append( new wxFloatProperty( wxT("H Res"), wxT("skydome_hRes") ) );
 	m_skyDome_vRes_propertyGridItem = m_stageProperties_propertyGridPage->Append( new wxFloatProperty( wxT("V Res"), wxT("skydome_vRes") ) );
-	m_skyDomeTxPct_propertyGridItem = m_stageProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Texture %"), wxT("texture_pct") ) );
-	m_skyDomeSpherePct_propertyGridItem = m_stageProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Sphere %"), wxT("sphere_pct") ) );
-	m_skyDomeRadius_propertyGridItem = m_stageProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Radius") ) );
+	m_skyDomeTxPct_propertyGridItem = m_stageProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Texture %"), wxT("sky_texture_pct") ) );
+	m_skyDomeSpherePct_propertyGridItem = m_stageProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Sphere %"), wxT("sky_sphere_pct") ) );
+	m_skyDomeRadius_propertyGridItem = m_stageProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Radius"), wxT("sky_radius") ) );
 	m_skyBoxCat_propertyGridItem = m_stageProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Sky Box") ) );
 	m_skyBoxTopImage_propertyGridItem = m_stageProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Image (Top)"), wxT("skybox_top_image") ) );
 	m_skyBoxBottomImage_propertyGridItem = m_stageProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Image (Bottom)"), wxT("skybox_bottom_image") ) );
@@ -385,7 +383,6 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_propertyGridItem561 = m_octreeActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("scale_y") ) );
 	m_propertyGridItem571 = m_octreeActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("scale_z") ) );
 	m_propertyGridItem581 = m_octreeActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Render Properties") ) );
-	m_propertyGridItem591 = m_octreeActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Material"), wxT("material_id") ) );
 	m_propertyGridItem601 = m_octreeActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Visible"), wxT("visible") ) );
 	m_propertyGridItem611 = m_octreeActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Shadow"), wxT("shadow") ) );
 	m_propertyGridItem621 = m_octreeActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Auto Culling"), wxT("auto_culling") ) );
@@ -407,7 +404,6 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_propertyGridItem5611 = m_cubeActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("scale_y") ) );
 	m_propertyGridItem5711 = m_cubeActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("scale_z") ) );
 	m_propertyGridItem5811 = m_cubeActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Render Properties") ) );
-	m_propertyGridItem5911 = m_cubeActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Material"), wxT("material_id") ) );
 	m_propertyGridItem6011 = m_cubeActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Visible"), wxT("visible") ) );
 	m_propertyGridItem6111 = m_cubeActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Shadow"), wxT("shadow") ) );
 	m_propertyGridItem6211 = m_cubeActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Auto Culling"), wxT("auto_culling") ) );
@@ -429,7 +425,6 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_propertyGridItem56111 = m_sphereActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("scale_y") ) );
 	m_propertyGridItem57111 = m_sphereActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("scale_z") ) );
 	m_propertyGridItem58111 = m_sphereActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Render Properties") ) );
-	m_propertyGridItem59111 = m_sphereActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Material"), wxT("material_id") ) );
 	m_propertyGridItem60111 = m_sphereActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Visible"), wxT("visible") ) );
 	m_propertyGridItem61111 = m_sphereActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Shadow"), wxT("shadow") ) );
 	m_propertyGridItem62111 = m_sphereActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Auto Culling"), wxT("auto_culling") ) );
@@ -450,7 +445,6 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_propertyGridItem561111 = m_billboardActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("scale_y") ) );
 	m_propertyGridItem571111 = m_billboardActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("scale_z") ) );
 	m_propertyGridItem581111 = m_billboardActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Render Properties") ) );
-	m_propertyGridItem591111 = m_billboardActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Material"), wxT("material_id") ) );
 	m_propertyGridItem601111 = m_billboardActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Visible"), wxT("visible") ) );
 	m_propertyGridItem611111 = m_billboardActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Shadow"), wxT("shadow") ) );
 	m_propertyGridItem621111 = m_billboardActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Auto Culling"), wxT("auto_culling") ) );
@@ -476,7 +470,6 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_propertyGridItem5611111 = m_lightActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("scale_y") ) );
 	m_propertyGridItem5711111 = m_lightActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("scale_z") ) );
 	m_propertyGridItem5811111 = m_lightActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Render Properties") ) );
-	m_propertyGridItem5911111 = m_lightActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Material"), wxT("material_id") ) );
 	m_propertyGridItem6011111 = m_lightActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Visible"), wxT("visible") ) );
 	m_propertyGridItem6111111 = m_lightActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Shadow"), wxT("shadow") ) );
 	m_propertyGridItem6211111 = m_lightActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Auto Culling"), wxT("auto_culling") ) );
@@ -498,7 +491,6 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_propertyGridItem56112 = m_terrainActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("scale_y") ) );
 	m_propertyGridItem57112 = m_terrainActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("scale_z") ) );
 	m_propertyGridItem58112 = m_terrainActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Render Properties") ) );
-	m_propertyGridItem59112 = m_terrainActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Material"), wxT("material_id") ) );
 	m_propertyGridItem60112 = m_terrainActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Visible"), wxT("visible") ) );
 	m_propertyGridItem61112 = m_terrainActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Shadow"), wxT("shadow") ) );
 	m_propertyGridItem62112 = m_terrainActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Auto Culling"), wxT("auto_culling") ) );
@@ -524,7 +516,6 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_propertyGridItem56113 = m_waterActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("scale_y") ) );
 	m_propertyGridItem57113 = m_waterActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("scale_z") ) );
 	m_propertyGridItem58113 = m_waterActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Render Properties") ) );
-	m_propertyGridItem59113 = m_waterActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Material"), wxT("material_id") ) );
 	m_propertyGridItem60113 = m_waterActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Visible"), wxT("visible") ) );
 	m_propertyGridItem61113 = m_waterActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Shadow"), wxT("shadow") ) );
 	m_propertyGridItem62113 = m_waterActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Auto Culling"), wxT("auto_culling") ) );
@@ -1594,6 +1585,7 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_bpButton6->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_EditGroup ), NULL, this );
 	m_project_stage_treeCtrl->Connect( wxEVT_COMMAND_TREE_ITEM_ACTIVATED, wxTreeEventHandler( Serenity3D_Frame::On_Stage_StageNodeActivated ), NULL, this );
 	m_project_stage_treeCtrl->Connect( wxEVT_COMMAND_TREE_SEL_CHANGED, wxTreeEventHandler( Serenity3D_Frame::On_Stage_StageNodeSelected ), NULL, this );
+	m_stage_propertyGridManager->Connect( wxEVT_PG_CHANGED, wxPropertyGridEventHandler( Serenity3D_Frame::OnStagePropertyGridChanged ), NULL, this );
 	m_viewportSettings_showGrid_checkBox->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_StageSettings_ShowGrid ), NULL, this );
 	m_viewportSettings_gridSize_spinCtrl->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( Serenity3D_Frame::On_StageSettings_SetGridSize ), NULL, this );
 	m_viewportSettings_gridSpacing_spinCtrl->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( Serenity3D_Frame::On_StageSettings_SetGridSpacing ), NULL, this );
@@ -1686,6 +1678,7 @@ Serenity3D_Frame::~Serenity3D_Frame()
 	m_bpButton6->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_EditGroup ), NULL, this );
 	m_project_stage_treeCtrl->Disconnect( wxEVT_COMMAND_TREE_ITEM_ACTIVATED, wxTreeEventHandler( Serenity3D_Frame::On_Stage_StageNodeActivated ), NULL, this );
 	m_project_stage_treeCtrl->Disconnect( wxEVT_COMMAND_TREE_SEL_CHANGED, wxTreeEventHandler( Serenity3D_Frame::On_Stage_StageNodeSelected ), NULL, this );
+	m_stage_propertyGridManager->Disconnect( wxEVT_PG_CHANGED, wxPropertyGridEventHandler( Serenity3D_Frame::OnStagePropertyGridChanged ), NULL, this );
 	m_viewportSettings_showGrid_checkBox->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_StageSettings_ShowGrid ), NULL, this );
 	m_viewportSettings_gridSize_spinCtrl->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( Serenity3D_Frame::On_StageSettings_SetGridSize ), NULL, this );
 	m_viewportSettings_gridSpacing_spinCtrl->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( Serenity3D_Frame::On_StageSettings_SetGridSpacing ), NULL, this );
