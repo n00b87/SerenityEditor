@@ -1380,6 +1380,22 @@ void SerenityEditorSerenity3D_Frame::On_Stage_StageNodeActivated( wxTreeEvent& e
 	}
 }
 
+void SerenityEditorSerenity3D_Frame::getGridAllMaterialList(wxPGChoices* choices)
+{
+	choices->Clear();
+
+	choices->Add(_("NONE"));
+
+
+	for(int i = 0; i < project.materials.size(); i++)
+	{
+		if(project.materials[i].id_name.compare("")!=0)
+		{
+			choices->Add(wxString::FromUTF8(project.materials[i].id_name));
+		}
+	}
+}
+
 void SerenityEditorSerenity3D_Frame::getGridAnimationList(int mesh_project_index, wxPGChoices* choices)
 {
 	choices->Clear();
@@ -2172,18 +2188,355 @@ void SerenityEditorSerenity3D_Frame::setAnimatedActorGrid(int stage_project_inde
 
 void SerenityEditorSerenity3D_Frame::setOctreeActorGrid(int stage_project_index, int actor_project_index)
 {
+	if(stage_project_index < 0 || stage_project_index >= project.stages.size())
+		return;
+
+	if(actor_project_index < 0 || actor_project_index >= project.stages[stage_project_index].actors.size())
+		return;
+
+	wxString id_name = project.stages[stage_project_index].actors[actor_project_index].id_name;
+
+	int mesh_index = project.stages[stage_project_index].actors[actor_project_index].mesh_index;
+	wxString mesh_id = ((mesh_index < 0 || mesh_index >= project.meshes.size()) ? _("NONE") : project.meshes[mesh_index].id_name);
+
+
+	//-------------Setting Actor ID---------------------------
+	m_octreeActorProperties_propertyGridPage->GetPropertyByName(_("actor_id"))->SetValueFromString(id_name);
+
+	//-------------Setting Mesh ID---------------------------
+	int mesh_selection = -1;
+
+	wxPGChoices mesh_choice;
+	mesh_choice.Clear();
+
+	mesh_choice.Add(_("NONE"));
+
+	for(int i = 0; i < project.meshes.size(); i++)
+	{
+		if(project.meshes[i].id_name.compare("")!=0)
+		{
+			int n = mesh_choice.GetCount();
+
+			if(project.meshes[i].id_name.compare(mesh_id.ToStdString())==0)
+				mesh_selection = n;
+
+			n++;
+
+			mesh_choice.Add(wxString::FromUTF8(project.meshes[i].id_name));
+		}
+	}
+
+	m_octreeActorProperties_propertyGridPage->GetPropertyByName(_("mesh_id"))->SetChoices(mesh_choice);
+
+	if(mesh_selection >= 0)
+		m_octreeActorProperties_propertyGridPage->GetPropertyByName(_("mesh_id"))->SetChoiceSelection(mesh_selection);
+
+	//-------------Setting Position---------------------------
+	irr::core::vector3df pos = project.stages[stage_project_index].actors[actor_project_index].position;
+	m_octreeActorProperties_propertyGridPage->GetPropertyByName(_("pos_x"))->SetValue(pos.X);
+	m_octreeActorProperties_propertyGridPage->GetPropertyByName(_("pos_y"))->SetValue(pos.Y);
+	m_octreeActorProperties_propertyGridPage->GetPropertyByName(_("pos_z"))->SetValue(pos.Z);
+
+	//-------------Setting Rotation---------------------------
+	irr::core::vector3df rot = project.stages[stage_project_index].actors[actor_project_index].rotation;
+	m_octreeActorProperties_propertyGridPage->GetPropertyByName(_("rot_x"))->SetValue(rot.X);
+	m_octreeActorProperties_propertyGridPage->GetPropertyByName(_("rot_y"))->SetValue(rot.Y);
+	m_octreeActorProperties_propertyGridPage->GetPropertyByName(_("rot_z"))->SetValue(rot.Z);
+
+	//-------------Setting Scale---------------------------
+	irr::core::vector3df scale = project.stages[stage_project_index].actors[actor_project_index].scale;
+	m_octreeActorProperties_propertyGridPage->GetPropertyByName(_("scale_x"))->SetValue(scale.X);
+	m_octreeActorProperties_propertyGridPage->GetPropertyByName(_("scale_y"))->SetValue(scale.Y);
+	m_octreeActorProperties_propertyGridPage->GetPropertyByName(_("scale_z"))->SetValue(scale.Z);
+
+	//------------Render Settings------------------------------
+	bool visible_flag = project.stages[stage_project_index].actors[actor_project_index].visible;
+	m_octreeActorProperties_propertyGridPage->GetPropertyByName(_("visible"))-> wxPGProperty::SetValue(visible_flag);
+
+	bool shadow_flag = project.stages[stage_project_index].actors[actor_project_index].hasShadow;
+	m_octreeActorProperties_propertyGridPage->GetPropertyByName(_("shadow"))-> wxPGProperty::SetValue(shadow_flag);
+
+	bool auto_culling_flag = project.stages[stage_project_index].actors[actor_project_index].auto_culling;
+	m_octreeActorProperties_propertyGridPage->GetPropertyByName(_("auto_culling"))-> wxPGProperty::SetValue(auto_culling_flag);
+
+
 }
 
 void SerenityEditorSerenity3D_Frame::setBillboardActorGrid(int stage_project_index, int actor_project_index)
 {
+	if(stage_project_index < 0 || stage_project_index >= project.stages.size())
+		return;
+
+	if(actor_project_index < 0 || actor_project_index >= project.stages[stage_project_index].actors.size())
+		return;
+
+	wxString id_name = project.stages[stage_project_index].actors[actor_project_index].id_name;
+
+	//-------------Setting Actor ID---------------------------
+	m_billboardActorProperties_propertyGridPage->GetPropertyByName(_("actor_id"))->SetValueFromString(id_name);
+
+
+	//-------------Materials----------------------------------
+	int material_selection = 0;
+
+	wxPGChoices material_choice;
+	material_choice.Clear();
+
+	getGridAllMaterialList(&material_choice);
+
+	m_billboardActorProperties_propertyGridPage->GetPropertyByName(_("material_id"))->SetChoices(material_choice);
+
+	int mat_index = project.stages[stage_project_index].actors[actor_project_index].override_material_index;
+
+	if(mat_index < 0 || mat_index >= project.materials.size())
+		material_selection = 0;
+	else
+	{
+		if(project.materials[mat_index].id_name.compare("")==0)
+			material_selection = 0;
+		else
+		{
+			std::string mat_id = project.materials[mat_index].id_name;
+
+			for(int i = 0; i < material_choice.GetCount(); i++)
+			{
+				if(material_choice.Item(i).GetText().compare(mat_id)==0)
+				{
+					material_selection = i;
+					break;
+				}
+			}
+		}
+	}
+
+	if(material_selection >= 0)
+		m_billboardActorProperties_propertyGridPage->GetPropertyByName(_("material_id"))->SetChoiceSelection(material_selection);
+
+
+
+	//-------------Setting Position---------------------------
+	irr::core::vector3df pos = project.stages[stage_project_index].actors[actor_project_index].position;
+	m_billboardActorProperties_propertyGridPage->GetPropertyByName(_("pos_x"))->SetValue(pos.X);
+	m_billboardActorProperties_propertyGridPage->GetPropertyByName(_("pos_y"))->SetValue(pos.Y);
+	m_billboardActorProperties_propertyGridPage->GetPropertyByName(_("pos_z"))->SetValue(pos.Z);
+
+	//-------------Setting Rotation---------------------------
+	irr::core::vector3df rot = project.stages[stage_project_index].actors[actor_project_index].rotation;
+	m_billboardActorProperties_propertyGridPage->GetPropertyByName(_("rot_x"))->SetValue(rot.X);
+	m_billboardActorProperties_propertyGridPage->GetPropertyByName(_("rot_y"))->SetValue(rot.Y);
+	m_billboardActorProperties_propertyGridPage->GetPropertyByName(_("rot_z"))->SetValue(rot.Z);
+
+	//-------------Setting Scale---------------------------
+	irr::core::vector3df scale = project.stages[stage_project_index].actors[actor_project_index].scale;
+	m_billboardActorProperties_propertyGridPage->GetPropertyByName(_("scale_x"))->SetValue(scale.X);
+	m_billboardActorProperties_propertyGridPage->GetPropertyByName(_("scale_y"))->SetValue(scale.Y);
+	m_billboardActorProperties_propertyGridPage->GetPropertyByName(_("scale_z"))->SetValue(scale.Z);
+
+	//------------Render Settings------------------------------
+	bool visible_flag = project.stages[stage_project_index].actors[actor_project_index].visible;
+	m_billboardActorProperties_propertyGridPage->GetPropertyByName(_("visible"))-> wxPGProperty::SetValue(visible_flag);
+
+	bool shadow_flag = project.stages[stage_project_index].actors[actor_project_index].hasShadow;
+	m_billboardActorProperties_propertyGridPage->GetPropertyByName(_("shadow"))-> wxPGProperty::SetValue(shadow_flag);
+
+	bool auto_culling_flag = project.stages[stage_project_index].actors[actor_project_index].auto_culling;
+	m_billboardActorProperties_propertyGridPage->GetPropertyByName(_("auto_culling"))-> wxPGProperty::SetValue(auto_culling_flag);
 }
 
 void SerenityEditorSerenity3D_Frame::setLightActorGrid(int stage_project_index, int actor_project_index)
 {
+	if(stage_project_index < 0 || stage_project_index >= project.stages.size())
+		return;
+
+	if(actor_project_index < 0 || actor_project_index >= project.stages[stage_project_index].actors.size())
+		return;
+
+	wxString id_name = project.stages[stage_project_index].actors[actor_project_index].id_name;
+
+	//-------------Setting Actor ID---------------------------
+	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("actor_id"))->SetValueFromString(id_name);
+
+
+	//-------------Light Type----------------------------------
+	wxPGChoices light_type_choice;
+	light_type_choice.Clear();
+
+	light_type_choice.Add(_("POINT"));
+	light_type_choice.Add(_("SPOT"));
+	light_type_choice.Add(_("DIRECTIONAL"));
+
+	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("light_type"))->SetChoices(light_type_choice);
+
+	if(project.stages[stage_project_index].actors[actor_project_index].light_type >= SN_LIGHT_TYPE_COUNT)
+		project.stages[stage_project_index].actors[actor_project_index].light_type = 0;
+
+	int light_type = project.stages[stage_project_index].actors[actor_project_index].light_type;
+	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("light_type"))->SetChoiceSelection(light_type);
+
+	//-------------Setting Position---------------------------
+	irr::core::vector3df pos = project.stages[stage_project_index].actors[actor_project_index].position;
+	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("pos_x"))->SetValue(pos.X);
+	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("pos_y"))->SetValue(pos.Y);
+	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("pos_z"))->SetValue(pos.Z);
+
+	//-------------Setting Rotation---------------------------
+	irr::core::vector3df rot = project.stages[stage_project_index].actors[actor_project_index].rotation;
+	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("rot_x"))->SetValue(rot.X);
+	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("rot_y"))->SetValue(rot.Y);
+	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("rot_z"))->SetValue(rot.Z);
+
+	//-------------Setting Scale---------------------------
+	irr::core::vector3df scale = project.stages[stage_project_index].actors[actor_project_index].scale;
+	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("scale_x"))->SetValue(scale.X);
+	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("scale_y"))->SetValue(scale.Y);
+	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("scale_z"))->SetValue(scale.Z);
+
+	//------------Render Settings------------------------------
+	bool visible_flag = project.stages[stage_project_index].actors[actor_project_index].visible;
+	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("visible"))->SetValue(visible_flag);
+
+	bool shadow_flag = project.stages[stage_project_index].actors[actor_project_index].hasShadow;
+	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("shadow"))->SetValue(shadow_flag);
+
+	bool auto_culling_flag = project.stages[stage_project_index].actors[actor_project_index].auto_culling;
+	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("auto_culling"))->SetValue(auto_culling_flag);
+
+
+
+	//-----------------COLOR---------------------------------
+	irr::video::SColor c = project.stages[stage_project_index].actors[actor_project_index].ambient;
+	wxColour ambient_color(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha());
+	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("ambient_color"))->SetValueFromString(ambient_color.GetAsString());
+
+
+	c = project.stages[stage_project_index].actors[actor_project_index].diffuse;
+	wxColour diffuse_color(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha());
+	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("diffuse_color"))->SetValueFromString(diffuse_color.GetAsString());
+
+	c = project.stages[stage_project_index].actors[actor_project_index].specular;
+	wxColour specular_color(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha());
+	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("specular_color"))->SetValueFromString(specular_color.GetAsString());
+
+	//--------------ATTENUATION--------------------------------
+	irr::core::vector3df attenuation = project.stages[stage_project_index].actors[actor_project_index].attenuation;
+	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("constant_attenuation"))->SetValue(attenuation.X);
+	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("linear_attenuation"))->SetValue(attenuation.Y);
+	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("quadratic_attenuation"))->SetValue(attenuation.Z);
+
+	//--------------CONE----------------
+	double inner_cone = project.stages[stage_project_index].actors[actor_project_index].inner_cone;
+	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("inner_cone"))->SetValue(inner_cone);
+
+	double outer_cone = project.stages[stage_project_index].actors[actor_project_index].outer_cone;
+	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("outer_cone"))->SetValue(outer_cone);
+
+	//--------------RADIUS----------------
+	double radius = project.stages[stage_project_index].actors[actor_project_index].radius;
+	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("radius"))->SetValue(radius);
+
+	//--------------FALLOFF----------------
+	double falloff = project.stages[stage_project_index].actors[actor_project_index].falloff;
+	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("falloff"))->SetValue(falloff);
+
+	//------------FLAGS------------------------------
+	bool cast_shadow = project.stages[stage_project_index].actors[actor_project_index].isCastingShadow;
+	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("cast_shadow"))->SetValue(cast_shadow);
+
 }
 
 void SerenityEditorSerenity3D_Frame::setTerrainActorGrid(int stage_project_index, int actor_project_index)
 {
+	if(stage_project_index < 0 || stage_project_index >= project.stages.size())
+		return;
+
+	if(actor_project_index < 0 || actor_project_index >= project.stages[stage_project_index].actors.size())
+		return;
+
+	wxString id_name = project.stages[stage_project_index].actors[actor_project_index].id_name;
+
+	//-------------Setting Actor ID---------------------------
+	m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("actor_id"))->SetValueFromString(id_name);
+
+
+	//-------------Materials----------------------------------
+	int hmap_selection = 0;
+
+	wxPGChoices hmap_choice;
+	hmap_choice.Clear();
+
+	getGridTextureList(&hmap_choice);
+
+	m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("hmap_image_id"))->SetChoices(hmap_choice);
+
+	std::string hmap_selection_file = project.stages[stage_project_index].actors[actor_project_index].terrain_hmap_file;
+
+	int hmap_texture_index = -1;
+
+	for(int i = 0; i < project.textures.size(); i++)
+	{
+		if(project.textures[i].id_name.compare("")==0)
+			continue;
+
+		if(project.textures[i].file.compare(hmap_selection_file)==0)
+		{
+			hmap_texture_index = i;
+			break;
+		}
+	}
+
+	if(hmap_texture_index < 0 || hmap_texture_index >= project.textures.size())
+		hmap_selection = 0;
+	else
+	{
+		if(project.textures[hmap_texture_index].id_name.compare("")==0)
+			hmap_selection = 0;
+		else
+		{
+			std::string texture_id = project.textures[hmap_texture_index].id_name;
+
+			for(int i = 0; i < hmap_choice.GetCount(); i++)
+			{
+				if(hmap_choice.Item(i).GetText().compare(texture_id)==0)
+				{
+					hmap_selection = i;
+					break;
+				}
+			}
+		}
+	}
+
+	if(hmap_selection >= 0)
+		m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("hmap_image_id"))->SetChoiceSelection(hmap_selection);
+
+
+
+	//-------------Setting Position---------------------------
+	irr::core::vector3df pos = project.stages[stage_project_index].actors[actor_project_index].position;
+	m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("pos_x"))->SetValue(pos.X);
+	m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("pos_y"))->SetValue(pos.Y);
+	m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("pos_z"))->SetValue(pos.Z);
+
+	//-------------Setting Rotation---------------------------
+	irr::core::vector3df rot = project.stages[stage_project_index].actors[actor_project_index].rotation;
+	m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("rot_x"))->SetValue(rot.X);
+	m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("rot_y"))->SetValue(rot.Y);
+	m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("rot_z"))->SetValue(rot.Z);
+
+	//-------------Setting Scale---------------------------
+	irr::core::vector3df scale = project.stages[stage_project_index].actors[actor_project_index].scale;
+	m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("scale_x"))->SetValue(scale.X);
+	m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("scale_y"))->SetValue(scale.Y);
+	m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("scale_z"))->SetValue(scale.Z);
+
+	//------------Render Settings------------------------------
+	bool visible_flag = project.stages[stage_project_index].actors[actor_project_index].visible;
+	m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("visible"))-> wxPGProperty::SetValue(visible_flag);
+
+	bool shadow_flag = project.stages[stage_project_index].actors[actor_project_index].hasShadow;
+	m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("shadow"))-> wxPGProperty::SetValue(shadow_flag);
+
+	bool auto_culling_flag = project.stages[stage_project_index].actors[actor_project_index].auto_culling;
+	m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("auto_culling"))-> wxPGProperty::SetValue(auto_culling_flag);
 }
 
 void SerenityEditorSerenity3D_Frame::setWaterActorGrid(int stage_project_index, int actor_project_index)

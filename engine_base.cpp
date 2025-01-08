@@ -619,6 +619,14 @@ rc_actor serenity_project::load_actor(std::vector<serenity_project_dict_obj> par
 	p_actor.min_life = 0;
 	p_actor.max_life = 0;
 
+	p_actor.inner_cone = 0;
+	p_actor.outer_cone = 0;
+	p_actor.attenuation = irr::core::vector3df(0, 0, 0);
+
+	double constant_n = 0;
+	double linear_n = 0;
+	double quadratic_n = 0;
+
 
 
 	for(int i = 0; i < param.size(); i++)
@@ -779,6 +787,16 @@ rc_actor serenity_project::load_actor(std::vector<serenity_project_dict_obj> par
 			param[i].val.ToDouble(&p_actor.min_life);
 		else if(param[i].key.compare(_("max_life"))==0)
 			param[i].val.ToDouble(&p_actor.max_life);
+		else if(param[i].key.compare(_("inner_cone"))==0)
+			param[i].val.ToDouble(&p_actor.inner_cone);
+		else if(param[i].key.compare(_("outer_cone"))==0)
+			param[i].val.ToDouble(&p_actor.outer_cone);
+		else if(param[i].key.compare(_("constant"))==0)
+			param[i].val.ToDouble(&constant_n);
+		else if(param[i].key.compare(_("linear"))==0)
+			param[i].val.ToDouble(&linear_n);
+		else if(param[i].key.compare(_("quadratic"))==0)
+			param[i].val.ToDouble(&quadratic_n);
 	}
 
 	p_actor.animation_index = getAnimationIndex(p_actor.mesh_index, animation_id);
@@ -790,6 +808,7 @@ rc_actor serenity_project::load_actor(std::vector<serenity_project_dict_obj> par
 	p_actor.direction = irr::core::vector3df(dir_x, dir_y, dir_z);
 	p_actor.center = irr::core::vector3df(center_x, center_y, center_z);
 	p_actor.box = irr::core::aabbox3df(box_min_x, box_min_y, box_min_z, box_max_x, box_max_y, box_max_z);
+	p_actor.attenuation = irr::core::vector3df(constant_n, linear_n, quadratic_n);
 
 	p_actor.node = NULL;
 

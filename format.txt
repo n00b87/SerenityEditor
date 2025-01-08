@@ -159,12 +159,20 @@ etc.
 	* pos_x=x  pos_y=y  pos_z=z  
 	* rot_x=rx  rot_y=ry  rot_z=rz  
 	* scale_x=sx  scale_y=sy  scale_z=sz  
-	* visible=flag  
+	* visible=flag
+	  
 	* cast_shadow=flag
 	* light_type=light_type
 	* radius=light_radius
-	* angle=light_angle
 	* falloff=n
+	* ambient_color=c
+	* diffuse_color=c
+	* specular_color=c
+	* inner_cone=f
+	* outer_cone=f
+	* constant=n
+	* linear=n
+	* quadratic=n
 	
 * Actor  type=PARTICLE  id=actor_id  particle_type=type
 	* material=material_id
@@ -198,7 +206,7 @@ etc.
 	
 	
 * Actor  type=TERRAIN  id=actor_id 
-	* file=hmap_file
+	* terrain_hmap_file=hmap_file
 	* material=material_id
 	* pos_x=x  pos_y=y  pos_z=z  
 	* rot_x=rx  rot_y=ry  rot_z=rz  

@@ -61,7 +61,7 @@ struct rc_mesh
 #define SN_LIGHT_TYPE_POINT			0
 #define SN_LIGHT_TYPE_SPOT			1
 #define SN_LIGHT_TYPE_DIRECTIONAL	2
-
+#define SN_LIGHT_TYPE_COUNT			3
 
 #define SN_PARTICLE_TYPE_POINT		0
 #define SN_PARTICLE_TYPE_BOX		1
@@ -69,6 +69,7 @@ struct rc_mesh
 #define SN_PARTICLE_TYPE_CYLINDER	3
 #define SN_PARTICLE_TYPE_MESH		4
 #define SN_PARTICLE_TYPE_RING		5
+#define SN_PARTICLE_TYPE_COUNT		6
 
 
 #define SN_ACTOR_TYPE_ANIMATED	0
@@ -105,6 +106,9 @@ struct rc_actor
 	int light_type;
 	double angle;
 	double falloff;
+	double inner_cone;
+	double outer_cone;
+	irr::core::vector3df attenuation;
 	irr::video::SColor ambient;
 	irr::video::SColor emissive;
 	irr::video::SColor diffuse;

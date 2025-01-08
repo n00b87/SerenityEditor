@@ -148,6 +148,7 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
 
 		void getGridAnimationList(int mesh_project_index, wxPGChoices* choices);
 		void getGridMaterialList(int mesh_project_index, wxPGChoices* choices);
+		void getGridAllMaterialList(wxPGChoices* choices);
 		void getGridTextureList(wxPGChoices* choices);
 		int getGridTextureSelection(int texture_project_index, wxPGChoices* choice);
 
