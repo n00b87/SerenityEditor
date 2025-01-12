@@ -59,7 +59,6 @@ class Serenity3D_Frame : public wxFrame
 	protected:
 		wxMenuBar* m_menubar1;
 		wxMenu* m_project_menu;
-		wxMenu* m_menu3;
 		wxAuiNotebook* m_editorMain_auinotebook;
 		wxPanel* m_stage_panel;
 		wxAuiToolBar* m_auiToolBar52;
@@ -68,8 +67,8 @@ class Serenity3D_Frame : public wxFrame
 		wxAuiToolBarItem* m_s3d_move_tool;
 		wxAuiToolBarItem* m_s3d_rotate_tool;
 		wxAuiToolBarItem* m_s3d_scale_tool;
-		wxAuiToolBarItem* m_s3d_octreeActor_tool;
 		wxAuiToolBarItem* m_s3d_animatedActor_tool;
+		wxAuiToolBarItem* m_s3d_octreeActor_tool;
 		wxAuiToolBarItem* m_s3d_billboardActor_tool;
 		wxAuiToolBarItem* m_s3d_lightActor_tool;
 		wxAuiToolBarItem* m_s3d_terrainActor_tool;
@@ -102,6 +101,7 @@ class Serenity3D_Frame : public wxFrame
 		wxTreeCtrl* m_project_stage_treeCtrl;
 		wxPanel* m_panel311;
 		wxPropertyGridManager* m_stage_propertyGridManager;
+		wxPropertyGridPage* m_group_propertyGridPage;
 		wxPropertyGridPage* m_lightActorProperties_propertyGridPage;
 		wxPGProperty* m_animatedActorPropertiesCat_propertyGridItem11111;
 		wxPGProperty* m_aniActorID_propertyGridItem11111;
@@ -133,6 +133,7 @@ class Serenity3D_Frame : public wxFrame
 		wxPGProperty* m_propertyGridItem5611111;
 		wxPGProperty* m_propertyGridItem5711111;
 		wxPGProperty* m_propertyGridItem5811111;
+		wxPGProperty* m_propertyGridItem453;
 		wxPGProperty* m_propertyGridItem6011111;
 		wxPGProperty* m_propertyGridItem6111111;
 		wxPGProperty* m_propertyGridItem6211111;
@@ -156,6 +157,7 @@ class Serenity3D_Frame : public wxFrame
 		wxPGProperty* m_propertyGridItem56;
 		wxPGProperty* m_propertyGridItem57;
 		wxPGProperty* m_propertyGridItem58;
+		wxPGProperty* m_propertyGridItem452;
 		wxPGProperty* m_propertyGridItem60;
 		wxPGProperty* m_propertyGridItem61;
 		wxPGProperty* m_propertyGridItem62;
@@ -227,6 +229,7 @@ class Serenity3D_Frame : public wxFrame
 		wxPGProperty* m_propertyGridItem56111111;
 		wxPGProperty* m_propertyGridItem57111111;
 		wxPGProperty* m_propertyGridItem58111111;
+		wxPGProperty* m_propertyGridItem451;
 		wxPGProperty* m_propertyGridItem60111111;
 		wxPGProperty* m_propertyGridItem61111111;
 		wxPGProperty* m_propertyGridItem62111111;
@@ -265,6 +268,7 @@ class Serenity3D_Frame : public wxFrame
 		wxPGProperty* m_propertyGridItem561;
 		wxPGProperty* m_propertyGridItem571;
 		wxPGProperty* m_propertyGridItem581;
+		wxPGProperty* m_propertyGridItem450;
 		wxPGProperty* m_propertyGridItem601;
 		wxPGProperty* m_propertyGridItem611;
 		wxPGProperty* m_propertyGridItem621;
@@ -285,6 +289,7 @@ class Serenity3D_Frame : public wxFrame
 		wxPGProperty* m_propertyGridItem5611;
 		wxPGProperty* m_propertyGridItem5711;
 		wxPGProperty* m_propertyGridItem5811;
+		wxPGProperty* m_propertyGridItem449;
 		wxPGProperty* m_propertyGridItem6011;
 		wxPGProperty* m_propertyGridItem6111;
 		wxPGProperty* m_propertyGridItem6211;
@@ -305,13 +310,13 @@ class Serenity3D_Frame : public wxFrame
 		wxPGProperty* m_propertyGridItem56111;
 		wxPGProperty* m_propertyGridItem57111;
 		wxPGProperty* m_propertyGridItem58111;
+		wxPGProperty* m_propertyGridItem448;
 		wxPGProperty* m_propertyGridItem60111;
 		wxPGProperty* m_propertyGridItem61111;
 		wxPGProperty* m_propertyGridItem62111;
 		wxPropertyGridPage* m_billboardActorProperties_propertyGridPage;
 		wxPGProperty* m_animatedActorPropertiesCat_propertyGridItem1111;
 		wxPGProperty* m_aniActorID_propertyGridItem1111;
-		wxPGProperty* m_propertyGridItem434;
 		wxPGProperty* m_propertyGridItem461111;
 		wxPGProperty* m_propertyGridItem471111;
 		wxPGProperty* m_propertyGridItem481111;
@@ -325,6 +330,7 @@ class Serenity3D_Frame : public wxFrame
 		wxPGProperty* m_propertyGridItem561111;
 		wxPGProperty* m_propertyGridItem571111;
 		wxPGProperty* m_propertyGridItem581111;
+		wxPGProperty* m_propertyGridItem434;
 		wxPGProperty* m_propertyGridItem601111;
 		wxPGProperty* m_propertyGridItem611111;
 		wxPGProperty* m_propertyGridItem621111;
@@ -345,6 +351,7 @@ class Serenity3D_Frame : public wxFrame
 		wxPGProperty* m_propertyGridItem56112;
 		wxPGProperty* m_propertyGridItem57112;
 		wxPGProperty* m_propertyGridItem58112;
+		wxPGProperty* m_propertyGridItem447;
 		wxPGProperty* m_propertyGridItem60112;
 		wxPGProperty* m_propertyGridItem61112;
 		wxPGProperty* m_propertyGridItem62112;
@@ -369,6 +376,7 @@ class Serenity3D_Frame : public wxFrame
 		wxPGProperty* m_propertyGridItem56113;
 		wxPGProperty* m_propertyGridItem57113;
 		wxPGProperty* m_propertyGridItem58113;
+		wxPGProperty* m_propertyGridItem446;
 		wxPGProperty* m_propertyGridItem60113;
 		wxPGProperty* m_propertyGridItem61113;
 		wxPGProperty* m_propertyGridItem62113;
@@ -489,6 +497,7 @@ class Serenity3D_Frame : public wxFrame
 		wxButton* m_material_addTextureLevel_button;
 		wxButton* m_material_removeTextureLevel_button;
 		wxButton* m_material_setTextureLevel_button;
+		wxButton* m_material_clearTextureLevel_button;
 		wxListBox* m_material_textureLevel_listBox;
 		wxPanel* m_textureDB_panel;
 		wxSplitterWindow* m_splitter5;
@@ -507,12 +516,11 @@ class Serenity3D_Frame : public wxFrame
 		wxColourPickerCtrl* m_texture_colorKey_colourPicker;
 		wxPanel* m_texture_texturePreview_panel;
 		wxStatusBar* m_statusBar1;
-		wxToolBar* m_toolBar1;
-		wxToolBarToolBase* m_tool1;
-		wxToolBarToolBase* m_tool2;
-		wxToolBarToolBase* m_tool3;
-		wxToolBarToolBase* m_tbar_play_tool;
-		wxToolBarToolBase* m_tool7;
+		wxToolBar* m_toolBar3;
+		wxToolBarToolBase* m_tool33;
+		wxToolBarToolBase* m_tool34;
+		wxToolBarToolBase* m_tool35;
+		wxToolBarToolBase* m_tool36;
 
 		// Virtual event handlers, override them in your derived class
 		virtual void OnNewProjectMenuSelection( wxCommandEvent& event ) { event.Skip(); }
@@ -523,8 +531,8 @@ class Serenity3D_Frame : public wxFrame
 		virtual void OnS3DMoveClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnS3DRotateClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnS3DScaleClicked( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnS3DDumpClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnS3DWizClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnS3DDumpClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnS3DBillboardClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnS3DLightClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnS3DTerrainClicked( wxCommandEvent& event ) { event.Skip(); }
@@ -535,7 +543,10 @@ class Serenity3D_Frame : public wxFrame
 		virtual void OnS3DSphereClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnS3DPathClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnViewComboSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnStageUpdate( wxUpdateUIEvent& event ) { event.Skip(); }
 		virtual void OnProjectPropertiesNotebookChanged( wxAuiNotebookEvent& event ) { event.Skip(); }
+		virtual void On_Stage_NewStage( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Stage_DeleteStage( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Stage_NewGroup( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Stage_DeleteGroup( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Stage_EditGroup( wxCommandEvent& event ) { event.Skip(); }
@@ -597,14 +608,13 @@ class Serenity3D_Frame : public wxFrame
 		virtual void On_Material_AddTextureLevel_ButtonClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Material_RemoveTextureLevel_ButtonClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Material_SetTextureLevel_ButtonClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Material_ClearTextureLevel_ButtonClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Texture_AddTexture_ButtonClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Texture_RemoveTexture_ButtonClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Texture_TextureList_Select( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Texture_TextureID_Update( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Texture_UseColorkey_Update( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Texture_Colorkey_Update( wxColourPickerEvent& event ) { event.Skip(); }
-		virtual void OnPlayClicked( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnStopClicked( wxCommandEvent& event ) { event.Skip(); }
 
 
 	public:
@@ -1040,25 +1050,54 @@ class EditStageGroup_Dialog : public wxDialog
 };
 
 ///////////////////////////////////////////////////////////////////////////////
-/// Class MyDialog14
+/// Class NewStage_Dialog
 ///////////////////////////////////////////////////////////////////////////////
-class MyDialog14 : public wxDialog
+class NewStage_Dialog : public wxDialog
 {
 	private:
 
 	protected:
-		wxPropertyGridManager* m_propertyGridManager1;
-		wxPropertyGridPage* m_stage_propertyGridPage;
-		wxPGProperty* m_id_propertyGridItem;
-		wxPGProperty* m_propertyGridItem8;
-		wxPropertyGridPage* m_propertyGridPage2;
-		wxPropertyGridPage* m_propertyGridPage3;
+		wxStaticText* m_staticText55;
+		wxTextCtrl* m_stageID_textCtrl;
+		wxButton* m_button67;
+		wxButton* m_button68;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void OnCreate( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnCancel( wxCommandEvent& event ) { event.Skip(); }
+
 
 	public:
 
-		MyDialog14( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 462,379 ), long style = wxDEFAULT_DIALOG_STYLE );
+		NewStage_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Create New Stage"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 440,120 ), long style = wxDEFAULT_DIALOG_STYLE );
 
-		~MyDialog14();
+		~NewStage_Dialog();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class DeleteStageAlert_Dialog
+///////////////////////////////////////////////////////////////////////////////
+class DeleteStageAlert_Dialog : public wxDialog
+{
+	private:
+
+	protected:
+		wxStaticText* m_deleteGroupName_staticText;
+		wxStaticText* m_alert_staticText;
+		wxButton* m_button56;
+		wxButton* m_button57;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void OnDelete( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnCancel( wxCommandEvent& event ) { event.Skip(); }
+
+
+	public:
+
+		DeleteStageAlert_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Delete Stage"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE );
+
+		~DeleteStageAlert_Dialog();
 
 };
 

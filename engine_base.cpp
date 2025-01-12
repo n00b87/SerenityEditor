@@ -811,6 +811,7 @@ rc_actor serenity_project::load_actor(std::vector<serenity_project_dict_obj> par
 	p_actor.attenuation = irr::core::vector3df(constant_n, linear_n, quadratic_n);
 
 	p_actor.node = NULL;
+	p_actor.icon_node = NULL;
 
 	return p_actor;
 }
@@ -1766,7 +1767,7 @@ wxString serenity_project::genTextureID()
 
 		for(int i = 0; i < textures.size(); i++)
 		{
-			if(textures[i].id_name.compare(new_name)==0)
+			if(textures[i].id_name.compare(new_name.ToStdString())==0)
 			{
 				name_found = false;
 				break;
@@ -1794,7 +1795,7 @@ wxString serenity_project::genMaterialID()
 
 		for(int i = 0; i < materials.size(); i++)
 		{
-			if(materials[i].id_name.compare(new_name)==0)
+			if(materials[i].id_name.compare(new_name.ToStdString())==0)
 			{
 				name_found = false;
 				break;
@@ -1821,7 +1822,7 @@ wxString serenity_project::genMaterialFileName(wxString tmp_name)
 
 		for(int i = 0; i < materials.size(); i++)
 		{
-			if(materials[i].file.compare(new_name)==0)
+			if(materials[i].file.compare(new_name.ToStdString())==0)
 			{
 				name_found = false;
 				break;
@@ -1849,7 +1850,7 @@ wxString serenity_project::genMeshID()
 
 		for(int i = 0; i < meshes.size(); i++)
 		{
-			if(meshes[i].id_name.compare(new_name)==0)
+			if(meshes[i].id_name.compare(new_name.ToStdString())==0)
 			{
 				name_found = false;
 				break;
@@ -1877,7 +1878,7 @@ wxString serenity_project::genMeshAnimationID(int mesh_index)
 
 		for(int i = 0; i < meshes[mesh_index].animation.size(); i++)
 		{
-			if(meshes[mesh_index].animation[i].id_name.compare(new_name)==0)
+			if(meshes[mesh_index].animation[i].id_name.compare(new_name.ToStdString())==0)
 			{
 				name_found = false;
 				break;
@@ -1905,7 +1906,7 @@ wxString serenity_project::genAN8ID()
 
 		for(int i = 0; i < anim8or_projects.size(); i++)
 		{
-			if(anim8or_projects[i].id_name.compare(new_name)==0)
+			if(anim8or_projects[i].id_name.compare(new_name.ToStdString())==0)
 			{
 				name_found = false;
 				break;
@@ -1937,7 +1938,38 @@ wxString serenity_project::genActorID(int stage_index)
 
 		for(int i = 0; i < stages[stage_index].actors.size(); i++)
 		{
-			if(stages[stage_index].actors[i].id_name.compare(new_name)==0)
+			if(stages[stage_index].actors[i].id_name.compare(new_name.ToStdString())==0)
+			{
+				name_found = false;
+				break;
+			}
+		}
+	}
+
+	return new_name;
+}
+
+wxString serenity_project::genGroupLabel(int stage_index)
+{
+	if(stage_index < 0 || stage_index >= stages.size())
+		return _("");
+
+	wxString tmp_name = _("Group ");
+	wxString new_name = _("");
+
+	bool name_found = false;
+	int name_n = 0;
+
+	while(!name_found)
+	{
+		new_name = tmp_name + wxString::Format(_("%d"), name_n);
+		name_n++;
+
+		name_found = true;
+
+		for(int i = 0; i < stages[stage_index].groups.size(); i++)
+		{
+			if(stages[stage_index].groups[i].label.compare(new_name.ToStdString())==0)
 			{
 				name_found = false;
 				break;
@@ -1965,7 +1997,7 @@ wxString serenity_project::genStageID()
 
 		for(int i = 0; i < stages.size(); i++)
 		{
-			if(stages[i].id_name.compare(new_name)==0)
+			if(stages[i].id_name.compare(new_name.ToStdString())==0)
 			{
 				name_found = false;
 				break;

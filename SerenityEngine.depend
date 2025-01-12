@@ -1,8 +1,8 @@
 # depslib dependency file v1.0
-1736306718 source:/home/n00b/Projects/SerenityEngine/Serenity3D_Editor.cpp
+1736625252 source:/home/n00b/Projects/SerenityEngine/Serenity3D_Editor.cpp
 	"Serenity3D_Editor.h"
 
-1736306718 /home/n00b/Projects/SerenityEngine/Serenity3D_Editor.h
+1736625252 /home/n00b/Projects/SerenityEngine/Serenity3D_Editor.h
 	<wx/artprov.h>
 	<wx/xrc/xmlres.h>
 	<wx/string.h>
@@ -1432,7 +1432,7 @@
 	"wx/icon.h"
 	"wx/aui/auibook.h"
 
-1736301189 source:/home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.cpp
+1736655428 source:/home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.cpp
 	<wx/stdpaths.h>
 	<wx/propgrid/manager.h>
 	<wx/propgrid/propgridpagestate.h>
@@ -1457,8 +1457,10 @@
 	"SerenityEditor_CreateStageGroup_Dialog.h"
 	"SerenityEditor_DeleteGroupAlert_Dialog.h"
 	"SerenityEditor_EditStageGroup_Dialog.h"
+	"SerenityEditor_NewStage_Dialog.h"
+	"SerenityEditor_DeleteStageAlert_Dialog.h"
 
-1736295158 /home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.h
+1736648176 /home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.h
 	<vector>
 	<wx/propgrid/propgrid.h>
 	<wx/propgrid/advprops.h>
@@ -2196,8 +2198,10 @@
 
 1704201762 /usr/include/x86_64-linux-gnu/bits/types/struct_statx.h
 
-1735923338 source:/home/n00b/Projects/SerenityEngine/wxIrrlicht.cpp
+1736657398 source:/home/n00b/Projects/SerenityEngine/wxIrrlicht.cpp
 	<wx/wx.h>
+	<wx/stdpaths.h>
+	<wx/filename.h>
 	<windows.h>
 	<gdk/gdk.h>
 	<gdk/gdkx.h>
@@ -5376,7 +5380,7 @@
 
 1720630994 /usr/include/gtk-3.0/gtk/gtk-autocleanups.h
 
-1735920283 /home/n00b/Projects/SerenityEngine/wxIrrlicht.h
+1736665202 /home/n00b/Projects/SerenityEngine/wxIrrlicht.h
 	<windows.h>
 	<irrlicht.h>
 	<wx/wx.h>
@@ -9676,13 +9680,13 @@
 1734930714 /home/n00b/Projects/SerenityEngine/CGridSceneNode.h
 	"irrlicht.h"
 
-1736129091 source:/home/n00b/Projects/SerenityEngine/rc_stage.cpp
+1736548618 source:/home/n00b/Projects/SerenityEngine/rc_stage.cpp
 	<vector>
 	<irrlicht.h>
 	"engine_base.h"
 	"rc_stage.h"
 
-1736138119 /home/n00b/Projects/SerenityEngine/engine_base.h
+1736475048 /home/n00b/Projects/SerenityEngine/engine_base.h
 	<wx/wx.h>
 	<wx/filename.h>
 	<vector>
@@ -9690,7 +9694,7 @@
 	<cinttypes>
 	"rc_stage.h"
 
-1736307505 /home/n00b/Projects/SerenityEngine/rc_stage.h
+1736531320 /home/n00b/Projects/SerenityEngine/rc_stage.h
 	<vector>
 	<irrlicht.h>
 	"an8parser.h"
@@ -9705,7 +9709,7 @@
 
 1699484035 /usr/include/wx-3.2/wx/unix/stdpaths.h
 
-1736308519 source:/home/n00b/Projects/SerenityEngine/engine_base.cpp
+1736476819 source:/home/n00b/Projects/SerenityEngine/engine_base.cpp
 	<wx/wx.h>
 	<wx/filename.h>
 	<vector>
@@ -9713,7 +9717,7 @@
 	"engine_base.h"
 	"an8parser.h"
 
-1735786565 /home/n00b/Projects/SerenityEngine/rc_defines.h
+1736563279 /home/n00b/Projects/SerenityEngine/rc_defines.h
 
 1735235876 /home/n00b/Projects/SerenityEngine/camera.h
 	<irrlicht.h>
@@ -10003,4 +10007,17 @@
 1699484035 /usr/include/wx-3.2/wx/propgrid/manager.h
 	"wx/defs.h"
 	"wx/propgrid/propgrid.h"
+
+1736473050 source:/home/n00b/Projects/SerenityEngine/SerenityEditor_DeleteStageAlert_Dialog.cpp
+	<wx/wx.h>
+	"SerenityEditor_DeleteStageAlert_Dialog.h"
+
+1736470252 /home/n00b/Projects/SerenityEngine/SerenityEditor_DeleteStageAlert_Dialog.h
+	"Serenity3D_Editor.h"
+
+1736394574 source:/home/n00b/Projects/SerenityEngine/SerenityEditor_NewStage_Dialog.cpp
+	"SerenityEditor_NewStage_Dialog.h"
+
+1736393939 /home/n00b/Projects/SerenityEngine/SerenityEditor_NewStage_Dialog.h
+	"Serenity3D_Editor.h"
 

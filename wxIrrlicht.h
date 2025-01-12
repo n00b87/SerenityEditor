@@ -71,6 +71,20 @@ struct font_obj
     bool active = false;
 };
 
+struct actor_object
+{
+	int actor_index;
+	bool isSelected;
+	irr::scene::ISceneNode* node;
+	irr::core::vector2di v1[4];
+	irr::core::vector2di v2[4];
+	irr::core::vector3df t_start;
+
+	bool use_override_size = false;
+	irr::core::aabbox3df override_box;
+	std::string id_name;
+};
+
 class wxIrrlicht : public wxControl {
 	public:
 		wxIrrlicht(wxWindow* parent, wxWindowID id, bool bs=true, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxTAB_TRAVERSAL, const wxString& name = wxPanelNameStr);
@@ -106,19 +120,31 @@ class wxIrrlicht : public wxControl {
         font_obj font[MAX_FONTS];
         int active_font = -1;
 
+        int ui_font1 = -1;
+        int ui_font2 = -1;
+
+        bool show_camera_info = true;
+
         irr::f32 grid_size = 2500;
         irr::f32 grid_spacing = 100;
         irr::video::SColor grid_color;
         bool grid_visible = true;
+
+        int stage_edit_tool = -1;
+        irr::core::array<actor_object> selected_actors;
+        irr::core::array<actor_object> scene_actors;
 
         void setGridSize(irr::f32 g_size);
         void setGridSpacing(irr::f32 g_spacing);
         void setGridColor(irr::u32 g_color);
 
         int irr_LoadFont(std::string font_file, int font_size);
-        void irr_DrawText(std::string txt, int x, int y, irr::video::SColor color);
+        void irr_DrawText(std::string txt, int x, int y, irr::video::SColor color, int camera_index);
         void irr_DeleteFont(int font_id);
         void irr_SetFont(int font_id);
+
+        irr::core::matrix4 ortho_matrix;
+        irr::core::matrix4 perspective_matrix;
 
         irr::video::ITexture* back_buffer;
 
@@ -157,6 +183,9 @@ class wxIrrlicht : public wxControl {
         bool m_init = false;
 
         wxPoint drag_start;
+        irr::core::rect<irr::s32> box_select_shape;
+        bool box_select_draw_flag = false;
+        int box_select_view = 0;
         wxPoint mouse_position;
         bool middle_drag_init = false;
         bool left_drag_init = false;

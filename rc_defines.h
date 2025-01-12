@@ -38,5 +38,16 @@
 #define RC_ID_ANIMATION	4
 #define RC_ID_ACTOR		5
 #define RC_ID_PATH		6
+#define RC_ID_GROUP		7
+#define RC_ID_STAGE		8
+
+#define RC_EDIT_TOOL_SELECT		0
+#define RC_EDIT_TOOL_BOXSELECT	1
+#define RC_EDIT_TOOL_MOVE		2
+#define RC_EDIT_TOOL_ROTATE		3
+#define RC_EDIT_TOOL_SCALE		4
+
+#define RC_EDIT_ID_PICKABLE			1
+#define RC_EDIT_ID_NOT_PICKABLE		2
 
 #endif // RC_DEFINES_H_INCLUDED

@@ -85,6 +85,12 @@ void rc_stage::clearActorVector(std::vector<rc_actor>& actor_vector)
 			actor_vector[i].node->remove();
 			actor_vector[i].node = NULL;
 		}
+
+		if(actor_vector[i].icon_node)
+		{
+			actor_vector[i].icon_node->remove();
+			actor_vector[i].icon_node = NULL;
+		}
 	}
 
 	//actor_vector.clear();  I only want to remove the actor but leave all the info to reload the actor when needed

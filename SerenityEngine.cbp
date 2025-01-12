@@ -61,6 +61,8 @@
 		<Unit filename="SerenityEditor_CreateStageGroup_Dialog.h" />
 		<Unit filename="SerenityEditor_DeleteGroupAlert_Dialog.cpp" />
 		<Unit filename="SerenityEditor_DeleteGroupAlert_Dialog.h" />
+		<Unit filename="SerenityEditor_DeleteStageAlert_Dialog.cpp" />
+		<Unit filename="SerenityEditor_DeleteStageAlert_Dialog.h" />
 		<Unit filename="SerenityEditor_EditStageGroup_Dialog.cpp" />
 		<Unit filename="SerenityEditor_EditStageGroup_Dialog.h" />
 		<Unit filename="SerenityEditor_MaterialPreviewSettings_Dialog.cpp" />
@@ -69,6 +71,8 @@
 		<Unit filename="SerenityEditor_NewOctree_Dialog.h" />
 		<Unit filename="SerenityEditor_NewProject_Dialog.cpp" />
 		<Unit filename="SerenityEditor_NewProject_Dialog.h" />
+		<Unit filename="SerenityEditor_NewStage_Dialog.cpp" />
+		<Unit filename="SerenityEditor_NewStage_Dialog.h" />
 		<Unit filename="SerenityEditor_SetMaterialPreviewMesh_Dialog.cpp" />
 		<Unit filename="SerenityEditor_SetMaterialPreviewMesh_Dialog.h" />
 		<Unit filename="SerenityEditor_SetMaterialTextureLevel_Dialog.cpp" />

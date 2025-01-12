@@ -61,6 +61,7 @@ public:
 	wxString genMeshAnimationID(int mesh_index); //generate a mesh id name if needed
 	wxString genAN8ID(); //generate a anim8or project id name if needed
 	wxString genActorID(int stage_index);
+	wxString genGroupLabel(int stage_index);
 	wxString genStageID();
 
 	int load_texture(std::vector<serenity_project_dict_obj> stage_param, int reload_index=-1);

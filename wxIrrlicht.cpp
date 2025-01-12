@@ -1,4 +1,6 @@
 #include <wx/wx.h>
+#include <wx/stdpaths.h>
+#include <wx/filename.h>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -222,9 +224,21 @@ actual_params->WindowId = (HWND)this->GetHandle();
 	num_views = 4;
 	SetCameraViewParam();
 
+	ortho_matrix.buildProjectionMatrixOrthoLH(500.0f,300.0f,1.0f,-500.0f);
+	perspective_matrix = camera[0].camera.camera->getProjectionMatrix();
+
 	view2D_texture = NULL;
 
 	m_init = true;
+
+	wxString editor_path = wxStandardPaths::Get().GetExecutablePath();
+	wxFileName font_fname(editor_path);
+	font_fname.AppendDir(_("font"));
+	font_fname.SetFullName(_("FreeMono.ttf"));
+
+	ui_font1 = irr_LoadFont(font_fname.GetAbsolutePath().ToStdString(), 24);
+	ui_font2 = irr_LoadFont(font_fname.GetAbsolutePath().ToStdString(), 16);
+	//wxMessageBox(_("FNT: ") + wxString::Format(_("%d"), active_font));
 
 	//wxMessageBox(_("GS:") + wxString::Format(_("%d"), (int)grid_size) + _(", ") + wxString::Format(_("%d"), (int)grid_spacing) + _(", ") + wxString::Format(_("%d"), (int)grid_color.color));
 
@@ -401,6 +415,8 @@ void wxIrrlicht::OnRender() {
 		if(window_type == RC_IRR_WINDOW_VIEW2D)
 			num_views = 1; //Just to be safe
 
+		irr::scene::ISceneCollisionManager* collman = m_pSceneManager->getSceneCollisionManager();
+
 		for(int i = 0; i < num_views; i++)
 		{
 			if(window_type == RC_IRR_WINDOW_VIEW2D)
@@ -441,13 +457,99 @@ void wxIrrlicht::OnRender() {
 				if(window_type != RC_IRR_WINDOW_ANIMATION)
 					camera[i].gridSceneNode->setVisible(grid_visible);
 
+				m_pDriver->setRenderTarget(camera[i].ui_layer, true, true, irr::video::SColor(0));
+
+
+				switch(camera[i].pov)
+				{
+					case RC_CAMERA_VIEW_FRONT:
+							irr_SetFont(ui_font1);
+							irr_DrawText("Front", 10, 10, irr::video::SColor(255,255,255,255), i);
+							camera[i].camera.camera->setProjectionMatrix(ortho_matrix);
+							break;
+					case RC_CAMERA_VIEW_RIGHT:
+							irr_SetFont(ui_font1);
+							irr_DrawText("Right", 10, 10, irr::video::SColor(255,255,255,255), i);
+							camera[i].camera.camera->setProjectionMatrix(ortho_matrix);
+							break;
+					case RC_CAMERA_VIEW_TOP:
+							irr_SetFont(ui_font1);
+							irr_DrawText("Top", 10, 10, irr::video::SColor(255,255,255,255), i);
+							camera[i].camera.camera->setProjectionMatrix(ortho_matrix);
+							break;
+					case RC_CAMERA_VIEW_PERSPECTIVE:
+							irr_SetFont(ui_font1);
+							irr_DrawText("Perspective", 10, 10, irr::video::SColor(255,255,255,255), i);
+							camera[i].camera.camera->setProjectionMatrix(perspective_matrix);
+							break;
+				}
+
+				if(show_camera_info)
+				{
+					irr_SetFont(ui_font2);
+					wxString pos_str = _("POS: ") + wxString::Format(_("%d"), (int)camera[i].camera.x) + _(", ") +
+													wxString::Format(_("%d"), (int)camera[i].camera.y) + _(", ") +
+													wxString::Format(_("%d"), (int)camera[i].camera.z);
+
+					wxString rot_str = _("ROT: ") + wxString::Format(_("%d"), (int)( ((int)camera[i].camera.rx) % 360)) + _(", ") +
+													wxString::Format(_("%d"), (int)( ((int)camera[i].camera.ry) % 360)) + _(", ") +
+													wxString::Format(_("%d"), (int)( ((int)camera[i].camera.rz) % 360));
+					irr_DrawText(pos_str.ToStdString(), camera[i].w-200, 10, irr::video::SColor(255,255,255,255), i);
+					irr_DrawText(rot_str.ToStdString(), camera[i].w-200, 30, irr::video::SColor(255,255,255,255), i);
+				}
+
 				m_pDriver->setRenderTarget(camera[i].texture, true, true, irr::video::SColor(255,170,170,170));
+
 
 				m_pSceneManager->setActiveCamera(camera[i].camera.camera);
 				camera[i].camera.update();
 
 				m_pDriver->setViewPort(irr::core::rect<irr::s32>(0,0,camera[i].w, camera[i].h));
 				m_pSceneManager->drawAll();
+
+				for(int sn = 0; sn < selected_actors.size(); sn++)
+				{
+					irr::core::aabbox3df abox = selected_actors[sn].node->getBoundingBox();
+
+					if(selected_actors[sn].use_override_size)
+						abox = selected_actors[sn].override_box;
+
+						irr::core::vector3df pos = selected_actors[sn].node->getAbsolutePosition();
+						irr::core::vector3df scale = selected_actors[sn].node->getScale();
+						irr::core::vector3df min_v(pos - ( (abox.getExtent()*scale) / 2));
+						irr::core::vector3df max_v(pos + ( (abox.getExtent()*scale) / 2));
+						irr::core::vector2d<irr::s32> v1 = collman->getScreenCoordinatesFrom3DPosition(min_v, camera[i].camera.camera);
+						irr::core::vector2d<irr::s32> v2 = collman->getScreenCoordinatesFrom3DPosition(max_v, camera[i].camera.camera);
+
+						selected_actors[sn].v1[i] = irr::core::vector2d<irr::s32>( (v1.X < v2.X ? v1.X : v2.X),
+																						   (v1.Y < v2.Y ? v1.Y : v2.Y) );
+
+						selected_actors[sn].v2[i] = irr::core::vector2d<irr::s32>( (v1.X > v2.X ? v1.X : v2.X),
+																						   (v1.Y > v2.Y ? v1.Y : v2.Y) );
+
+						v1 = selected_actors[sn].v1[i];
+						v2 = selected_actors[sn].v2[i];
+
+						irr::core::rect<irr::s32> actor_highlight(selected_actors[sn].v1[i], selected_actors[sn].v2[i]);
+					m_pDriver->draw2DRectangleOutline(actor_highlight, irr::video::SColor(255, 220, 0, 0));
+
+					//m_pDriver->draw2DLine(irr::core::vector2di(0, 0), irr::core::vector2di(200, 200));
+				}
+
+				if(stage_edit_tool == RC_EDIT_TOOL_BOXSELECT && i == box_select_view)
+				{
+					//irr::core::recti r( irr::core::vector2di(670, 370), irr::core::vector2di(690, 390) );
+					//m_pDriver->draw2DRectangleOutline(r);
+					irr::core::vector2di v1 = box_select_shape.UpperLeftCorner;
+					irr::core::vector2di v2 = box_select_shape.LowerRightCorner;
+
+					v1.set( v1.X* (camera[i].texture->getSize().Width/ camera[i].w), v1.Y * (camera[i].texture->getSize().Height / camera[i].h) );
+					v2.set( v2.X* (camera[i].texture->getSize().Width/ camera[i].w), v2.Y * (camera[i].texture->getSize().Height / camera[i].h) );
+
+					//box_select_shape = irr::core::recti(v1, v2);
+
+					//m_pDriver->draw2DRectangleOutline(box_select_shape);
+				}
 
 				camera[i].gridSceneNode->setVisible(false);
 			}
@@ -463,6 +565,31 @@ void wxIrrlicht::OnRender() {
 			irr::core::rect dest( irr::core::position2di(camera[i].x, camera[i].y), irr::core::dimension2di(camera[i].w, camera[i].h) );
 			m_pDriver->draw2DImage(camera[i].texture, dest, src);
 			m_pDriver->draw2DImage(camera[i].ui_layer, dest, src, 0, 0, true);
+
+			if(stage_edit_tool == RC_EDIT_TOOL_BOXSELECT && i == box_select_view && box_select_draw_flag)
+			{
+				//irr::core::recti r( irr::core::vector2di(670, 370), irr::core::vector2di(690, 390) );
+				//m_pDriver->draw2DRectangleOutline(r);
+				irr::core::vector2di v1 = box_select_shape.UpperLeftCorner;
+				irr::core::vector2di v2 = box_select_shape.LowerRightCorner;
+
+				if(v1.X < camera[i].x)
+					v1.X = camera[i].x;
+
+				if(v1.Y < camera[i].y)
+					v1.Y = camera[i].y;
+
+				if(v1.X >= (camera[i].x + camera[i].w))
+					v1.X = (camera[i].x + camera[i].w);
+
+				if(v1.Y >= (camera[i].y + camera[i].h))
+					v1.Y = (camera[i].y + camera[i].h);
+
+				box_select_shape = irr::core::recti(v1, v2);
+
+				m_pDriver->draw2DRectangleOutline(box_select_shape);
+			}
+
 			m_pDriver->draw2DRectangleOutline( irr::core::rect( irr::core::position2di(camera[i].x, camera[i].y), irr::core::dimension2di(camera[i].w, camera[i].h) ), irr::video::SColor(255, 40, 40, 40) );
 		}
 
@@ -470,6 +597,7 @@ void wxIrrlicht::OnRender() {
 
         irr::core::rect bb_rect( irr::core::position2di(0, 0), irr::core::dimension2di(this->GetSize().GetWidth(), this->GetSize().GetHeight()) );
         m_pDriver->draw2DImage(back_buffer, bb_rect, bb_rect );
+
 
         //m_pDriver->beginScene(true, true, SColor(255,170,170,170));
         //m_pSceneManager->drawAll();
@@ -790,6 +918,204 @@ void wxIrrlicht::OnUpdate()
 
 
 
+	if(mouse_state.LeftIsDown())
+	{
+		//irr::scene::ITriangleSelector* selector = 0;
+		irr::scene::ISceneCollisionManager* collman = m_pSceneManager->getSceneCollisionManager();
+
+		core::line3d<f32> ray;
+        ray.start = camera[active_camera].camera.camera->getAbsolutePosition();
+        ray.end = ray.start + (camera[active_camera].camera.camera->getTarget() - ray.start).normalize() * 10.0f;
+
+        // Tracks the current intersection point with the level or a mesh
+        core::vector3df intersection;
+        // Used to show with triangle has been hit
+        core::triangle3df hitTriangle;
+
+        bool init_click = false;
+
+		if(!(middle_drag_init||left_drag_init||right_drag_init))
+		{
+
+			if( px >= 0 && px < pw && py >= 0 && py < ph )
+			{
+				left_drag_init = true;
+				//this->CaptureMouse();
+				this->SetFocusFromKbd();
+				HIDE_CURSOR;
+				//this->WarpPointer(px + (pw/2), py + (ph/2));
+				drag_start.x = px;// + (pw/2);
+				drag_start.y = py;// + (ph/2);
+				init_click = true;
+
+				box_select_view = active_camera;
+				box_select_draw_flag = true;
+			}
+		}
+		else if(left_drag_init)
+		{
+		}
+
+
+
+		switch(stage_edit_tool)
+		{
+			case RC_EDIT_TOOL_SELECT:
+			{
+
+				if(init_click)
+				{
+					//wxMessageBox(_("Click"));
+					//irr::scene::ISceneNode * selectedSceneNode =
+					/*collman->getSceneNodeAndCollisionPointFromRay(
+							ray,
+							intersection, // This will be the position of the collision
+							hitTriangle, // This will be the triangle hit in the collision
+							0, // This ensures that only nodes that we have
+									// set up to be pickable are considered
+							0); // Check the entire scene (this is actually the implicit default)
+					*/
+
+					selected_actors.clear();
+					for(int i = 0; i < scene_actors.size(); i++)
+					{
+						irr::core::aabbox3df abox = scene_actors[i].node->getBoundingBox();
+
+						if(scene_actors[i].use_override_size)
+							abox = scene_actors[i].override_box;
+
+						irr::core::vector3df pos = scene_actors[i].node->getAbsolutePosition();
+						irr::core::vector3df scale = scene_actors[i].node->getScale();
+						irr::core::vector3df min_v(pos - ( (abox.getExtent()*scale) / 2));
+						irr::core::vector3df max_v(pos + ( (abox.getExtent()*scale) / 2));
+						irr::core::vector2d<irr::s32> v1 = collman->getScreenCoordinatesFrom3DPosition(min_v, camera[active_camera].camera.camera, true);
+						irr::core::vector2d<irr::s32> v2 = collman->getScreenCoordinatesFrom3DPosition(max_v, camera[active_camera].camera.camera, true);
+
+						scene_actors[i].v1[active_camera] = irr::core::vector2d<irr::s32>( (v1.X < v2.X ? v1.X : v2.X) + camera[active_camera].x,
+																						   (v1.Y < v2.Y ? v1.Y : v2.Y) + camera[active_camera].y );
+
+						scene_actors[i].v2[active_camera] = irr::core::vector2d<irr::s32>( (v1.X > v2.X ? v1.X : v2.X) + camera[active_camera].x,
+																						   (v1.Y > v2.Y ? v1.Y : v2.Y) + camera[active_camera].y );
+
+						v1 = scene_actors[i].v1[active_camera];
+						v2 = scene_actors[i].v2[active_camera];
+
+						irr::core::rect<irr::s32> actor_highlight(scene_actors[i].v1[active_camera], scene_actors[i].v2[active_camera]);
+
+						if(actor_highlight.isPointInside(irr::core::vector2di(px, py)))
+						{
+							//irr::f32 d_start = ray.start.getDistanceFrom(pos);
+							//irr::f32 d_end = ray.end.getDistanceFrom(pos);
+							//if(d_end < d_start)
+							if(scene_actors[i].node->isVisible())
+								selected_actors.push_back(scene_actors[i]);
+							break;
+							//wxMessageBox(_("Selected"));
+						}
+					}
+				}
+			}
+			break;
+
+			case RC_EDIT_TOOL_BOXSELECT:
+			{
+				if(!left_drag_init)
+					break;
+
+
+				selected_actors.clear();
+
+				irr::core::vector2di drag_v1( (drag_start.x < px ? drag_start.x : px) , (drag_start.y < py ? drag_start.y : py) );
+				irr::core::vector2di drag_v2( (drag_start.x > px ? drag_start.x : px) , (drag_start.y > py ? drag_start.y : py) );
+
+				box_select_shape = irr::core::rect<irr::s32>( drag_v1, drag_v2 );
+
+				for(int i = 0; i < scene_actors.size(); i++)
+				{
+					irr::core::vector3df pos = scene_actors[i].node->getAbsolutePosition();
+					irr::core::vector2d<irr::s32> v1 = collman->getScreenCoordinatesFrom3DPosition(pos, camera[active_camera].camera.camera, true);
+
+					scene_actors[i].v1[active_camera] = irr::core::vector2d<irr::s32>( v1.X + camera[active_camera].x, v1.Y + camera[active_camera].y );
+
+
+					v1 = scene_actors[i].v1[active_camera];
+
+					if(box_select_shape.isPointInside(v1))
+					{
+						//irr::f32 d_start = ray.start.getDistanceFrom(pos);
+						//irr::f32 d_end = ray.end.getDistanceFrom(pos);
+						//if(d_end < d_start)
+						if(scene_actors[i].node->isVisible())
+							selected_actors.push_back(scene_actors[i]);
+						//break;
+						//wxMessageBox(_("Selected: ") + wxString::Format(_("%d"), drag_v1.X) + _(", ") + wxString::Format(_("%d"), drag_v1.Y) + _("\n") +
+						//							   wxString::Format(_("%d"), drag_v2.X) + _(", ") + wxString::Format(_("%d"), drag_v2.Y) + _("\n"));
+						//break;
+					}
+				}
+
+
+				//drag_v1.X += camera[active_camera].x;
+				//drag_v1.Y += camera[active_camera].y;
+				//drag_v2.X += camera[active_camera].x;
+				//drag_v2.Y += camera[active_camera].y;
+
+			}
+			break;
+
+			case RC_EDIT_TOOL_MOVE:
+			{
+				if(init_click)
+				{
+					for(int i = 0; i < selected_actors.size(); i++)
+					{
+						selected_actors[i].t_start = selected_actors[i].node->getAbsolutePosition();
+					}
+				}
+
+				if(!left_drag_init)
+					break;
+
+
+				irr::core::vector3df translate_vector(0.0f, 0.0f, 0.0f);
+
+				double translate_factor_x = 500/((double)camera[box_select_view].w);
+				double translate_factor_y = 300/((double)camera[box_select_view].h);
+
+				switch(camera[box_select_view].pov) //box_select_view can be used for every other tool
+				{
+					case RC_CAMERA_VIEW_FRONT:
+						translate_vector.set(((double)px - drag_start.x)*translate_factor_x, ((double)(drag_start.y - py))*translate_factor_y, 0);
+					break;
+				}
+
+				for(int i = 0; i < selected_actors.size(); i++)
+				{
+					selected_actors[i].node->setPosition( selected_actors[i].t_start + translate_vector );
+				}
+
+			}
+			break;
+
+			case RC_EDIT_TOOL_ROTATE:
+			break;
+
+			case RC_EDIT_TOOL_SCALE:
+			break;
+		}
+	}
+	else if( (!mouse_state.LeftIsDown()) && left_drag_init )
+	{
+		SHOW_CURSOR;
+		//this->ReleaseMouse();
+		left_drag_init = false;
+		box_select_draw_flag = false;
+		//wxMessageBox(_("RELEASE"));
+		return;
+	}
+
+
+
 	if(mouse_state.MiddleIsDown())
 	{
 		if(!(middle_drag_init||left_drag_init||right_drag_init))
@@ -853,32 +1179,35 @@ void wxIrrlicht::OnUpdate()
 			drag_start.y = py;
 
 
-			if(VIEW_KEY_W)
+			if(camera[active_camera].pov == RC_CAMERA_VIEW_PERSPECTIVE)
 			{
-				VIEW_KEY_W = false;
+				if(VIEW_KEY_W)
+				{
+					VIEW_KEY_W = false;
 
-				camera[active_camera].camera.translate(0, 0, cam_move_speed);
-			}
+					camera[active_camera].camera.translate(0, 0, cam_move_speed);
+				}
 
-			if(VIEW_KEY_S)
-			{
-				VIEW_KEY_S = false;
+				if(VIEW_KEY_S)
+				{
+					VIEW_KEY_S = false;
 
-				camera[active_camera].camera.translate(0, 0, -cam_move_speed);
-			}
+					camera[active_camera].camera.translate(0, 0, -cam_move_speed);
+				}
 
-			if(VIEW_KEY_A)
-			{
-				VIEW_KEY_A = false;
+				if(VIEW_KEY_A)
+				{
+					VIEW_KEY_A = false;
 
-				camera[active_camera].camera.translate(-cam_move_speed, 0, 0);
-			}
+					camera[active_camera].camera.translate(-cam_move_speed, 0, 0);
+				}
 
-			if(VIEW_KEY_D)
-			{
-				VIEW_KEY_D = false;
+				if(VIEW_KEY_D)
+				{
+					VIEW_KEY_D = false;
 
-				camera[active_camera].camera.translate(cam_move_speed, 0, 0);
+					camera[active_camera].camera.translate(cam_move_speed, 0, 0);
+				}
 			}
 		}
 	}
@@ -962,7 +1291,7 @@ void wxIrrlicht::irr_SetFont(int font_id)
         active_font = font_id;
 }
 
-void wxIrrlicht::irr_DrawText(std::string txt, int x, int y, irr::video::SColor color)
+void wxIrrlicht::irr_DrawText(std::string txt, int x, int y, irr::video::SColor color, int camera_index)
 {
 	if(active_font < 0 || active_font >= MAX_FONTS)
 		return;
@@ -970,7 +1299,7 @@ void wxIrrlicht::irr_DrawText(std::string txt, int x, int y, irr::video::SColor 
     if(!font[active_font].active)
         return;
 
-	m_pDriver->setRenderTarget(camera[active_camera].ui_layer, false, false);
+	m_pDriver->setRenderTarget(camera[camera_index].ui_layer, false, false);
 
     std::wstring text = utf8_to_wstring(txt);
 	irr::core::dimension2d<irr::u32> text_dim = font[active_font].font->getDimension(text.c_str());

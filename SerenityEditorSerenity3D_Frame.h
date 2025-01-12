@@ -123,7 +123,9 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
 		int stage_tree_pathImage;
 		int stage_tree_groupImage;
 
-
+		int getCurrentStageNodeIndex();
+		int getActorNodeIndex(int stage_node_index, int actor_project_index);
+		int selected_actor_in_active_stage = -1;
 
 		wxTreeItemId stage_tree_root;
 		std::vector<Serenity_StageNode> stage_tree_nodes;
@@ -141,6 +143,8 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
 		bool delete_actor(int stage_index, int actor_stage_index);
 
 		int stageTab_active_stage_project_index = -1;
+
+		void refresh_actor(int actor_project_index);
 
 		int stageTabGrid_current_stage = -1;
 		int stageTabGrid_current_group = -1;
@@ -221,6 +225,10 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
 		void OnS3DModeEditClicked( wxCommandEvent& event );
 		void OnS3DModeCameraClicked( wxCommandEvent& event );
 
+		void OnStageUpdate( wxUpdateUIEvent& event );
+
+		void On_Stage_NewStage( wxCommandEvent& event );
+		void On_Stage_DeleteStage( wxCommandEvent& event );
 		void On_Stage_NewGroup( wxCommandEvent& event );
 		void On_Stage_DeleteGroup( wxCommandEvent& event );
 		void On_Stage_EditGroup( wxCommandEvent& event );
@@ -306,6 +314,7 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
 		void On_Material_AddTextureLevel_ButtonClicked( wxCommandEvent& event );
 		void On_Material_RemoveTextureLevel_ButtonClicked( wxCommandEvent& event );
 		void On_Material_SetTextureLevel_ButtonClicked( wxCommandEvent& event );
+		void On_Material_ClearTextureLevel_ButtonClicked( wxCommandEvent& event );
 
 		//Textures Tab
 		void On_Texture_AddTexture_ButtonClicked( wxCommandEvent& event );

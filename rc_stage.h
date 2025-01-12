@@ -90,6 +90,7 @@ struct rc_actor
 	std::string group_name;
 	int mesh_index; //project index
 	irr::scene::ISceneNode* node; //cast to object type
+	irr::scene::ISceneNode* icon_node; //mainly for a physical representation of lights
 	irr::core::vector3df position;
 	irr::core::vector3df rotation;
 	irr::core::vector3df scale;
@@ -118,6 +119,7 @@ struct rc_actor
 	double wave_length;
 	double wave_speed;
 	int particle_type;
+	irr::scene::IParticleEmitter* particle_emitter;
 	irr::core::vector3df normal;
 	irr::core::vector3df direction;
 	irr::core::aabbox3df box;
@@ -245,6 +247,8 @@ class rc_stage
 		std::vector<rc_group> groups;
 
 		rc_sky sky;
+
+		irr::video::ITexture* light_icon;
 
 
 		bool idIsActive;

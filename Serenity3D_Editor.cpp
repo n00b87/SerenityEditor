@@ -27,10 +27,6 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_saveProject_menuItem = new wxMenuItem( m_project_menu, wxID_ANY, wxString( wxT("Save Project") ) , wxEmptyString, wxITEM_NORMAL );
 	m_project_menu->Append( m_saveProject_menuItem );
 
-	wxMenuItem* m_saveProjectAs_menuItem;
-	m_saveProjectAs_menuItem = new wxMenuItem( m_project_menu, wxID_ANY, wxString( wxT("Save Project As") ) , wxEmptyString, wxITEM_NORMAL );
-	m_project_menu->Append( m_saveProjectAs_menuItem );
-
 	m_project_menu->AppendSeparator();
 
 	wxMenuItem* m_exit_menuItem;
@@ -38,17 +34,6 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_project_menu->Append( m_exit_menuItem );
 
 	m_menubar1->Append( m_project_menu, wxT("Project") );
-
-	m_menu3 = new wxMenu();
-	wxMenuItem* m_newStage_menuItem;
-	m_newStage_menuItem = new wxMenuItem( m_menu3, wxID_ANY, wxString( wxT("New Stage") ) , wxEmptyString, wxITEM_NORMAL );
-	m_menu3->Append( m_newStage_menuItem );
-
-	wxMenuItem* m_importStage_menuItem;
-	m_importStage_menuItem = new wxMenuItem( m_menu3, wxID_ANY, wxString( wxT("Import Stage") ) , wxEmptyString, wxITEM_NORMAL );
-	m_menu3->Append( m_importStage_menuItem );
-
-	m_menubar1->Append( m_menu3, wxT("Stage") );
 
 	this->SetMenuBar( m_menubar1 );
 
@@ -77,9 +62,11 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 
 	m_s3d_scale_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/scale.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_CHECK, wxEmptyString, wxEmptyString, NULL );
 
-	m_s3d_octreeActor_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("Add Octree Actor"), wxBitmap( wxT("icons/mesh.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+	m_auiToolBar52->AddSeparator();
 
 	m_s3d_animatedActor_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("Add Animated Actor"), wxBitmap( wxT("icons/animated_mesh.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+
+	m_s3d_octreeActor_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("Add Octree Actor"), wxBitmap( wxT("icons/mesh.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
 
 	m_s3d_billboardActor_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("Add Billboard"), wxBitmap( wxT("icons/billboard.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxT("Add a billboard to the stage"), wxEmptyString, NULL );
 
@@ -250,6 +237,8 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_stage_propertyGridManager = new wxPropertyGridManager(m_panel311, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxPGMAN_DEFAULT_STYLE|wxPG_SPLITTER_AUTO_CENTER);
 	m_stage_propertyGridManager->SetExtraStyle( wxPG_EX_MODE_BUTTONS );
 
+	m_group_propertyGridPage = m_stage_propertyGridManager->AddPage( wxT("Group"), wxNullBitmap );
+
 	m_lightActorProperties_propertyGridPage = m_stage_propertyGridManager->AddPage( wxT("Actor Properties"), wxNullBitmap );
 	m_animatedActorPropertiesCat_propertyGridItem11111 = m_lightActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Light Properties"), wxT("actorPropertiesCat") ) );
 	m_aniActorID_propertyGridItem11111 = m_lightActorProperties_propertyGridPage->Append( new wxStringProperty( wxT("ID"), wxT("actor_id") ) );
@@ -257,7 +246,7 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_propertyGridItem272 = m_lightActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Cast Shadow"), wxT("cast_shadow") ) );
 	m_propertyGridItem443 = m_lightActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Shape") ) );
 	m_propertyGridItem444 = m_lightActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Inner Cone"), wxT("inner_cone") ) );
-	m_propertyGridItem445 = m_lightActorProperties_propertyGridPage->Append( new wxStringProperty( wxT("Outer Cone"), wxT("outer_cone") ) );
+	m_propertyGridItem445 = m_lightActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Outer Cone"), wxT("outer_cone") ) );
 	m_propertyGridItem269 = m_lightActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Radius"), wxT("radius") ) );
 	m_propertyGridItem271 = m_lightActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Fall Off"), wxT("falloff") ) );
 	m_propertyGridItem435 = m_lightActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Color") ) );
@@ -281,6 +270,7 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_propertyGridItem5611111 = m_lightActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("scale_y") ) );
 	m_propertyGridItem5711111 = m_lightActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("scale_z") ) );
 	m_propertyGridItem5811111 = m_lightActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Render Properties") ) );
+	m_propertyGridItem453 = m_lightActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Material"), wxT("material_id") ) );
 	m_propertyGridItem6011111 = m_lightActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Visible"), wxT("visible") ) );
 	m_propertyGridItem6111111 = m_lightActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Shadow"), wxT("shadow") ) );
 	m_propertyGridItem6211111 = m_lightActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Auto Culling"), wxT("auto_culling") ) );
@@ -305,6 +295,7 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_propertyGridItem56 = m_animatedActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("scale_y") ) );
 	m_propertyGridItem57 = m_animatedActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("scale_z") ) );
 	m_propertyGridItem58 = m_animatedActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Render Properties") ) );
+	m_propertyGridItem452 = m_animatedActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Material"), wxT("material_id") ) );
 	m_propertyGridItem60 = m_animatedActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Visible"), wxT("visible") ) );
 	m_propertyGridItem61 = m_animatedActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Shadow"), wxT("shadow") ) );
 	m_propertyGridItem62 = m_animatedActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Auto Culling"), wxT("auto_culling") ) );
@@ -378,6 +369,7 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_propertyGridItem56111111 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("scale_y") ) );
 	m_propertyGridItem57111111 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("scale_z") ) );
 	m_propertyGridItem58111111 = m_particleActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Render Properties") ) );
+	m_propertyGridItem451 = m_particleActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Material"), wxT("material_id") ) );
 	m_propertyGridItem60111111 = m_particleActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Visible"), wxT("visible") ) );
 	m_propertyGridItem61111111 = m_particleActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Shadow"), wxT("shadow") ) );
 	m_propertyGridItem62111111 = m_particleActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Auto Culling"), wxT("auto_culling") ) );
@@ -418,6 +410,7 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_propertyGridItem561 = m_octreeActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("scale_y") ) );
 	m_propertyGridItem571 = m_octreeActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("scale_z") ) );
 	m_propertyGridItem581 = m_octreeActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Render Properties") ) );
+	m_propertyGridItem450 = m_octreeActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Material"), wxT("material_id") ) );
 	m_propertyGridItem601 = m_octreeActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Visible"), wxT("visible") ) );
 	m_propertyGridItem611 = m_octreeActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Shadow"), wxT("shadow") ) );
 	m_propertyGridItem621 = m_octreeActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Auto Culling"), wxT("auto_culling") ) );
@@ -439,6 +432,7 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_propertyGridItem5611 = m_cubeActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("scale_y") ) );
 	m_propertyGridItem5711 = m_cubeActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("scale_z") ) );
 	m_propertyGridItem5811 = m_cubeActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Render Properties") ) );
+	m_propertyGridItem449 = m_cubeActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Material"), wxT("material_id") ) );
 	m_propertyGridItem6011 = m_cubeActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Visible"), wxT("visible") ) );
 	m_propertyGridItem6111 = m_cubeActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Shadow"), wxT("shadow") ) );
 	m_propertyGridItem6211 = m_cubeActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Auto Culling"), wxT("auto_culling") ) );
@@ -460,6 +454,7 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_propertyGridItem56111 = m_sphereActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("scale_y") ) );
 	m_propertyGridItem57111 = m_sphereActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("scale_z") ) );
 	m_propertyGridItem58111 = m_sphereActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Render Properties") ) );
+	m_propertyGridItem448 = m_sphereActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Material"), wxT("material_id") ) );
 	m_propertyGridItem60111 = m_sphereActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Visible"), wxT("visible") ) );
 	m_propertyGridItem61111 = m_sphereActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Shadow"), wxT("shadow") ) );
 	m_propertyGridItem62111 = m_sphereActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Auto Culling"), wxT("auto_culling") ) );
@@ -467,7 +462,6 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_billboardActorProperties_propertyGridPage = m_stage_propertyGridManager->AddPage( wxT("Actor Properties"), wxNullBitmap );
 	m_animatedActorPropertiesCat_propertyGridItem1111 = m_billboardActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Billboard Properties"), wxT("actorPropertiesCat") ) );
 	m_aniActorID_propertyGridItem1111 = m_billboardActorProperties_propertyGridPage->Append( new wxStringProperty( wxT("ID"), wxT("actor_id") ) );
-	m_propertyGridItem434 = m_billboardActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Material"), wxT("material_id") ) );
 	m_propertyGridItem461111 = m_billboardActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Position") ) );
 	m_propertyGridItem471111 = m_billboardActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("X"), wxT("pos_x") ) );
 	m_propertyGridItem481111 = m_billboardActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("pos_y") ) );
@@ -481,6 +475,7 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_propertyGridItem561111 = m_billboardActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("scale_y") ) );
 	m_propertyGridItem571111 = m_billboardActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("scale_z") ) );
 	m_propertyGridItem581111 = m_billboardActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Render Properties") ) );
+	m_propertyGridItem434 = m_billboardActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Material"), wxT("material_id") ) );
 	m_propertyGridItem601111 = m_billboardActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Visible"), wxT("visible") ) );
 	m_propertyGridItem611111 = m_billboardActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Shadow"), wxT("shadow") ) );
 	m_propertyGridItem621111 = m_billboardActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Auto Culling"), wxT("auto_culling") ) );
@@ -502,6 +497,7 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_propertyGridItem56112 = m_terrainActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("scale_y") ) );
 	m_propertyGridItem57112 = m_terrainActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("scale_z") ) );
 	m_propertyGridItem58112 = m_terrainActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Render Properties") ) );
+	m_propertyGridItem447 = m_terrainActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Material"), wxT("material_id") ) );
 	m_propertyGridItem60112 = m_terrainActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Visible"), wxT("visible") ) );
 	m_propertyGridItem61112 = m_terrainActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Shadow"), wxT("shadow") ) );
 	m_propertyGridItem62112 = m_terrainActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Auto Culling"), wxT("auto_culling") ) );
@@ -527,6 +523,7 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_propertyGridItem56113 = m_waterActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("scale_y") ) );
 	m_propertyGridItem57113 = m_waterActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("scale_z") ) );
 	m_propertyGridItem58113 = m_waterActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Render Properties") ) );
+	m_propertyGridItem446 = m_waterActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Material"), wxT("material_id") ) );
 	m_propertyGridItem60113 = m_waterActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Visible"), wxT("visible") ) );
 	m_propertyGridItem61113 = m_waterActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Shadow"), wxT("shadow") ) );
 	m_propertyGridItem62113 = m_waterActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Auto Culling"), wxT("auto_culling") ) );
@@ -549,7 +546,9 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	wxBoxSizer* bSizer671;
 	bSizer671 = new wxBoxSizer( wxVERTICAL );
 
-	m_panel422 = new wxPanel( m_scrolledWindow2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_RAISED|wxTAB_TRAVERSAL );
+	m_panel422 = new wxPanel( m_scrolledWindow2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SIMPLE|wxTAB_TRAVERSAL );
+	m_panel422->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_GRAYTEXT ) );
+
 	wxBoxSizer* bSizer68;
 	bSizer68 = new wxBoxSizer( wxVERTICAL );
 
@@ -558,6 +557,8 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 
 	m_staticText28 = new wxStaticText( m_panel422, wxID_ANY, wxT("Grid Settings"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText28->Wrap( -1 );
+	m_staticText28->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
 	bSizer691->Add( m_staticText28, 0, wxALL, 5 );
 
 
@@ -568,6 +569,8 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 
 	m_viewportSettings_showGrid_checkBox = new wxCheckBox( m_panel422, wxID_ANY, wxT("Show Grid"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT );
 	m_viewportSettings_showGrid_checkBox->SetValue(true);
+	m_viewportSettings_showGrid_checkBox->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
 	bSizer702->Add( m_viewportSettings_showGrid_checkBox, 0, wxALL, 5 );
 
 
@@ -578,9 +581,13 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 
 	m_staticText30 = new wxStaticText( m_panel422, wxID_ANY, wxT("Size"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText30->Wrap( -1 );
+	m_staticText30->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
 	bSizer712->Add( m_staticText30, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 	m_viewportSettings_gridSize_spinCtrl = new wxSpinCtrl( m_panel422, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10000, 0 );
+	m_viewportSettings_gridSize_spinCtrl->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
 	bSizer712->Add( m_viewportSettings_gridSize_spinCtrl, 2, wxALL, 5 );
 
 
@@ -591,9 +598,13 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 
 	m_staticText31 = new wxStaticText( m_panel422, wxID_ANY, wxT("Spacing"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText31->Wrap( -1 );
+	m_staticText31->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
 	bSizer72->Add( m_staticText31, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 	m_viewportSettings_gridSpacing_spinCtrl = new wxSpinCtrl( m_panel422, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10000, 0 );
+	m_viewportSettings_gridSpacing_spinCtrl->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
 	bSizer72->Add( m_viewportSettings_gridSpacing_spinCtrl, 2, wxALL, 5 );
 
 
@@ -604,6 +615,8 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 
 	m_staticText322 = new wxStaticText( m_panel422, wxID_ANY, wxT("Color"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText322->Wrap( -1 );
+	m_staticText322->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
 	bSizer73->Add( m_staticText322, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 	m_viewportSettings_gridColor_colourPicker = new wxColourPickerCtrl( m_panel422, wxID_ANY, *wxBLACK, wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE );
@@ -693,7 +706,9 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	wxBoxSizer* bSizer69;
 	bSizer69 = new wxBoxSizer( wxVERTICAL );
 
-	m_panel33 = new wxPanel( m_panel41, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|wxTAB_TRAVERSAL );
+	m_panel33 = new wxPanel( m_panel41, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SIMPLE|wxTAB_TRAVERSAL );
+	m_panel33->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_GRAYTEXT ) );
+
 	wxBoxSizer* bSizer881;
 	bSizer881 = new wxBoxSizer( wxVERTICAL );
 
@@ -702,6 +717,8 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 
 	m_staticText321 = new wxStaticText( m_panel33, wxID_ANY, wxT("ID\t\t\t"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText321->Wrap( -1 );
+	m_staticText321->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
 	bSizer701->Add( m_staticText321, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 	m_mesh_meshID_textCtrl = new wxTextCtrl( m_panel33, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
@@ -715,6 +732,8 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 
 	m_staticText32 = new wxStaticText( m_panel33, wxID_ANY, wxT("File\t\t"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText32->Wrap( -1 );
+	m_staticText32->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
 	bSizer70->Add( m_staticText32, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 	m_mesh_meshFile_textCtrl = new wxTextCtrl( m_panel33, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
@@ -729,7 +748,9 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer881->Fit( m_panel33 );
 	bSizer69->Add( m_panel33, 0, wxEXPAND | wxALL, 5 );
 
-	m_panel34 = new wxPanel( m_panel41, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_RAISED|wxTAB_TRAVERSAL );
+	m_panel34 = new wxPanel( m_panel41, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SIMPLE|wxTAB_TRAVERSAL );
+	m_panel34->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_GRAYTEXT ) );
+
 	wxBoxSizer* bSizer83;
 	bSizer83 = new wxBoxSizer( wxVERTICAL );
 
@@ -738,6 +759,8 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 
 	m_staticText323 = new wxStaticText( m_panel34, wxID_ANY, wxT("Materials"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText323->Wrap( -1 );
+	m_staticText323->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
 	bSizer89->Add( m_staticText323, 0, wxALL, 5 );
 
 
@@ -782,7 +805,7 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_button53 = new wxButton( m_setMaterial_scrolledWindow, wxID_ANY, wxT("Set"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer143->Add( m_button53, 0, wxALL, 5 );
 
-	m_clear_button = new wxButton( m_setMaterial_scrolledWindow, wxID_ANY, wxT("Clear"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_clear_button = new wxButton( m_setMaterial_scrolledWindow, wxID_ANY, wxT("UnSet"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer143->Add( m_clear_button, 0, wxALL, 5 );
 
 
@@ -842,7 +865,9 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	wxBoxSizer* bSizer81;
 	bSizer81 = new wxBoxSizer( wxVERTICAL );
 
-	m_panel43 = new wxPanel( m_panel291, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|wxTAB_TRAVERSAL );
+	m_panel43 = new wxPanel( m_panel291, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SIMPLE|wxTAB_TRAVERSAL );
+	m_panel43->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_GRAYTEXT ) );
+
 	wxBoxSizer* bSizer75;
 	bSizer75 = new wxBoxSizer( wxVERTICAL );
 
@@ -855,6 +880,8 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 
 	m_staticText33 = new wxStaticText( m_panel46, wxID_ANY, wxT("Animations"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText33->Wrap( -1 );
+	m_staticText33->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
 	bSizer77->Add( m_staticText33, 0, wxALL, 5 );
 
 	wxBoxSizer* bSizer781;
@@ -899,6 +926,8 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 
 	m_staticText27 = new wxStaticText( m_panel451, wxID_ANY, wxT("Animation ID"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText27->Wrap( -1 );
+	m_staticText27->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
 	bSizer731->Add( m_staticText27, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 	m_mesh_animationID_textCtrl = new wxTextCtrl( m_panel451, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
@@ -915,6 +944,8 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 
 	m_staticText271 = new wxStaticText( m_panel451, wxID_ANY, wxT("Start Frame"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText271->Wrap( -1 );
+	m_staticText271->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
 	bSizer7311->Add( m_staticText271, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 	m_mesh_animationStartFrame_textCtrl = new wxTextCtrl( m_panel451, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
@@ -931,6 +962,8 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 
 	m_staticText2711 = new wxStaticText( m_panel451, wxID_ANY, wxT("End Frame"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText2711->Wrap( -1 );
+	m_staticText2711->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
 	bSizer73111->Add( m_staticText2711, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 	m_mesh_animationEndFrame_textCtrl = new wxTextCtrl( m_panel451, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
@@ -947,6 +980,8 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 
 	m_staticText2712 = new wxStaticText( m_panel451, wxID_ANY, wxT("Speed"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText2712->Wrap( -1 );
+	m_staticText2712->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
 	bSizer73112->Add( m_staticText2712, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 	m_mesh_animationSpeed_textCtrl = new wxTextCtrl( m_panel451, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
@@ -1360,7 +1395,9 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer138->Fit( m_panel411 );
 	bSizer131->Add( m_panel411, 1, wxEXPAND | wxALL, 5 );
 
-	m_panel42 = new wxPanel( m_panel401, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_RAISED|wxTAB_TRAVERSAL );
+	m_panel42 = new wxPanel( m_panel401, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SIMPLE|wxTAB_TRAVERSAL );
+	m_panel42->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_GRAYTEXT ) );
+
 	wxBoxSizer* bSizer132;
 	bSizer132 = new wxBoxSizer( wxHORIZONTAL );
 
@@ -1369,6 +1406,8 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 
 	m_staticText57 = new wxStaticText( m_panel42, wxID_ANY, wxT("Texture Level"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText57->Wrap( -1 );
+	m_staticText57->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
 	bSizer133->Add( m_staticText57, 0, wxALL, 5 );
 
 	wxBoxSizer* bSizer159;
@@ -1382,6 +1421,9 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 
 	m_material_setTextureLevel_button = new wxButton( m_panel42, wxID_ANY, wxT("Set"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer159->Add( m_material_setTextureLevel_button, 0, wxALL, 5 );
+
+	m_material_clearTextureLevel_button = new wxButton( m_panel42, wxID_ANY, wxT("UnSet"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer159->Add( m_material_clearTextureLevel_button, 0, wxALL, 5 );
 
 
 	bSizer133->Add( bSizer159, 0, wxEXPAND, 5 );
@@ -1551,20 +1593,18 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	this->SetSizer( bSizer1 );
 	this->Layout();
 	m_statusBar1 = this->CreateStatusBar( 1, wxSTB_SIZEGRIP, wxID_ANY );
-	m_toolBar1 = this->CreateToolBar( wxTB_HORIZONTAL, wxID_ANY );
-	m_tool1 = m_toolBar1->AddTool( wxID_ANY, wxT("tool"), wxArtProvider::GetBitmap( wxASCII_STR(wxART_NEW), wxASCII_STR(wxART_TOOLBAR) ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+	m_toolBar3 = this->CreateToolBar( wxTB_HORIZONTAL, wxID_ANY );
+	m_tool33 = m_toolBar3->AddTool( wxID_ANY, wxT("tool"), wxArtProvider::GetBitmap( wxASCII_STR(wxART_NEW), wxASCII_STR(wxART_TOOLBAR) ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
 
-	m_tool2 = m_toolBar1->AddTool( wxID_ANY, wxT("tool"), wxArtProvider::GetBitmap( wxASCII_STR(wxART_FOLDER_OPEN), wxASCII_STR(wxART_TOOLBAR) ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+	m_tool34 = m_toolBar3->AddTool( wxID_ANY, wxT("tool"), wxArtProvider::GetBitmap( wxASCII_STR(wxART_FILE_OPEN), wxASCII_STR(wxART_TOOLBAR) ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
 
-	m_tool3 = m_toolBar1->AddTool( wxID_ANY, wxT("tool"), wxArtProvider::GetBitmap( wxASCII_STR(wxART_FILE_SAVE), wxASCII_STR(wxART_TOOLBAR) ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+	m_tool35 = m_toolBar3->AddTool( wxID_ANY, wxT("tool"), wxArtProvider::GetBitmap( wxASCII_STR(wxART_FILE_SAVE), wxASCII_STR(wxART_TOOLBAR) ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
 
-	m_toolBar1->AddSeparator();
+	m_toolBar3->AddSeparator();
 
-	m_tbar_play_tool = m_toolBar1->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/play.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+	m_tool36 = m_toolBar3->AddTool( wxID_ANY, wxT("tool"), wxArtProvider::GetBitmap( wxASCII_STR(wxART_EXECUTABLE_FILE), wxASCII_STR(wxART_TOOLBAR) ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
 
-	m_tool7 = m_toolBar1->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/stop.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
-
-	m_toolBar1->Realize();
+	m_toolBar3->Realize();
 
 
 	this->Centre( wxBOTH );
@@ -1578,8 +1618,8 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	this->Connect( m_s3d_move_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DMoveClicked ) );
 	this->Connect( m_s3d_rotate_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DRotateClicked ) );
 	this->Connect( m_s3d_scale_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DScaleClicked ) );
-	this->Connect( m_s3d_octreeActor_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DDumpClicked ) );
 	this->Connect( m_s3d_animatedActor_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DWizClicked ) );
+	this->Connect( m_s3d_octreeActor_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DDumpClicked ) );
 	this->Connect( m_s3d_billboardActor_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DBillboardClicked ) );
 	this->Connect( m_s3d_lightActor_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DLightClicked ) );
 	this->Connect( m_s3d_terrainActor_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DTerrainClicked ) );
@@ -1590,7 +1630,10 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	this->Connect( m_s3d_sphere_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DSphereClicked ) );
 	this->Connect( m_s3d_path_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DPathClicked ) );
 	m_stagePOV_comboBox->Connect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( Serenity3D_Frame::OnViewComboSelect ), NULL, this );
+	m_stageViewport_panel->Connect( wxEVT_UPDATE_UI, wxUpdateUIEventHandler( Serenity3D_Frame::OnStageUpdate ), NULL, this );
 	m_auinotebook3->Connect( wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGED, wxAuiNotebookEventHandler( Serenity3D_Frame::OnProjectPropertiesNotebookChanged ), NULL, this );
+	m_bpButton41->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_NewStage ), NULL, this );
+	m_bpButton51->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_DeleteStage ), NULL, this );
 	m_bpButton4->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_NewGroup ), NULL, this );
 	m_bpButton5->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_DeleteGroup ), NULL, this );
 	m_bpButton6->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_EditGroup ), NULL, this );
@@ -1652,14 +1695,13 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_material_addTextureLevel_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Material_AddTextureLevel_ButtonClicked ), NULL, this );
 	m_material_removeTextureLevel_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Material_RemoveTextureLevel_ButtonClicked ), NULL, this );
 	m_material_setTextureLevel_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Material_SetTextureLevel_ButtonClicked ), NULL, this );
+	m_material_clearTextureLevel_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Material_ClearTextureLevel_ButtonClicked ), NULL, this );
 	m_texture_addTexture_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Texture_AddTexture_ButtonClicked ), NULL, this );
 	m_texture_removeTexture_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Texture_RemoveTexture_ButtonClicked ), NULL, this );
 	m_texture_textureList_listBox->Connect( wxEVT_COMMAND_LISTBOX_SELECTED, wxCommandEventHandler( Serenity3D_Frame::On_Texture_TextureList_Select ), NULL, this );
 	m_texture_textureID_textCtrl->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( Serenity3D_Frame::On_Texture_TextureID_Update ), NULL, this );
 	m_texture_useColorKey_checkBox->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Texture_UseColorkey_Update ), NULL, this );
 	m_texture_colorKey_colourPicker->Connect( wxEVT_COMMAND_COLOURPICKER_CHANGED, wxColourPickerEventHandler( Serenity3D_Frame::On_Texture_Colorkey_Update ), NULL, this );
-	this->Connect( m_tbar_play_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnPlayClicked ) );
-	this->Connect( m_tool7->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnStopClicked ) );
 }
 
 Serenity3D_Frame::~Serenity3D_Frame()
@@ -1671,8 +1713,8 @@ Serenity3D_Frame::~Serenity3D_Frame()
 	this->Disconnect( m_s3d_move_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DMoveClicked ) );
 	this->Disconnect( m_s3d_rotate_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DRotateClicked ) );
 	this->Disconnect( m_s3d_scale_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DScaleClicked ) );
-	this->Disconnect( m_s3d_octreeActor_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DDumpClicked ) );
 	this->Disconnect( m_s3d_animatedActor_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DWizClicked ) );
+	this->Disconnect( m_s3d_octreeActor_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DDumpClicked ) );
 	this->Disconnect( m_s3d_billboardActor_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DBillboardClicked ) );
 	this->Disconnect( m_s3d_lightActor_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DLightClicked ) );
 	this->Disconnect( m_s3d_terrainActor_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DTerrainClicked ) );
@@ -1683,7 +1725,10 @@ Serenity3D_Frame::~Serenity3D_Frame()
 	this->Disconnect( m_s3d_sphere_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DSphereClicked ) );
 	this->Disconnect( m_s3d_path_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DPathClicked ) );
 	m_stagePOV_comboBox->Disconnect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( Serenity3D_Frame::OnViewComboSelect ), NULL, this );
+	m_stageViewport_panel->Disconnect( wxEVT_UPDATE_UI, wxUpdateUIEventHandler( Serenity3D_Frame::OnStageUpdate ), NULL, this );
 	m_auinotebook3->Disconnect( wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGED, wxAuiNotebookEventHandler( Serenity3D_Frame::OnProjectPropertiesNotebookChanged ), NULL, this );
+	m_bpButton41->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_NewStage ), NULL, this );
+	m_bpButton51->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_DeleteStage ), NULL, this );
 	m_bpButton4->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_NewGroup ), NULL, this );
 	m_bpButton5->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_DeleteGroup ), NULL, this );
 	m_bpButton6->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_EditGroup ), NULL, this );
@@ -1745,14 +1790,13 @@ Serenity3D_Frame::~Serenity3D_Frame()
 	m_material_addTextureLevel_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Material_AddTextureLevel_ButtonClicked ), NULL, this );
 	m_material_removeTextureLevel_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Material_RemoveTextureLevel_ButtonClicked ), NULL, this );
 	m_material_setTextureLevel_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Material_SetTextureLevel_ButtonClicked ), NULL, this );
+	m_material_clearTextureLevel_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Material_ClearTextureLevel_ButtonClicked ), NULL, this );
 	m_texture_addTexture_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Texture_AddTexture_ButtonClicked ), NULL, this );
 	m_texture_removeTexture_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Texture_RemoveTexture_ButtonClicked ), NULL, this );
 	m_texture_textureList_listBox->Disconnect( wxEVT_COMMAND_LISTBOX_SELECTED, wxCommandEventHandler( Serenity3D_Frame::On_Texture_TextureList_Select ), NULL, this );
 	m_texture_textureID_textCtrl->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( Serenity3D_Frame::On_Texture_TextureID_Update ), NULL, this );
 	m_texture_useColorKey_checkBox->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Texture_UseColorkey_Update ), NULL, this );
 	m_texture_colorKey_colourPicker->Disconnect( wxEVT_COMMAND_COLOURPICKER_CHANGED, wxColourPickerEventHandler( Serenity3D_Frame::On_Texture_Colorkey_Update ), NULL, this );
-	this->Disconnect( m_tbar_play_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnPlayClicked ) );
-	this->Disconnect( m_tool7->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnStopClicked ) );
 
 }
 
@@ -2795,32 +2839,136 @@ EditStageGroup_Dialog::~EditStageGroup_Dialog()
 
 }
 
-MyDialog14::MyDialog14( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+NewStage_Dialog::NewStage_Dialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
-	wxBoxSizer* bSizer160;
-	bSizer160 = new wxBoxSizer( wxVERTICAL );
+	wxBoxSizer* bSizer161;
+	bSizer161 = new wxBoxSizer( wxVERTICAL );
 
-	m_propertyGridManager1 = new wxPropertyGridManager(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxPGMAN_DEFAULT_STYLE);
-	m_propertyGridManager1->SetExtraStyle( wxPG_EX_MODE_BUTTONS );
+	wxBoxSizer* bSizer162;
+	bSizer162 = new wxBoxSizer( wxHORIZONTAL );
 
-	m_stage_propertyGridPage = m_propertyGridManager1->AddPage( wxT("Page"), wxNullBitmap );
-	m_id_propertyGridItem = m_stage_propertyGridPage->Append( new wxStringProperty( wxT("ID"), wxT("ID") ) );
-	m_propertyGridItem8 = m_stage_propertyGridPage->Append( new wxStringProperty( wxT("Name") ) );
+	m_staticText55 = new wxStaticText( this, wxID_ANY, wxT("Stage ID"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText55->Wrap( -1 );
+	bSizer162->Add( m_staticText55, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_propertyGridPage2 = m_propertyGridManager1->AddPage( wxT("Page"), wxNullBitmap );
-
-	m_propertyGridPage3 = m_propertyGridManager1->AddPage( wxT("Page"), wxNullBitmap );
-	bSizer160->Add( m_propertyGridManager1, 1, wxALL|wxEXPAND, 5 );
+	m_stageID_textCtrl = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer162->Add( m_stageID_textCtrl, 1, wxALL, 5 );
 
 
-	this->SetSizer( bSizer160 );
+	bSizer161->Add( bSizer162, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer163;
+	bSizer163 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer163->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_button67 = new wxButton( this, wxID_ANY, wxT("Create"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer163->Add( m_button67, 0, wxALL, 5 );
+
+	m_button68 = new wxButton( this, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer163->Add( m_button68, 0, wxALL, 5 );
+
+
+	bSizer161->Add( bSizer163, 0, wxEXPAND, 5 );
+
+
+	this->SetSizer( bSizer161 );
 	this->Layout();
 
 	this->Centre( wxBOTH );
+
+	// Connect Events
+	m_button67->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewStage_Dialog::OnCreate ), NULL, this );
+	m_button68->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewStage_Dialog::OnCancel ), NULL, this );
 }
 
-MyDialog14::~MyDialog14()
+NewStage_Dialog::~NewStage_Dialog()
 {
+	// Disconnect Events
+	m_button67->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewStage_Dialog::OnCreate ), NULL, this );
+	m_button68->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewStage_Dialog::OnCancel ), NULL, this );
+
+}
+
+DeleteStageAlert_Dialog::DeleteStageAlert_Dialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+	wxBoxSizer* bSizer146;
+	bSizer146 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer147;
+	bSizer147 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer147->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_deleteGroupName_staticText = new wxStaticText( this, wxID_ANY, wxT("Delete Stage: [STAGE_NAME]"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_deleteGroupName_staticText->Wrap( -1 );
+	bSizer147->Add( m_deleteGroupName_staticText, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+
+	bSizer147->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer146->Add( bSizer147, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer148;
+	bSizer148 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer148->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_alert_staticText = new wxStaticText( this, wxID_ANY, wxT("Are you sure you want to delete this stage?"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_alert_staticText->Wrap( -1 );
+	bSizer148->Add( m_alert_staticText, 0, wxALL, 5 );
+
+
+	bSizer148->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer146->Add( bSizer148, 1, wxEXPAND, 5 );
+
+
+	bSizer146->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer149;
+	bSizer149 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer149->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_button56 = new wxButton( this, wxID_ANY, wxT("Delete"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer149->Add( m_button56, 0, wxALL, 5 );
+
+	m_button57 = new wxButton( this, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer149->Add( m_button57, 0, wxALL, 5 );
+
+
+	bSizer149->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer146->Add( bSizer149, 1, wxEXPAND, 5 );
+
+
+	this->SetSizer( bSizer146 );
+	this->Layout();
+	bSizer146->Fit( this );
+
+	this->Centre( wxBOTH );
+
+	// Connect Events
+	m_button56->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( DeleteStageAlert_Dialog::OnDelete ), NULL, this );
+	m_button57->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( DeleteStageAlert_Dialog::OnCancel ), NULL, this );
+}
+
+DeleteStageAlert_Dialog::~DeleteStageAlert_Dialog()
+{
+	// Disconnect Events
+	m_button56->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( DeleteStageAlert_Dialog::OnDelete ), NULL, this );
+	m_button57->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( DeleteStageAlert_Dialog::OnCancel ), NULL, this );
+
 }
