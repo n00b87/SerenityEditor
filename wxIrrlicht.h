@@ -80,9 +80,34 @@ struct actor_object
 	irr::core::vector2di v2[4];
 	irr::core::vector3df t_start;
 
+	irr::core::vector3df* rotation; //I manually control rotation order for simplicity so it will be stored here
+
 	bool use_override_size = false;
 	irr::core::aabbox3df override_box;
 	std::string id_name;
+};
+
+struct axis_obj
+{
+	irr::video::ITexture* x_texture;
+	irr::video::ITexture* y_texture;
+	irr::video::ITexture* z_texture;
+
+	irr::core::vector3df pos;
+	int widget_size = 64;
+	int image_size = 64;
+
+	double scale_factor;
+
+	bool lock_x = false;
+	bool lock_y = false;
+	bool lock_z = false;
+
+	irr::core::recti view_box_x[4];
+	irr::core::recti view_box_y[4];
+	irr::core::recti view_box_z[4];
+
+	bool tool_init = false;
 };
 
 class wxIrrlicht : public wxControl {
@@ -102,6 +127,7 @@ class wxIrrlicht : public wxControl {
         virtual void OnPostRender();
 
         void force_refresh();
+        void setDefaultMaterial(irr::scene::ISceneNode* node, irr::video::ITexture* texture);
 
         irr::IrrlichtDevice* GetDevice() const { return m_pDevice; }
         irr::video::IVideoDriver* GetVideoDriver() const { return m_pDriver; }
@@ -133,6 +159,9 @@ class wxIrrlicht : public wxControl {
         int stage_edit_tool = -1;
         irr::core::array<actor_object> selected_actors;
         irr::core::array<actor_object> scene_actors;
+        axis_obj transform_tool_widget;
+
+        void setTransformToolBox();
 
         void setGridSize(irr::f32 g_size);
         void setGridSpacing(irr::f32 g_spacing);
@@ -143,6 +172,10 @@ class wxIrrlicht : public wxControl {
         void irr_DeleteFont(int font_id);
         void irr_SetFont(int font_id);
 
+        void drawLine(irr::core::vector3df line_v1, irr::core::vector3df line_v2, irr::video::SColor color);
+        void drawCircle(irr::core::vector3df center, double radius, irr::core::vector3df c_axis, irr::video::SColor color);
+        void rc_setDriverMaterial();
+
         irr::core::matrix4 ortho_matrix;
         irr::core::matrix4 perspective_matrix;
 
@@ -151,6 +184,8 @@ class wxIrrlicht : public wxControl {
 
         int window_type = 0;
         irr::video::ITexture* view2D_texture;
+
+        bool stage_window_isActive = false;
 
 	//protected:
         void OnPaint(wxPaintEvent& event);
@@ -197,6 +232,8 @@ class wxIrrlicht : public wxControl {
         bool VIEW_KEY_A = false;
         bool VIEW_KEY_S = false;
         bool VIEW_KEY_D = false;
+        bool VIEW_KEY_R = false;
+        bool VIEW_KEY_F = false;
 
         #ifdef __linux__
         GdkWindow* gdkWindow;

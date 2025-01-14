@@ -123,6 +123,7 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
 		int stage_tree_pathImage;
 		int stage_tree_groupImage;
 
+		void updateProjectFromStageEdit();
 		int getCurrentStageNodeIndex();
 		int getActorNodeIndex(int stage_node_index, int actor_project_index);
 		int selected_actor_in_active_stage = -1;

@@ -238,6 +238,23 @@ actual_params->WindowId = (HWND)this->GetHandle();
 
 	ui_font1 = irr_LoadFont(font_fname.GetAbsolutePath().ToStdString(), 24);
 	ui_font2 = irr_LoadFont(font_fname.GetAbsolutePath().ToStdString(), 16);
+
+
+	wxFileName icon_fname(editor_path);
+	icon_fname.AppendDir(_("icons"));
+
+	icon_fname.SetFullName(_("x_transform_tool.png"));
+	transform_tool_widget.x_texture = m_pDriver->getTexture(icon_fname.GetAbsolutePath().ToStdString().c_str());
+
+	icon_fname.SetFullName(_("y_transform_tool.png"));
+	transform_tool_widget.y_texture = m_pDriver->getTexture(icon_fname.GetAbsolutePath().ToStdString().c_str());
+
+	icon_fname.SetFullName(_("z_transform_tool.png"));
+	transform_tool_widget.z_texture = m_pDriver->getTexture(icon_fname.GetAbsolutePath().ToStdString().c_str());
+
+	transform_tool_widget.widget_size = 32;
+	transform_tool_widget.image_size = 64;
+
 	//wxMessageBox(_("FNT: ") + wxString::Format(_("%d"), active_font));
 
 	//wxMessageBox(_("GS:") + wxString::Format(_("%d"), (int)grid_size) + _(", ") + wxString::Format(_("%d"), (int)grid_spacing) + _(", ") + wxString::Format(_("%d"), (int)grid_color.color));
@@ -248,6 +265,18 @@ actual_params->WindowId = (HWND)this->GetHandle();
 	}
 
 }//InitIrr()
+
+void wxIrrlicht::setDefaultMaterial(irr::scene::ISceneNode* node, irr::video::ITexture* texture)
+{
+	node->getMaterial(0).MaterialType = irr::video::EMT_ONETEXTURE_BLEND;
+	node->getMaterial(0).Lighting = false;
+	node->getMaterial(0).ZWriteEnable = irr::video::EZW_OFF;
+	node->getMaterial(0).ZBuffer = false;
+	node->getMaterial(0).BackfaceCulling = false;
+	node->getMaterial(0).TextureLayer[0].Texture = texture;
+	node->getMaterial(0).BlendOperation = irr::video::EBO_ADD;
+	node->getMaterial(0).MaterialTypeParam = irr::video::pack_textureBlendFunc(irr::video::EBF_SRC_ALPHA, irr::video::EBF_ONE_MINUS_SRC_ALPHA, irr::video::EMFN_MODULATE_1X, irr::video::EAS_TEXTURE | irr::video::EAS_VERTEX_COLOR);
+}
 
 void wxIrrlicht::setGridSize(irr::f32 g_size)
 {
@@ -417,6 +446,24 @@ void wxIrrlicht::OnRender() {
 
 		irr::scene::ISceneCollisionManager* collman = m_pSceneManager->getSceneCollisionManager();
 
+		bool draw_axis_widget = false;
+		if( selected_actors.size() > 0)
+		{
+			switch(stage_edit_tool)
+			{
+				case RC_EDIT_TOOL_MOVE:
+				case RC_EDIT_TOOL_ROTATE:
+				case RC_EDIT_TOOL_SCALE:
+					draw_axis_widget = true;
+
+					if(selected_actors[0].node)
+						transform_tool_widget.pos = selected_actors[0].node->getAbsolutePosition();
+
+					setTransformToolBox();
+				break;
+			}
+		}
+
 		for(int i = 0; i < num_views; i++)
 		{
 			if(window_type == RC_IRR_WINDOW_VIEW2D)
@@ -466,21 +513,51 @@ void wxIrrlicht::OnRender() {
 							irr_SetFont(ui_font1);
 							irr_DrawText("Front", 10, 10, irr::video::SColor(255,255,255,255), i);
 							camera[i].camera.camera->setProjectionMatrix(ortho_matrix);
+
+							if(draw_axis_widget)
+							{
+								irr::u32 image_size = transform_tool_widget.image_size;
+								m_pDriver->draw2DImage(transform_tool_widget.x_texture, transform_tool_widget.view_box_x[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
+								m_pDriver->draw2DImage(transform_tool_widget.y_texture, transform_tool_widget.view_box_y[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
+							}
 							break;
 					case RC_CAMERA_VIEW_RIGHT:
 							irr_SetFont(ui_font1);
 							irr_DrawText("Right", 10, 10, irr::video::SColor(255,255,255,255), i);
 							camera[i].camera.camera->setProjectionMatrix(ortho_matrix);
+
+							if(draw_axis_widget)
+							{
+								irr::u32 image_size = transform_tool_widget.image_size;
+								m_pDriver->draw2DImage(transform_tool_widget.z_texture, transform_tool_widget.view_box_z[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
+								m_pDriver->draw2DImage(transform_tool_widget.y_texture, transform_tool_widget.view_box_y[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
+							}
 							break;
 					case RC_CAMERA_VIEW_TOP:
 							irr_SetFont(ui_font1);
 							irr_DrawText("Top", 10, 10, irr::video::SColor(255,255,255,255), i);
 							camera[i].camera.camera->setProjectionMatrix(ortho_matrix);
+
+							if(draw_axis_widget)
+							{
+								irr::u32 image_size = transform_tool_widget.image_size;
+								m_pDriver->draw2DImage(transform_tool_widget.x_texture, transform_tool_widget.view_box_x[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
+								m_pDriver->draw2DImage(transform_tool_widget.z_texture, transform_tool_widget.view_box_z[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
+							}
 							break;
 					case RC_CAMERA_VIEW_PERSPECTIVE:
 							irr_SetFont(ui_font1);
 							irr_DrawText("Perspective", 10, 10, irr::video::SColor(255,255,255,255), i);
 							camera[i].camera.camera->setProjectionMatrix(perspective_matrix);
+
+							if(draw_axis_widget)
+							{
+								irr::u32 image_size = transform_tool_widget.image_size;
+
+								m_pDriver->draw2DImage(transform_tool_widget.x_texture, transform_tool_widget.view_box_x[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
+								m_pDriver->draw2DImage(transform_tool_widget.y_texture, transform_tool_widget.view_box_y[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
+								m_pDriver->draw2DImage(transform_tool_widget.z_texture, transform_tool_widget.view_box_z[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
+							}
 							break;
 				}
 
@@ -505,10 +582,14 @@ void wxIrrlicht::OnRender() {
 				camera[i].camera.update();
 
 				m_pDriver->setViewPort(irr::core::rect<irr::s32>(0,0,camera[i].w, camera[i].h));
+
 				m_pSceneManager->drawAll();
 
 				for(int sn = 0; sn < selected_actors.size(); sn++)
 				{
+					if(!selected_actors[sn].node)
+						continue;
+
 					irr::core::aabbox3df abox = selected_actors[sn].node->getBoundingBox();
 
 					if(selected_actors[sn].use_override_size)
@@ -549,6 +630,21 @@ void wxIrrlicht::OnRender() {
 					//box_select_shape = irr::core::recti(v1, v2);
 
 					//m_pDriver->draw2DRectangleOutline(box_select_shape);
+				}
+				else if(stage_edit_tool == RC_EDIT_TOOL_MOVE && selected_actors.size() > 0)
+				{
+					irr::core::vector3df vx(1000, 0, 0);
+					irr::core::vector3df vy(0, 1000, 0);
+					irr::core::vector3df vz(0, 0, 1000);
+					drawLine(transform_tool_widget.pos-vx, transform_tool_widget.pos+vx, irr::video::SColor(255, 255, 0, 0));
+					drawLine(transform_tool_widget.pos-vy, transform_tool_widget.pos+vy, irr::video::SColor(255, 0, 255, 0));
+					drawLine(transform_tool_widget.pos-vz, transform_tool_widget.pos+vz, irr::video::SColor(255, 0, 0, 255));
+				}
+				else if(stage_edit_tool == RC_EDIT_TOOL_ROTATE && selected_actors.size() > 0)
+				{
+					drawCircle(transform_tool_widget.pos, 50, irr::core::vector3df(1,0,0), irr::video::SColor(255, 255, 0, 0));
+					drawCircle(transform_tool_widget.pos, 50, irr::core::vector3df(0,1,0), irr::video::SColor(255, 0, 255, 0));
+					drawCircle(transform_tool_widget.pos, 50, irr::core::vector3df(0,0,1), irr::video::SColor(255, 0, 0, 255));
 				}
 
 				camera[i].gridSceneNode->setVisible(false);
@@ -776,6 +872,16 @@ void wxIrrlicht::OnKey(wxKeyEvent& event) {
 		VIEW_KEY_D = sevt.KeyInput.PressedDown;
 		//wxMessageBox(_("KEY EVENT2: ") + wxString::Format(_("%d"), VIEW_KEY_W));
 	}
+	else if(event.GetKeyCode() == irr::KEY_KEY_R)
+	{
+		VIEW_KEY_R = sevt.KeyInput.PressedDown;
+		//wxMessageBox(_("KEY EVENT2: ") + wxString::Format(_("%d"), VIEW_KEY_W));
+	}
+	else if(event.GetKeyCode() == irr::KEY_KEY_F)
+	{
+		VIEW_KEY_F = sevt.KeyInput.PressedDown;
+		//wxMessageBox(_("KEY EVENT2: ") + wxString::Format(_("%d"), VIEW_KEY_W));
+	}
 
     event.Skip();
 }//OnKey()
@@ -863,6 +969,183 @@ void wxIrrlicht::AnimationPreview_Update()
 	}
 }
 
+void wxIrrlicht::rc_setDriverMaterial()
+{
+	if(!m_pDriver)
+		return;
+
+	irr::video::SMaterial material;
+    material.Lighting = false;
+    material.ZWriteEnable = irr::video::EZW_OFF;
+    material.ZBuffer = false;
+    material.BackfaceCulling = false;
+    material.TextureLayer[0].Texture = 0;
+    //material.TextureLayer[0].BilinearFilter = true;
+    material.MaterialTypeParam = irr::video::pack_textureBlendFunc(irr::video::EBF_SRC_ALPHA, irr::video::EBF_ONE_MINUS_SRC_ALPHA, irr::video::EMFN_MODULATE_1X, irr::video::EAS_TEXTURE | irr::video::EAS_VERTEX_COLOR);
+    material.BlendOperation = irr::video::EBO_ADD;
+    //material.AntiAliasing = rc_anti_alias;
+
+    material.MaterialType = irr::video::EMT_ONETEXTURE_BLEND;
+
+    m_pDriver->setMaterial(material);
+}
+
+void wxIrrlicht::drawLine(irr::core::vector3df line_v1, irr::core::vector3df line_v2, irr::video::SColor color)
+{
+	irr::video::SMaterial m;
+	m.Lighting=false;
+	m.Thickness = 2;
+	m_pDriver->setMaterial(m);
+	m_pDriver->setTransform(video::ETS_WORLD, core::matrix4());
+
+    m_pDriver->draw3DLine(line_v1, line_v2, color);
+
+    rc_setDriverMaterial();
+}
+
+void wxIrrlicht::drawCircle(irr::core::vector3df center, double radius, irr::core::vector3df c_axis, irr::video::SColor color)
+{
+    std::vector<vector3df> points;
+
+    int segments = 36;
+
+    double interval = 360/segments;
+
+    if(c_axis.X != 0)
+    {
+    	for (int i = 0; i <= segments; i++)
+		{
+			irr::core::vector3df p = center + irr::core::vector3df(0, 0, radius);
+			p.rotateYZBy(interval*i, center);
+			points.push_back(p);
+		}
+
+		irr::core::vector3df p = center + irr::core::vector3df(0, 0, radius);
+		points.push_back(p);
+    }
+    else if(c_axis.Y != 0)
+    {
+    	for (int i = 0; i <= segments; i++)
+		{
+			irr::core::vector3df p = center + irr::core::vector3df(0, 0, radius);
+			p.rotateXZBy(interval*i, center);
+			points.push_back(p);
+		}
+
+		irr::core::vector3df p = center + irr::core::vector3df(0, 0, radius);
+		points.push_back(p);
+    }
+    else if(c_axis.Z != 0)
+	{
+		for (int i = 0; i <= segments; i++)
+		{
+			irr::core::vector3df p = center + irr::core::vector3df(0, radius, 0);
+			p.rotateXYBy(interval*i, center);
+			points.push_back(p);
+		}
+
+		irr::core::vector3df p = center + irr::core::vector3df(0, radius, 0);
+		points.push_back(p);
+	}
+
+	irr::video::SMaterial m;
+	m.Lighting=false;
+	m.Thickness = 2;
+	m_pDriver->setMaterial(m);
+	m_pDriver->setTransform(video::ETS_WORLD, core::matrix4());
+
+    for (size_t i = 0; i < points.size() - 2; ++i)
+	{
+        m_pDriver->draw3DLine(points[i], points[i + 1], color);
+    }
+
+    rc_setDriverMaterial();
+}
+
+void wxIrrlicht::setTransformToolBox()
+{
+	irr::scene::ISceneCollisionManager* collman = m_pSceneManager->getSceneCollisionManager();
+	int widget_half = transform_tool_widget.widget_size/2;
+	irr::core::dimension2du widget_dim(transform_tool_widget.widget_size, transform_tool_widget.widget_size);
+	int axis_tool_space = 50;
+
+	for(int i = 0; i < 4; i++)
+	{
+		switch(camera[i].pov) //box_select_view can be used for every other tool
+		{
+			case RC_CAMERA_VIEW_FRONT:
+			{
+				if(stage_edit_tool == RC_EDIT_TOOL_MOVE || stage_edit_tool == RC_EDIT_TOOL_SCALE)
+				{
+					irr::core::vector2d<irr::s32> v1 = collman->getScreenCoordinatesFrom3DPosition(transform_tool_widget.pos, camera[i].camera.camera, true);
+					transform_tool_widget.view_box_x[i] = irr::core::recti(v1 + irr::core::vector2di(axis_tool_space-widget_half, -widget_half), widget_dim);
+					transform_tool_widget.view_box_y[i] = irr::core::recti(v1 + irr::core::vector2di(-widget_half, -axis_tool_space-widget_half), widget_dim);
+				}
+				else if(stage_edit_tool == RC_EDIT_TOOL_ROTATE)
+				{
+					irr::core::vector2d<irr::s32> v1 = collman->getScreenCoordinatesFrom3DPosition(transform_tool_widget.pos, camera[i].camera.camera, true);
+					transform_tool_widget.view_box_y[i] = irr::core::recti(v1 + irr::core::vector2di(axis_tool_space-widget_half, -widget_half), widget_dim);
+					transform_tool_widget.view_box_x[i] = irr::core::recti(v1 + irr::core::vector2di(-widget_half, -axis_tool_space-widget_half), widget_dim);
+				}
+			}
+			break;
+
+			case RC_CAMERA_VIEW_TOP:
+			{
+				if(stage_edit_tool == RC_EDIT_TOOL_MOVE || stage_edit_tool == RC_EDIT_TOOL_SCALE)
+				{
+					irr::core::vector2d<irr::s32> v1 = collman->getScreenCoordinatesFrom3DPosition(transform_tool_widget.pos, camera[i].camera.camera, true);
+					transform_tool_widget.view_box_x[i] = irr::core::recti(v1 + irr::core::vector2di(axis_tool_space-widget_half, -widget_half), widget_dim);
+					transform_tool_widget.view_box_z[i] = irr::core::recti(v1 + irr::core::vector2di(-widget_half, -axis_tool_space-widget_half), widget_dim);
+				}
+				else if(stage_edit_tool == RC_EDIT_TOOL_ROTATE)
+				{
+					irr::core::vector2d<irr::s32> v1 = collman->getScreenCoordinatesFrom3DPosition(transform_tool_widget.pos, camera[i].camera.camera, true);
+					transform_tool_widget.view_box_z[i] = irr::core::recti(v1 + irr::core::vector2di(axis_tool_space-widget_half, -widget_half), widget_dim);
+					transform_tool_widget.view_box_x[i] = irr::core::recti(v1 + irr::core::vector2di(-widget_half, -axis_tool_space-widget_half), widget_dim);
+				}
+			}
+			break;
+
+			case RC_CAMERA_VIEW_RIGHT:
+			{
+				if(stage_edit_tool == RC_EDIT_TOOL_MOVE || stage_edit_tool == RC_EDIT_TOOL_SCALE)
+				{
+					irr::core::vector2d<irr::s32> v1 = collman->getScreenCoordinatesFrom3DPosition(transform_tool_widget.pos, camera[i].camera.camera, true);
+					transform_tool_widget.view_box_z[i] = irr::core::recti(v1 + irr::core::vector2di(axis_tool_space-widget_half, -widget_half), widget_dim);
+					transform_tool_widget.view_box_y[i] = irr::core::recti(v1 + irr::core::vector2di(-widget_half, -axis_tool_space-widget_half), widget_dim);
+				}
+				else if(stage_edit_tool == RC_EDIT_TOOL_ROTATE)
+				{
+					irr::core::vector2d<irr::s32> v1 = collman->getScreenCoordinatesFrom3DPosition(transform_tool_widget.pos, camera[i].camera.camera, true);
+					transform_tool_widget.view_box_y[i] = irr::core::recti(v1 + irr::core::vector2di(axis_tool_space-widget_half, -widget_half), widget_dim);
+					transform_tool_widget.view_box_z[i] = irr::core::recti(v1 + irr::core::vector2di(-widget_half, -axis_tool_space-widget_half), widget_dim);
+				}
+			}
+			break;
+
+			case RC_CAMERA_VIEW_PERSPECTIVE:
+			{
+				if(stage_edit_tool == RC_EDIT_TOOL_MOVE || stage_edit_tool == RC_EDIT_TOOL_SCALE)
+				{
+					irr::core::vector2d<irr::s32> v1 = collman->getScreenCoordinatesFrom3DPosition(transform_tool_widget.pos, camera[i].camera.camera, true);
+					transform_tool_widget.view_box_x[i] = irr::core::recti(v1 + irr::core::vector2di(axis_tool_space-widget_half, -widget_half), widget_dim);
+					transform_tool_widget.view_box_y[i] = irr::core::recti(v1 + irr::core::vector2di(-widget_half, -axis_tool_space-widget_half), widget_dim);
+					transform_tool_widget.view_box_z[i] = irr::core::recti(v1 + irr::core::vector2di(axis_tool_space-widget_half, -axis_tool_space-widget_half), widget_dim);
+				}
+				else if(stage_edit_tool == RC_EDIT_TOOL_ROTATE)
+				{
+					irr::core::vector2d<irr::s32> v1 = collman->getScreenCoordinatesFrom3DPosition(transform_tool_widget.pos, camera[i].camera.camera, true);
+					transform_tool_widget.view_box_y[i] = irr::core::recti(v1 + irr::core::vector2di(axis_tool_space-widget_half, -widget_half), widget_dim);
+					transform_tool_widget.view_box_x[i] = irr::core::recti(v1 + irr::core::vector2di(-widget_half, -axis_tool_space-widget_half), widget_dim);
+					transform_tool_widget.view_box_z[i] = irr::core::recti(v1 + irr::core::vector2di(axis_tool_space-widget_half, -axis_tool_space-widget_half), widget_dim);
+				}
+			}
+			break;
+		}
+	}
+}
+
 void wxIrrlicht::OnUpdate()
 {
 	if(window_type == RC_IRR_WINDOW_MATERIAL)
@@ -887,6 +1170,11 @@ void wxIrrlicht::OnUpdate()
 
 	int pw = this->GetSize().GetWidth();
 	int ph = this->GetSize().GetHeight();
+
+	if( px < 0 || px >= pw || py < 0 || py >= ph)
+		stage_window_isActive = false;
+	else
+		stage_window_isActive = true;
 
 	if(num_views == 4)
 	{
@@ -950,6 +1238,10 @@ void wxIrrlicht::OnUpdate()
 
 				box_select_view = active_camera;
 				box_select_draw_flag = true;
+
+				transform_tool_widget.lock_x = false;
+				transform_tool_widget.lock_y = false;
+				transform_tool_widget.lock_z = false;
 			}
 		}
 		else if(left_drag_init)
@@ -1007,9 +1299,17 @@ void wxIrrlicht::OnUpdate()
 							//irr::f32 d_start = ray.start.getDistanceFrom(pos);
 							//irr::f32 d_end = ray.end.getDistanceFrom(pos);
 							//if(d_end < d_start)
+							scene_actors[i].t_start = scene_actors[i].node->getAbsolutePosition();
+
 							if(scene_actors[i].node->isVisible())
+							{
 								selected_actors.push_back(scene_actors[i]);
+								transform_tool_widget.pos = selected_actors[0].node->getAbsolutePosition();
+							}
+							//setTransformToolBox();
+
 							break;
+
 							//wxMessageBox(_("Selected"));
 						}
 					}
@@ -1042,11 +1342,21 @@ void wxIrrlicht::OnUpdate()
 
 					if(box_select_shape.isPointInside(v1))
 					{
+						if(!scene_actors[i].node)
+							continue;
+
 						//irr::f32 d_start = ray.start.getDistanceFrom(pos);
 						//irr::f32 d_end = ray.end.getDistanceFrom(pos);
 						//if(d_end < d_start)
+						scene_actors[i].t_start = scene_actors[i].node->getAbsolutePosition();
+
 						if(scene_actors[i].node->isVisible())
+						{
 							selected_actors.push_back(scene_actors[i]);
+							transform_tool_widget.pos = selected_actors[0].node->getAbsolutePosition();
+						}
+						//setTransformToolBox();
+
 						//break;
 						//wxMessageBox(_("Selected: ") + wxString::Format(_("%d"), drag_v1.X) + _(", ") + wxString::Format(_("%d"), drag_v1.Y) + _("\n") +
 						//							   wxString::Format(_("%d"), drag_v2.X) + _(", ") + wxString::Format(_("%d"), drag_v2.Y) + _("\n"));
@@ -1082,25 +1392,385 @@ void wxIrrlicht::OnUpdate()
 				double translate_factor_x = 500/((double)camera[box_select_view].w);
 				double translate_factor_y = 300/((double)camera[box_select_view].h);
 
+				double axis_lock_factor_x = ( (transform_tool_widget.lock_y || transform_tool_widget.lock_z) ? 0 : 1);
+				double axis_lock_factor_y = ( (transform_tool_widget.lock_x || transform_tool_widget.lock_z) ? 0 : 1);
+				double axis_lock_factor_z = ( (transform_tool_widget.lock_x || transform_tool_widget.lock_y) ? 0 : 1);
+
+				irr::core::vector3df axis_lock_vector(axis_lock_factor_x, axis_lock_factor_y, axis_lock_factor_z);
+
 				switch(camera[box_select_view].pov) //box_select_view can be used for every other tool
 				{
 					case RC_CAMERA_VIEW_FRONT:
 						translate_vector.set(((double)px - drag_start.x)*translate_factor_x, ((double)(drag_start.y - py))*translate_factor_y, 0);
 					break;
+
+					case RC_CAMERA_VIEW_TOP:
+						translate_vector.set(((double)px - drag_start.x)*translate_factor_x, 0, ((double)(drag_start.y - py))*translate_factor_y);
+					break;
+
+					case RC_CAMERA_VIEW_RIGHT:
+						translate_vector.set(0, ((double)(drag_start.y - py))*translate_factor_y, ((double)drag_start.x - px)*translate_factor_x);
+					break;
+
+					case RC_CAMERA_VIEW_PERSPECTIVE:
+						//translate_vector.set(((double)px - drag_start.x)*translate_factor_x, ((double)(drag_start.y - py))*translate_factor_y, 0);
+						//irr::core::matrix4 tmat = camera[box_select_view].camera.camera->getAbsoluteTransformation();
+						//irr::core::vector3df dvec = camera[box_select_view].camera.camera->getTarget();
+
+						//double zy = (((double)(drag_start.y - py))*translate_factor_y) * ( ( 180 - ((int)(camera[box_select_view].camera.ry-90)%180) )/180);
+						//double zx = (((double)(px - drag_start.x))*translate_factor_x) * ( ( 180 - ((int)(camera[box_select_view].camera.rx-90)%180) )/180);
+
+						translate_vector.set(((double)px - drag_start.x)*translate_factor_x, ((double)(drag_start.y - py))*translate_factor_y, 0);
+						translate_vector.rotateXZBy(-camera[box_select_view].camera.ry);
+						translate_vector.rotateYZBy(camera[box_select_view].camera.rx);
+					break;
 				}
+
+				translate_vector *= axis_lock_vector;
 
 				for(int i = 0; i < selected_actors.size(); i++)
 				{
 					selected_actors[i].node->setPosition( selected_actors[i].t_start + translate_vector );
 				}
 
+				if(selected_actors.size() > 0)
+				{
+					transform_tool_widget.pos = selected_actors[0].node->getAbsolutePosition();
+					int widget_half = transform_tool_widget.widget_size/2;
+					irr::core::dimension2du widget_dim(transform_tool_widget.widget_size, transform_tool_widget.widget_size);
+
+					int axis_tool_space = 50;
+
+					for(int i = 0; i < num_views; i++)
+					{
+						switch(camera[i].pov) //box_select_view can be used for every other tool
+						{
+							case RC_CAMERA_VIEW_FRONT:
+							{
+								irr::core::vector2d<irr::s32> v1 = collman->getScreenCoordinatesFrom3DPosition(transform_tool_widget.pos, camera[i].camera.camera, true);
+								transform_tool_widget.view_box_x[i] = irr::core::recti(v1 + irr::core::vector2di(axis_tool_space-widget_half, -widget_half), widget_dim);
+								transform_tool_widget.view_box_y[i] = irr::core::recti(v1 + irr::core::vector2di(-widget_half, -axis_tool_space-widget_half), widget_dim);
+							}
+							break;
+
+							case RC_CAMERA_VIEW_TOP:
+							{
+								irr::core::vector2d<irr::s32> v1 = collman->getScreenCoordinatesFrom3DPosition(transform_tool_widget.pos, camera[i].camera.camera, true);
+								transform_tool_widget.view_box_x[i] = irr::core::recti(v1 + irr::core::vector2di(axis_tool_space-widget_half, -widget_half), widget_dim);
+								transform_tool_widget.view_box_z[i] = irr::core::recti(v1 + irr::core::vector2di(-widget_half, -axis_tool_space-widget_half), widget_dim);
+							}
+							break;
+
+							case RC_CAMERA_VIEW_RIGHT:
+							{
+								irr::core::vector2d<irr::s32> v1 = collman->getScreenCoordinatesFrom3DPosition(transform_tool_widget.pos, camera[i].camera.camera, true);
+								transform_tool_widget.view_box_z[i] = irr::core::recti(v1 + irr::core::vector2di(axis_tool_space-widget_half, -widget_half), widget_dim);
+								transform_tool_widget.view_box_y[i] = irr::core::recti(v1 + irr::core::vector2di(-widget_half, -axis_tool_space-widget_half), widget_dim);
+							}
+							break;
+
+							case RC_CAMERA_VIEW_PERSPECTIVE:
+							{
+								irr::core::vector2d<irr::s32> v1 = collman->getScreenCoordinatesFrom3DPosition(transform_tool_widget.pos, camera[i].camera.camera, true);
+								transform_tool_widget.view_box_x[i] = irr::core::recti(v1 + irr::core::vector2di(axis_tool_space-widget_half, -widget_half), widget_dim);
+								transform_tool_widget.view_box_y[i] = irr::core::recti(v1 + irr::core::vector2di(-widget_half, -axis_tool_space-widget_half), widget_dim);
+								transform_tool_widget.view_box_z[i] = irr::core::recti(v1 + irr::core::vector2di(axis_tool_space-widget_half, -axis_tool_space-widget_half), widget_dim);
+							}
+							break;
+						}
+					}
+				}
+
+				if(init_click)
+				{
+					int mouse_to_view_x = px - (camera[active_camera].w * (active_camera % 2) );
+					int mouse_to_view_y = py - (camera[active_camera].h * (active_camera / 2) );
+					if(transform_tool_widget.view_box_x[active_camera].isPointInside( irr::core::vector2di(mouse_to_view_x, mouse_to_view_y) ))
+					{
+						transform_tool_widget.lock_x = true;
+					}
+					else if(transform_tool_widget.view_box_y[active_camera].isPointInside( irr::core::vector2di(mouse_to_view_x, mouse_to_view_y) ))
+					{
+						transform_tool_widget.lock_y = true;
+					}
+					else if(transform_tool_widget.view_box_z[active_camera].isPointInside( irr::core::vector2di(mouse_to_view_x, mouse_to_view_y) ))
+					{
+						transform_tool_widget.lock_z = true;
+					}
+
+					//wxMessageBox(_("mouse: ") + wxString::Format(_("%d"), active_camera) + _(" :: ") + wxString::Format(_("%d"), mouse_to_view_x) + _(", ") + wxString::Format(_("%d"), mouse_to_view_y));
+				}
+
 			}
 			break;
 
 			case RC_EDIT_TOOL_ROTATE:
+			{
+				if(init_click)
+				{
+					for(int i = 0; i < selected_actors.size(); i++)
+					{
+						selected_actors[i].t_start = *selected_actors[i].rotation;
+					}
+				}
+
+				if(!left_drag_init)
+					break;
+
+
+				irr::core::vector3df rotate_vector(0.0f, 0.0f, 0.0f);
+
+				double rotate_factor_x = 500/((double)camera[box_select_view].w);
+				double rotate_factor_y = 300/((double)camera[box_select_view].h);
+
+				double axis_lock_factor_x = ( (transform_tool_widget.lock_y || transform_tool_widget.lock_z) ? 0 : 1);
+				double axis_lock_factor_y = ( (transform_tool_widget.lock_x || transform_tool_widget.lock_z) ? 0 : 1);
+				double axis_lock_factor_z = ( (transform_tool_widget.lock_x || transform_tool_widget.lock_y) ? 0 : 1);
+
+				irr::core::vector3df axis_lock_vector(axis_lock_factor_x, axis_lock_factor_y, axis_lock_factor_z);
+
+				switch(camera[box_select_view].pov) //box_select_view can be used for every other tool
+				{
+					case RC_CAMERA_VIEW_FRONT:
+						rotate_vector.set(((double)(py - drag_start.y))*rotate_factor_y, ((double)drag_start.x - px)*rotate_factor_x, 0);
+					break;
+
+					case RC_CAMERA_VIEW_TOP:
+						rotate_vector.set(((double)(py - drag_start.y))*rotate_factor_y, 0, ((double)drag_start.x - px)*rotate_factor_x);
+					break;
+
+					case RC_CAMERA_VIEW_RIGHT:
+						rotate_vector.set(0, ((double)drag_start.x - px)*rotate_factor_x, ((double)(py - drag_start.y))*rotate_factor_y);
+					break;
+
+					case RC_CAMERA_VIEW_PERSPECTIVE:
+						//rotate_vector.set(((double)px - drag_start.x)*rotate_factor_x, ((double)(drag_start.y - py))*rotate_factor_y, 0);
+						//irr::core::matrix4 tmat = camera[box_select_view].camera.camera->getAbsoluteTransformation();
+						//irr::core::vector3df dvec = camera[box_select_view].camera.camera->getTarget();
+
+						double zy = (((double)(py - drag_start.y))*rotate_factor_y) * ( ( 180 - ((int)(camera[box_select_view].camera.ry-90)%180) )/180);
+						double zx = (((double)(px - drag_start.x))*rotate_factor_x) * ( ( 180 - ((int)(camera[box_select_view].camera.rx-90)%180) )/180);
+						rotate_vector.set(((double)(py - drag_start.y))*rotate_factor_y, ((double)drag_start.x - px)*rotate_factor_x, -1*(zx+zy));
+						//rotate_vector.rotateXZBy(-camera[box_select_view].camera.ry);
+						//rotate_vector.rotateYZBy(camera[box_select_view].camera.rx);
+					break;
+				}
+
+				rotate_vector *= axis_lock_vector;
+
+				for(int i = 0; i < selected_actors.size(); i++)
+				{
+					//Apply Rotation in Y,X,Z order
+					irr::scene::ISceneNode* node = selected_actors[i].node;
+					if(!node)
+						continue;
+
+					selected_actors[i].rotation->set(selected_actors[i].t_start + rotate_vector);
+
+					node->setRotation( irr::core::vector3df(0, 0, 0) );
+
+					irr::core::vector3df rot;
+					irr::core::matrix4 m;
+					irr::core::matrix4 n;
+
+					//Rotate on Y
+					m.setRotationDegrees(node->getRotation());
+
+					rot.set(0, selected_actors[i].rotation->Y, 0);
+
+					n.setRotationDegrees(rot);
+
+					m *= n;
+
+					node->setRotation( m.getRotationDegrees() );
+					node->updateAbsolutePosition();
+
+					//Rotate on X
+					m.setRotationDegrees(node->getRotation());
+
+					rot.set(-1*selected_actors[i].rotation->X, 0, 0);
+
+					n.setRotationDegrees(rot);
+
+					m *= n;
+
+					node->setRotation( m.getRotationDegrees() );
+					node->updateAbsolutePosition();
+
+					//Rotate on Z
+					m.setRotationDegrees(node->getRotation());
+
+					rot.set(0, 0, selected_actors[i].rotation->Z);
+
+					n.setRotationDegrees(rot);
+
+					m *= n;
+
+					node->setRotation( m.getRotationDegrees() );
+					node->updateAbsolutePosition();
+
+				}
+
+				if(selected_actors.size() > 0)
+				{
+					transform_tool_widget.pos = selected_actors[0].node->getAbsolutePosition();
+					setTransformToolBox();
+				}
+
+				if(init_click)
+				{
+					int mouse_to_view_x = px - (camera[active_camera].w * (active_camera % 2) );
+					int mouse_to_view_y = py - (camera[active_camera].h * (active_camera / 2) );
+					if(transform_tool_widget.view_box_x[active_camera].isPointInside( irr::core::vector2di(mouse_to_view_x, mouse_to_view_y) ))
+					{
+						transform_tool_widget.lock_x = true;
+					}
+					else if(transform_tool_widget.view_box_y[active_camera].isPointInside( irr::core::vector2di(mouse_to_view_x, mouse_to_view_y) ))
+					{
+						transform_tool_widget.lock_y = true;
+					}
+					else if(transform_tool_widget.view_box_z[active_camera].isPointInside( irr::core::vector2di(mouse_to_view_x, mouse_to_view_y) ))
+					{
+						transform_tool_widget.lock_z = true;
+					}
+
+					//wxMessageBox(_("mouse: ") + wxString::Format(_("%d"), active_camera) + _(" :: ") + wxString::Format(_("%d"), mouse_to_view_x) + _(", ") + wxString::Format(_("%d"), mouse_to_view_y));
+				}
+
+			}
 			break;
 
 			case RC_EDIT_TOOL_SCALE:
+			{
+				if(init_click)
+				{
+					for(int i = 0; i < selected_actors.size(); i++)
+					{
+						selected_actors[i].t_start = selected_actors[i].node->getScale();
+					}
+				}
+
+				if(!left_drag_init)
+					break;
+
+
+				irr::core::vector3df scale_vector(0.0f, 0.0f, 0.0f);
+
+				double scale_factor_x = 500/((double)camera[box_select_view].w);
+				double scale_factor_y = 300/((double)camera[box_select_view].h);
+
+				double axis_lock_factor_x = ( (transform_tool_widget.lock_y || transform_tool_widget.lock_z) ? 0 : 1);
+				double axis_lock_factor_y = ( (transform_tool_widget.lock_x || transform_tool_widget.lock_z) ? 0 : 1);
+				double axis_lock_factor_z = ( (transform_tool_widget.lock_x || transform_tool_widget.lock_y) ? 0 : 1);
+
+				irr::core::vector3df axis_lock_vector(axis_lock_factor_x, axis_lock_factor_y, axis_lock_factor_z);
+
+				switch(camera[box_select_view].pov) //box_select_view can be used for every other tool
+				{
+					case RC_CAMERA_VIEW_FRONT:
+						scale_vector.set(((double)px - drag_start.x)*scale_factor_x, ((double)(drag_start.y - py))*scale_factor_y, 0);
+					break;
+
+					case RC_CAMERA_VIEW_TOP:
+						scale_vector.set(((double)px - drag_start.x)*scale_factor_x, 0, ((double)(drag_start.y - py))*scale_factor_y);
+					break;
+
+					case RC_CAMERA_VIEW_RIGHT:
+						scale_vector.set(0, ((double)(drag_start.y - py))*scale_factor_y, ((double)drag_start.x - px)*scale_factor_x);
+					break;
+
+					case RC_CAMERA_VIEW_PERSPECTIVE:
+						//scale_vector.set(((double)px - drag_start.x)*translate_factor_x, ((double)(drag_start.y - py))*translate_factor_y, 0);
+						//irr::core::matrix4 tmat = camera[box_select_view].camera.camera->getAbsoluteTransformation();
+						//irr::core::vector3df dvec = camera[box_select_view].camera.camera->getTarget();
+
+						//double zy = (((double)(drag_start.y - py))*translate_factor_y) * ( ( 180 - ((int)(camera[box_select_view].camera.ry-90)%180) )/180);
+						//double zx = (((double)(px - drag_start.x))*translate_factor_x) * ( ( 180 - ((int)(camera[box_select_view].camera.rx-90)%180) )/180);
+
+						scale_vector.set(((double)px - drag_start.x)*scale_factor_x, ((double)(drag_start.y - py))*scale_factor_y, 0);
+						scale_vector.rotateXZBy(-camera[box_select_view].camera.ry);
+						scale_vector.rotateYZBy(camera[box_select_view].camera.rx);
+					break;
+				}
+
+				scale_vector *= axis_lock_vector;
+
+				scale_vector *= irr::core::vector3df(.5, .5, .5);
+
+				for(int i = 0; i < selected_actors.size(); i++)
+				{
+					selected_actors[i].node->setScale( selected_actors[i].t_start + scale_vector );
+				}
+
+				if(selected_actors.size() > 0)
+				{
+					transform_tool_widget.pos = selected_actors[0].node->getAbsolutePosition();
+					int widget_half = transform_tool_widget.widget_size/2;
+					irr::core::dimension2du widget_dim(transform_tool_widget.widget_size, transform_tool_widget.widget_size);
+
+					int axis_tool_space = 50;
+
+					for(int i = 0; i < num_views; i++)
+					{
+						switch(camera[i].pov) //box_select_view can be used for every other tool
+						{
+							case RC_CAMERA_VIEW_FRONT:
+							{
+								irr::core::vector2d<irr::s32> v1 = collman->getScreenCoordinatesFrom3DPosition(transform_tool_widget.pos, camera[i].camera.camera, true);
+								transform_tool_widget.view_box_x[i] = irr::core::recti(v1 + irr::core::vector2di(axis_tool_space-widget_half, -widget_half), widget_dim);
+								transform_tool_widget.view_box_y[i] = irr::core::recti(v1 + irr::core::vector2di(-widget_half, -axis_tool_space-widget_half), widget_dim);
+							}
+							break;
+
+							case RC_CAMERA_VIEW_TOP:
+							{
+								irr::core::vector2d<irr::s32> v1 = collman->getScreenCoordinatesFrom3DPosition(transform_tool_widget.pos, camera[i].camera.camera, true);
+								transform_tool_widget.view_box_x[i] = irr::core::recti(v1 + irr::core::vector2di(axis_tool_space-widget_half, -widget_half), widget_dim);
+								transform_tool_widget.view_box_z[i] = irr::core::recti(v1 + irr::core::vector2di(-widget_half, -axis_tool_space-widget_half), widget_dim);
+							}
+							break;
+
+							case RC_CAMERA_VIEW_RIGHT:
+							{
+								irr::core::vector2d<irr::s32> v1 = collman->getScreenCoordinatesFrom3DPosition(transform_tool_widget.pos, camera[i].camera.camera, true);
+								transform_tool_widget.view_box_z[i] = irr::core::recti(v1 + irr::core::vector2di(axis_tool_space-widget_half, -widget_half), widget_dim);
+								transform_tool_widget.view_box_y[i] = irr::core::recti(v1 + irr::core::vector2di(-widget_half, -axis_tool_space-widget_half), widget_dim);
+							}
+							break;
+
+							case RC_CAMERA_VIEW_PERSPECTIVE:
+							{
+								irr::core::vector2d<irr::s32> v1 = collman->getScreenCoordinatesFrom3DPosition(transform_tool_widget.pos, camera[i].camera.camera, true);
+								transform_tool_widget.view_box_x[i] = irr::core::recti(v1 + irr::core::vector2di(axis_tool_space-widget_half, -widget_half), widget_dim);
+								transform_tool_widget.view_box_y[i] = irr::core::recti(v1 + irr::core::vector2di(-widget_half, -axis_tool_space-widget_half), widget_dim);
+								transform_tool_widget.view_box_z[i] = irr::core::recti(v1 + irr::core::vector2di(axis_tool_space-widget_half, -axis_tool_space-widget_half), widget_dim);
+							}
+							break;
+						}
+					}
+				}
+
+				if(init_click)
+				{
+					int mouse_to_view_x = px - (camera[active_camera].w * (active_camera % 2) );
+					int mouse_to_view_y = py - (camera[active_camera].h * (active_camera / 2) );
+					if(transform_tool_widget.view_box_x[active_camera].isPointInside( irr::core::vector2di(mouse_to_view_x, mouse_to_view_y) ))
+					{
+						transform_tool_widget.lock_x = true;
+					}
+					else if(transform_tool_widget.view_box_y[active_camera].isPointInside( irr::core::vector2di(mouse_to_view_x, mouse_to_view_y) ))
+					{
+						transform_tool_widget.lock_y = true;
+					}
+					else if(transform_tool_widget.view_box_z[active_camera].isPointInside( irr::core::vector2di(mouse_to_view_x, mouse_to_view_y) ))
+					{
+						transform_tool_widget.lock_z = true;
+					}
+
+					//wxMessageBox(_("mouse: ") + wxString::Format(_("%d"), active_camera) + _(" :: ") + wxString::Format(_("%d"), mouse_to_view_x) + _(", ") + wxString::Format(_("%d"), mouse_to_view_y));
+				}
+
+			}
 			break;
 		}
 	}
@@ -1207,6 +1877,20 @@ void wxIrrlicht::OnUpdate()
 					VIEW_KEY_D = false;
 
 					camera[active_camera].camera.translate(cam_move_speed, 0, 0);
+				}
+
+				if(VIEW_KEY_R)
+				{
+					VIEW_KEY_R = false;
+
+					camera[active_camera].camera.translateW(0, cam_move_speed, 0);
+				}
+
+				if(VIEW_KEY_F)
+				{
+					VIEW_KEY_F = false;
+
+					camera[active_camera].camera.translateW(0, -cam_move_speed, 0);
 				}
 			}
 		}

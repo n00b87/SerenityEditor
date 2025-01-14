@@ -631,6 +631,155 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer68->Fit( m_panel422 );
 	bSizer671->Add( m_panel422, 0, wxEXPAND | wxALL, 5 );
 
+	m_panel392 = new wxPanel( m_scrolledWindow2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SIMPLE|wxTAB_TRAVERSAL );
+	m_panel392->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_GRAYTEXT ) );
+
+	wxBoxSizer* bSizer167;
+	bSizer167 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer168;
+	bSizer168 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText58 = new wxStaticText( m_panel392, wxID_ANY, wxT("Tool Settings"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText58->Wrap( -1 );
+	m_staticText58->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
+	bSizer168->Add( m_staticText58, 0, wxALL, 5 );
+
+
+	bSizer167->Add( bSizer168, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer169;
+	bSizer169 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_checkBox10 = new wxCheckBox( m_panel392, wxID_ANY, wxT("Show Axis Lines"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT );
+	m_checkBox10->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
+	bSizer169->Add( m_checkBox10, 0, wxALL, 5 );
+
+
+	bSizer167->Add( bSizer169, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer170;
+	bSizer170 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_checkBox11 = new wxCheckBox( m_panel392, wxID_ANY, wxT("Show Axis Rings"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT );
+	m_checkBox11->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
+	bSizer170->Add( m_checkBox11, 0, wxALL, 5 );
+
+
+	bSizer167->Add( bSizer170, 0, wxEXPAND, 5 );
+
+
+	m_panel392->SetSizer( bSizer167 );
+	m_panel392->Layout();
+	bSizer167->Fit( m_panel392 );
+	bSizer671->Add( m_panel392, 0, wxEXPAND | wxALL, 5 );
+
+	m_panel403 = new wxPanel( m_scrolledWindow2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SIMPLE|wxTAB_TRAVERSAL );
+	m_panel403->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_GRAYTEXT ) );
+
+	wxBoxSizer* bSizer171;
+	bSizer171 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer172;
+	bSizer172 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText59 = new wxStaticText( m_panel403, wxID_ANY, wxT("Camera"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText59->Wrap( -1 );
+	m_staticText59->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
+	bSizer172->Add( m_staticText59, 0, wxALL, 5 );
+
+
+	bSizer171->Add( bSizer172, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer173;
+	bSizer173 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_checkBox12 = new wxCheckBox( m_panel403, wxID_ANY, wxT("Show Position"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT );
+	m_checkBox12->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
+	bSizer173->Add( m_checkBox12, 0, wxALL, 5 );
+
+
+	bSizer171->Add( bSizer173, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer174;
+	bSizer174 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_checkBox13 = new wxCheckBox( m_panel403, wxID_ANY, wxT("Show Rotation"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT );
+	m_checkBox13->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
+	bSizer174->Add( m_checkBox13, 0, wxALL, 5 );
+
+
+	bSizer171->Add( bSizer174, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer175;
+	bSizer175 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText60 = new wxStaticText( m_panel403, wxID_ANY, wxT("Speed"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText60->Wrap( -1 );
+	m_staticText60->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
+	bSizer175->Add( m_staticText60, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_spinCtrlDouble2 = new wxSpinCtrlDouble( m_panel403, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0, 1 );
+	m_spinCtrlDouble2->SetDigits( 0 );
+	m_spinCtrlDouble2->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
+	bSizer175->Add( m_spinCtrlDouble2, 2, wxALL, 5 );
+
+
+	bSizer171->Add( bSizer175, 0, wxEXPAND, 5 );
+
+
+	m_panel403->SetSizer( bSizer171 );
+	m_panel403->Layout();
+	bSizer171->Fit( m_panel403 );
+	bSizer671->Add( m_panel403, 0, wxEXPAND | wxALL, 5 );
+
+	m_panel412 = new wxPanel( m_scrolledWindow2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SIMPLE|wxTAB_TRAVERSAL );
+	m_panel412->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_GRAYTEXT ) );
+
+	wxBoxSizer* bSizer177;
+	bSizer177 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer178;
+	bSizer178 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText61 = new wxStaticText( m_panel412, wxID_ANY, wxT("HUD"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText61->Wrap( -1 );
+	m_staticText61->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
+	bSizer178->Add( m_staticText61, 0, wxALL, 5 );
+
+
+	bSizer177->Add( bSizer178, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer179;
+	bSizer179 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText62 = new wxStaticText( m_panel412, wxID_ANY, wxT("MyLabel"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText62->Wrap( -1 );
+	m_staticText62->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
+	bSizer179->Add( m_staticText62, 1, wxALL, 5 );
+
+	m_colourPicker7 = new wxColourPickerCtrl( m_panel412, wxID_ANY, *wxBLACK, wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE );
+	bSizer179->Add( m_colourPicker7, 2, wxALL, 5 );
+
+
+	bSizer177->Add( bSizer179, 0, wxEXPAND, 5 );
+
+
+	m_panel412->SetSizer( bSizer177 );
+	m_panel412->Layout();
+	bSizer177->Fit( m_panel412 );
+	bSizer671->Add( m_panel412, 0, wxEXPAND | wxALL, 5 );
+
 
 	m_scrolledWindow2->SetSizer( bSizer671 );
 	m_scrolledWindow2->Layout();

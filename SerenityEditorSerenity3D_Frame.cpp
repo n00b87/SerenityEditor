@@ -1389,14 +1389,40 @@ int SerenityEditorSerenity3D_Frame::getActorNodeIndex(int stage_node_index, int 
 	return -1;
 }
 
+void SerenityEditorSerenity3D_Frame::updateProjectFromStageEdit()
+{
+	int stage_project_index = stageTab_active_stage_project_index;
+
+	if(stage_project_index < 0 || stage_project_index >= project.stages.size())
+		return;
+
+	//project.stages[stage_project_index].actors[actor_stage_index].type == SN_ACTOR_TYPE_ANIMATED
+	for(int i = 0; i < stage_window->selected_actors.size(); i++)
+	{
+		int actor_project_index = stage_window->selected_actors[i].actor_index;
+
+		if(actor_project_index < 0 || actor_project_index >= project.stages[stage_project_index].actors.size())
+			continue;
+
+		irr::scene::ISceneNode* scene_node = project.stages[stage_project_index].actors[actor_project_index].node;
+
+		if(!scene_node)
+			continue;
+
+		project.stages[stage_project_index].actors[actor_project_index].position = scene_node->getAbsolutePosition();
+		//project.stages[stage_project_index].actors[actor_project_index].rotation = stage_window->selected_actors[i].rotation; //This is now a pointer
+		project.stages[stage_project_index].actors[actor_project_index].scale = scene_node->getScale();
+
+		//stage_window->scene_actors[i].id_name = project.stages[stage_project_index].actors[actor_project_index].id_name;
+	}
+}
+
 void SerenityEditorSerenity3D_Frame::OnStageUpdate( wxUpdateUIEvent& event )
 {
 	if(stage_window)
 	{
 		if(stage_window->selected_actors.size() >= 1)
 		{
-			if(selected_actor_in_active_stage == stage_window->selected_actors[0].actor_index)
-				return;
 
 			selected_actor_in_active_stage = stage_window->selected_actors[0].actor_index;
 
@@ -1422,53 +1448,76 @@ void SerenityEditorSerenity3D_Frame::OnStageUpdate( wxUpdateUIEvent& event )
 
 			int actor_stage_index = stage_window->selected_actors[0].actor_index;
 
+			if(actor_stage_index < 0 || actor_stage_index >= project.stages[stage_project_index].actors.size())
+				return;
+
+			if(!project.stages[stage_project_index].actors[actor_stage_index].node)
+				return;
+
+			updateProjectFromStageEdit();
 
 			if(project.stages[stage_project_index].actors[actor_stage_index].type == SN_ACTOR_TYPE_ANIMATED)
 			{
 				m_stage_propertyGridManager->SelectPage(m_animatedActorProperties_propertyGridPage);
-				setAnimatedActorGrid(stage_project_index, actor_stage_index);
 			}
 			else if(project.stages[stage_project_index].actors[actor_stage_index].type == SN_ACTOR_TYPE_OCTREE)
 			{
 				m_stage_propertyGridManager->SelectPage(m_octreeActorProperties_propertyGridPage);
-				setOctreeActorGrid(stage_project_index, actor_stage_index);
 			}
 			else if(project.stages[stage_project_index].actors[actor_stage_index].type == SN_ACTOR_TYPE_LIGHT)
 			{
 				m_stage_propertyGridManager->SelectPage(m_lightActorProperties_propertyGridPage);
-				setLightActorGrid(stage_project_index, actor_stage_index);
 			}
 			else if(project.stages[stage_project_index].actors[actor_stage_index].type == SN_ACTOR_TYPE_BILLBOARD)
 			{
 				m_stage_propertyGridManager->SelectPage(m_billboardActorProperties_propertyGridPage);
-				setBillboardActorGrid(stage_project_index, actor_stage_index);
 			}
 			else if(project.stages[stage_project_index].actors[actor_stage_index].type == SN_ACTOR_TYPE_TERRAIN)
 			{
 				m_stage_propertyGridManager->SelectPage(m_terrainActorProperties_propertyGridPage);
-				setTerrainActorGrid(stage_project_index, actor_stage_index);
 			}
 			else if(project.stages[stage_project_index].actors[actor_stage_index].type == SN_ACTOR_TYPE_WATER)
 			{
 				m_stage_propertyGridManager->SelectPage(m_waterActorProperties_propertyGridPage);
-				setWaterActorGrid(stage_project_index, actor_stage_index);
 			}
 			else if(project.stages[stage_project_index].actors[actor_stage_index].type == SN_ACTOR_TYPE_PARTICLE)
 			{
 				m_stage_propertyGridManager->SelectPage(m_particleActorProperties_propertyGridPage);
-				setParticleActorGrid(stage_project_index, actor_stage_index);
 			}
 			else if(project.stages[stage_project_index].actors[actor_stage_index].type == SN_ACTOR_TYPE_CUBE)
 			{
 				m_stage_propertyGridManager->SelectPage(m_cubeActorProperties_propertyGridPage);
-				setCubeActorGrid(stage_project_index, actor_stage_index);
 			}
 			else if(project.stages[stage_project_index].actors[actor_stage_index].type == SN_ACTOR_TYPE_SPHERE)
 			{
 				m_stage_propertyGridManager->SelectPage(m_sphereActorProperties_propertyGridPage);
-				setSphereActorGrid(stage_project_index, actor_stage_index);
 			}
+			else
+				return;
 
+			int selected_page_index = m_stage_propertyGridManager->GetSelectedPage();
+			wxPropertyGridPage* page = m_stage_propertyGridManager->GetPage(selected_page_index);
+
+			if(stage_window->stage_window_isActive)
+			{
+				//-------------Setting Position---------------------------
+				irr::core::vector3df pos = project.stages[stage_project_index].actors[actor_stage_index].position;
+				page->GetPropertyByName(_("pos_x"))->SetValue(pos.X);
+				page->GetPropertyByName(_("pos_y"))->SetValue(pos.Y);
+				page->GetPropertyByName(_("pos_z"))->SetValue(pos.Z);
+
+				//-------------Setting Rotation---------------------------
+				irr::core::vector3df rot = project.stages[stage_project_index].actors[actor_stage_index].rotation;
+				page->GetPropertyByName(_("rot_x"))->SetValue(rot.X);
+				page->GetPropertyByName(_("rot_y"))->SetValue(rot.Y);
+				page->GetPropertyByName(_("rot_z"))->SetValue(rot.Z);
+
+				//-------------Setting Scale---------------------------
+				irr::core::vector3df scale = project.stages[stage_project_index].actors[actor_stage_index].scale;
+				page->GetPropertyByName(_("scale_x"))->SetValue(scale.X);
+				page->GetPropertyByName(_("scale_y"))->SetValue(scale.Y);
+				page->GetPropertyByName(_("scale_z"))->SetValue(scale.Z);
+			}
 
 		}
 	}
@@ -2069,6 +2118,7 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 		scene_obj.id_name = project.stages[stage_project_index].actors[i].id_name;
 		scene_obj.isSelected = false;
 		scene_obj.node = node;
+		scene_obj.rotation = &project.stages[stage_project_index].actors[i].rotation;
 
 		if(use_icon_bbox)
 		{
@@ -2088,6 +2138,22 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 		if(!scene_actor_exists)
 		{
 			current_window->scene_actors.push_back(scene_obj);
+		}
+	}
+
+	for(int sn = 0; sn < current_window->scene_actors.size(); sn++)
+	{
+		if(current_window->scene_actors[sn].actor_index == i)
+		{
+			current_window->scene_actors[sn].node = project.stages[stage_project_index].actors[i].node;
+		}
+	}
+
+	for(int sn = 0; sn < current_window->selected_actors.size(); sn++)
+	{
+		if(current_window->selected_actors[sn].actor_index == i)
+		{
+			current_window->selected_actors[sn].node = project.stages[stage_project_index].actors[i].node;
 		}
 	}
 }
