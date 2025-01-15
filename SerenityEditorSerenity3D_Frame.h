@@ -245,6 +245,12 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
 		void On_StageSettings_SetGridSize( wxSpinEvent& event );
 		void On_StageSettings_SetGridSpacing( wxSpinEvent& event );
 		void On_StageSettings_SetGridColor( wxColourPickerEvent& event );
+		void On_StageSettings_ShowAxisLines( wxCommandEvent& event );
+		void On_StageSettings_ShowAxisRings( wxCommandEvent& event );
+		void On_StageSettings_ShowViewCameraPosition( wxCommandEvent& event );
+		void On_StageSettings_ShowViewCameraRotation( wxCommandEvent& event );
+		void On_StageSettings_ViewCameraSpeed( wxSpinDoubleEvent& event );
+		void On_StageSettings_ViewHUDColor( wxColourPickerEvent& event );
 
 		void OnPlayClicked( wxCommandEvent& event );
 		void OnStopClicked( wxCommandEvent& event );

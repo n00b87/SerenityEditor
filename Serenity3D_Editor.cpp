@@ -652,10 +652,10 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	wxBoxSizer* bSizer169;
 	bSizer169 = new wxBoxSizer( wxHORIZONTAL );
 
-	m_checkBox10 = new wxCheckBox( m_panel392, wxID_ANY, wxT("Show Axis Lines"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT );
-	m_checkBox10->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+	m_toolSettings_showAxisLines_checkBox = new wxCheckBox( m_panel392, wxID_ANY, wxT("Show Axis Lines"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT );
+	m_toolSettings_showAxisLines_checkBox->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
 
-	bSizer169->Add( m_checkBox10, 0, wxALL, 5 );
+	bSizer169->Add( m_toolSettings_showAxisLines_checkBox, 0, wxALL, 5 );
 
 
 	bSizer167->Add( bSizer169, 0, wxEXPAND, 5 );
@@ -663,10 +663,10 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	wxBoxSizer* bSizer170;
 	bSizer170 = new wxBoxSizer( wxHORIZONTAL );
 
-	m_checkBox11 = new wxCheckBox( m_panel392, wxID_ANY, wxT("Show Axis Rings"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT );
-	m_checkBox11->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+	m_toolSettings_showAxisRings_checkBox = new wxCheckBox( m_panel392, wxID_ANY, wxT("Show Axis Rings"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT );
+	m_toolSettings_showAxisRings_checkBox->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
 
-	bSizer170->Add( m_checkBox11, 0, wxALL, 5 );
+	bSizer170->Add( m_toolSettings_showAxisRings_checkBox, 0, wxALL, 5 );
 
 
 	bSizer167->Add( bSizer170, 0, wxEXPAND, 5 );
@@ -698,10 +698,10 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	wxBoxSizer* bSizer173;
 	bSizer173 = new wxBoxSizer( wxHORIZONTAL );
 
-	m_checkBox12 = new wxCheckBox( m_panel403, wxID_ANY, wxT("Show Position"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT );
-	m_checkBox12->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+	m_cameraSettings_showPosition_checkBox = new wxCheckBox( m_panel403, wxID_ANY, wxT("Show Position"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT );
+	m_cameraSettings_showPosition_checkBox->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
 
-	bSizer173->Add( m_checkBox12, 0, wxALL, 5 );
+	bSizer173->Add( m_cameraSettings_showPosition_checkBox, 0, wxALL, 5 );
 
 
 	bSizer171->Add( bSizer173, 0, wxEXPAND, 5 );
@@ -709,10 +709,10 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	wxBoxSizer* bSizer174;
 	bSizer174 = new wxBoxSizer( wxHORIZONTAL );
 
-	m_checkBox13 = new wxCheckBox( m_panel403, wxID_ANY, wxT("Show Rotation"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT );
-	m_checkBox13->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+	m_cameraSettings_showRotation_checkBox = new wxCheckBox( m_panel403, wxID_ANY, wxT("Show Rotation"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT );
+	m_cameraSettings_showRotation_checkBox->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
 
-	bSizer174->Add( m_checkBox13, 0, wxALL, 5 );
+	bSizer174->Add( m_cameraSettings_showRotation_checkBox, 0, wxALL, 5 );
 
 
 	bSizer171->Add( bSizer174, 0, wxEXPAND, 5 );
@@ -726,11 +726,11 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 
 	bSizer175->Add( m_staticText60, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_spinCtrlDouble2 = new wxSpinCtrlDouble( m_panel403, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0, 1 );
-	m_spinCtrlDouble2->SetDigits( 0 );
-	m_spinCtrlDouble2->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+	m_cameraSettings_moveSpeed_spinCtrlDouble = new wxSpinCtrlDouble( m_panel403, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0, 1 );
+	m_cameraSettings_moveSpeed_spinCtrlDouble->SetDigits( 0 );
+	m_cameraSettings_moveSpeed_spinCtrlDouble->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
 
-	bSizer175->Add( m_spinCtrlDouble2, 2, wxALL, 5 );
+	bSizer175->Add( m_cameraSettings_moveSpeed_spinCtrlDouble, 2, wxALL, 5 );
 
 
 	bSizer171->Add( bSizer175, 0, wxEXPAND, 5 );
@@ -768,8 +768,8 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 
 	bSizer179->Add( m_staticText62, 1, wxALL, 5 );
 
-	m_colourPicker7 = new wxColourPickerCtrl( m_panel412, wxID_ANY, *wxBLACK, wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE );
-	bSizer179->Add( m_colourPicker7, 2, wxALL, 5 );
+	m_viewHUD_color_colourPicker = new wxColourPickerCtrl( m_panel412, wxID_ANY, *wxBLACK, wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE );
+	bSizer179->Add( m_viewHUD_color_colourPicker, 2, wxALL, 5 );
 
 
 	bSizer177->Add( bSizer179, 0, wxEXPAND, 5 );
@@ -1793,6 +1793,12 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_viewportSettings_gridSize_spinCtrl->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( Serenity3D_Frame::On_StageSettings_SetGridSize ), NULL, this );
 	m_viewportSettings_gridSpacing_spinCtrl->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( Serenity3D_Frame::On_StageSettings_SetGridSpacing ), NULL, this );
 	m_viewportSettings_gridColor_colourPicker->Connect( wxEVT_COMMAND_COLOURPICKER_CHANGED, wxColourPickerEventHandler( Serenity3D_Frame::On_StageSettings_SetGridColor ), NULL, this );
+	m_toolSettings_showAxisLines_checkBox->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_StageSettings_ShowAxisLines ), NULL, this );
+	m_toolSettings_showAxisRings_checkBox->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_StageSettings_ShowAxisRings ), NULL, this );
+	m_cameraSettings_showPosition_checkBox->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_StageSettings_ShowViewCameraPosition ), NULL, this );
+	m_cameraSettings_showRotation_checkBox->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_StageSettings_ShowViewCameraRotation ), NULL, this );
+	m_cameraSettings_moveSpeed_spinCtrlDouble->Connect( wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, wxSpinDoubleEventHandler( Serenity3D_Frame::On_StageSettings_ViewCameraSpeed ), NULL, this );
+	m_viewHUD_color_colourPicker->Connect( wxEVT_COMMAND_COLOURPICKER_CHANGED, wxColourPickerEventHandler( Serenity3D_Frame::On_StageSettings_ViewHUDColor ), NULL, this );
 	m_mesh_importMesh_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_Load_ButtonClick ), NULL, this );
 	m_mesh_removeMesh_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_Remove_ButtonClick ), NULL, this );
 	m_mesh_saveMesh_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_Save_ButtonClick ), NULL, this );
@@ -1888,6 +1894,12 @@ Serenity3D_Frame::~Serenity3D_Frame()
 	m_viewportSettings_gridSize_spinCtrl->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( Serenity3D_Frame::On_StageSettings_SetGridSize ), NULL, this );
 	m_viewportSettings_gridSpacing_spinCtrl->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( Serenity3D_Frame::On_StageSettings_SetGridSpacing ), NULL, this );
 	m_viewportSettings_gridColor_colourPicker->Disconnect( wxEVT_COMMAND_COLOURPICKER_CHANGED, wxColourPickerEventHandler( Serenity3D_Frame::On_StageSettings_SetGridColor ), NULL, this );
+	m_toolSettings_showAxisLines_checkBox->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_StageSettings_ShowAxisLines ), NULL, this );
+	m_toolSettings_showAxisRings_checkBox->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_StageSettings_ShowAxisRings ), NULL, this );
+	m_cameraSettings_showPosition_checkBox->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_StageSettings_ShowViewCameraPosition ), NULL, this );
+	m_cameraSettings_showRotation_checkBox->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_StageSettings_ShowViewCameraRotation ), NULL, this );
+	m_cameraSettings_moveSpeed_spinCtrlDouble->Disconnect( wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, wxSpinDoubleEventHandler( Serenity3D_Frame::On_StageSettings_ViewCameraSpeed ), NULL, this );
+	m_viewHUD_color_colourPicker->Disconnect( wxEVT_COMMAND_COLOURPICKER_CHANGED, wxColourPickerEventHandler( Serenity3D_Frame::On_StageSettings_ViewHUDColor ), NULL, this );
 	m_mesh_importMesh_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_Load_ButtonClick ), NULL, this );
 	m_mesh_removeMesh_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_Remove_ButtonClick ), NULL, this );
 	m_mesh_saveMesh_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_Save_ButtonClick ), NULL, this );
@@ -2113,11 +2125,12 @@ NewOctree_Dialog::NewOctree_Dialog( wxWindow* parent, wxWindowID id, const wxStr
 	wxBoxSizer* bSizer81;
 	bSizer81 = new wxBoxSizer( wxHORIZONTAL );
 
-	m_selectedMesh_textCtrl = new wxTextCtrl( m_panel38, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer81->Add( m_selectedMesh_textCtrl, 1, wxALL, 5 );
-
-	m_find_button = new wxButton( m_panel38, wxID_ANY, wxT("Find"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer81->Add( m_find_button, 0, wxALL, 5 );
+	m_searchCtrl4 = new wxSearchCtrl( m_panel38, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	#ifndef __WXMAC__
+	m_searchCtrl4->ShowSearchButton( true );
+	#endif
+	m_searchCtrl4->ShowCancelButton( false );
+	bSizer81->Add( m_searchCtrl4, 1, wxALL, 5 );
 
 
 	bSizer79->Add( bSizer81, 9, wxEXPAND, 5 );

@@ -511,7 +511,7 @@ void wxIrrlicht::OnRender() {
 				{
 					case RC_CAMERA_VIEW_FRONT:
 							irr_SetFont(ui_font1);
-							irr_DrawText("Front", 10, 10, irr::video::SColor(255,255,255,255), i);
+							irr_DrawText("Front", 10, 10, hud_color, i);
 							camera[i].camera.camera->setProjectionMatrix(ortho_matrix);
 
 							if(draw_axis_widget)
@@ -523,7 +523,7 @@ void wxIrrlicht::OnRender() {
 							break;
 					case RC_CAMERA_VIEW_RIGHT:
 							irr_SetFont(ui_font1);
-							irr_DrawText("Right", 10, 10, irr::video::SColor(255,255,255,255), i);
+							irr_DrawText("Right", 10, 10, hud_color, i);
 							camera[i].camera.camera->setProjectionMatrix(ortho_matrix);
 
 							if(draw_axis_widget)
@@ -535,7 +535,7 @@ void wxIrrlicht::OnRender() {
 							break;
 					case RC_CAMERA_VIEW_TOP:
 							irr_SetFont(ui_font1);
-							irr_DrawText("Top", 10, 10, irr::video::SColor(255,255,255,255), i);
+							irr_DrawText("Top", 10, 10, hud_color, i);
 							camera[i].camera.camera->setProjectionMatrix(ortho_matrix);
 
 							if(draw_axis_widget)
@@ -547,7 +547,7 @@ void wxIrrlicht::OnRender() {
 							break;
 					case RC_CAMERA_VIEW_PERSPECTIVE:
 							irr_SetFont(ui_font1);
-							irr_DrawText("Perspective", 10, 10, irr::video::SColor(255,255,255,255), i);
+							irr_DrawText("Perspective", 10, 10, hud_color, i);
 							camera[i].camera.camera->setProjectionMatrix(perspective_matrix);
 
 							if(draw_axis_widget)
@@ -561,7 +561,7 @@ void wxIrrlicht::OnRender() {
 							break;
 				}
 
-				if(show_camera_info)
+				if(show_camera_pos || show_camera_rot)
 				{
 					irr_SetFont(ui_font2);
 					wxString pos_str = _("POS: ") + wxString::Format(_("%d"), (int)camera[i].camera.x) + _(", ") +
@@ -571,8 +571,16 @@ void wxIrrlicht::OnRender() {
 					wxString rot_str = _("ROT: ") + wxString::Format(_("%d"), (int)( ((int)camera[i].camera.rx) % 360)) + _(", ") +
 													wxString::Format(_("%d"), (int)( ((int)camera[i].camera.ry) % 360)) + _(", ") +
 													wxString::Format(_("%d"), (int)( ((int)camera[i].camera.rz) % 360));
-					irr_DrawText(pos_str.ToStdString(), camera[i].w-200, 10, irr::video::SColor(255,255,255,255), i);
-					irr_DrawText(rot_str.ToStdString(), camera[i].w-200, 30, irr::video::SColor(255,255,255,255), i);
+					int c_info_y = 10;
+
+					if(show_camera_pos)
+					{
+						irr_DrawText(pos_str.ToStdString(), camera[i].w-200, c_info_y, hud_color, i);
+						c_info_y+= 20;
+					}
+
+					if(show_camera_rot)
+						irr_DrawText(rot_str.ToStdString(), camera[i].w-200, c_info_y, hud_color, i);
 				}
 
 				m_pDriver->setRenderTarget(camera[i].texture, true, true, irr::video::SColor(255,170,170,170));
@@ -631,7 +639,7 @@ void wxIrrlicht::OnRender() {
 
 					//m_pDriver->draw2DRectangleOutline(box_select_shape);
 				}
-				else if(stage_edit_tool == RC_EDIT_TOOL_MOVE && selected_actors.size() > 0)
+				else if(stage_edit_tool == RC_EDIT_TOOL_MOVE && selected_actors.size() > 0 && show_axis_lines)
 				{
 					irr::core::vector3df vx(1000, 0, 0);
 					irr::core::vector3df vy(0, 1000, 0);
@@ -640,7 +648,7 @@ void wxIrrlicht::OnRender() {
 					drawLine(transform_tool_widget.pos-vy, transform_tool_widget.pos+vy, irr::video::SColor(255, 0, 255, 0));
 					drawLine(transform_tool_widget.pos-vz, transform_tool_widget.pos+vz, irr::video::SColor(255, 0, 0, 255));
 				}
-				else if(stage_edit_tool == RC_EDIT_TOOL_ROTATE && selected_actors.size() > 0)
+				else if(stage_edit_tool == RC_EDIT_TOOL_ROTATE && selected_actors.size() > 0 && show_axis_rings)
 				{
 					drawCircle(transform_tool_widget.pos, 50, irr::core::vector3df(1,0,0), irr::video::SColor(255, 255, 0, 0));
 					drawCircle(transform_tool_widget.pos, 50, irr::core::vector3df(0,1,0), irr::video::SColor(255, 0, 255, 0));
@@ -1665,32 +1673,47 @@ void wxIrrlicht::OnUpdate()
 
 				irr::core::vector3df axis_lock_vector(axis_lock_factor_x, axis_lock_factor_y, axis_lock_factor_z);
 
-				switch(camera[box_select_view].pov) //box_select_view can be used for every other tool
+				irr::core::vector2di t_pos = collman->getScreenCoordinatesFrom3DPosition(transform_tool_widget.pos, camera[box_select_view].camera.camera, true);
+				double start_distance = irr::core::vector2di(drag_start.x, drag_start.y).getDistanceFrom(t_pos);
+				double current_distance = irr::core::vector2di(px, py).getDistanceFrom(t_pos);
+				double scale_distance = current_distance - start_distance;
+
+				if(!(transform_tool_widget.lock_x || transform_tool_widget.lock_y || transform_tool_widget.lock_z))
 				{
-					case RC_CAMERA_VIEW_FRONT:
-						scale_vector.set(((double)px - drag_start.x)*scale_factor_x, ((double)(drag_start.y - py))*scale_factor_y, 0);
-					break;
+					double sx = ((double)px - drag_start.x)*scale_factor_x;
+					double sy = ((double)(drag_start.y - py))*scale_factor_y;
+					double scale_n = scale_distance;
+					scale_vector.set(scale_n, scale_n, scale_n);
+				}
+				else
+				{
+					switch(camera[box_select_view].pov) //box_select_view can be used for every other tool
+					{
+						case RC_CAMERA_VIEW_FRONT:
+							scale_vector.set(scale_distance, scale_distance, 0);
+						break;
 
-					case RC_CAMERA_VIEW_TOP:
-						scale_vector.set(((double)px - drag_start.x)*scale_factor_x, 0, ((double)(drag_start.y - py))*scale_factor_y);
-					break;
+						case RC_CAMERA_VIEW_TOP:
+							scale_vector.set(scale_distance, 0, -scale_distance);
+						break;
 
-					case RC_CAMERA_VIEW_RIGHT:
-						scale_vector.set(0, ((double)(drag_start.y - py))*scale_factor_y, ((double)drag_start.x - px)*scale_factor_x);
-					break;
+						case RC_CAMERA_VIEW_RIGHT:
+							scale_vector.set(0, scale_distance, scale_distance);
+						break;
 
-					case RC_CAMERA_VIEW_PERSPECTIVE:
-						//scale_vector.set(((double)px - drag_start.x)*translate_factor_x, ((double)(drag_start.y - py))*translate_factor_y, 0);
-						//irr::core::matrix4 tmat = camera[box_select_view].camera.camera->getAbsoluteTransformation();
-						//irr::core::vector3df dvec = camera[box_select_view].camera.camera->getTarget();
+						case RC_CAMERA_VIEW_PERSPECTIVE:
+							//scale_vector.set(((double)px - drag_start.x)*translate_factor_x, ((double)(drag_start.y - py))*translate_factor_y, 0);
+							//irr::core::matrix4 tmat = camera[box_select_view].camera.camera->getAbsoluteTransformation();
+							//irr::core::vector3df dvec = camera[box_select_view].camera.camera->getTarget();
 
-						//double zy = (((double)(drag_start.y - py))*translate_factor_y) * ( ( 180 - ((int)(camera[box_select_view].camera.ry-90)%180) )/180);
-						//double zx = (((double)(px - drag_start.x))*translate_factor_x) * ( ( 180 - ((int)(camera[box_select_view].camera.rx-90)%180) )/180);
+							//double zy = (((double)(drag_start.y - py))*translate_factor_y) * ( ( 180 - ((int)(camera[box_select_view].camera.ry-90)%180) )/180);
+							//double zx = (((double)(px - drag_start.x))*translate_factor_x) * ( ( 180 - ((int)(camera[box_select_view].camera.rx-90)%180) )/180);
 
-						scale_vector.set(((double)px - drag_start.x)*scale_factor_x, ((double)(drag_start.y - py))*scale_factor_y, 0);
-						scale_vector.rotateXZBy(-camera[box_select_view].camera.ry);
-						scale_vector.rotateYZBy(camera[box_select_view].camera.rx);
-					break;
+							scale_vector.set(scale_distance, -scale_distance, scale_distance);
+							scale_vector.rotateXZBy(-camera[box_select_view].camera.ry);
+							scale_vector.rotateYZBy(camera[box_select_view].camera.rx);
+						break;
+					}
 				}
 
 				scale_vector *= axis_lock_vector;

@@ -392,18 +392,18 @@ class Serenity3D_Frame : public wxFrame
 		wxColourPickerCtrl* m_viewportSettings_gridColor_colourPicker;
 		wxPanel* m_panel392;
 		wxStaticText* m_staticText58;
-		wxCheckBox* m_checkBox10;
-		wxCheckBox* m_checkBox11;
+		wxCheckBox* m_toolSettings_showAxisLines_checkBox;
+		wxCheckBox* m_toolSettings_showAxisRings_checkBox;
 		wxPanel* m_panel403;
 		wxStaticText* m_staticText59;
-		wxCheckBox* m_checkBox12;
-		wxCheckBox* m_checkBox13;
+		wxCheckBox* m_cameraSettings_showPosition_checkBox;
+		wxCheckBox* m_cameraSettings_showRotation_checkBox;
 		wxStaticText* m_staticText60;
-		wxSpinCtrlDouble* m_spinCtrlDouble2;
+		wxSpinCtrlDouble* m_cameraSettings_moveSpeed_spinCtrlDouble;
 		wxPanel* m_panel412;
 		wxStaticText* m_staticText61;
 		wxStaticText* m_staticText62;
-		wxColourPickerCtrl* m_colourPicker7;
+		wxColourPickerCtrl* m_viewHUD_color_colourPicker;
 		wxPanel* m_meshDB_panel;
 		wxSplitterWindow* m_splitter51;
 		wxPanel* m_panel28;
@@ -571,6 +571,12 @@ class Serenity3D_Frame : public wxFrame
 		virtual void On_StageSettings_SetGridSize( wxSpinEvent& event ) { event.Skip(); }
 		virtual void On_StageSettings_SetGridSpacing( wxSpinEvent& event ) { event.Skip(); }
 		virtual void On_StageSettings_SetGridColor( wxColourPickerEvent& event ) { event.Skip(); }
+		virtual void On_StageSettings_ShowAxisLines( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_StageSettings_ShowAxisRings( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_StageSettings_ShowViewCameraPosition( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_StageSettings_ShowViewCameraRotation( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_StageSettings_ViewCameraSpeed( wxSpinDoubleEvent& event ) { event.Skip(); }
+		virtual void On_StageSettings_ViewHUDColor( wxColourPickerEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_Load_ButtonClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_Remove_ButtonClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_Save_ButtonClick( wxCommandEvent& event ) { event.Skip(); }
@@ -737,8 +743,7 @@ class NewOctree_Dialog : public wxDialog
 		wxStaticText* m_staticText33;
 		wxTextCtrl* m_actorID_textCtrl;
 		wxStaticText* m_staticText34;
-		wxTextCtrl* m_selectedMesh_textCtrl;
-		wxButton* m_find_button;
+		wxSearchCtrl* m_searchCtrl4;
 		wxListBox* m_mesh_listBox;
 		wxButton* m_cancel_button;
 		wxButton* m_create_button;

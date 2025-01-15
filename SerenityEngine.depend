@@ -1,8 +1,8 @@
 # depslib dependency file v1.0
-1736625252 source:/home/n00b/Projects/SerenityEngine/Serenity3D_Editor.cpp
+1736904368 source:/home/n00b/Projects/SerenityEngine/Serenity3D_Editor.cpp
 	"Serenity3D_Editor.h"
 
-1736835489 /home/n00b/Projects/SerenityEngine/Serenity3D_Editor.h
+1736904368 /home/n00b/Projects/SerenityEngine/Serenity3D_Editor.h
 	<wx/artprov.h>
 	<wx/xrc/xmlres.h>
 	<wx/string.h>
@@ -1432,7 +1432,7 @@
 	"wx/icon.h"
 	"wx/aui/auibook.h"
 
-1736810632 source:/home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.cpp
+1736904594 source:/home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.cpp
 	<wx/stdpaths.h>
 	<wx/propgrid/manager.h>
 	<wx/propgrid/propgridpagestate.h>
@@ -1460,7 +1460,7 @@
 	"SerenityEditor_NewStage_Dialog.h"
 	"SerenityEditor_DeleteStageAlert_Dialog.h"
 
-1736800329 /home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.h
+1736901541 /home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.h
 	<vector>
 	<wx/propgrid/propgrid.h>
 	<wx/propgrid/advprops.h>
@@ -2198,7 +2198,7 @@
 
 1704201762 /usr/include/x86_64-linux-gnu/bits/types/struct_statx.h
 
-1736830781 source:/home/n00b/Projects/SerenityEngine/wxIrrlicht.cpp
+1736904534 source:/home/n00b/Projects/SerenityEngine/wxIrrlicht.cpp
 	<wx/wx.h>
 	<wx/stdpaths.h>
 	<wx/filename.h>
@@ -5380,7 +5380,7 @@
 
 1720630994 /usr/include/gtk-3.0/gtk/gtk-autocleanups.h
 
-1736830612 /home/n00b/Projects/SerenityEngine/wxIrrlicht.h
+1736900502 /home/n00b/Projects/SerenityEngine/wxIrrlicht.h
 	<windows.h>
 	<irrlicht.h>
 	<wx/wx.h>
@@ -9686,7 +9686,7 @@
 	"engine_base.h"
 	"rc_stage.h"
 
-1736475048 /home/n00b/Projects/SerenityEngine/engine_base.h
+1736902942 /home/n00b/Projects/SerenityEngine/engine_base.h
 	<wx/wx.h>
 	<wx/filename.h>
 	<vector>

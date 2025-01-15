@@ -198,14 +198,41 @@ Serenity3D_Frame( parent )
 	meshTab_preview_obj.node = NULL;
 
 	project.setGridColor( irr::video::SColor(255, 70, 70, 70).color );
-	project.setGridSize(2500);
+	project.setGridSize(5000);
 	project.setGridSpacing(100);
 	project.grid_visible = true;
+	project.show_axis_lines = true;
+	project.show_axis_rings = true;
+	project.show_camera_pos = false;
+	project.show_camera_rot = false;
+	project.camera_speed = 5;
+	project.hud_color = irr::video::SColor(255,255,255,255);
+
+	if(current_window)
+	{
+		current_window->grid_size = project.grid_size;
+		current_window->grid_color = irr::video::SColor(project.grid_color);
+		current_window->grid_spacing = project.grid_spacing;
+		current_window->grid_visible = project.grid_visible;
+		current_window->show_axis_lines = project.show_axis_lines;
+		current_window->show_axis_rings = project.show_axis_rings;
+		current_window->show_camera_pos = project.show_camera_pos;
+		current_window->show_camera_rot = project.show_camera_rot;
+		current_window->cam_move_speed = project.camera_speed;
+		current_window->hud_color = project.hud_color;
+	}
 
 	m_viewportSettings_showGrid_checkBox->SetValue(project.grid_visible);
 	m_viewportSettings_gridSize_spinCtrl->SetValue(project.grid_size);
 	m_viewportSettings_gridSpacing_spinCtrl->SetValue(project.grid_spacing);
 	m_viewportSettings_gridColor_colourPicker->SetColour( wxColour(70, 70, 70, 255) );
+
+	m_toolSettings_showAxisLines_checkBox->SetValue(project.show_axis_lines);
+	m_toolSettings_showAxisRings_checkBox->SetValue(project.show_axis_rings);
+	m_cameraSettings_showPosition_checkBox->SetValue(project.show_camera_pos);
+	m_cameraSettings_showRotation_checkBox->SetValue(project.show_camera_rot);
+	m_cameraSettings_moveSpeed_spinCtrlDouble->SetValue(project.camera_speed);
+	m_viewHUD_color_colourPicker->SetColour( wxColour(255, 255, 255, 255) );
 
 	editor_path = wxStandardPaths::Get().GetExecutablePath();
 
@@ -415,6 +442,12 @@ void SerenityEditorSerenity3D_Frame::createIrrlichtStageWindow()
 	stage_window->grid_size = project.grid_size;
 	stage_window->grid_spacing = project.grid_spacing;
 	stage_window->grid_visible = project.grid_visible;
+	stage_window->show_axis_lines = project.show_axis_lines;
+	stage_window->show_axis_rings = project.show_axis_rings;
+	stage_window->show_camera_pos = project.show_camera_pos;
+	stage_window->show_camera_rot = project.show_camera_rot;
+	stage_window->cam_move_speed = project.camera_speed;
+	stage_window->hud_color = project.hud_color;
 
 	stage_window->InitIrr();
 	stage_window->StartRendering();
@@ -4842,6 +4875,46 @@ void SerenityEditorSerenity3D_Frame::On_StageSettings_SetGridColor( wxColourPick
 	if(stage_window)
 		stage_window->setGridColor(project.grid_color);
 }
+
+void SerenityEditorSerenity3D_Frame::On_StageSettings_ShowAxisLines( wxCommandEvent& event )
+{
+	if(current_window)
+		current_window->show_axis_lines = event.IsChecked();
+}
+
+void SerenityEditorSerenity3D_Frame::On_StageSettings_ShowAxisRings( wxCommandEvent& event )
+{
+	if(current_window)
+		current_window->show_axis_rings = event.IsChecked();
+}
+
+void SerenityEditorSerenity3D_Frame::On_StageSettings_ShowViewCameraPosition( wxCommandEvent& event )
+{
+	if(current_window)
+		current_window->show_camera_pos = event.IsChecked();
+}
+
+void SerenityEditorSerenity3D_Frame::On_StageSettings_ShowViewCameraRotation( wxCommandEvent& event )
+{
+	if(current_window)
+		current_window->show_camera_rot = event.IsChecked();
+}
+
+void SerenityEditorSerenity3D_Frame::On_StageSettings_ViewCameraSpeed( wxSpinDoubleEvent& event )
+{
+	if(current_window)
+		current_window->cam_move_speed = event.GetValue();
+}
+
+void SerenityEditorSerenity3D_Frame::On_StageSettings_ViewHUDColor( wxColourPickerEvent& event )
+{
+	if(current_window)
+		current_window->hud_color = irr::video::SColor( event.GetColour().GetAlpha(),
+														event.GetColour().GetRed(),
+														event.GetColour().GetGreen(),
+														event.GetColour().GetBlue() );
+}
+
 
 
 void SerenityEditorSerenity3D_Frame::updateToolSelection()

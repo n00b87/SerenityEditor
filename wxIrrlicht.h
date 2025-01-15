@@ -149,8 +149,6 @@ class wxIrrlicht : public wxControl {
         int ui_font1 = -1;
         int ui_font2 = -1;
 
-        bool show_camera_info = true;
-
         irr::f32 grid_size = 2500;
         irr::f32 grid_spacing = 100;
         irr::video::SColor grid_color;
@@ -225,6 +223,12 @@ class wxIrrlicht : public wxControl {
         bool middle_drag_init = false;
         bool left_drag_init = false;
         bool right_drag_init = false;
+
+        bool show_axis_lines = true;
+        bool show_axis_rings = true;
+        bool show_camera_pos = false;
+        bool show_camera_rot = false;
+        irr::video::SColor hud_color;
 
         int cam_move_speed = 5;
 

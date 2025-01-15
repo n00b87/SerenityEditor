@@ -25,6 +25,12 @@ public:
 	bool grid_visible;
 	float grid_size;
 	float grid_spacing;
+	bool show_axis_lines = true;
+	bool show_axis_rings = true;
+	bool show_camera_pos = false;
+	bool show_camera_rot = false;
+	double camera_speed = 5;
+	irr::video::SColor hud_color;
 	std::vector<rc_stage> stages;
 	std::vector<rc_material> materials;
 	std::vector<rc_texture> textures;
