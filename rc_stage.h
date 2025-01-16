@@ -259,6 +259,7 @@ class rc_stage
 		void clearStage();
 
 		void clearActorVector(std::vector<rc_actor>& actor_vector);
+		int addActor(std::string actor_id, int actor_type);
 
 };
 

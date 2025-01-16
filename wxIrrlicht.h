@@ -80,7 +80,7 @@ struct actor_object
 	irr::core::vector2di v2[4];
 	irr::core::vector3df t_start;
 
-	irr::core::vector3df* rotation; //I manually control rotation order for simplicity so it will be stored here
+	irr::core::vector3df* rotation = NULL; //I manually control rotation order for simplicity so it will be stored here
 
 	bool use_override_size = false;
 	irr::core::aabbox3df override_box;
@@ -108,6 +108,8 @@ struct axis_obj
 	irr::core::recti view_box_z[4];
 
 	bool tool_init = false;
+
+	double cursor3d_distance = 30;
 };
 
 class wxIrrlicht : public wxControl {
@@ -160,6 +162,7 @@ class wxIrrlicht : public wxControl {
         axis_obj transform_tool_widget;
 
         void setTransformToolBox();
+        irr::core::vector3df getNewActorPosition();
 
         void setGridSize(irr::f32 g_size);
         void setGridSpacing(irr::f32 g_spacing);

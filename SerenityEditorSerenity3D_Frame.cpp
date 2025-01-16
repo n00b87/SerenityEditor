@@ -11,7 +11,6 @@
 #include "rc_stage.h"
 #include "rc_defines.h"
 #include "SerenityEditor_NewProject_Dialog.h"
-#include "SerenityEditor_NewOctree_Dialog.h"
 #include "SerenityEditor_AddTexture_Dialog.h"
 #include "SerenityEditor_SetMaterialTextureLevel_Dialog.h"
 #include "SerenityEditor_MaterialPreviewSettings_Dialog.h"
@@ -24,6 +23,16 @@
 #include "SerenityEditor_EditStageGroup_Dialog.h"
 #include "SerenityEditor_NewStage_Dialog.h"
 #include "SerenityEditor_DeleteStageAlert_Dialog.h"
+#include "SerenityEditor_DeleteActorAlert_Dialog.h"
+#include "SerenityEditor_NewAnimatedActor_Dialog.h"
+#include "SerenityEditor_NewOctreeActor_Dialog.h"
+#include "SerenityEditor_NewBillboardActor_Dialog.h"
+#include "SerenityEditor_NewLightActor_Dialog.h"
+#include "SerenityEditor_NewParticleActor_Dialog.h"
+#include "SerenityEditor_NewTerrainActor_Dialog.h"
+#include "SerenityEditor_NewWaterActor_Dialog.h"
+#include "SerenityEditor_NewCubeActor_Dialog.h"
+#include "SerenityEditor_NewSphereActor_Dialog.h"
 
 SerenityEditorSerenity3D_Frame::SerenityEditorSerenity3D_Frame( wxWindow* parent )
 :
@@ -437,6 +446,23 @@ void SerenityEditorSerenity3D_Frame::createIrrlichtStageWindow()
 	stage_window->window_type = RC_IRR_WINDOW_NAV3D;
 
 	//wxMessageBox(_("PRE:") + wxString::Format(_("%d"), (int)project.grid_size) + _(", ") + wxString::Format(_("%d"), (int)project.grid_spacing) + _(", ") + wxString::Format(_("%d"), (int)project.grid_visible));
+
+	project.grid_visible = m_viewportSettings_showGrid_checkBox->GetValue();
+	project.grid_size = m_viewportSettings_gridSize_spinCtrl->GetValue();
+	project.grid_spacing = m_viewportSettings_gridSpacing_spinCtrl->GetValue();
+	project.grid_color = irr::video::SColor( m_viewportSettings_gridColor_colourPicker->GetColour().GetAlpha(),
+											 m_viewportSettings_gridColor_colourPicker->GetColour().GetRed(),
+											 m_viewportSettings_gridColor_colourPicker->GetColour().GetGreen(),
+											 m_viewportSettings_gridColor_colourPicker->GetColour().GetBlue()).color;
+	project.show_axis_lines = m_toolSettings_showAxisLines_checkBox->GetValue();
+	project.show_axis_rings = m_toolSettings_showAxisRings_checkBox->GetValue();
+	project.show_camera_pos = m_cameraSettings_showPosition_checkBox->GetValue();
+	project.show_camera_rot = m_cameraSettings_showRotation_checkBox->GetValue();
+	project.camera_speed = m_cameraSettings_moveSpeed_spinCtrlDouble->GetValue();
+	project.hud_color = irr::video::SColor( m_viewHUD_color_colourPicker->GetColour().GetAlpha(),
+											m_viewHUD_color_colourPicker->GetColour().GetRed(),
+											m_viewHUD_color_colourPicker->GetColour().GetGreen(),
+											m_viewHUD_color_colourPicker->GetColour().GetBlue() );
 
 	stage_window->grid_color = project.grid_color;
 	stage_window->grid_size = project.grid_size;
@@ -1188,6 +1214,11 @@ bool SerenityEditorSerenity3D_Frame::delete_actor(int stage_index, int actor_sta
 
 void SerenityEditorSerenity3D_Frame::On_Stage_DeleteGroup( wxCommandEvent& event )
 {
+	if(stage_window)
+	{
+		stage_window->selected_actors.clear();
+	}
+
 	SerenityEditor_DeleteGroupAlert_Dialog* dialog = new SerenityEditor_DeleteGroupAlert_Dialog(this);
 
 	wxTreeItemId selection = m_project_stage_treeCtrl->GetSelection();
@@ -1234,6 +1265,7 @@ void SerenityEditorSerenity3D_Frame::On_Stage_DeleteGroup( wxCommandEvent& event
 	{
 		if(stage_tree_nodes[stage_node_index].actors[i].parent_item == group_item)
 		{
+			//delete actors and tree items
 			delete_actor(stage_tree_nodes[stage_node_index].project_index, stage_tree_nodes[stage_node_index].actors[i].project_index);
 			m_project_stage_treeCtrl->Delete(stage_tree_nodes[stage_node_index].actors[i].tree_item);
 			stage_tree_nodes[stage_node_index].actors[i].node_type = RC_STAGE_NODE_NONE;
@@ -1256,6 +1288,14 @@ void SerenityEditorSerenity3D_Frame::On_Stage_DeleteGroup( wxCommandEvent& event
 	m_project_stage_treeCtrl->Delete(group_item);
 	stage_tree_nodes[stage_node_index].groups[group_node_index].group_label = _("");
 	stage_tree_nodes[stage_node_index].groups[group_node_index].node_type = RC_STAGE_NODE_NONE;
+
+
+	if(stage_window)
+	{
+		stage_window->selected_actors.clear();
+	}
+
+	m_project_stage_treeCtrl->SelectItem(stage_tree_nodes[stage_node_index].tree_item);
 }
 
 void SerenityEditorSerenity3D_Frame::On_Stage_EditGroup( wxCommandEvent& event )
@@ -1400,6 +1440,68 @@ void SerenityEditorSerenity3D_Frame::On_Stage_EditGroup( wxCommandEvent& event )
 			}
 		}
 	}
+}
+
+void SerenityEditorSerenity3D_Frame::On_Stage_DeleteActor( wxCommandEvent& event )
+{
+	int stage_project_index = -1;
+	int actor_project_index = -1;
+
+	int s_node_index = -1;
+	int a_node_index = -1;
+
+	wxTreeItemId selected_item = m_project_stage_treeCtrl->GetSelection();
+
+	for(int stage_node_index = 0; stage_node_index < stage_tree_nodes.size(); stage_node_index++)
+	{
+		for(int i = 0; i < stage_tree_nodes[stage_node_index].actors.size(); i++)
+		{
+			if(stage_tree_nodes[stage_node_index].actors[i].tree_item == selected_item)
+			{
+				s_node_index = stage_node_index;
+				a_node_index = i;
+				break;
+			}
+		}
+	}
+
+	if(a_node_index < 0)
+	{
+		wxMessageBox(_("Can't delete actor. No actor has been selected"));
+		return;
+	}
+
+	stage_project_index = stage_tree_nodes[s_node_index].project_index;
+
+	if(stage_project_index < 0 || stage_project_index >= project.stages.size())
+		return;
+
+	actor_project_index = stage_tree_nodes[s_node_index].actors[a_node_index].project_index;
+
+	if(actor_project_index < 0 || actor_project_index >= project.stages[stage_project_index].actors.size())
+		return;
+
+
+	SerenityEditor_DeleteActorAlert_Dialog* dialog = new SerenityEditor_DeleteActorAlert_Dialog(this);
+	dialog->setActorID(wxString::FromUTF8(project.stages[stage_project_index].actors[actor_project_index].id_name));
+
+	dialog->ShowModal();
+
+	if(!dialog->delete_flag)
+		return;
+
+
+	//delete actors and tree items
+	delete_actor(stage_project_index, actor_project_index);
+	m_project_stage_treeCtrl->Delete(stage_tree_nodes[s_node_index].actors[a_node_index].tree_item);
+	stage_tree_nodes[s_node_index].actors[a_node_index].node_type = RC_STAGE_NODE_NONE;
+
+	if(stage_window)
+	{
+		stage_window->selected_actors.clear();
+	}
+
+	m_project_stage_treeCtrl->SelectItem(stage_tree_nodes[s_node_index].tree_item);
 }
 
 int SerenityEditorSerenity3D_Frame::getCurrentStageNodeIndex()
@@ -3114,7 +3216,7 @@ void SerenityEditorSerenity3D_Frame::OnStagePropertyGridChanged( wxPropertyGridE
 		int actor_index = stageTabGrid_current_actor;
 		wxString img_id = _("");
 
-		img_id = m_stageProperties_propertyGridPage->GetPropertyByName(_("hmap_image_id"))->GetValueAsString();
+		img_id = page->GetPropertyByName(_("hmap_image_id"))->GetValueAsString();
 		int img_index = project.getTextureIndex(img_id);
 
 		if(img_index < 0 || img_index >= project.textures.size())
@@ -3130,8 +3232,10 @@ void SerenityEditorSerenity3D_Frame::OnStagePropertyGridChanged( wxPropertyGridE
 		}
 		if(stage_index == stageTab_active_stage_project_index)
 		{
+			//wxMessageBox(_("YO"));
 			project.stages[stage_index].actors[actor_index].node->remove();
 			project.stages[stage_index].actors[actor_index].node = NULL;
+			//wxMessageBox(_("CHANGE HMAP"));
 			refresh_actor(actor_index);
 		}
 	}
@@ -4677,6 +4781,11 @@ void SerenityEditorSerenity3D_Frame::On_Stage_StageNodeSelected( wxTreeEvent& ev
 	int group_node_index = -1;
 	int actor_node_index = -1;
 
+	if(stage_window)
+	{
+		stage_window->selected_actors.clear();
+	}
+
 	int node_type = RC_STAGE_NODE_NONE;
 
 	for(int i = 0; i < stage_tree_nodes.size(); i++)
@@ -4757,6 +4866,7 @@ void SerenityEditorSerenity3D_Frame::On_Stage_StageNodeSelected( wxTreeEvent& ev
 					scene_obj.id_name = project.stages[stage_project_index].actors[actor_stage_index].id_name;
 					scene_obj.isSelected = true;
 					scene_obj.node = project.stages[stage_project_index].actors[actor_stage_index].node;
+					scene_obj.rotation = &project.stages[stage_project_index].actors[actor_stage_index].rotation;
 
 					if(project.stages[stage_project_index].actors[actor_stage_index].type == SN_ACTOR_TYPE_LIGHT)
 					{
@@ -5012,6 +5122,10 @@ void SerenityEditorSerenity3D_Frame::OnS3DCubeClicked( wxCommandEvent& event )
 		return;
 	stage_tools_selection = getStageToolIndex(m_s3d_cube_tool);
 	updateToolSelection();
+
+	SerenityEditor_NewCubeActor_Dialog* dialog = new SerenityEditor_NewCubeActor_Dialog(this);
+
+	dialog->ShowModal();
 }
 
 void SerenityEditorSerenity3D_Frame::OnS3DSphereClicked( wxCommandEvent& event )
@@ -5020,6 +5134,10 @@ void SerenityEditorSerenity3D_Frame::OnS3DSphereClicked( wxCommandEvent& event )
 		return;
 	stage_tools_selection = getStageToolIndex(m_s3d_sphere_tool);
 	updateToolSelection();
+
+	SerenityEditor_NewSphereActor_Dialog* dialog = new SerenityEditor_NewSphereActor_Dialog(this);
+
+	dialog->ShowModal();
 }
 
 void SerenityEditorSerenity3D_Frame::OnS3DCylinderClicked( wxCommandEvent& event )
@@ -5032,19 +5150,182 @@ void SerenityEditorSerenity3D_Frame::OnS3DDumpClicked( wxCommandEvent& event )
 {
 	if(!current_window)
 		return;
+
+	if(stageTab_active_stage_project_index < 0 || stageTab_active_stage_project_index >= project.stages.size())
+	{
+		wxMessageBox(_("Must have an active stage to create an actor in"));
+		return;
+	}
+
 	stage_tools_selection = getStageToolIndex(m_s3d_octreeActor_tool);
 	updateToolSelection();
 
-	SerenityEditor_NewOctree_Dialog* create_octree_win = new SerenityEditor_NewOctree_Dialog(this, &project);
-	create_octree_win->ShowModal();
+	SerenityEditor_NewOctreeActor_Dialog* dialog = new SerenityEditor_NewOctreeActor_Dialog(this);
+
+	for(int i = 0; i < project.meshes.size(); i++)
+	{
+		dialog->meshes.push_back(project.meshes[i].id_name);
+	}
+
+	dialog->refresh_list();
+
+	dialog->ShowModal();
+
+	if(!dialog->create_flag)
+		return;
+
+	int mesh_index = -1;
+	wxString mesh_id_name = dialog->mesh_id_name;
+
+	for(int i = 0; i < project.meshes.size(); i++)
+	{
+		if(project.meshes[i].id_name.compare(mesh_id_name.ToStdString())==0)
+		{
+			mesh_index = i;
+			break;
+		}
+	}
+
+	wxString actor_id = dialog->id_name;
+
+	if(!isValidID(actor_id, RC_ID_ACTOR))
+	{
+		wxMessageBox(_("Warning: Actor ID is invalid. A default Actor ID will be generated."));
+		actor_id = project.genActorID(stageTab_active_stage_project_index);
+	}
+
+	int actor_project_index = project.stages[stageTab_active_stage_project_index].addActor(actor_id.ToStdString(), SN_ACTOR_TYPE_OCTREE);
+
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].mesh_index = mesh_index;
+
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].position = current_window->getNewActorPosition();
+
+	Serenity_StageNode s_actor_node;
+	s_actor_node.node_type = RC_STAGE_NODE_ACTOR;
+	s_actor_node.group_label = _("");
+	s_actor_node.active = false;
+	s_actor_node.project_index = actor_project_index; //index in stage.actors
+
+	int stage_node_index = -1;
+	for(int i = 0; i < stage_tree_nodes.size(); i++)
+	{
+		if(stage_tree_nodes[i].project_index == stageTab_active_stage_project_index)
+		{
+			stage_node_index = i;
+			break;
+		}
+	}
+
+	s_actor_node.parent_item = stage_tree_nodes[stage_node_index].tree_item;
+	s_actor_node.tree_item = m_project_stage_treeCtrl->AppendItem(s_actor_node.parent_item, wxString::FromUTF8(project.stages[stageTab_active_stage_project_index].actors[actor_project_index].id_name), stage_tree_assetImage );
+	stage_tree_nodes[stage_node_index].actors.push_back(s_actor_node);
+
+	refresh_actor(actor_project_index);
+	m_project_stage_treeCtrl->SelectItem(s_actor_node.tree_item);
+
+	if(stage_window)
+	{
+		actor_object scene_actor;
+		scene_actor.actor_index = actor_project_index;
+		scene_actor.id_name = project.stages[stageTab_active_stage_project_index].actors[actor_project_index].id_name;
+		scene_actor.node = project.stages[stageTab_active_stage_project_index].actors[actor_project_index].node;
+		scene_actor.rotation = &project.stages[stageTab_active_stage_project_index].actors[actor_project_index].rotation;
+
+		stage_window->scene_actors.push_back(scene_actor);
+		stage_window->selected_actors.clear();
+		stage_window->selected_actors.push_back(scene_actor);
+	}
 }
 
 void SerenityEditorSerenity3D_Frame::OnS3DWizClicked( wxCommandEvent& event )
 {
 	if(!current_window)
 		return;
+
+	if(stageTab_active_stage_project_index < 0 || stageTab_active_stage_project_index >= project.stages.size())
+	{
+		wxMessageBox(_("Must have an active stage to create an actor in"));
+		return;
+	}
+
 	stage_tools_selection = getStageToolIndex(m_s3d_animatedActor_tool);
 	updateToolSelection();
+
+	SerenityEditor_NewAnimatedActor_Dialog* dialog = new SerenityEditor_NewAnimatedActor_Dialog(this);
+
+	for(int i = 0; i < project.meshes.size(); i++)
+	{
+		dialog->meshes.push_back(project.meshes[i].id_name);
+	}
+
+	dialog->refresh_list();
+
+	dialog->ShowModal();
+
+	if(!dialog->create_flag)
+		return;
+
+	int mesh_index = -1;
+	wxString mesh_id_name = dialog->mesh_id_name;
+
+	for(int i = 0; i < project.meshes.size(); i++)
+	{
+		if(project.meshes[i].id_name.compare(mesh_id_name.ToStdString())==0)
+		{
+			mesh_index = i;
+			break;
+		}
+	}
+
+	wxString actor_id = dialog->id_name;
+
+	if(!isValidID(actor_id, RC_ID_ACTOR))
+	{
+		wxMessageBox(_("Warning: Actor ID is invalid. A default Actor ID will be generated."));
+		actor_id = project.genActorID(stageTab_active_stage_project_index);
+	}
+
+	int actor_project_index = project.stages[stageTab_active_stage_project_index].addActor(actor_id.ToStdString(), SN_ACTOR_TYPE_ANIMATED);
+
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].mesh_index = mesh_index;
+
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].position = current_window->getNewActorPosition();
+
+	Serenity_StageNode s_actor_node;
+	s_actor_node.node_type = RC_STAGE_NODE_ACTOR;
+	s_actor_node.group_label = _("");
+	s_actor_node.active = false;
+	s_actor_node.project_index = actor_project_index; //index in stage.actors
+
+	int stage_node_index = -1;
+	for(int i = 0; i < stage_tree_nodes.size(); i++)
+	{
+		if(stage_tree_nodes[i].project_index == stageTab_active_stage_project_index)
+		{
+			stage_node_index = i;
+			break;
+		}
+	}
+
+	s_actor_node.parent_item = stage_tree_nodes[stage_node_index].tree_item;
+	s_actor_node.tree_item = m_project_stage_treeCtrl->AppendItem(s_actor_node.parent_item, wxString::FromUTF8(project.stages[stageTab_active_stage_project_index].actors[actor_project_index].id_name), stage_tree_assetImage );
+	stage_tree_nodes[stage_node_index].actors.push_back(s_actor_node);
+
+	refresh_actor(actor_project_index);
+	m_project_stage_treeCtrl->SelectItem(s_actor_node.tree_item);
+
+	if(stage_window)
+	{
+		actor_object scene_actor;
+		scene_actor.actor_index = actor_project_index;
+		scene_actor.id_name = project.stages[stageTab_active_stage_project_index].actors[actor_project_index].id_name;
+		scene_actor.node = project.stages[stageTab_active_stage_project_index].actors[actor_project_index].node;
+		scene_actor.rotation = &project.stages[stageTab_active_stage_project_index].actors[actor_project_index].rotation;
+
+		stage_window->scene_actors.push_back(scene_actor);
+		stage_window->selected_actors.clear();
+		stage_window->selected_actors.push_back(scene_actor);
+	}
 }
 
 void SerenityEditorSerenity3D_Frame::OnS3DBillboardClicked( wxCommandEvent& event )
@@ -5053,6 +5334,10 @@ void SerenityEditorSerenity3D_Frame::OnS3DBillboardClicked( wxCommandEvent& even
 		return;
 	stage_tools_selection = getStageToolIndex(m_s3d_billboardActor_tool);
 	updateToolSelection();
+
+	SerenityEditor_NewBillboardActor_Dialog* dialog = new SerenityEditor_NewBillboardActor_Dialog(this);
+
+	dialog->ShowModal();
 }
 
 void SerenityEditorSerenity3D_Frame::OnS3DLightClicked( wxCommandEvent& event )
@@ -5061,6 +5346,10 @@ void SerenityEditorSerenity3D_Frame::OnS3DLightClicked( wxCommandEvent& event )
 		return;
 	stage_tools_selection = getStageToolIndex(m_s3d_lightActor_tool);
 	updateToolSelection();
+
+	SerenityEditor_NewLightActor_Dialog* dialog = new SerenityEditor_NewLightActor_Dialog(this);
+
+	dialog->ShowModal();
 }
 
 void SerenityEditorSerenity3D_Frame::OnS3DTerrainClicked( wxCommandEvent& event )
@@ -5069,6 +5358,10 @@ void SerenityEditorSerenity3D_Frame::OnS3DTerrainClicked( wxCommandEvent& event 
 		return;
 	stage_tools_selection = getStageToolIndex(m_s3d_terrainActor_tool);
 	updateToolSelection();
+
+	SerenityEditor_NewTerrainActor_Dialog* dialog = new SerenityEditor_NewTerrainActor_Dialog(this);
+
+	dialog->ShowModal();
 }
 
 void SerenityEditorSerenity3D_Frame::OnS3DWaterClicked( wxCommandEvent& event )
@@ -5077,6 +5370,10 @@ void SerenityEditorSerenity3D_Frame::OnS3DWaterClicked( wxCommandEvent& event )
 		return;
 	stage_tools_selection = getStageToolIndex(m_s3d_waterActor_tool);
 	updateToolSelection();
+
+	SerenityEditor_NewWaterActor_Dialog* dialog = new SerenityEditor_NewWaterActor_Dialog(this);
+
+	dialog->ShowModal();
 }
 
 void SerenityEditorSerenity3D_Frame::OnS3DGrassClicked( wxCommandEvent& event )
@@ -5099,6 +5396,10 @@ void SerenityEditorSerenity3D_Frame::OnS3DEffectClicked( wxCommandEvent& event )
 		return;
 	stage_tools_selection = getStageToolIndex(m_s3d_particleActor_tool);
 	updateToolSelection();
+
+	SerenityEditor_NewParticleActor_Dialog* dialog = new SerenityEditor_NewParticleActor_Dialog(this);
+
+	dialog->ShowModal();
 }
 
 

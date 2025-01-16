@@ -233,6 +233,7 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
 		void On_Stage_NewGroup( wxCommandEvent& event );
 		void On_Stage_DeleteGroup( wxCommandEvent& event );
 		void On_Stage_EditGroup( wxCommandEvent& event );
+		void On_Stage_DeleteActor( wxCommandEvent& event );
 
 		void On_Stage_StageNodeActivated( wxTreeEvent& event );
 		void On_Stage_StageNodeSelected( wxTreeEvent& event );

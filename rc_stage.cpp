@@ -100,3 +100,77 @@ void rc_stage::clearStage()
 {
 	clearActorVector(actors);
 }
+
+int rc_stage::addActor(std::string actor_id, int actor_type)
+{
+	rc_actor p_actor;
+
+	p_actor.id_name = actor_id;
+	p_actor.type = actor_type;
+	p_actor.group_name = "";
+	p_actor.mesh_index = -1; //project index
+	p_actor.node = NULL; //cast to object type
+	p_actor.position = irr::core::vector3df(0,0,0);
+	p_actor.rotation = irr::core::vector3df(0,0,0);
+	p_actor.scale = irr::core::vector3df(1,1,1);
+	p_actor.override_material_index = -1; //if less than 0 then mesh material is used
+	p_actor.animation_index = -1; //if less than 0 then frame 0 is set
+	p_actor.num_loops = -1;
+	p_actor.visible = true;
+	p_actor.hasShadow = true;
+	p_actor.isCastingShadow = true; //LIGHTS ONLY
+	p_actor.auto_culling = true;
+	p_actor.cube_size = 1;
+	p_actor.radius = 1;
+	p_actor.texture_index = -1; //in project
+	p_actor.light_type = SN_LIGHT_TYPE_POINT;
+	p_actor.angle = 0;
+	p_actor.falloff = 0;
+	p_actor.ambient = irr::video::SColor();
+	p_actor.emissive = irr::video::SColor();
+	p_actor.diffuse = irr::video::SColor();
+	p_actor.specular = irr::video::SColor();
+	p_actor.terrain_hmap_file = "";
+	p_actor.wave_height = 0;
+	p_actor.wave_length = 0;
+	p_actor.wave_speed = 0;
+	p_actor.particle_type = 0;
+	p_actor.normal = irr::core::vector3df(0,0,0);
+	p_actor.direction = irr::core::vector3df(0,0,0);
+	p_actor.box = irr::core::aabbox3df( irr::core::vector3df(0,0,0), irr::core::vector3df(0,0,0) );
+	p_actor.center = irr::core::vector3df(0,0,0);
+
+	p_actor.use_every_vertex = false;
+	p_actor.use_normal_direction = false;
+	p_actor.use_normal_mod = false;
+
+	p_actor.cylinder_length = 0;
+	p_actor.use_outline_only = false;
+
+	p_actor.ring_thickness = 0;
+
+	p_actor.min_width = 0;
+	p_actor.min_height = 0;
+
+	p_actor.max_width = 0;
+	p_actor.max_height = 0;
+
+	p_actor.min_per_sec = 0;
+	p_actor.max_per_sec = 0;
+
+	p_actor.min_start_color = irr::video::SColor();
+	p_actor.max_start_color = irr::video::SColor();
+
+	p_actor.min_life = 0;
+	p_actor.max_life = 0;
+
+	p_actor.inner_cone = 0;
+	p_actor.outer_cone = 0;
+	p_actor.attenuation = irr::core::vector3df(0, 0, 0);
+
+	int actor_index = actors.size();
+
+	actors.push_back(p_actor);
+
+	return actor_index;
+}

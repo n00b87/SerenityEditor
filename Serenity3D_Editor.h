@@ -98,6 +98,7 @@ class Serenity3D_Frame : public wxFrame
 		wxBitmapButton* m_bpButton4;
 		wxBitmapButton* m_bpButton5;
 		wxBitmapButton* m_bpButton6;
+		wxBitmapButton* m_bpButton61;
 		wxTreeCtrl* m_project_stage_treeCtrl;
 		wxPanel* m_panel311;
 		wxPropertyGridManager* m_stage_propertyGridManager;
@@ -564,6 +565,7 @@ class Serenity3D_Frame : public wxFrame
 		virtual void On_Stage_NewGroup( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Stage_DeleteGroup( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Stage_EditGroup( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Stage_DeleteActor( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Stage_StageNodeActivated( wxTreeEvent& event ) { event.Skip(); }
 		virtual void On_Stage_StageNodeSelected( wxTreeEvent& event ) { event.Skip(); }
 		virtual void OnStagePropertyGridChanged( wxPropertyGridEvent& event ) { event.Skip(); }
@@ -728,36 +730,6 @@ class NewProject_Dialog : public wxDialog
 		NewProject_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("New Project"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 390,178 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~NewProject_Dialog();
-
-};
-
-///////////////////////////////////////////////////////////////////////////////
-/// Class NewOctree_Dialog
-///////////////////////////////////////////////////////////////////////////////
-class NewOctree_Dialog : public wxDialog
-{
-	private:
-
-	protected:
-		wxPanel* m_panel38;
-		wxStaticText* m_staticText33;
-		wxTextCtrl* m_actorID_textCtrl;
-		wxStaticText* m_staticText34;
-		wxSearchCtrl* m_searchCtrl4;
-		wxListBox* m_mesh_listBox;
-		wxButton* m_cancel_button;
-		wxButton* m_create_button;
-
-		// Virtual event handlers, override them in your derived class
-		virtual void OnCancelButtonClicked( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnCreateButtonClicked( wxCommandEvent& event ) { event.Skip(); }
-
-
-	public:
-
-		NewOctree_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("New Octree Actor"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 534,346 ), long style = wxDEFAULT_DIALOG_STYLE );
-
-		~NewOctree_Dialog();
 
 };
 
@@ -1117,6 +1089,309 @@ class DeleteStageAlert_Dialog : public wxDialog
 		DeleteStageAlert_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Delete Stage"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE );
 
 		~DeleteStageAlert_Dialog();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class DeleteActorAlert_Dialog
+///////////////////////////////////////////////////////////////////////////////
+class DeleteActorAlert_Dialog : public wxDialog
+{
+	private:
+
+	protected:
+		wxStaticText* m_deleteGroupName_staticText;
+		wxStaticText* m_alert_staticText;
+		wxButton* m_button56;
+		wxButton* m_button57;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void OnDelete( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnCancel( wxCommandEvent& event ) { event.Skip(); }
+
+
+	public:
+
+		DeleteActorAlert_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Delete Actor"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE );
+
+		~DeleteActorAlert_Dialog();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class NewAnimatedActor_Dialog
+///////////////////////////////////////////////////////////////////////////////
+class NewAnimatedActor_Dialog : public wxDialog
+{
+	private:
+
+	protected:
+		wxPanel* m_panel38;
+		wxStaticText* m_staticText33;
+		wxTextCtrl* m_actorID_textCtrl;
+		wxStaticText* m_staticText34;
+		wxSearchCtrl* m_meshSearch_searchCtrl;
+		wxListBox* m_mesh_listBox;
+		wxButton* m_cancel_button;
+		wxButton* m_create_button;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void OnSearchText( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnCancelButtonClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnCreateButtonClicked( wxCommandEvent& event ) { event.Skip(); }
+
+
+	public:
+
+		NewAnimatedActor_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("New Animated Actor"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 638,346 ), long style = wxDEFAULT_DIALOG_STYLE );
+
+		~NewAnimatedActor_Dialog();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class NewOctreeActor_Dialog
+///////////////////////////////////////////////////////////////////////////////
+class NewOctreeActor_Dialog : public wxDialog
+{
+	private:
+
+	protected:
+		wxPanel* m_panel38;
+		wxStaticText* m_staticText33;
+		wxTextCtrl* m_actorID_textCtrl;
+		wxStaticText* m_staticText34;
+		wxSearchCtrl* m_meshSearch_searchCtrl;
+		wxListBox* m_mesh_listBox;
+		wxButton* m_cancel_button;
+		wxButton* m_create_button;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void OnSearchText( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnCancelButtonClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnCreateButtonClicked( wxCommandEvent& event ) { event.Skip(); }
+
+
+	public:
+
+		NewOctreeActor_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("New Octree Actor"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 654,346 ), long style = wxDEFAULT_DIALOG_STYLE );
+
+		~NewOctreeActor_Dialog();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class NewBillboardActor_Dialog
+///////////////////////////////////////////////////////////////////////////////
+class NewBillboardActor_Dialog : public wxDialog
+{
+	private:
+
+	protected:
+		wxPanel* m_panel38;
+		wxStaticText* m_staticText33;
+		wxTextCtrl* m_actorID_textCtrl;
+		wxStaticText* m_staticText34;
+		wxSearchCtrl* m_materialSearch_searchCtrl;
+		wxListBox* m_mesh_listBox;
+		wxButton* m_cancel_button;
+		wxButton* m_create_button;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void OnSearchText( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnCancelButtonClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnCreateButtonClicked( wxCommandEvent& event ) { event.Skip(); }
+
+
+	public:
+
+		NewBillboardActor_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("New Billboard Actor"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 564,346 ), long style = wxDEFAULT_DIALOG_STYLE );
+
+		~NewBillboardActor_Dialog();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class NewLightActor_Dialog
+///////////////////////////////////////////////////////////////////////////////
+class NewLightActor_Dialog : public wxDialog
+{
+	private:
+
+	protected:
+		wxPanel* m_panel38;
+		wxStaticText* m_staticText33;
+		wxTextCtrl* m_actorID_textCtrl;
+		wxStaticText* m_staticText85;
+		wxComboBox* m_type_comboBox;
+		wxButton* m_cancel_button;
+		wxButton* m_create_button;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void OnCancelButtonClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnCreateButtonClicked( wxCommandEvent& event ) { event.Skip(); }
+
+
+	public:
+
+		NewLightActor_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("New Light Actor"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 534,175 ), long style = wxDEFAULT_DIALOG_STYLE );
+
+		~NewLightActor_Dialog();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class NewParticleActor_Dialog
+///////////////////////////////////////////////////////////////////////////////
+class NewParticleActor_Dialog : public wxDialog
+{
+	private:
+
+	protected:
+		wxPanel* m_panel38;
+		wxStaticText* m_staticText33;
+		wxTextCtrl* m_actorID_textCtrl;
+		wxStaticText* m_staticText85;
+		wxComboBox* m_type_comboBox;
+		wxButton* m_cancel_button;
+		wxButton* m_create_button;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void OnCancelButtonClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnCreateButtonClicked( wxCommandEvent& event ) { event.Skip(); }
+
+
+	public:
+
+		NewParticleActor_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("New Particle Actor"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 534,171 ), long style = wxDEFAULT_DIALOG_STYLE );
+
+		~NewParticleActor_Dialog();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class NewTerrainActor_Dialog
+///////////////////////////////////////////////////////////////////////////////
+class NewTerrainActor_Dialog : public wxDialog
+{
+	private:
+
+	protected:
+		wxPanel* m_panel38;
+		wxStaticText* m_staticText33;
+		wxTextCtrl* m_actorID_textCtrl;
+		wxStaticText* m_staticText34;
+		wxSearchCtrl* m_materialSearch_searchCtrl;
+		wxListBox* m_mesh_listBox;
+		wxButton* m_cancel_button;
+		wxButton* m_create_button;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void OnSearchText( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnCancelButtonClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnCreateButtonClicked( wxCommandEvent& event ) { event.Skip(); }
+
+
+	public:
+
+		NewTerrainActor_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("New Terrain Actor"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 564,346 ), long style = wxDEFAULT_DIALOG_STYLE );
+
+		~NewTerrainActor_Dialog();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class NewWaterActor_Dialog
+///////////////////////////////////////////////////////////////////////////////
+class NewWaterActor_Dialog : public wxDialog
+{
+	private:
+
+	protected:
+		wxPanel* m_panel38;
+		wxStaticText* m_staticText33;
+		wxTextCtrl* m_actorID_textCtrl;
+		wxStaticText* m_staticText101;
+		wxSpinCtrlDouble* m_waveHeight_spinCtrlDouble;
+		wxStaticText* m_staticText1011;
+		wxSpinCtrlDouble* m_waveLength_spinCtrlDouble;
+		wxStaticText* m_staticText1012;
+		wxSpinCtrlDouble* m_waveSpeed_spinCtrlDouble;
+		wxStaticText* m_staticText34;
+		wxSearchCtrl* m_meshSearch_searchCtrl;
+		wxListBox* m_mesh_listBox;
+		wxButton* m_cancel_button;
+		wxButton* m_create_button;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void OnSearchText( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnCancelButtonClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnCreateButtonClicked( wxCommandEvent& event ) { event.Skip(); }
+
+
+	public:
+
+		NewWaterActor_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("New Water Actor"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 654,502 ), long style = wxDEFAULT_DIALOG_STYLE );
+
+		~NewWaterActor_Dialog();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class NewCubeActor_Dialog
+///////////////////////////////////////////////////////////////////////////////
+class NewCubeActor_Dialog : public wxDialog
+{
+	private:
+
+	protected:
+		wxPanel* m_panel38;
+		wxStaticText* m_staticText33;
+		wxTextCtrl* m_actorID_textCtrl;
+		wxStaticText* m_staticText101;
+		wxSpinCtrlDouble* m_size_spinCtrlDouble;
+		wxButton* m_cancel_button;
+		wxButton* m_create_button;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void OnCancelButtonClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnCreateButtonClicked( wxCommandEvent& event ) { event.Skip(); }
+
+
+	public:
+
+		NewCubeActor_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("New Cube Actor"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 382,176 ), long style = wxDEFAULT_DIALOG_STYLE );
+
+		~NewCubeActor_Dialog();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class NewSphereActor_Dialog
+///////////////////////////////////////////////////////////////////////////////
+class NewSphereActor_Dialog : public wxDialog
+{
+	private:
+
+	protected:
+		wxPanel* m_panel38;
+		wxStaticText* m_staticText33;
+		wxTextCtrl* m_actorID_textCtrl;
+		wxStaticText* m_staticText101;
+		wxSpinCtrlDouble* m_radius_spinCtrlDouble;
+		wxButton* m_cancel_button;
+		wxButton* m_create_button;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void OnCancelButtonClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnCreateButtonClicked( wxCommandEvent& event ) { event.Skip(); }
+
+
+	public:
+
+		NewSphereActor_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("New Sphere Actor"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 382,177 ), long style = wxDEFAULT_DIALOG_STYLE );
+
+		~NewSphereActor_Dialog();
 
 };
 

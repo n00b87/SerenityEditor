@@ -212,6 +212,11 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_bpButton6->SetBitmap( wxBitmap( wxT("icons/edit-folder.png"), wxBITMAP_TYPE_ANY ) );
 	bSizer163->Add( m_bpButton6, 0, wxALL|wxEXPAND, 5 );
 
+	m_bpButton61 = new wxBitmapButton( m_panel44, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW|wxBORDER_NONE );
+
+	m_bpButton61->SetBitmap( wxBitmap( wxT("icons/remove_actor.png"), wxBITMAP_TYPE_ANY ) );
+	bSizer163->Add( m_bpButton61, 0, wxALL, 5 );
+
 
 	bSizer305->Add( bSizer163, 0, wxEXPAND, 5 );
 
@@ -1786,6 +1791,7 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_bpButton4->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_NewGroup ), NULL, this );
 	m_bpButton5->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_DeleteGroup ), NULL, this );
 	m_bpButton6->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_EditGroup ), NULL, this );
+	m_bpButton61->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_DeleteActor ), NULL, this );
 	m_project_stage_treeCtrl->Connect( wxEVT_COMMAND_TREE_ITEM_ACTIVATED, wxTreeEventHandler( Serenity3D_Frame::On_Stage_StageNodeActivated ), NULL, this );
 	m_project_stage_treeCtrl->Connect( wxEVT_COMMAND_TREE_SEL_CHANGED, wxTreeEventHandler( Serenity3D_Frame::On_Stage_StageNodeSelected ), NULL, this );
 	m_stage_propertyGridManager->Connect( wxEVT_PG_CHANGED, wxPropertyGridEventHandler( Serenity3D_Frame::OnStagePropertyGridChanged ), NULL, this );
@@ -1887,6 +1893,7 @@ Serenity3D_Frame::~Serenity3D_Frame()
 	m_bpButton4->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_NewGroup ), NULL, this );
 	m_bpButton5->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_DeleteGroup ), NULL, this );
 	m_bpButton6->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_EditGroup ), NULL, this );
+	m_bpButton61->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_DeleteActor ), NULL, this );
 	m_project_stage_treeCtrl->Disconnect( wxEVT_COMMAND_TREE_ITEM_ACTIVATED, wxTreeEventHandler( Serenity3D_Frame::On_Stage_StageNodeActivated ), NULL, this );
 	m_project_stage_treeCtrl->Disconnect( wxEVT_COMMAND_TREE_SEL_CHANGED, wxTreeEventHandler( Serenity3D_Frame::On_Stage_StageNodeSelected ), NULL, this );
 	m_stage_propertyGridManager->Disconnect( wxEVT_PG_CHANGED, wxPropertyGridEventHandler( Serenity3D_Frame::OnStagePropertyGridChanged ), NULL, this );
@@ -2088,105 +2095,6 @@ NewProject_Dialog::~NewProject_Dialog()
 	// Disconnect Events
 	m_cancel_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewProject_Dialog::OnCancelButtonClicked ), NULL, this );
 	m_create_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewProject_Dialog::OnCreateButtonClicked ), NULL, this );
-
-}
-
-NewOctree_Dialog::NewOctree_Dialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
-{
-	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
-
-	wxBoxSizer* bSizer76;
-	bSizer76 = new wxBoxSizer( wxVERTICAL );
-
-	m_panel38 = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	wxBoxSizer* bSizer77;
-	bSizer77 = new wxBoxSizer( wxVERTICAL );
-
-	wxBoxSizer* bSizer78;
-	bSizer78 = new wxBoxSizer( wxHORIZONTAL );
-
-	m_staticText33 = new wxStaticText( m_panel38, wxID_ANY, wxT("ID"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText33->Wrap( -1 );
-	bSizer78->Add( m_staticText33, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-	m_actorID_textCtrl = new wxTextCtrl( m_panel38, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer78->Add( m_actorID_textCtrl, 9, wxALL, 5 );
-
-
-	bSizer77->Add( bSizer78, 0, wxEXPAND, 5 );
-
-	wxBoxSizer* bSizer79;
-	bSizer79 = new wxBoxSizer( wxHORIZONTAL );
-
-	m_staticText34 = new wxStaticText( m_panel38, wxID_ANY, wxT("MESH"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText34->Wrap( -1 );
-	bSizer79->Add( m_staticText34, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-	wxBoxSizer* bSizer81;
-	bSizer81 = new wxBoxSizer( wxHORIZONTAL );
-
-	m_searchCtrl4 = new wxSearchCtrl( m_panel38, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	#ifndef __WXMAC__
-	m_searchCtrl4->ShowSearchButton( true );
-	#endif
-	m_searchCtrl4->ShowCancelButton( false );
-	bSizer81->Add( m_searchCtrl4, 1, wxALL, 5 );
-
-
-	bSizer79->Add( bSizer81, 9, wxEXPAND, 5 );
-
-
-	bSizer77->Add( bSizer79, 1, wxEXPAND, 5 );
-
-	wxBoxSizer* bSizer80;
-	bSizer80 = new wxBoxSizer( wxHORIZONTAL );
-
-
-	bSizer80->Add( 0, 0, 1, wxEXPAND, 5 );
-
-	m_mesh_listBox = new wxListBox( m_panel38, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
-	bSizer80->Add( m_mesh_listBox, 9, wxALL|wxEXPAND, 5 );
-
-
-	bSizer77->Add( bSizer80, 9, wxEXPAND, 5 );
-
-	wxBoxSizer* bSizer82;
-	bSizer82 = new wxBoxSizer( wxHORIZONTAL );
-
-
-	bSizer82->Add( 0, 0, 1, wxEXPAND, 5 );
-
-	m_cancel_button = new wxButton( m_panel38, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer82->Add( m_cancel_button, 0, wxALL, 5 );
-
-	m_create_button = new wxButton( m_panel38, wxID_ANY, wxT("Create"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer82->Add( m_create_button, 0, wxALL, 5 );
-
-
-	bSizer77->Add( bSizer82, 0, wxEXPAND, 5 );
-
-
-	m_panel38->SetSizer( bSizer77 );
-	m_panel38->Layout();
-	bSizer77->Fit( m_panel38 );
-	bSizer76->Add( m_panel38, 1, wxEXPAND | wxALL, 5 );
-
-
-	this->SetSizer( bSizer76 );
-	this->Layout();
-
-	this->Centre( wxBOTH );
-
-	// Connect Events
-	m_cancel_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewOctree_Dialog::OnCancelButtonClicked ), NULL, this );
-	m_create_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewOctree_Dialog::OnCreateButtonClicked ), NULL, this );
-}
-
-NewOctree_Dialog::~NewOctree_Dialog()
-{
-	// Disconnect Events
-	m_cancel_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewOctree_Dialog::OnCancelButtonClicked ), NULL, this );
-	m_create_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewOctree_Dialog::OnCreateButtonClicked ), NULL, this );
 
 }
 
@@ -3132,5 +3040,942 @@ DeleteStageAlert_Dialog::~DeleteStageAlert_Dialog()
 	// Disconnect Events
 	m_button56->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( DeleteStageAlert_Dialog::OnDelete ), NULL, this );
 	m_button57->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( DeleteStageAlert_Dialog::OnCancel ), NULL, this );
+
+}
+
+DeleteActorAlert_Dialog::DeleteActorAlert_Dialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+	wxBoxSizer* bSizer146;
+	bSizer146 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer147;
+	bSizer147 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer147->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_deleteGroupName_staticText = new wxStaticText( this, wxID_ANY, wxT("Delete Actor: [ACTOR_NAME]"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_deleteGroupName_staticText->Wrap( -1 );
+	bSizer147->Add( m_deleteGroupName_staticText, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+
+	bSizer147->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer146->Add( bSizer147, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer148;
+	bSizer148 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer148->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_alert_staticText = new wxStaticText( this, wxID_ANY, wxT("Are you sure you want to delete this actor?"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_alert_staticText->Wrap( -1 );
+	bSizer148->Add( m_alert_staticText, 0, wxALL, 5 );
+
+
+	bSizer148->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer146->Add( bSizer148, 1, wxEXPAND, 5 );
+
+
+	bSizer146->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer149;
+	bSizer149 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer149->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_button56 = new wxButton( this, wxID_ANY, wxT("Delete"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer149->Add( m_button56, 0, wxALL, 5 );
+
+	m_button57 = new wxButton( this, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer149->Add( m_button57, 0, wxALL, 5 );
+
+
+	bSizer149->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer146->Add( bSizer149, 1, wxEXPAND, 5 );
+
+
+	this->SetSizer( bSizer146 );
+	this->Layout();
+	bSizer146->Fit( this );
+
+	this->Centre( wxBOTH );
+
+	// Connect Events
+	m_button56->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( DeleteActorAlert_Dialog::OnDelete ), NULL, this );
+	m_button57->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( DeleteActorAlert_Dialog::OnCancel ), NULL, this );
+}
+
+DeleteActorAlert_Dialog::~DeleteActorAlert_Dialog()
+{
+	// Disconnect Events
+	m_button56->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( DeleteActorAlert_Dialog::OnDelete ), NULL, this );
+	m_button57->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( DeleteActorAlert_Dialog::OnCancel ), NULL, this );
+
+}
+
+NewAnimatedActor_Dialog::NewAnimatedActor_Dialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+	wxBoxSizer* bSizer76;
+	bSizer76 = new wxBoxSizer( wxVERTICAL );
+
+	m_panel38 = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer77;
+	bSizer77 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer78;
+	bSizer78 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText33 = new wxStaticText( m_panel38, wxID_ANY, wxT("Actor ID"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText33->Wrap( -1 );
+	bSizer78->Add( m_staticText33, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_actorID_textCtrl = new wxTextCtrl( m_panel38, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer78->Add( m_actorID_textCtrl, 9, wxALL, 5 );
+
+
+	bSizer77->Add( bSizer78, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer79;
+	bSizer79 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText34 = new wxStaticText( m_panel38, wxID_ANY, wxT("Mesh ID"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText34->Wrap( -1 );
+	bSizer79->Add( m_staticText34, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	wxBoxSizer* bSizer81;
+	bSizer81 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_meshSearch_searchCtrl = new wxSearchCtrl( m_panel38, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	#ifndef __WXMAC__
+	m_meshSearch_searchCtrl->ShowSearchButton( true );
+	#endif
+	m_meshSearch_searchCtrl->ShowCancelButton( false );
+	bSizer81->Add( m_meshSearch_searchCtrl, 1, wxALL, 5 );
+
+
+	bSizer79->Add( bSizer81, 9, wxEXPAND, 5 );
+
+
+	bSizer77->Add( bSizer79, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer80;
+	bSizer80 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer80->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_mesh_listBox = new wxListBox( m_panel38, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	bSizer80->Add( m_mesh_listBox, 9, wxALL|wxEXPAND, 5 );
+
+
+	bSizer77->Add( bSizer80, 9, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer82;
+	bSizer82 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer82->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_cancel_button = new wxButton( m_panel38, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer82->Add( m_cancel_button, 0, wxALL, 5 );
+
+	m_create_button = new wxButton( m_panel38, wxID_ANY, wxT("Create"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer82->Add( m_create_button, 0, wxALL, 5 );
+
+
+	bSizer77->Add( bSizer82, 0, wxEXPAND, 5 );
+
+
+	m_panel38->SetSizer( bSizer77 );
+	m_panel38->Layout();
+	bSizer77->Fit( m_panel38 );
+	bSizer76->Add( m_panel38, 1, wxEXPAND | wxALL, 5 );
+
+
+	this->SetSizer( bSizer76 );
+	this->Layout();
+
+	this->Centre( wxBOTH );
+
+	// Connect Events
+	m_meshSearch_searchCtrl->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( NewAnimatedActor_Dialog::OnSearchText ), NULL, this );
+	m_cancel_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewAnimatedActor_Dialog::OnCancelButtonClicked ), NULL, this );
+	m_create_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewAnimatedActor_Dialog::OnCreateButtonClicked ), NULL, this );
+}
+
+NewAnimatedActor_Dialog::~NewAnimatedActor_Dialog()
+{
+	// Disconnect Events
+	m_meshSearch_searchCtrl->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( NewAnimatedActor_Dialog::OnSearchText ), NULL, this );
+	m_cancel_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewAnimatedActor_Dialog::OnCancelButtonClicked ), NULL, this );
+	m_create_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewAnimatedActor_Dialog::OnCreateButtonClicked ), NULL, this );
+
+}
+
+NewOctreeActor_Dialog::NewOctreeActor_Dialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+	wxBoxSizer* bSizer76;
+	bSizer76 = new wxBoxSizer( wxVERTICAL );
+
+	m_panel38 = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer77;
+	bSizer77 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer78;
+	bSizer78 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText33 = new wxStaticText( m_panel38, wxID_ANY, wxT("Actor ID"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText33->Wrap( -1 );
+	bSizer78->Add( m_staticText33, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_actorID_textCtrl = new wxTextCtrl( m_panel38, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer78->Add( m_actorID_textCtrl, 9, wxALL, 5 );
+
+
+	bSizer77->Add( bSizer78, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer79;
+	bSizer79 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText34 = new wxStaticText( m_panel38, wxID_ANY, wxT("Mesh ID"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText34->Wrap( -1 );
+	bSizer79->Add( m_staticText34, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	wxBoxSizer* bSizer81;
+	bSizer81 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_meshSearch_searchCtrl = new wxSearchCtrl( m_panel38, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	#ifndef __WXMAC__
+	m_meshSearch_searchCtrl->ShowSearchButton( true );
+	#endif
+	m_meshSearch_searchCtrl->ShowCancelButton( false );
+	bSizer81->Add( m_meshSearch_searchCtrl, 1, wxALL, 5 );
+
+
+	bSizer79->Add( bSizer81, 9, wxEXPAND, 5 );
+
+
+	bSizer77->Add( bSizer79, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer80;
+	bSizer80 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer80->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_mesh_listBox = new wxListBox( m_panel38, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	bSizer80->Add( m_mesh_listBox, 9, wxALL|wxEXPAND, 5 );
+
+
+	bSizer77->Add( bSizer80, 9, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer82;
+	bSizer82 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer82->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_cancel_button = new wxButton( m_panel38, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer82->Add( m_cancel_button, 0, wxALL, 5 );
+
+	m_create_button = new wxButton( m_panel38, wxID_ANY, wxT("Create"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer82->Add( m_create_button, 0, wxALL, 5 );
+
+
+	bSizer77->Add( bSizer82, 0, wxEXPAND, 5 );
+
+
+	m_panel38->SetSizer( bSizer77 );
+	m_panel38->Layout();
+	bSizer77->Fit( m_panel38 );
+	bSizer76->Add( m_panel38, 1, wxEXPAND | wxALL, 5 );
+
+
+	this->SetSizer( bSizer76 );
+	this->Layout();
+
+	this->Centre( wxBOTH );
+
+	// Connect Events
+	m_meshSearch_searchCtrl->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( NewOctreeActor_Dialog::OnSearchText ), NULL, this );
+	m_cancel_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewOctreeActor_Dialog::OnCancelButtonClicked ), NULL, this );
+	m_create_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewOctreeActor_Dialog::OnCreateButtonClicked ), NULL, this );
+}
+
+NewOctreeActor_Dialog::~NewOctreeActor_Dialog()
+{
+	// Disconnect Events
+	m_meshSearch_searchCtrl->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( NewOctreeActor_Dialog::OnSearchText ), NULL, this );
+	m_cancel_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewOctreeActor_Dialog::OnCancelButtonClicked ), NULL, this );
+	m_create_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewOctreeActor_Dialog::OnCreateButtonClicked ), NULL, this );
+
+}
+
+NewBillboardActor_Dialog::NewBillboardActor_Dialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+	wxBoxSizer* bSizer76;
+	bSizer76 = new wxBoxSizer( wxVERTICAL );
+
+	m_panel38 = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer77;
+	bSizer77 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer78;
+	bSizer78 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText33 = new wxStaticText( m_panel38, wxID_ANY, wxT("Actor ID"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText33->Wrap( -1 );
+	bSizer78->Add( m_staticText33, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_actorID_textCtrl = new wxTextCtrl( m_panel38, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer78->Add( m_actorID_textCtrl, 4, wxALL, 5 );
+
+
+	bSizer77->Add( bSizer78, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer79;
+	bSizer79 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText34 = new wxStaticText( m_panel38, wxID_ANY, wxT("Material ID"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText34->Wrap( -1 );
+	bSizer79->Add( m_staticText34, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	wxBoxSizer* bSizer81;
+	bSizer81 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_materialSearch_searchCtrl = new wxSearchCtrl( m_panel38, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	#ifndef __WXMAC__
+	m_materialSearch_searchCtrl->ShowSearchButton( true );
+	#endif
+	m_materialSearch_searchCtrl->ShowCancelButton( false );
+	bSizer81->Add( m_materialSearch_searchCtrl, 1, wxALL, 5 );
+
+
+	bSizer79->Add( bSizer81, 4, wxEXPAND, 5 );
+
+
+	bSizer77->Add( bSizer79, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer80;
+	bSizer80 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer80->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_mesh_listBox = new wxListBox( m_panel38, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	bSizer80->Add( m_mesh_listBox, 4, wxALL|wxEXPAND, 5 );
+
+
+	bSizer77->Add( bSizer80, 9, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer82;
+	bSizer82 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer82->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_cancel_button = new wxButton( m_panel38, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer82->Add( m_cancel_button, 0, wxALL, 5 );
+
+	m_create_button = new wxButton( m_panel38, wxID_ANY, wxT("Create"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer82->Add( m_create_button, 0, wxALL, 5 );
+
+
+	bSizer77->Add( bSizer82, 0, wxEXPAND, 5 );
+
+
+	m_panel38->SetSizer( bSizer77 );
+	m_panel38->Layout();
+	bSizer77->Fit( m_panel38 );
+	bSizer76->Add( m_panel38, 1, wxEXPAND | wxALL, 5 );
+
+
+	this->SetSizer( bSizer76 );
+	this->Layout();
+
+	this->Centre( wxBOTH );
+
+	// Connect Events
+	m_materialSearch_searchCtrl->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( NewBillboardActor_Dialog::OnSearchText ), NULL, this );
+	m_cancel_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewBillboardActor_Dialog::OnCancelButtonClicked ), NULL, this );
+	m_create_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewBillboardActor_Dialog::OnCreateButtonClicked ), NULL, this );
+}
+
+NewBillboardActor_Dialog::~NewBillboardActor_Dialog()
+{
+	// Disconnect Events
+	m_materialSearch_searchCtrl->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( NewBillboardActor_Dialog::OnSearchText ), NULL, this );
+	m_cancel_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewBillboardActor_Dialog::OnCancelButtonClicked ), NULL, this );
+	m_create_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewBillboardActor_Dialog::OnCreateButtonClicked ), NULL, this );
+
+}
+
+NewLightActor_Dialog::NewLightActor_Dialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+	wxBoxSizer* bSizer76;
+	bSizer76 = new wxBoxSizer( wxVERTICAL );
+
+	m_panel38 = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer77;
+	bSizer77 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer78;
+	bSizer78 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText33 = new wxStaticText( m_panel38, wxID_ANY, wxT("Actor ID"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText33->Wrap( -1 );
+	bSizer78->Add( m_staticText33, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_actorID_textCtrl = new wxTextCtrl( m_panel38, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer78->Add( m_actorID_textCtrl, 4, wxALL, 5 );
+
+
+	bSizer77->Add( bSizer78, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer250;
+	bSizer250 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText85 = new wxStaticText( m_panel38, wxID_ANY, wxT("Light Type"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText85->Wrap( -1 );
+	bSizer250->Add( m_staticText85, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_type_comboBox = new wxComboBox( m_panel38, wxID_ANY, wxT("Combo!"), wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	bSizer250->Add( m_type_comboBox, 4, wxALL, 5 );
+
+
+	bSizer77->Add( bSizer250, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer82;
+	bSizer82 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer82->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_cancel_button = new wxButton( m_panel38, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer82->Add( m_cancel_button, 0, wxALL, 5 );
+
+	m_create_button = new wxButton( m_panel38, wxID_ANY, wxT("Create"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer82->Add( m_create_button, 0, wxALL, 5 );
+
+
+	bSizer77->Add( bSizer82, 0, wxEXPAND, 5 );
+
+
+	m_panel38->SetSizer( bSizer77 );
+	m_panel38->Layout();
+	bSizer77->Fit( m_panel38 );
+	bSizer76->Add( m_panel38, 1, wxEXPAND | wxALL, 5 );
+
+
+	this->SetSizer( bSizer76 );
+	this->Layout();
+
+	this->Centre( wxBOTH );
+
+	// Connect Events
+	m_cancel_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewLightActor_Dialog::OnCancelButtonClicked ), NULL, this );
+	m_create_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewLightActor_Dialog::OnCreateButtonClicked ), NULL, this );
+}
+
+NewLightActor_Dialog::~NewLightActor_Dialog()
+{
+	// Disconnect Events
+	m_cancel_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewLightActor_Dialog::OnCancelButtonClicked ), NULL, this );
+	m_create_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewLightActor_Dialog::OnCreateButtonClicked ), NULL, this );
+
+}
+
+NewParticleActor_Dialog::NewParticleActor_Dialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+	wxBoxSizer* bSizer76;
+	bSizer76 = new wxBoxSizer( wxVERTICAL );
+
+	m_panel38 = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer77;
+	bSizer77 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer78;
+	bSizer78 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText33 = new wxStaticText( m_panel38, wxID_ANY, wxT("Actor ID"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText33->Wrap( -1 );
+	bSizer78->Add( m_staticText33, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_actorID_textCtrl = new wxTextCtrl( m_panel38, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer78->Add( m_actorID_textCtrl, 4, wxALL, 5 );
+
+
+	bSizer77->Add( bSizer78, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer250;
+	bSizer250 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText85 = new wxStaticText( m_panel38, wxID_ANY, wxT("Particle Type"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText85->Wrap( -1 );
+	bSizer250->Add( m_staticText85, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_type_comboBox = new wxComboBox( m_panel38, wxID_ANY, wxT("Combo!"), wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	bSizer250->Add( m_type_comboBox, 4, wxALL, 5 );
+
+
+	bSizer77->Add( bSizer250, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer82;
+	bSizer82 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer82->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_cancel_button = new wxButton( m_panel38, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer82->Add( m_cancel_button, 0, wxALL, 5 );
+
+	m_create_button = new wxButton( m_panel38, wxID_ANY, wxT("Create"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer82->Add( m_create_button, 0, wxALL, 5 );
+
+
+	bSizer77->Add( bSizer82, 0, wxEXPAND, 5 );
+
+
+	m_panel38->SetSizer( bSizer77 );
+	m_panel38->Layout();
+	bSizer77->Fit( m_panel38 );
+	bSizer76->Add( m_panel38, 1, wxEXPAND | wxALL, 5 );
+
+
+	this->SetSizer( bSizer76 );
+	this->Layout();
+
+	this->Centre( wxBOTH );
+
+	// Connect Events
+	m_cancel_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewParticleActor_Dialog::OnCancelButtonClicked ), NULL, this );
+	m_create_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewParticleActor_Dialog::OnCreateButtonClicked ), NULL, this );
+}
+
+NewParticleActor_Dialog::~NewParticleActor_Dialog()
+{
+	// Disconnect Events
+	m_cancel_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewParticleActor_Dialog::OnCancelButtonClicked ), NULL, this );
+	m_create_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewParticleActor_Dialog::OnCreateButtonClicked ), NULL, this );
+
+}
+
+NewTerrainActor_Dialog::NewTerrainActor_Dialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+	wxBoxSizer* bSizer76;
+	bSizer76 = new wxBoxSizer( wxVERTICAL );
+
+	m_panel38 = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer77;
+	bSizer77 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer78;
+	bSizer78 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText33 = new wxStaticText( m_panel38, wxID_ANY, wxT("Actor ID"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText33->Wrap( -1 );
+	bSizer78->Add( m_staticText33, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_actorID_textCtrl = new wxTextCtrl( m_panel38, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer78->Add( m_actorID_textCtrl, 4, wxALL, 5 );
+
+
+	bSizer77->Add( bSizer78, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer79;
+	bSizer79 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText34 = new wxStaticText( m_panel38, wxID_ANY, wxT("Height Map"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText34->Wrap( -1 );
+	bSizer79->Add( m_staticText34, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	wxBoxSizer* bSizer81;
+	bSizer81 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_materialSearch_searchCtrl = new wxSearchCtrl( m_panel38, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	#ifndef __WXMAC__
+	m_materialSearch_searchCtrl->ShowSearchButton( true );
+	#endif
+	m_materialSearch_searchCtrl->ShowCancelButton( false );
+	bSizer81->Add( m_materialSearch_searchCtrl, 1, wxALL, 5 );
+
+
+	bSizer79->Add( bSizer81, 4, wxEXPAND, 5 );
+
+
+	bSizer77->Add( bSizer79, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer80;
+	bSizer80 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer80->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_mesh_listBox = new wxListBox( m_panel38, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	bSizer80->Add( m_mesh_listBox, 4, wxALL|wxEXPAND, 5 );
+
+
+	bSizer77->Add( bSizer80, 9, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer82;
+	bSizer82 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer82->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_cancel_button = new wxButton( m_panel38, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer82->Add( m_cancel_button, 0, wxALL, 5 );
+
+	m_create_button = new wxButton( m_panel38, wxID_ANY, wxT("Create"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer82->Add( m_create_button, 0, wxALL, 5 );
+
+
+	bSizer77->Add( bSizer82, 0, wxEXPAND, 5 );
+
+
+	m_panel38->SetSizer( bSizer77 );
+	m_panel38->Layout();
+	bSizer77->Fit( m_panel38 );
+	bSizer76->Add( m_panel38, 1, wxEXPAND | wxALL, 5 );
+
+
+	this->SetSizer( bSizer76 );
+	this->Layout();
+
+	this->Centre( wxBOTH );
+
+	// Connect Events
+	m_materialSearch_searchCtrl->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( NewTerrainActor_Dialog::OnSearchText ), NULL, this );
+	m_cancel_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewTerrainActor_Dialog::OnCancelButtonClicked ), NULL, this );
+	m_create_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewTerrainActor_Dialog::OnCreateButtonClicked ), NULL, this );
+}
+
+NewTerrainActor_Dialog::~NewTerrainActor_Dialog()
+{
+	// Disconnect Events
+	m_materialSearch_searchCtrl->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( NewTerrainActor_Dialog::OnSearchText ), NULL, this );
+	m_cancel_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewTerrainActor_Dialog::OnCancelButtonClicked ), NULL, this );
+	m_create_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewTerrainActor_Dialog::OnCreateButtonClicked ), NULL, this );
+
+}
+
+NewWaterActor_Dialog::NewWaterActor_Dialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+	wxBoxSizer* bSizer76;
+	bSizer76 = new wxBoxSizer( wxVERTICAL );
+
+	m_panel38 = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer77;
+	bSizer77 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer78;
+	bSizer78 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText33 = new wxStaticText( m_panel38, wxID_ANY, wxT("Actor ID"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText33->Wrap( -1 );
+	bSizer78->Add( m_staticText33, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_actorID_textCtrl = new wxTextCtrl( m_panel38, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer78->Add( m_actorID_textCtrl, 4, wxALL, 5 );
+
+
+	bSizer77->Add( bSizer78, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer297;
+	bSizer297 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText101 = new wxStaticText( m_panel38, wxID_ANY, wxT("Wave Height"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText101->Wrap( -1 );
+	bSizer297->Add( m_staticText101, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_waveHeight_spinCtrlDouble = new wxSpinCtrlDouble( m_panel38, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0, 1 );
+	m_waveHeight_spinCtrlDouble->SetDigits( 0 );
+	bSizer297->Add( m_waveHeight_spinCtrlDouble, 4, wxALL, 5 );
+
+
+	bSizer77->Add( bSizer297, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer2971;
+	bSizer2971 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText1011 = new wxStaticText( m_panel38, wxID_ANY, wxT("Wave Length"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText1011->Wrap( -1 );
+	bSizer2971->Add( m_staticText1011, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_waveLength_spinCtrlDouble = new wxSpinCtrlDouble( m_panel38, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0, 1 );
+	m_waveLength_spinCtrlDouble->SetDigits( 0 );
+	bSizer2971->Add( m_waveLength_spinCtrlDouble, 4, wxALL, 5 );
+
+
+	bSizer77->Add( bSizer2971, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer2972;
+	bSizer2972 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText1012 = new wxStaticText( m_panel38, wxID_ANY, wxT("Wave Speed"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText1012->Wrap( -1 );
+	bSizer2972->Add( m_staticText1012, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_waveSpeed_spinCtrlDouble = new wxSpinCtrlDouble( m_panel38, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0, 1 );
+	m_waveSpeed_spinCtrlDouble->SetDigits( 0 );
+	bSizer2972->Add( m_waveSpeed_spinCtrlDouble, 4, wxALL, 5 );
+
+
+	bSizer77->Add( bSizer2972, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer79;
+	bSizer79 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText34 = new wxStaticText( m_panel38, wxID_ANY, wxT("Mesh ID"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText34->Wrap( -1 );
+	bSizer79->Add( m_staticText34, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	wxBoxSizer* bSizer81;
+	bSizer81 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_meshSearch_searchCtrl = new wxSearchCtrl( m_panel38, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	#ifndef __WXMAC__
+	m_meshSearch_searchCtrl->ShowSearchButton( true );
+	#endif
+	m_meshSearch_searchCtrl->ShowCancelButton( false );
+	bSizer81->Add( m_meshSearch_searchCtrl, 1, wxALL, 5 );
+
+
+	bSizer79->Add( bSizer81, 4, wxEXPAND, 5 );
+
+
+	bSizer77->Add( bSizer79, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer80;
+	bSizer80 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer80->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_mesh_listBox = new wxListBox( m_panel38, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	bSizer80->Add( m_mesh_listBox, 4, wxALL|wxEXPAND, 5 );
+
+
+	bSizer77->Add( bSizer80, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer82;
+	bSizer82 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer82->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_cancel_button = new wxButton( m_panel38, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer82->Add( m_cancel_button, 0, wxALL, 5 );
+
+	m_create_button = new wxButton( m_panel38, wxID_ANY, wxT("Create"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer82->Add( m_create_button, 0, wxALL, 5 );
+
+
+	bSizer77->Add( bSizer82, 0, wxEXPAND, 5 );
+
+
+	m_panel38->SetSizer( bSizer77 );
+	m_panel38->Layout();
+	bSizer77->Fit( m_panel38 );
+	bSizer76->Add( m_panel38, 1, wxEXPAND | wxALL, 5 );
+
+
+	this->SetSizer( bSizer76 );
+	this->Layout();
+
+	this->Centre( wxBOTH );
+
+	// Connect Events
+	m_meshSearch_searchCtrl->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( NewWaterActor_Dialog::OnSearchText ), NULL, this );
+	m_cancel_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewWaterActor_Dialog::OnCancelButtonClicked ), NULL, this );
+	m_create_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewWaterActor_Dialog::OnCreateButtonClicked ), NULL, this );
+}
+
+NewWaterActor_Dialog::~NewWaterActor_Dialog()
+{
+	// Disconnect Events
+	m_meshSearch_searchCtrl->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( NewWaterActor_Dialog::OnSearchText ), NULL, this );
+	m_cancel_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewWaterActor_Dialog::OnCancelButtonClicked ), NULL, this );
+	m_create_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewWaterActor_Dialog::OnCreateButtonClicked ), NULL, this );
+
+}
+
+NewCubeActor_Dialog::NewCubeActor_Dialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+	wxBoxSizer* bSizer76;
+	bSizer76 = new wxBoxSizer( wxVERTICAL );
+
+	m_panel38 = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer77;
+	bSizer77 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer78;
+	bSizer78 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText33 = new wxStaticText( m_panel38, wxID_ANY, wxT("Actor ID"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText33->Wrap( -1 );
+	bSizer78->Add( m_staticText33, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_actorID_textCtrl = new wxTextCtrl( m_panel38, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer78->Add( m_actorID_textCtrl, 4, wxALL, 5 );
+
+
+	bSizer77->Add( bSizer78, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer297;
+	bSizer297 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText101 = new wxStaticText( m_panel38, wxID_ANY, wxT("Size"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText101->Wrap( -1 );
+	bSizer297->Add( m_staticText101, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_size_spinCtrlDouble = new wxSpinCtrlDouble( m_panel38, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0, 1 );
+	m_size_spinCtrlDouble->SetDigits( 0 );
+	bSizer297->Add( m_size_spinCtrlDouble, 4, wxALL, 5 );
+
+
+	bSizer77->Add( bSizer297, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer82;
+	bSizer82 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer82->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_cancel_button = new wxButton( m_panel38, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer82->Add( m_cancel_button, 0, wxALL, 5 );
+
+	m_create_button = new wxButton( m_panel38, wxID_ANY, wxT("Create"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer82->Add( m_create_button, 0, wxALL, 5 );
+
+
+	bSizer77->Add( bSizer82, 0, wxEXPAND, 5 );
+
+
+	m_panel38->SetSizer( bSizer77 );
+	m_panel38->Layout();
+	bSizer77->Fit( m_panel38 );
+	bSizer76->Add( m_panel38, 1, wxEXPAND | wxALL, 5 );
+
+
+	this->SetSizer( bSizer76 );
+	this->Layout();
+
+	this->Centre( wxBOTH );
+
+	// Connect Events
+	m_cancel_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewCubeActor_Dialog::OnCancelButtonClicked ), NULL, this );
+	m_create_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewCubeActor_Dialog::OnCreateButtonClicked ), NULL, this );
+}
+
+NewCubeActor_Dialog::~NewCubeActor_Dialog()
+{
+	// Disconnect Events
+	m_cancel_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewCubeActor_Dialog::OnCancelButtonClicked ), NULL, this );
+	m_create_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewCubeActor_Dialog::OnCreateButtonClicked ), NULL, this );
+
+}
+
+NewSphereActor_Dialog::NewSphereActor_Dialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+	wxBoxSizer* bSizer76;
+	bSizer76 = new wxBoxSizer( wxVERTICAL );
+
+	m_panel38 = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer77;
+	bSizer77 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer78;
+	bSizer78 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText33 = new wxStaticText( m_panel38, wxID_ANY, wxT("Actor ID"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText33->Wrap( -1 );
+	bSizer78->Add( m_staticText33, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_actorID_textCtrl = new wxTextCtrl( m_panel38, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer78->Add( m_actorID_textCtrl, 4, wxALL, 5 );
+
+
+	bSizer77->Add( bSizer78, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer297;
+	bSizer297 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText101 = new wxStaticText( m_panel38, wxID_ANY, wxT("Radius"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText101->Wrap( -1 );
+	bSizer297->Add( m_staticText101, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_radius_spinCtrlDouble = new wxSpinCtrlDouble( m_panel38, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0, 1 );
+	m_radius_spinCtrlDouble->SetDigits( 0 );
+	bSizer297->Add( m_radius_spinCtrlDouble, 4, wxALL, 5 );
+
+
+	bSizer77->Add( bSizer297, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer82;
+	bSizer82 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer82->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_cancel_button = new wxButton( m_panel38, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer82->Add( m_cancel_button, 0, wxALL, 5 );
+
+	m_create_button = new wxButton( m_panel38, wxID_ANY, wxT("Create"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer82->Add( m_create_button, 0, wxALL, 5 );
+
+
+	bSizer77->Add( bSizer82, 0, wxEXPAND, 5 );
+
+
+	m_panel38->SetSizer( bSizer77 );
+	m_panel38->Layout();
+	bSizer77->Fit( m_panel38 );
+	bSizer76->Add( m_panel38, 1, wxEXPAND | wxALL, 5 );
+
+
+	this->SetSizer( bSizer76 );
+	this->Layout();
+
+	this->Centre( wxBOTH );
+
+	// Connect Events
+	m_cancel_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewSphereActor_Dialog::OnCancelButtonClicked ), NULL, this );
+	m_create_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewSphereActor_Dialog::OnCreateButtonClicked ), NULL, this );
+}
+
+NewSphereActor_Dialog::~NewSphereActor_Dialog()
+{
+	// Disconnect Events
+	m_cancel_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewSphereActor_Dialog::OnCancelButtonClicked ), NULL, this );
+	m_create_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewSphereActor_Dialog::OnCreateButtonClicked ), NULL, this );
 
 }

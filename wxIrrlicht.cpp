@@ -55,6 +55,7 @@ wxIrrlicht::wxIrrlicht(wxWindow* parent, wxWindowID id, bool bs, const wxPoint& 
 	    grid_color = irr::video::SColor(255, 100, 100, 100);
 	    grid_size = 2500;
 	    grid_spacing = 50;
+	    hud_color = irr::video::SColor(255,255,255,255);
 }//ctor
 
 wxIrrlicht::~wxIrrlicht() {
@@ -507,6 +508,7 @@ void wxIrrlicht::OnRender() {
 				m_pDriver->setRenderTarget(camera[i].ui_layer, true, true, irr::video::SColor(0));
 
 
+				if(window_type == RC_IRR_WINDOW_NAV3D)
 				switch(camera[i].pov)
 				{
 					case RC_CAMERA_VIEW_FRONT:
@@ -561,7 +563,7 @@ void wxIrrlicht::OnRender() {
 							break;
 				}
 
-				if(show_camera_pos || show_camera_rot)
+				if((show_camera_pos || show_camera_rot) && window_type == RC_IRR_WINDOW_NAV3D)
 				{
 					irr_SetFont(ui_font2);
 					wxString pos_str = _("POS: ") + wxString::Format(_("%d"), (int)camera[i].camera.x) + _(", ") +
@@ -975,6 +977,17 @@ void wxIrrlicht::AnimationPreview_Update()
 		middle_drag_init = false;
 		//wxMessageBox(_("RELEASE"));
 	}
+}
+
+irr::core::vector3df wxIrrlicht::getNewActorPosition()
+{
+	irr::core::vector3df pos = camera[active_camera].camera.camera->getAbsolutePosition();
+
+	core::line3d<f32> ray;
+	ray.start = pos;
+	ray.end = ray.start + (camera[active_camera].camera.camera->getTarget() - ray.start).normalize() * transform_tool_widget.cursor3d_distance;
+
+	return ray.end;
 }
 
 void wxIrrlicht::rc_setDriverMaterial()
@@ -1518,7 +1531,10 @@ void wxIrrlicht::OnUpdate()
 				{
 					for(int i = 0; i < selected_actors.size(); i++)
 					{
-						selected_actors[i].t_start = *selected_actors[i].rotation;
+						if(selected_actors[i].rotation)
+							selected_actors[i].t_start = *selected_actors[i].rotation;
+						else
+							selected_actors[i].t_start = irr::core::vector3df(0,0,0);
 					}
 				}
 
@@ -1540,11 +1556,11 @@ void wxIrrlicht::OnUpdate()
 				switch(camera[box_select_view].pov) //box_select_view can be used for every other tool
 				{
 					case RC_CAMERA_VIEW_FRONT:
-						rotate_vector.set(((double)(py - drag_start.y))*rotate_factor_y, ((double)drag_start.x - px)*rotate_factor_x, 0);
+						rotate_vector.set(((double)(drag_start.y - py))*rotate_factor_y, ((double)drag_start.x - px)*rotate_factor_x, 0);
 					break;
 
 					case RC_CAMERA_VIEW_TOP:
-						rotate_vector.set(((double)(py - drag_start.y))*rotate_factor_y, 0, ((double)drag_start.x - px)*rotate_factor_x);
+						rotate_vector.set(((double)(drag_start.y - py))*rotate_factor_y, 0, ((double)drag_start.x - px)*rotate_factor_x);
 					break;
 
 					case RC_CAMERA_VIEW_RIGHT:
@@ -1558,7 +1574,7 @@ void wxIrrlicht::OnUpdate()
 
 						double zy = (((double)(py - drag_start.y))*rotate_factor_y) * ( ( 180 - ((int)(camera[box_select_view].camera.ry-90)%180) )/180);
 						double zx = (((double)(px - drag_start.x))*rotate_factor_x) * ( ( 180 - ((int)(camera[box_select_view].camera.rx-90)%180) )/180);
-						rotate_vector.set(((double)(py - drag_start.y))*rotate_factor_y, ((double)drag_start.x - px)*rotate_factor_x, -1*(zx+zy));
+						rotate_vector.set(((double)(drag_start.y - py))*rotate_factor_y, ((double)drag_start.x - px)*rotate_factor_x, -1*(zx+zy));
 						//rotate_vector.rotateXZBy(-camera[box_select_view].camera.ry);
 						//rotate_vector.rotateYZBy(camera[box_select_view].camera.rx);
 					break;
@@ -1571,6 +1587,9 @@ void wxIrrlicht::OnUpdate()
 					//Apply Rotation in Y,X,Z order
 					irr::scene::ISceneNode* node = selected_actors[i].node;
 					if(!node)
+						continue;
+
+					if(!selected_actors[i].rotation)
 						continue;
 
 					selected_actors[i].rotation->set(selected_actors[i].t_start + rotate_vector);
@@ -1596,7 +1615,7 @@ void wxIrrlicht::OnUpdate()
 					//Rotate on X
 					m.setRotationDegrees(node->getRotation());
 
-					rot.set(-1*selected_actors[i].rotation->X, 0, 0);
+					rot.set(selected_actors[i].rotation->X, 0, 0);
 
 					n.setRotationDegrees(rot);
 
@@ -2012,6 +2031,7 @@ void wxIrrlicht::irr_DrawText(std::string txt, int x, int y, irr::video::SColor 
 	irr::core::dimension2d<irr::u32> text_dim = font[active_font].font->getDimension(text.c_str());
 	irr::core::rect<s32> tpos(x, y, text_dim.Width, font[active_font].font_size);
     font[active_font].font->draw(text.c_str(), tpos, color);
+
         //std::cout << "------------------" << std::endl;
 
 }
