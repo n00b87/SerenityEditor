@@ -19,6 +19,13 @@ class SerenityEditor_NewBillboardActor_Dialog : public NewBillboardActor_Dialog
 		void OnCancelButtonClicked( wxCommandEvent& event );
 		void OnCreateButtonClicked( wxCommandEvent& event );
 	public:
+		wxString id_name;
+		wxString material_id_name;
+		wxArrayString materials;
+		bool create_flag;
+
+		void refresh_list();
+
 		/** Constructor */
 		SerenityEditor_NewBillboardActor_Dialog( wxWindow* parent );
 	//// end generated class members

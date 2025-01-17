@@ -778,6 +778,32 @@ void wxIrrlicht::OnSize(wxSizeEvent& event) {
     return;
 }//OnSize
 
+void wxIrrlicht::drawAllLightInfluences()
+{
+	for(int i = 0; i < scene_actors.size(); i++)
+	{
+		if(scene_actors[i].isLight)
+		{
+			irr::scene::ILightSceneNode* node = (irr::scene::ILightSceneNode*)scene_actors[i].node;
+
+			switch(node->getLightType())
+			{
+				case irr::video::ELT_SPOT:
+				{
+					//position, direction, and cone
+					irr::core::vector3df pos_v = node->getAbsolutePosition();
+					irr::core::vector3df dir_v = node->getLightData().Direction;
+					irr::f32 outer_cone = node->getLightData().OuterCone;
+					irr::f32 inner_cone = node->getLightData().InnerCone;
+
+
+				}
+				break;
+			}
+		}
+	}
+}
+
 void wxIrrlicht::OnTimer(wxTimerEvent& event) {
 	if(!m_init)
 		return;
@@ -785,7 +811,10 @@ void wxIrrlicht::OnTimer(wxTimerEvent& event) {
     m_pDevice->getTimer()->tick();
 
     if(window_type != RC_IRR_WINDOW_VIEW2D)
+	{
 		OnUpdate();
+		drawAllLightInfluences();
+	}
 
     #ifdef _WIN32
 	m_forceWindowActive = true;
@@ -1452,6 +1481,11 @@ void wxIrrlicht::OnUpdate()
 				for(int i = 0; i < selected_actors.size(); i++)
 				{
 					selected_actors[i].node->setPosition( selected_actors[i].t_start + translate_vector );
+
+					if(selected_actors[i].icon_node)
+					{
+						selected_actors[i].icon_node->setPosition(irr::core::vector3df(0,0,0));
+					}
 				}
 
 				if(selected_actors.size() > 0)

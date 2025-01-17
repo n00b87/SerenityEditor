@@ -110,6 +110,7 @@ int rc_stage::addActor(std::string actor_id, int actor_type)
 	p_actor.group_name = "";
 	p_actor.mesh_index = -1; //project index
 	p_actor.node = NULL; //cast to object type
+	p_actor.icon_node = NULL;
 	p_actor.position = irr::core::vector3df(0,0,0);
 	p_actor.rotation = irr::core::vector3df(0,0,0);
 	p_actor.scale = irr::core::vector3df(1,1,1);

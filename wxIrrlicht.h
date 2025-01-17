@@ -75,7 +75,8 @@ struct actor_object
 {
 	int actor_index;
 	bool isSelected;
-	irr::scene::ISceneNode* node;
+	irr::scene::ISceneNode* node = NULL;
+	irr::scene::ISceneNode* icon_node = NULL;
 	irr::core::vector2di v1[4];
 	irr::core::vector2di v2[4];
 	irr::core::vector3df t_start;
@@ -85,6 +86,14 @@ struct actor_object
 	bool use_override_size = false;
 	irr::core::aabbox3df override_box;
 	std::string id_name;
+
+	bool isLight = false;
+};
+
+struct actor_icon
+{
+	int actor_index;
+	irr::scene::ISceneNode* node;
 };
 
 struct axis_obj
@@ -161,6 +170,7 @@ class wxIrrlicht : public wxControl {
         irr::core::array<actor_object> scene_actors;
         axis_obj transform_tool_widget;
 
+        void drawAllLightInfluences();
         void setTransformToolBox();
         irr::core::vector3df getNewActorPosition();
 

@@ -1193,7 +1193,7 @@ class NewBillboardActor_Dialog : public wxDialog
 		wxTextCtrl* m_actorID_textCtrl;
 		wxStaticText* m_staticText34;
 		wxSearchCtrl* m_materialSearch_searchCtrl;
-		wxListBox* m_mesh_listBox;
+		wxListBox* m_material_listBox;
 		wxButton* m_cancel_button;
 		wxButton* m_create_button;
 

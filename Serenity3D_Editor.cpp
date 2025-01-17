@@ -3378,8 +3378,8 @@ NewBillboardActor_Dialog::NewBillboardActor_Dialog( wxWindow* parent, wxWindowID
 
 	bSizer80->Add( 0, 0, 1, wxEXPAND, 5 );
 
-	m_mesh_listBox = new wxListBox( m_panel38, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
-	bSizer80->Add( m_mesh_listBox, 4, wxALL|wxEXPAND, 5 );
+	m_material_listBox = new wxListBox( m_panel38, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	bSizer80->Add( m_material_listBox, 4, wxALL|wxEXPAND, 5 );
 
 
 	bSizer77->Add( bSizer80, 9, wxEXPAND, 5 );
