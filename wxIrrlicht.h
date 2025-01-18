@@ -88,6 +88,9 @@ struct actor_object
 	std::string id_name;
 
 	bool isLight = false;
+	bool isTerrain = false;
+
+	irr::core::vector3df t_pos; //used for terrain
 };
 
 struct actor_icon
@@ -174,6 +177,8 @@ class wxIrrlicht : public wxControl {
         void setTransformToolBox();
         irr::core::vector3df getNewActorPosition();
 
+        bool debug_flag = true;
+
         void setGridSize(irr::f32 g_size);
         void setGridSpacing(irr::f32 g_spacing);
         void setGridColor(irr::u32 g_color);
@@ -184,7 +189,8 @@ class wxIrrlicht : public wxControl {
         void irr_SetFont(int font_id);
 
         void drawLine(irr::core::vector3df line_v1, irr::core::vector3df line_v2, irr::video::SColor color);
-        void drawCircle(irr::core::vector3df center, double radius, irr::core::vector3df c_axis, irr::video::SColor color);
+        void drawCircle(irr::core::vector3df center, double radius, irr::core::vector3df rotation, irr::core::vector3df c_axis, irr::video::SColor color);
+        irr::core::vector3df getDirectionVector(irr::core::vector3df pos, irr::core::vector3df rot);
         void rc_setDriverMaterial();
 
         irr::core::matrix4 ortho_matrix;

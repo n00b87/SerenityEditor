@@ -1187,6 +1187,29 @@ bool SerenityEditorSerenity3D_Frame::delete_actor(int stage_index, int actor_sta
 	if(actor_stage_index < 0 || actor_stage_index >= project.stages[stage_index].actors.size())
 		return false;
 
+	if(stage_index == stageTab_active_stage_project_index && stage_window != NULL)
+	{
+		stage_window->selected_actors.clear();
+		for(int i = 0; i < stage_window->scene_actors.size(); i++)
+		{
+			if(stage_window->scene_actors[i].actor_index == actor_stage_index)
+			{
+				stage_window->scene_actors[i].node = NULL;
+				stage_window->scene_actors[i].isLight = false;
+				stage_window->scene_actors.erase(i, 1);
+				break;
+			}
+		}
+	}
+
+	for(int i = 0; i < stage_window->scene_actors.size(); i++)
+	{
+		if(stage_window->scene_actors[i].isLight)
+		{
+			wxMessageBox(_("BALLS"));
+		}
+	}
+
 	if(project.stages[stage_index].actors[actor_stage_index].node)
 		project.stages[stage_index].actors[actor_stage_index].node->remove();
 
@@ -1196,18 +1219,6 @@ bool SerenityEditorSerenity3D_Frame::delete_actor(int stage_index, int actor_sta
 	project.stages[stage_index].actors[actor_stage_index].mesh_index = -1;
 	project.stages[stage_index].actors[actor_stage_index].type = -1;
 
-	if(stage_index == stageTab_active_stage_project_index && stage_window != NULL)
-	{
-		stage_window->selected_actors.clear();
-		for(int i = 0; i < stage_window->scene_actors.size(); i++)
-		{
-			if(stage_window->scene_actors[i].actor_index == actor_stage_index)
-			{
-				stage_window->scene_actors.erase(i);
-				break;
-			}
-		}
-	}
 
 	return true;
 }
@@ -1492,6 +1503,8 @@ void SerenityEditorSerenity3D_Frame::On_Stage_DeleteActor( wxCommandEvent& event
 
 
 	//delete actors and tree items
+	//wxMessageBox(_("ACT_I: ") + wxString::Format(_("%d"), actor_project_index));
+
 	delete_actor(stage_project_index, actor_project_index);
 	m_project_stage_treeCtrl->Delete(stage_tree_nodes[s_node_index].actors[a_node_index].tree_item);
 	stage_tree_nodes[s_node_index].actors[a_node_index].node_type = RC_STAGE_NODE_NONE;
@@ -1544,7 +1557,14 @@ void SerenityEditorSerenity3D_Frame::updateProjectFromStageEdit()
 		if(!scene_node)
 			continue;
 
-		project.stages[stage_project_index].actors[actor_project_index].position = scene_node->getAbsolutePosition();
+		if(project.stages[stage_project_index].actors[actor_project_index].type == SN_ACTOR_TYPE_TERRAIN)
+		{
+			project.stages[stage_project_index].actors[actor_project_index].position = stage_window->selected_actors[i].t_pos;
+		}
+		else
+		{
+			project.stages[stage_project_index].actors[actor_project_index].position = scene_node->getAbsolutePosition();
+		}
 		//project.stages[stage_project_index].actors[actor_project_index].rotation = stage_window->selected_actors[i].rotation; //This is now a pointer
 		project.stages[stage_project_index].actors[actor_project_index].scale = scene_node->getScale();
 
@@ -1826,7 +1846,30 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 			if(project.stages[stage_project_index].actors[i].node != NULL)
 			{
 				irr::scene::ILightSceneNode* node = (irr::scene::ILightSceneNode*)project.stages[stage_project_index].actors[i].node; //So I can type less
-				if(!project.stages[stage_project_index].actors[i].icon_node)
+				switch(project.stages[stage_project_index].actors[i].light_type)
+				{
+					case SN_LIGHT_TYPE_POINT:
+						node->setLightType(irr::video::ELT_POINT);
+						break;
+					case SN_LIGHT_TYPE_SPOT:
+						node->setLightType(irr::video::ELT_SPOT);
+						break;
+					case SN_LIGHT_TYPE_DIRECTIONAL:
+						node->setLightType(irr::video::ELT_DIRECTIONAL);
+						break;
+				}
+
+				node->getLightData().AmbientColor = project.stages[stage_project_index].actors[i].ambient;
+				node->getLightData().DiffuseColor = project.stages[stage_project_index].actors[i].diffuse;
+				node->getLightData().SpecularColor = project.stages[stage_project_index].actors[i].specular;
+				node->getLightData().Attenuation = project.stages[stage_project_index].actors[i].attenuation;
+				node->enableCastShadow(project.stages[stage_project_index].actors[i].isCastingShadow);
+				node->getLightData().Falloff = project.stages[stage_project_index].actors[i].falloff;
+				node->getLightData().InnerCone = project.stages[stage_project_index].actors[i].inner_cone;
+				node->getLightData().OuterCone = project.stages[stage_project_index].actors[i].outer_cone;
+				node->setRadius(project.stages[stage_project_index].actors[i].radius);
+
+				//if(!project.stages[stage_project_index].actors[i].icon_node)
 					project.stages[stage_project_index].actors[i].icon_node = smgr->addBillboardSceneNode(0, irr::core::dimension2df(10, 10));
 				irr::scene::IBillboardSceneNode* icon_node = (irr::scene::IBillboardSceneNode*)project.stages[stage_project_index].actors[i].icon_node;
 				icon_node->setParent(node);
@@ -2121,6 +2164,8 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 			if(!project.stages[stage_project_index].actors[i].node)
 				project.stages[stage_project_index].actors[i].node = smgr->addTerrainSceneNode(hmap_fname.GetAbsolutePath().ToStdString().c_str());
 
+				project.stages[stage_project_index].actors[i].icon_node = NULL;
+
 			if(project.stages[stage_project_index].actors[i].node != NULL)
 			{
 				irr::scene::ITerrainSceneNode* node = (irr::scene::ITerrainSceneNode*)project.stages[stage_project_index].actors[i].node; //So I can type less
@@ -2187,6 +2232,7 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 
 		//Set Position
 		node->setPosition(project.stages[stage_project_index].actors[i].position);
+		node->updateAbsolutePosition();
 
 		//Apply Rotation in Y,X,Z order
 		node->setRotation( irr::core::vector3df(0, 0, 0) );
@@ -2257,8 +2303,11 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 		scene_obj.node = node;
 		scene_obj.icon_node = project.stages[stage_project_index].actors[i].icon_node;
 		scene_obj.rotation = &project.stages[stage_project_index].actors[i].rotation;
+		scene_obj.isLight = (project.stages[stage_project_index].actors[i].type == SN_ACTOR_TYPE_LIGHT);
+		scene_obj.isTerrain = (project.stages[stage_project_index].actors[i].type == SN_ACTOR_TYPE_TERRAIN);
+		scene_obj.t_pos = project.stages[stage_project_index].actors[i].position;
 
-		if(use_icon_bbox)
+		if(scene_obj.icon_node != NULL && use_icon_bbox)
 		{
 			scene_obj.use_override_size = true;
 			scene_obj.override_box = project.stages[stage_project_index].actors[i].icon_node->getBoundingBox();
@@ -2284,6 +2333,9 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 		if(current_window->scene_actors[sn].actor_index == i)
 		{
 			current_window->scene_actors[sn].node = project.stages[stage_project_index].actors[i].node;
+			current_window->scene_actors[sn].icon_node = project.stages[stage_project_index].actors[i].icon_node;
+			current_window->scene_actors[sn].t_pos = project.stages[stage_project_index].actors[i].position;
+			current_window->scene_actors[sn].t_start = project.stages[stage_project_index].actors[i].position;
 		}
 	}
 
@@ -2292,6 +2344,9 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 		if(current_window->selected_actors[sn].actor_index == i)
 		{
 			current_window->selected_actors[sn].node = project.stages[stage_project_index].actors[i].node;
+			current_window->selected_actors[sn].icon_node = project.stages[stage_project_index].actors[i].icon_node;
+			current_window->selected_actors[sn].t_pos = project.stages[stage_project_index].actors[i].position;
+			current_window->selected_actors[sn].t_start = project.stages[stage_project_index].actors[i].position;
 		}
 	}
 }
@@ -3400,6 +3455,8 @@ void SerenityEditorSerenity3D_Frame::OnStagePropertyGridChanged( wxPropertyGridE
 		project.stages[stage_index].actors[actor_index].outer_cone = page->GetPropertyByName(_("outer_cone"))->GetValue().GetDouble();
 		if(stage_index == stageTab_active_stage_project_index)
 		{
+			project.stages[stage_index].actors[actor_index].icon_node->remove();
+			project.stages[stage_index].actors[actor_index].icon_node = NULL;
 			project.stages[stage_index].actors[actor_index].node->remove();
 			project.stages[stage_index].actors[actor_index].node = NULL;
 			refresh_actor(actor_index);
@@ -4871,6 +4928,9 @@ void SerenityEditorSerenity3D_Frame::On_Stage_StageNodeSelected( wxTreeEvent& ev
 					scene_obj.node = project.stages[stage_project_index].actors[actor_stage_index].node;
 					scene_obj.icon_node = project.stages[stage_project_index].actors[actor_stage_index].icon_node;
 					scene_obj.rotation = &project.stages[stage_project_index].actors[actor_stage_index].rotation;
+					scene_obj.isLight = (project.stages[stage_project_index].actors[actor_stage_index].type == SN_ACTOR_TYPE_LIGHT);
+					scene_obj.isTerrain = (project.stages[stage_project_index].actors[actor_stage_index].type == SN_ACTOR_TYPE_TERRAIN);
+					scene_obj.t_pos = project.stages[stage_project_index].actors[actor_stage_index].position;
 
 					if(project.stages[stage_project_index].actors[actor_stage_index].type == SN_ACTOR_TYPE_LIGHT)
 					{
@@ -5229,16 +5289,19 @@ void SerenityEditorSerenity3D_Frame::OnS3DDumpClicked( wxCommandEvent& event )
 
 	if(stage_window)
 	{
-		actor_object scene_actor;
-		scene_actor.actor_index = actor_project_index;
-		scene_actor.id_name = project.stages[stageTab_active_stage_project_index].actors[actor_project_index].id_name;
-		scene_actor.node = project.stages[stageTab_active_stage_project_index].actors[actor_project_index].node;
-		scene_actor.icon_node = project.stages[stageTab_active_stage_project_index].actors[actor_project_index].icon_node;
-		scene_actor.rotation = &project.stages[stageTab_active_stage_project_index].actors[actor_project_index].rotation;
-
-		stage_window->scene_actors.push_back(scene_actor);
 		stage_window->selected_actors.clear();
-		stage_window->selected_actors.push_back(scene_actor);
+
+		for(int i = 0; i < stage_window->scene_actors.size(); i++)
+		{
+			if(stage_window->scene_actors[i].actor_index == actor_project_index)
+			{
+				stage_window->selected_actors.push_back(stage_window->scene_actors[i]);
+				stage_window->stage_edit_tool = RC_EDIT_TOOL_MOVE;
+				stage_tools_selection = getStageToolIndex(m_s3d_move_tool);
+				updateToolSelection();
+				break;
+			}
+		}
 	}
 }
 
@@ -5321,16 +5384,19 @@ void SerenityEditorSerenity3D_Frame::OnS3DWizClicked( wxCommandEvent& event )
 
 	if(stage_window)
 	{
-		actor_object scene_actor;
-		scene_actor.actor_index = actor_project_index;
-		scene_actor.id_name = project.stages[stageTab_active_stage_project_index].actors[actor_project_index].id_name;
-		scene_actor.node = project.stages[stageTab_active_stage_project_index].actors[actor_project_index].node;
-		scene_actor.icon_node = project.stages[stageTab_active_stage_project_index].actors[actor_project_index].icon_node;
-		scene_actor.rotation = &project.stages[stageTab_active_stage_project_index].actors[actor_project_index].rotation;
-
-		stage_window->scene_actors.push_back(scene_actor);
 		stage_window->selected_actors.clear();
-		stage_window->selected_actors.push_back(scene_actor);
+
+		for(int i = 0; i < stage_window->scene_actors.size(); i++)
+		{
+			if(stage_window->scene_actors[i].actor_index == actor_project_index)
+			{
+				stage_window->selected_actors.push_back(stage_window->scene_actors[i]);
+				stage_window->stage_edit_tool = RC_EDIT_TOOL_MOVE;
+				stage_tools_selection = getStageToolIndex(m_s3d_move_tool);
+				updateToolSelection();
+				break;
+			}
+		}
 	}
 }
 
@@ -5406,16 +5472,19 @@ void SerenityEditorSerenity3D_Frame::OnS3DBillboardClicked( wxCommandEvent& even
 
 	if(stage_window)
 	{
-		actor_object scene_actor;
-		scene_actor.actor_index = actor_project_index;
-		scene_actor.id_name = project.stages[stageTab_active_stage_project_index].actors[actor_project_index].id_name;
-		scene_actor.node = project.stages[stageTab_active_stage_project_index].actors[actor_project_index].node;
-		scene_actor.icon_node = project.stages[stageTab_active_stage_project_index].actors[actor_project_index].icon_node;
-		scene_actor.rotation = &project.stages[stageTab_active_stage_project_index].actors[actor_project_index].rotation;
-
-		stage_window->scene_actors.push_back(scene_actor);
 		stage_window->selected_actors.clear();
-		stage_window->selected_actors.push_back(scene_actor);
+
+		for(int i = 0; i < stage_window->scene_actors.size(); i++)
+		{
+			if(stage_window->scene_actors[i].actor_index == actor_project_index)
+			{
+				stage_window->selected_actors.push_back(stage_window->scene_actors[i]);
+				stage_window->stage_edit_tool = RC_EDIT_TOOL_MOVE;
+				stage_tools_selection = getStageToolIndex(m_s3d_move_tool);
+				updateToolSelection();
+				break;
+			}
+		}
 	}
 }
 
@@ -5481,16 +5550,19 @@ void SerenityEditorSerenity3D_Frame::OnS3DLightClicked( wxCommandEvent& event )
 
 	if(stage_window)
 	{
-		actor_object scene_actor;
-		scene_actor.actor_index = actor_project_index;
-		scene_actor.id_name = project.stages[stageTab_active_stage_project_index].actors[actor_project_index].id_name;
-		scene_actor.node = project.stages[stageTab_active_stage_project_index].actors[actor_project_index].node;
-		scene_actor.icon_node = project.stages[stageTab_active_stage_project_index].actors[actor_project_index].icon_node;
-		scene_actor.rotation = &project.stages[stageTab_active_stage_project_index].actors[actor_project_index].rotation;
-
-		stage_window->scene_actors.push_back(scene_actor);
 		stage_window->selected_actors.clear();
-		stage_window->selected_actors.push_back(scene_actor);
+
+		for(int i = 0; i < stage_window->scene_actors.size(); i++)
+		{
+			if(stage_window->scene_actors[i].actor_index == actor_project_index)
+			{
+				stage_window->selected_actors.push_back(stage_window->scene_actors[i]);
+				stage_window->stage_edit_tool = RC_EDIT_TOOL_MOVE;
+				stage_tools_selection = getStageToolIndex(m_s3d_move_tool);
+				updateToolSelection();
+				break;
+			}
+		}
 	}
 }
 
@@ -5503,7 +5575,90 @@ void SerenityEditorSerenity3D_Frame::OnS3DTerrainClicked( wxCommandEvent& event 
 
 	SerenityEditor_NewTerrainActor_Dialog* dialog = new SerenityEditor_NewTerrainActor_Dialog(this);
 
+	for(int i = 0; i < project.textures.size(); i++)
+	{
+		dialog->textures.push_back(project.textures[i].id_name);
+	}
+
+	dialog->refresh_list();
+
 	dialog->ShowModal();
+
+
+	if(!dialog->create_flag)
+		return;
+
+	int texture_index = -1;
+	wxString texture_id_name = dialog->texture_id_name;
+
+	for(int i = 0; i < project.textures.size(); i++)
+	{
+		if(project.textures[i].id_name.compare(texture_id_name.ToStdString())==0)
+		{
+			texture_index = i;
+			break;
+		}
+	}
+
+	if(texture_index < 0 || texture_index >= project.textures.size())
+	{
+		wxMessageBox(_("A heightmap must be selected to create terrain actor."));
+		return;
+	}
+
+	wxString actor_id = dialog->id_name;
+
+	if(!isValidID(actor_id, RC_ID_ACTOR))
+	{
+		wxMessageBox(_("Warning: Actor ID is invalid. A default Actor ID will be generated."));
+		actor_id = project.genActorID(stageTab_active_stage_project_index);
+	}
+
+	int actor_project_index = project.stages[stageTab_active_stage_project_index].addActor(actor_id.ToStdString(), SN_ACTOR_TYPE_TERRAIN);
+
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].terrain_hmap_file = project.textures[texture_index].file;
+
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].position = current_window->getNewActorPosition();
+
+	Serenity_StageNode s_actor_node;
+	s_actor_node.node_type = RC_STAGE_NODE_ACTOR;
+	s_actor_node.group_label = _("");
+	s_actor_node.active = false;
+	s_actor_node.project_index = actor_project_index; //index in stage.actors
+
+	int stage_node_index = -1;
+	for(int i = 0; i < stage_tree_nodes.size(); i++)
+	{
+		if(stage_tree_nodes[i].project_index == stageTab_active_stage_project_index)
+		{
+			stage_node_index = i;
+			break;
+		}
+	}
+
+	s_actor_node.parent_item = stage_tree_nodes[stage_node_index].tree_item;
+	s_actor_node.tree_item = m_project_stage_treeCtrl->AppendItem(s_actor_node.parent_item, wxString::FromUTF8(project.stages[stageTab_active_stage_project_index].actors[actor_project_index].id_name), stage_tree_assetImage );
+	stage_tree_nodes[stage_node_index].actors.push_back(s_actor_node);
+
+	refresh_actor(actor_project_index);
+	m_project_stage_treeCtrl->SelectItem(s_actor_node.tree_item);
+
+	if(stage_window)
+	{
+		stage_window->selected_actors.clear();
+
+		for(int i = 0; i < stage_window->scene_actors.size(); i++)
+		{
+			if(stage_window->scene_actors[i].actor_index == actor_project_index)
+			{
+				stage_window->selected_actors.push_back(stage_window->scene_actors[i]);
+				stage_window->stage_edit_tool = RC_EDIT_TOOL_MOVE;
+				stage_tools_selection = getStageToolIndex(m_s3d_move_tool);
+				updateToolSelection();
+				break;
+			}
+		}
+	}
 }
 
 void SerenityEditorSerenity3D_Frame::OnS3DWaterClicked( wxCommandEvent& event )

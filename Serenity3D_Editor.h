@@ -1263,7 +1263,7 @@ class NewParticleActor_Dialog : public wxDialog
 
 	public:
 
-		NewParticleActor_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("New Particle Actor"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 534,171 ), long style = wxDEFAULT_DIALOG_STYLE );
+		NewParticleActor_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("New Particle Actor"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 534,178 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~NewParticleActor_Dialog();
 
@@ -1281,8 +1281,8 @@ class NewTerrainActor_Dialog : public wxDialog
 		wxStaticText* m_staticText33;
 		wxTextCtrl* m_actorID_textCtrl;
 		wxStaticText* m_staticText34;
-		wxSearchCtrl* m_materialSearch_searchCtrl;
-		wxListBox* m_mesh_listBox;
+		wxSearchCtrl* m_textureSearch_searchCtrl;
+		wxListBox* m_texture_listBox;
 		wxButton* m_cancel_button;
 		wxButton* m_create_button;
 

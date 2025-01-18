@@ -652,10 +652,13 @@ void wxIrrlicht::OnRender() {
 				}
 				else if(stage_edit_tool == RC_EDIT_TOOL_ROTATE && selected_actors.size() > 0 && show_axis_rings)
 				{
-					drawCircle(transform_tool_widget.pos, 50, irr::core::vector3df(1,0,0), irr::video::SColor(255, 255, 0, 0));
-					drawCircle(transform_tool_widget.pos, 50, irr::core::vector3df(0,1,0), irr::video::SColor(255, 0, 255, 0));
-					drawCircle(transform_tool_widget.pos, 50, irr::core::vector3df(0,0,1), irr::video::SColor(255, 0, 0, 255));
+					//irr::core::vector3df direction = getDirectionVector(transform_tool_widget.pos, selected_actors[0].node->getRotation());
+					drawCircle(transform_tool_widget.pos, 50, selected_actors[0].node->getRotation(), irr::core::vector3df(1,0,0), irr::video::SColor(255, 255, 0, 0));
+					drawCircle(transform_tool_widget.pos, 50, irr::core::vector3df(0, 0, 1), irr::core::vector3df(0,1,0), irr::video::SColor(255, 0, 255, 0));
+					drawCircle(transform_tool_widget.pos, 50, selected_actors[0].node->getRotation(), irr::core::vector3df(0,0,1), irr::video::SColor(255, 0, 0, 255));
 				}
+
+				drawAllLightInfluences();
 
 				camera[i].gridSceneNode->setVisible(false);
 			}
@@ -780,15 +783,18 @@ void wxIrrlicht::OnSize(wxSizeEvent& event) {
 
 void wxIrrlicht::drawAllLightInfluences()
 {
-	for(int i = 0; i < scene_actors.size(); i++)
+	for(int i = 0; i < selected_actors.size(); i++)
 	{
-		if(scene_actors[i].isLight)
-		{
-			irr::scene::ILightSceneNode* node = (irr::scene::ILightSceneNode*)scene_actors[i].node;
+		if(!selected_actors[i].node)
+			continue;
 
-			switch(node->getLightType())
+		if(selected_actors[i].isLight && selected_actors[i].node->isVisible())
+		{
+			irr::scene::ILightSceneNode* node = (irr::scene::ILightSceneNode*)selected_actors[i].node;
+
+			switch((int)node->getLightType())
 			{
-				case irr::video::ELT_SPOT:
+				case (int)(irr::video::ELT_SPOT):
 				{
 					//position, direction, and cone
 					irr::core::vector3df pos_v = node->getAbsolutePosition();
@@ -796,7 +802,97 @@ void wxIrrlicht::drawAllLightInfluences()
 					irr::f32 outer_cone = node->getLightData().OuterCone;
 					irr::f32 inner_cone = node->getLightData().InnerCone;
 
+					irr::core::matrix4 tmat;
+					tmat.setTranslation(irr::core::vector3df(0,0,0));
+					tmat.setRotationDegrees(dir_v.getHorizontalAngle());
 
+					irr::f32 line_length = 1000;
+
+					irr::core::vector3df target = pos_v + (dir_v.normalize() * line_length);
+
+					irr::core::vector3df inner_limit1 = irr::core::vector3df(0, 0, line_length);
+					inner_limit1.rotateXZBy(inner_cone, irr::core::vector3df(0, 0, 0));
+					tmat.transformVect(inner_limit1);
+					inner_limit1 += pos_v;
+
+					irr::core::vector3df inner_limit2 = irr::core::vector3df(0, 0, line_length);
+					inner_limit2.rotateXZBy(-1*(inner_cone), irr::core::vector3df(0, 0, 0));
+					tmat.transformVect(inner_limit2);
+					inner_limit2 += pos_v;
+
+					irr::core::vector3df inner_limit3 = irr::core::vector3df(0, 0, line_length);
+					inner_limit3.rotateYZBy(inner_cone, irr::core::vector3df(0, 0, 0));
+					tmat.transformVect(inner_limit3);
+					inner_limit3 += pos_v;
+
+					irr::core::vector3df inner_limit4 = irr::core::vector3df(0, 0, line_length);
+					inner_limit4.rotateYZBy(-1*(inner_cone), irr::core::vector3df(0, 0, 0));
+					tmat.transformVect(inner_limit4);
+					inner_limit4 += pos_v;
+
+					irr::core::vector3df outer_limit1 = irr::core::vector3df(0, 0, line_length);
+					outer_limit1.rotateXZBy(outer_cone, irr::core::vector3df(0, 0, 0));
+					tmat.transformVect(outer_limit1);
+					outer_limit1 += pos_v;
+
+					irr::core::vector3df outer_limit2 = irr::core::vector3df(0, 0, line_length);
+					outer_limit2.rotateXZBy(-1*(outer_cone), irr::core::vector3df(0, 0, 0));
+					tmat.transformVect(outer_limit2);
+					outer_limit2 += pos_v;
+
+					irr::core::vector3df outer_limit3 = irr::core::vector3df(0, 0, line_length);
+					outer_limit3.rotateYZBy(outer_cone, irr::core::vector3df(0, 0, 0));
+					tmat.transformVect(outer_limit3);
+					outer_limit3 += pos_v;
+
+					irr::core::vector3df outer_limit4 = irr::core::vector3df(0, 0, line_length);
+					outer_limit4.rotateYZBy(-1*(outer_cone), irr::core::vector3df(0, 0, 0));
+					tmat.transformVect(outer_limit4);
+					outer_limit4 += pos_v;
+
+					//irr::scene::IGeometryCreator* gc = m_pSceneManager->getGeometryCreator();
+
+					drawLine(pos_v, target, irr::video::SColor(255, 255, 255, 255));
+
+					drawLine(pos_v, inner_limit1, irr::video::SColor(255, 255, 255, 0));
+					drawLine(pos_v, inner_limit2, irr::video::SColor(255, 255, 255, 0));
+					drawLine(pos_v, inner_limit3, irr::video::SColor(255, 255, 255, 0));
+					drawLine(pos_v, inner_limit4, irr::video::SColor(255, 255, 255, 0));
+
+					drawLine(pos_v, outer_limit1, irr::video::SColor(255, 255, 181, 0));
+					drawLine(pos_v, outer_limit2, irr::video::SColor(255, 255, 181, 0));
+					drawLine(pos_v, outer_limit3, irr::video::SColor(255, 255, 181, 0));
+					drawLine(pos_v, outer_limit4, irr::video::SColor(255, 255, 181, 0));
+				}
+				break;
+
+				case (int)(irr::video::ELT_POINT):
+				{
+					//position, radius
+					irr::core::vector3df pos_v = node->getAbsolutePosition();
+					irr::f32 radius = node->getLightData().Radius;
+
+					drawCircle(pos_v, radius, irr::core::vector3df(0,0,0), irr::core::vector3df(1,0,0), irr::video::SColor(255,255,255,0));
+					drawCircle(pos_v, radius, irr::core::vector3df(0,0,0), irr::core::vector3df(0,1,0), irr::video::SColor(255,255,255,0));
+					drawCircle(pos_v, radius, irr::core::vector3df(0,0,0), irr::core::vector3df(0,0,1), irr::video::SColor(255,255,255,0));
+				}
+				break;
+
+				case (int)(irr::video::ELT_DIRECTIONAL):
+				{
+					//position, direction, and cone
+					irr::core::vector3df pos_v = node->getAbsolutePosition();
+					irr::core::vector3df dir_v = node->getLightData().Direction;
+
+					irr::core::matrix4 tmat;
+					tmat.setTranslation(irr::core::vector3df(0,0,0));
+					tmat.setRotationDegrees(dir_v.getHorizontalAngle());
+
+					irr::f32 line_length = 1000;
+
+					irr::core::vector3df target = pos_v + (dir_v.normalize() * line_length);
+
+					drawLine(pos_v, target, irr::video::SColor(255, 255, 255, 255));
 				}
 				break;
 			}
@@ -813,7 +909,6 @@ void wxIrrlicht::OnTimer(wxTimerEvent& event) {
     if(window_type != RC_IRR_WINDOW_VIEW2D)
 	{
 		OnUpdate();
-		drawAllLightInfluences();
 	}
 
     #ifdef _WIN32
@@ -1053,7 +1148,19 @@ void wxIrrlicht::drawLine(irr::core::vector3df line_v1, irr::core::vector3df lin
     rc_setDriverMaterial();
 }
 
-void wxIrrlicht::drawCircle(irr::core::vector3df center, double radius, irr::core::vector3df c_axis, irr::video::SColor color)
+irr::core::vector3df wxIrrlicht::getDirectionVector(irr::core::vector3df pos, irr::core::vector3df rot)
+{
+	irr::core::vector3df target = pos + irr::core::vector3df(0, 0, 10);
+	target.rotateXZBy(rot.Y, pos);
+	target.rotateYZBy(rot.X, pos);
+	target.rotateXYBy(rot.Z, pos);
+
+	irr::core::vector3df direction = target - pos;
+
+	return direction;
+}
+
+void wxIrrlicht::drawCircle(irr::core::vector3df center, double radius, irr::core::vector3df rotation, irr::core::vector3df c_axis, irr::video::SColor color)
 {
     std::vector<vector3df> points;
 
@@ -1061,40 +1168,61 @@ void wxIrrlicht::drawCircle(irr::core::vector3df center, double radius, irr::cor
 
     double interval = 360/segments;
 
+    irr::core::matrix4 t_mat;
+    t_mat.setRotationDegrees(rotation);
+
     if(c_axis.X != 0)
     {
     	for (int i = 0; i <= segments; i++)
 		{
-			irr::core::vector3df p = center + irr::core::vector3df(0, 0, radius);
-			p.rotateYZBy(interval*i, center);
+			irr::core::vector3df p = irr::core::vector3df(0, 0, radius);
+			p.rotateYZBy(interval*i, irr::core::vector3df(0,0,0));
+			t_mat.transformVect(p);
+
+			p += center;
 			points.push_back(p);
 		}
 
-		irr::core::vector3df p = center + irr::core::vector3df(0, 0, radius);
+		irr::core::vector3df p = irr::core::vector3df(0, 0, radius);
+		t_mat.transformVect(p);
+
+		p += center;
 		points.push_back(p);
     }
     else if(c_axis.Y != 0)
     {
     	for (int i = 0; i <= segments; i++)
 		{
-			irr::core::vector3df p = center + irr::core::vector3df(0, 0, radius);
-			p.rotateXZBy(interval*i, center);
+			irr::core::vector3df p = irr::core::vector3df(0, 0, radius);
+			p.rotateXZBy(interval*i, irr::core::vector3df(0,0,0));
+			t_mat.transformVect(p);
+
+			p += center;
 			points.push_back(p);
 		}
 
-		irr::core::vector3df p = center + irr::core::vector3df(0, 0, radius);
+		irr::core::vector3df p = irr::core::vector3df(0, 0, radius);
+		t_mat.transformVect(p);
+
+		p += center;
 		points.push_back(p);
     }
     else if(c_axis.Z != 0)
 	{
 		for (int i = 0; i <= segments; i++)
 		{
-			irr::core::vector3df p = center + irr::core::vector3df(0, radius, 0);
-			p.rotateXYBy(interval*i, center);
+			irr::core::vector3df p = irr::core::vector3df(0, radius, 0);
+			p.rotateXYBy(interval*i, irr::core::vector3df(0,0,0));
+			t_mat.transformVect(p);
+
+			p += center;
 			points.push_back(p);
 		}
 
-		irr::core::vector3df p = center + irr::core::vector3df(0, radius, 0);
+		irr::core::vector3df p = irr::core::vector3df(0, 0, radius);
+		t_mat.transformVect(p);
+
+		p += center;
 		points.push_back(p);
 	}
 
@@ -1294,9 +1422,6 @@ void wxIrrlicht::OnUpdate()
 				transform_tool_widget.lock_z = false;
 			}
 		}
-		else if(left_drag_init)
-		{
-		}
 
 
 
@@ -1429,7 +1554,14 @@ void wxIrrlicht::OnUpdate()
 				{
 					for(int i = 0; i < selected_actors.size(); i++)
 					{
-						selected_actors[i].t_start = selected_actors[i].node->getAbsolutePosition();
+						if(selected_actors[i].isTerrain)
+						{
+							selected_actors[i].t_start = selected_actors[i].t_pos;
+						}
+						else
+						{
+							selected_actors[i].t_start = selected_actors[i].node->getAbsolutePosition();
+						}
 					}
 				}
 
@@ -1481,6 +1613,7 @@ void wxIrrlicht::OnUpdate()
 				for(int i = 0; i < selected_actors.size(); i++)
 				{
 					selected_actors[i].node->setPosition( selected_actors[i].t_start + translate_vector );
+					selected_actors[i].t_pos = selected_actors[i].t_start + translate_vector;
 
 					if(selected_actors[i].icon_node)
 					{

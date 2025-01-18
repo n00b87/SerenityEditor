@@ -3614,12 +3614,12 @@ NewTerrainActor_Dialog::NewTerrainActor_Dialog( wxWindow* parent, wxWindowID id,
 	wxBoxSizer* bSizer81;
 	bSizer81 = new wxBoxSizer( wxHORIZONTAL );
 
-	m_materialSearch_searchCtrl = new wxSearchCtrl( m_panel38, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_textureSearch_searchCtrl = new wxSearchCtrl( m_panel38, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	#ifndef __WXMAC__
-	m_materialSearch_searchCtrl->ShowSearchButton( true );
+	m_textureSearch_searchCtrl->ShowSearchButton( true );
 	#endif
-	m_materialSearch_searchCtrl->ShowCancelButton( false );
-	bSizer81->Add( m_materialSearch_searchCtrl, 1, wxALL, 5 );
+	m_textureSearch_searchCtrl->ShowCancelButton( false );
+	bSizer81->Add( m_textureSearch_searchCtrl, 1, wxALL, 5 );
 
 
 	bSizer79->Add( bSizer81, 4, wxEXPAND, 5 );
@@ -3633,8 +3633,8 @@ NewTerrainActor_Dialog::NewTerrainActor_Dialog( wxWindow* parent, wxWindowID id,
 
 	bSizer80->Add( 0, 0, 1, wxEXPAND, 5 );
 
-	m_mesh_listBox = new wxListBox( m_panel38, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
-	bSizer80->Add( m_mesh_listBox, 4, wxALL|wxEXPAND, 5 );
+	m_texture_listBox = new wxListBox( m_panel38, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	bSizer80->Add( m_texture_listBox, 4, wxALL|wxEXPAND, 5 );
 
 
 	bSizer77->Add( bSizer80, 9, wxEXPAND, 5 );
@@ -3667,7 +3667,7 @@ NewTerrainActor_Dialog::NewTerrainActor_Dialog( wxWindow* parent, wxWindowID id,
 	this->Centre( wxBOTH );
 
 	// Connect Events
-	m_materialSearch_searchCtrl->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( NewTerrainActor_Dialog::OnSearchText ), NULL, this );
+	m_textureSearch_searchCtrl->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( NewTerrainActor_Dialog::OnSearchText ), NULL, this );
 	m_cancel_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewTerrainActor_Dialog::OnCancelButtonClicked ), NULL, this );
 	m_create_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewTerrainActor_Dialog::OnCreateButtonClicked ), NULL, this );
 }
@@ -3675,7 +3675,7 @@ NewTerrainActor_Dialog::NewTerrainActor_Dialog( wxWindow* parent, wxWindowID id,
 NewTerrainActor_Dialog::~NewTerrainActor_Dialog()
 {
 	// Disconnect Events
-	m_materialSearch_searchCtrl->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( NewTerrainActor_Dialog::OnSearchText ), NULL, this );
+	m_textureSearch_searchCtrl->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( NewTerrainActor_Dialog::OnSearchText ), NULL, this );
 	m_cancel_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewTerrainActor_Dialog::OnCancelButtonClicked ), NULL, this );
 	m_create_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewTerrainActor_Dialog::OnCreateButtonClicked ), NULL, this );
 

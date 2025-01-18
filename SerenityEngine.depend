@@ -1,8 +1,8 @@
 # depslib dependency file v1.0
-1737077343 source:/home/n00b/Projects/SerenityEngine/Serenity3D_Editor.cpp
+1737179611 source:/home/n00b/Projects/SerenityEngine/Serenity3D_Editor.cpp
 	"Serenity3D_Editor.h"
 
-1737077343 /home/n00b/Projects/SerenityEngine/Serenity3D_Editor.h
+1737179611 /home/n00b/Projects/SerenityEngine/Serenity3D_Editor.h
 	<wx/artprov.h>
 	<wx/xrc/xmlres.h>
 	<wx/string.h>
@@ -1432,7 +1432,7 @@
 	"wx/icon.h"
 	"wx/aui/auibook.h"
 
-1737083609 source:/home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.cpp
+1737236558 source:/home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.cpp
 	<wx/stdpaths.h>
 	<wx/propgrid/manager.h>
 	<wx/propgrid/propgridpagestate.h>
@@ -2207,7 +2207,7 @@
 
 1704201762 /usr/include/x86_64-linux-gnu/bits/types/struct_statx.h
 
-1737081842 source:/home/n00b/Projects/SerenityEngine/wxIrrlicht.cpp
+1737235714 source:/home/n00b/Projects/SerenityEngine/wxIrrlicht.cpp
 	<wx/wx.h>
 	<wx/stdpaths.h>
 	<wx/filename.h>
@@ -5389,7 +5389,7 @@
 
 1720630994 /usr/include/gtk-3.0/gtk/gtk-autocleanups.h
 
-1737086216 /home/n00b/Projects/SerenityEngine/wxIrrlicht.h
+1737233586 /home/n00b/Projects/SerenityEngine/wxIrrlicht.h
 	<windows.h>
 	<irrlicht.h>
 	<wx/wx.h>
@@ -9703,7 +9703,7 @@
 	<cinttypes>
 	"rc_stage.h"
 
-1736917083 /home/n00b/Projects/SerenityEngine/rc_stage.h
+1737181202 /home/n00b/Projects/SerenityEngine/rc_stage.h
 	<vector>
 	<irrlicht.h>
 	"an8parser.h"
@@ -10083,10 +10083,11 @@
 1736998040 /home/n00b/Projects/SerenityEngine/SerenityEditor_NewSphereActor_Dialog.h
 	"Serenity3D_Editor.h"
 
-1736998040 source:/home/n00b/Projects/SerenityEngine/SerenityEditor_NewTerrainActor_Dialog.cpp
+1737179710 source:/home/n00b/Projects/SerenityEngine/SerenityEditor_NewTerrainActor_Dialog.cpp
+	<wx/wx.h>
 	"SerenityEditor_NewTerrainActor_Dialog.h"
 
-1736998040 /home/n00b/Projects/SerenityEngine/SerenityEditor_NewTerrainActor_Dialog.h
+1737179355 /home/n00b/Projects/SerenityEngine/SerenityEditor_NewTerrainActor_Dialog.h
 	"Serenity3D_Editor.h"
 
 1736998040 source:/home/n00b/Projects/SerenityEngine/SerenityEditor_NewWaterActor_Dialog.cpp
