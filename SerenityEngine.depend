@@ -1,8 +1,8 @@
 # depslib dependency file v1.0
-1737179611 source:/home/n00b/Projects/SerenityEngine/Serenity3D_Editor.cpp
+1737321794 source:/home/n00b/Projects/SerenityEngine/Serenity3D_Editor.cpp
 	"Serenity3D_Editor.h"
 
-1737237702 /home/n00b/Projects/SerenityEngine/Serenity3D_Editor.h
+1737321794 /home/n00b/Projects/SerenityEngine/Serenity3D_Editor.h
 	<wx/artprov.h>
 	<wx/xrc/xmlres.h>
 	<wx/string.h>
@@ -1432,7 +1432,7 @@
 	"wx/icon.h"
 	"wx/aui/auibook.h"
 
-1737253291 source:/home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.cpp
+1737337795 source:/home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.cpp
 	<wx/stdpaths.h>
 	<wx/propgrid/manager.h>
 	<wx/propgrid/propgridpagestate.h>
@@ -1469,7 +1469,7 @@
 	"SerenityEditor_NewCubeActor_Dialog.h"
 	"SerenityEditor_NewSphereActor_Dialog.h"
 
-1736967069 /home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.h
+1737322246 /home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.h
 	<vector>
 	<wx/propgrid/propgrid.h>
 	<wx/propgrid/advprops.h>
@@ -2207,7 +2207,7 @@
 
 1704201762 /usr/include/x86_64-linux-gnu/bits/types/struct_statx.h
 
-1737235714 source:/home/n00b/Projects/SerenityEngine/wxIrrlicht.cpp
+1737338443 source:/home/n00b/Projects/SerenityEngine/wxIrrlicht.cpp
 	<wx/wx.h>
 	<wx/stdpaths.h>
 	<wx/filename.h>
@@ -5389,7 +5389,7 @@
 
 1720630994 /usr/include/gtk-3.0/gtk/gtk-autocleanups.h
 
-1737233586 /home/n00b/Projects/SerenityEngine/wxIrrlicht.h
+1737332377 /home/n00b/Projects/SerenityEngine/wxIrrlicht.h
 	<windows.h>
 	<irrlicht.h>
 	<wx/wx.h>
@@ -10059,10 +10059,10 @@
 1737077546 /home/n00b/Projects/SerenityEngine/SerenityEditor_NewBillboardActor_Dialog.h
 	"Serenity3D_Editor.h"
 
-1736998040 source:/home/n00b/Projects/SerenityEngine/SerenityEditor_NewCubeActor_Dialog.cpp
+1737307248 source:/home/n00b/Projects/SerenityEngine/SerenityEditor_NewCubeActor_Dialog.cpp
 	"SerenityEditor_NewCubeActor_Dialog.h"
 
-1736998040 /home/n00b/Projects/SerenityEngine/SerenityEditor_NewCubeActor_Dialog.h
+1737307321 /home/n00b/Projects/SerenityEngine/SerenityEditor_NewCubeActor_Dialog.h
 	"Serenity3D_Editor.h"
 
 1737079296 source:/home/n00b/Projects/SerenityEngine/SerenityEditor_NewLightActor_Dialog.cpp
@@ -10071,16 +10071,16 @@
 1737078648 /home/n00b/Projects/SerenityEngine/SerenityEditor_NewLightActor_Dialog.h
 	"Serenity3D_Editor.h"
 
-1736998040 source:/home/n00b/Projects/SerenityEngine/SerenityEditor_NewParticleActor_Dialog.cpp
+1737253309 source:/home/n00b/Projects/SerenityEngine/SerenityEditor_NewParticleActor_Dialog.cpp
 	"SerenityEditor_NewParticleActor_Dialog.h"
 
 1737253065 /home/n00b/Projects/SerenityEngine/SerenityEditor_NewParticleActor_Dialog.h
 	"Serenity3D_Editor.h"
 
-1736998040 source:/home/n00b/Projects/SerenityEngine/SerenityEditor_NewSphereActor_Dialog.cpp
+1737312890 source:/home/n00b/Projects/SerenityEngine/SerenityEditor_NewSphereActor_Dialog.cpp
 	"SerenityEditor_NewSphereActor_Dialog.h"
 
-1736998040 /home/n00b/Projects/SerenityEngine/SerenityEditor_NewSphereActor_Dialog.h
+1737312776 /home/n00b/Projects/SerenityEngine/SerenityEditor_NewSphereActor_Dialog.h
 	"Serenity3D_Editor.h"
 
 1737179710 source:/home/n00b/Projects/SerenityEngine/SerenityEditor_NewTerrainActor_Dialog.cpp

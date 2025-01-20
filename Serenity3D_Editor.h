@@ -74,10 +74,8 @@ class Serenity3D_Frame : public wxFrame
 		wxAuiToolBarItem* m_s3d_terrainActor_tool;
 		wxAuiToolBarItem* m_s3d_waterActor_tool;
 		wxAuiToolBarItem* m_s3d_particleActor_tool;
-		wxAuiToolBarItem* m_s3d_plane_tool;
 		wxAuiToolBarItem* m_s3d_cube_tool;
 		wxAuiToolBarItem* m_s3d_sphere_tool;
-		wxAuiToolBarItem* m_s3d_path_tool;
 		wxSplitterWindow* m_splitter3;
 		wxPanel* m_panel71;
 		wxPanel* m_panel15;
@@ -85,6 +83,10 @@ class Serenity3D_Frame : public wxFrame
 		wxPanel* m_panel47;
 		wxStaticText* m_staticText12;
 		wxComboBox* m_stagePOV_comboBox;
+		wxStaticText* m_staticText84;
+		wxAuiToolBar* m_renderMode_auiToolBar;
+		wxAuiToolBarItem* m_render_wire_tool;
+		wxAuiToolBarItem* m_render_solid_tool;
 		wxPanel* m_stageViewport_panel;
 		wxPanel* m_panel40;
 		wxPanel* m_panel8;
@@ -553,11 +555,11 @@ class Serenity3D_Frame : public wxFrame
 		virtual void OnS3DTerrainClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnS3DWaterClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnS3DEffectClicked( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnS3DPlaneClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnS3DCubeClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnS3DSphereClicked( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnS3DPathClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnViewComboSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Stage_RenderMode_WireFrame( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Stage_RenderMode_Solid( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnStageUpdate( wxUpdateUIEvent& event ) { event.Skip(); }
 		virtual void OnProjectPropertiesNotebookChanged( wxAuiNotebookEvent& event ) { event.Skip(); }
 		virtual void On_Stage_NewStage( wxCommandEvent& event ) { event.Skip(); }

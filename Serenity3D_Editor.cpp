@@ -78,13 +78,9 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 
 	m_s3d_particleActor_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("Add Particle Effect"), wxBitmap( wxT("icons/effect.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
 
-	m_s3d_plane_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("Add plane"), wxBitmap( wxT("icons/plane.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_CHECK, wxEmptyString, wxEmptyString, NULL );
+	m_s3d_cube_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("Add Cube"), wxBitmap( wxT("icons/3d-cube.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
 
-	m_s3d_cube_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("Add Cube"), wxBitmap( wxT("icons/3d-cube.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_CHECK, wxEmptyString, wxEmptyString, NULL );
-
-	m_s3d_sphere_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("Add Sphere"), wxBitmap( wxT("icons/sphere.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_CHECK, wxEmptyString, wxEmptyString, NULL );
-
-	m_s3d_path_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("Add Path"), wxBitmap( wxT("icons/anchor.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_CHECK, wxEmptyString, wxEmptyString, NULL );
+	m_s3d_sphere_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("Add Sphere"), wxBitmap( wxT("icons/sphere.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
 
 	m_auiToolBar52->Realize();
 
@@ -132,6 +128,22 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 
 
 	bSizer46->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText84 = new wxStaticText( m_panel47, wxID_ANY, wxT("MODE"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText84->Wrap( -1 );
+	bSizer46->Add( m_staticText84, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_renderMode_auiToolBar = new wxAuiToolBar( m_panel47, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_TB_HORZ_LAYOUT|wxAUI_TB_PLAIN_BACKGROUND );
+	m_renderMode_auiToolBar->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
+	m_renderMode_auiToolBar->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
+
+	m_render_wire_tool = m_renderMode_auiToolBar->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/wireframe.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_RADIO, wxEmptyString, wxEmptyString, NULL );
+
+	m_render_solid_tool = m_renderMode_auiToolBar->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/solid.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_RADIO, wxEmptyString, wxEmptyString, NULL );
+
+	m_renderMode_auiToolBar->Realize();
+
+	bSizer46->Add( m_renderMode_auiToolBar, 0, wxALL, 5 );
 
 
 	m_panel47->SetSizer( bSizer46 );
@@ -1779,11 +1791,11 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	this->Connect( m_s3d_terrainActor_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DTerrainClicked ) );
 	this->Connect( m_s3d_waterActor_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DWaterClicked ) );
 	this->Connect( m_s3d_particleActor_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DEffectClicked ) );
-	this->Connect( m_s3d_plane_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DPlaneClicked ) );
 	this->Connect( m_s3d_cube_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DCubeClicked ) );
 	this->Connect( m_s3d_sphere_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DSphereClicked ) );
-	this->Connect( m_s3d_path_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DPathClicked ) );
 	m_stagePOV_comboBox->Connect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( Serenity3D_Frame::OnViewComboSelect ), NULL, this );
+	this->Connect( m_render_wire_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_RenderMode_WireFrame ) );
+	this->Connect( m_render_solid_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_RenderMode_Solid ) );
 	m_stageViewport_panel->Connect( wxEVT_UPDATE_UI, wxUpdateUIEventHandler( Serenity3D_Frame::OnStageUpdate ), NULL, this );
 	m_auinotebook3->Connect( wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGED, wxAuiNotebookEventHandler( Serenity3D_Frame::OnProjectPropertiesNotebookChanged ), NULL, this );
 	m_bpButton41->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_NewStage ), NULL, this );
@@ -1881,11 +1893,11 @@ Serenity3D_Frame::~Serenity3D_Frame()
 	this->Disconnect( m_s3d_terrainActor_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DTerrainClicked ) );
 	this->Disconnect( m_s3d_waterActor_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DWaterClicked ) );
 	this->Disconnect( m_s3d_particleActor_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DEffectClicked ) );
-	this->Disconnect( m_s3d_plane_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DPlaneClicked ) );
 	this->Disconnect( m_s3d_cube_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DCubeClicked ) );
 	this->Disconnect( m_s3d_sphere_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DSphereClicked ) );
-	this->Disconnect( m_s3d_path_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DPathClicked ) );
 	m_stagePOV_comboBox->Disconnect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( Serenity3D_Frame::OnViewComboSelect ), NULL, this );
+	this->Disconnect( m_render_wire_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_RenderMode_WireFrame ) );
+	this->Disconnect( m_render_solid_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_RenderMode_Solid ) );
 	m_stageViewport_panel->Disconnect( wxEVT_UPDATE_UI, wxUpdateUIEventHandler( Serenity3D_Frame::OnStageUpdate ), NULL, this );
 	m_auinotebook3->Disconnect( wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGED, wxAuiNotebookEventHandler( Serenity3D_Frame::OnProjectPropertiesNotebookChanged ), NULL, this );
 	m_bpButton41->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_NewStage ), NULL, this );

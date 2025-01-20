@@ -135,6 +135,9 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
 
 		std::vector<wxAuiToolBarItem*> stage_tools;
 		int stage_tools_selection = 0;
+		int stage_render_mode = 1;
+
+		void updateRenderMode();
 
 		void updateToolSelection();
 		int getStageToolIndex(wxAuiToolBarItem* toolbar_item);
@@ -227,6 +230,8 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
 		void OnS3DModeCameraClicked( wxCommandEvent& event );
 
 		void OnStageUpdate( wxUpdateUIEvent& event );
+		void On_Stage_RenderMode_WireFrame( wxCommandEvent& event );
+		void On_Stage_RenderMode_Solid( wxCommandEvent& event );
 
 		void On_Stage_NewStage( wxCommandEvent& event );
 		void On_Stage_DeleteStage( wxCommandEvent& event );

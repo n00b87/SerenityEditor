@@ -4,15 +4,20 @@ SerenityEditor_NewSphereActor_Dialog::SerenityEditor_NewSphereActor_Dialog( wxWi
 :
 NewSphereActor_Dialog( parent )
 {
-
+	create_flag = false;
 }
 
 void SerenityEditor_NewSphereActor_Dialog::OnCancelButtonClicked( wxCommandEvent& event )
 {
-// TODO: Implement OnCancelButtonClicked
+	Close();
 }
 
 void SerenityEditor_NewSphereActor_Dialog::OnCreateButtonClicked( wxCommandEvent& event )
 {
-// TODO: Implement OnCreateButtonClicked
+	create_flag = true;
+	id_name = m_actorID_textCtrl->GetValue();
+
+	radius = m_radius_spinCtrlDouble->GetValue();
+
+	Close();
 }

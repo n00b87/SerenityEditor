@@ -2037,6 +2037,23 @@ void wxIrrlicht::OnUpdate()
 				case RC_CAMERA_VIEW_FRONT:
 				{
 					camera[active_camera].camera.translateW(-delta_x, delta_y, 0);
+
+					float ax = 0;
+					float ay = 0;
+					float az = 0;
+					camera[active_camera].camera.getPosition(ax, ay, az);
+
+					for(int i = 0; i < num_views; i++)
+					{
+						if(i != active_camera)
+						{
+							float pos_x = 0;
+							float pos_y = 0;
+							float pos_z = 0;
+							camera[i].camera.getPosition(pos_x, pos_y, pos_z);
+							camera[i].camera.setPosition(ax, ay, pos_z);
+						}
+					}
 				}
 				break;
 
@@ -2044,6 +2061,23 @@ void wxIrrlicht::OnUpdate()
 				case RC_CAMERA_VIEW_RIGHT:
 				{
 					camera[active_camera].camera.translateW(0, delta_y, delta_x);
+
+					float ax = 0;
+					float ay = 0;
+					float az = 0;
+					camera[active_camera].camera.getPosition(ax, ay, az);
+
+					for(int i = 0; i < num_views; i++)
+					{
+						if(i != active_camera)
+						{
+							float pos_x = 0;
+							float pos_y = 0;
+							float pos_z = 0;
+							camera[i].camera.getPosition(pos_x, pos_y, pos_z);
+							camera[i].camera.setPosition(pos_x, ay, az);
+						}
+					}
 				}
 				break;
 
@@ -2051,6 +2085,23 @@ void wxIrrlicht::OnUpdate()
 				case RC_CAMERA_VIEW_BOTTOM:
 				{
 					camera[active_camera].camera.translateW(-delta_x, 0, delta_y);
+
+					float ax = 0;
+					float ay = 0;
+					float az = 0;
+					camera[active_camera].camera.getPosition(ax, ay, az);
+
+					for(int i = 0; i < num_views; i++)
+					{
+						if(i != active_camera)
+						{
+							float pos_x = 0;
+							float pos_y = 0;
+							float pos_z = 0;
+							camera[i].camera.getPosition(pos_x, pos_y, pos_z);
+							camera[i].camera.setPosition(ax, pos_y, az);
+						}
+					}
 				}
 				break;
 			}
@@ -2100,6 +2151,56 @@ void wxIrrlicht::OnUpdate()
 					VIEW_KEY_F = false;
 
 					camera[active_camera].camera.translateW(0, -cam_move_speed, 0);
+				}
+
+				float ax = 0;
+				float ay = 0;
+				float az = 0;
+				camera[active_camera].camera.getPosition(ax, ay, az);
+
+				for(int i = 0; i < num_views; i++)
+				{
+					if(camera[i].pov == RC_CAMERA_VIEW_FRONT)
+					{
+						camera[i].camera.setPosition(ax, ay, az-300);
+						camera[i].gridSceneNode->setPosition(irr::core::vector3df(0, 0, az+100));
+					}
+					else if(camera[i].pov == RC_CAMERA_VIEW_RIGHT)
+					{
+						camera[i].camera.setPosition(ax-300, ay, az);
+						camera[i].gridSceneNode->setPosition(irr::core::vector3df(ax+100, 0, 0));
+					}
+					else if(camera[i].pov == RC_CAMERA_VIEW_TOP)
+					{
+						camera[i].camera.setPosition(ax, ay+300, az);
+						camera[i].gridSceneNode->setPosition(irr::core::vector3df(0, ay-100, 0));
+					}
+				}
+			}
+			else if(num_views == 4)
+			{
+				float ax = 0;
+				float ay = 0;
+				float az = 0;
+				camera[3].camera.getPosition(ax, ay, az);
+
+				for(int i = 0; i < num_views; i++)
+				{
+					if(camera[i].pov == RC_CAMERA_VIEW_FRONT)
+					{
+						camera[i].camera.setPosition(ax, ay, az-300);
+						camera[i].gridSceneNode->setPosition(irr::core::vector3df(0, 0, az+100));
+					}
+					else if(camera[i].pov == RC_CAMERA_VIEW_RIGHT)
+					{
+						camera[i].camera.setPosition(ax-300, ay, az);
+						camera[i].gridSceneNode->setPosition(irr::core::vector3df(ax+100, 0, 0));
+					}
+					else if(camera[i].pov == RC_CAMERA_VIEW_TOP)
+					{
+						camera[i].camera.setPosition(ax, ay+300, az);
+						camera[i].gridSceneNode->setPosition(irr::core::vector3df(0, ay-100, 0));
+					}
 				}
 			}
 		}
@@ -2208,16 +2309,101 @@ void wxIrrlicht::SetViews(int view_flag, int view0_pov, int view1_pov, int view2
 {
 	if(view_flag == RC_CAMERA_VIEW_ALL)
 	{
+		bool viewport_switch = (num_views == 1);
+
 		num_views = 4;
 		camera[0].pov = view0_pov;
 		camera[1].pov = view1_pov;
 		camera[2].pov = view2_pov;
 		camera[3].pov = view3_pov;
+
+		if(viewport_switch)
+		{
+			float ax = 0;
+			float ay = 0;
+			float az = 0;
+			camera[active_camera].camera.getPosition(ax, ay, az);
+
+			float rx = camera[active_camera].camera.rx;
+			float ry = camera[active_camera].camera.ry;
+			float rz = camera[active_camera].camera.rz;
+
+			for(int i = 0; i < num_views; i++)
+			{
+				if(camera[i].pov == RC_CAMERA_VIEW_FRONT)
+				{
+					camera[i].camera.setPosition(ax, ay, az-300);
+					camera[i].gridSceneNode->setPosition(irr::core::vector3df(0, 0, az+100));
+					//camera[i].camera.setRotation(0, 0, 0);
+				}
+				else if(camera[i].pov == RC_CAMERA_VIEW_RIGHT)
+				{
+					camera[i].camera.setPosition(ax-300, ay, az);
+					camera[i].gridSceneNode->setPosition(irr::core::vector3df(ax+100, 0, 0));
+					//camera[i].camera.setRotation(0, 90, 0);
+				}
+				else if(camera[i].pov == RC_CAMERA_VIEW_TOP)
+				{
+					camera[i].camera.setPosition(ax, ay+300, az);
+					camera[i].gridSceneNode->setPosition(irr::core::vector3df(0, ay-100, 0));
+					//camera[i].camera.setRotation(90, 0, 0);
+				}
+				else
+				{
+					camera[i].camera.setPosition(ax, ay, az);
+					camera[i].gridSceneNode->setPosition(irr::core::vector3df(0, 0, 0));
+					camera[i].camera.setRotation(rx, ry, rz);
+				}
+			}
+		}
 	}
 	else
 	{
+		bool viewport_switch = (num_views == 4);
+
 		num_views = 1;
 		camera[0].pov = view_flag;
+
+		if(viewport_switch)
+		{
+			//wxMessageBox(_("BALLS"));
+			float ax = 0;
+			float ay = 0;
+			float az = 0;
+			camera[3].camera.getPosition(ax, ay, az);
+
+			float rx = camera[3].camera.rx;
+			float ry = camera[3].camera.ry;
+			float rz = camera[3].camera.rz;
+
+			for(int i = 0; i < num_views; i++)
+			{
+				if(camera[i].pov == RC_CAMERA_VIEW_FRONT)
+				{
+					camera[i].camera.setPosition(ax, ay, az-300);
+					camera[i].gridSceneNode->setPosition(irr::core::vector3df(0, 0, az+100));
+					//camera[i].camera.setRotation(0, 0, 0);
+				}
+				else if(camera[i].pov == RC_CAMERA_VIEW_RIGHT)
+				{
+					camera[i].camera.setPosition(ax-300, ay, az);
+					camera[i].gridSceneNode->setPosition(irr::core::vector3df(ax+100, 0, 0));
+					//camera[i].camera.setRotation(0, 90, 0);
+				}
+				else if(camera[i].pov == RC_CAMERA_VIEW_TOP)
+				{
+					camera[i].camera.setPosition(ax, ay+300, az);
+					camera[i].gridSceneNode->setPosition(irr::core::vector3df(0, ay-100, 0));
+					//camera[i].camera.setRotation(90, 0, 0);
+				}
+				else
+				{
+					camera[i].camera.setPosition(ax, ay, az);
+					camera[i].gridSceneNode->setPosition(irr::core::vector3df(0, 0, 0));
+					camera[i].camera.setRotation(rx, ry, rz);
+				}
+			}
+		}
 	}
 
 	SetCameraViewParam();

@@ -18,6 +18,11 @@ class SerenityEditor_NewCubeActor_Dialog : public NewCubeActor_Dialog
 		void OnCancelButtonClicked( wxCommandEvent& event );
 		void OnCreateButtonClicked( wxCommandEvent& event );
 	public:
+		wxString id_name;
+		bool create_flag;
+
+		double cube_size;
+
 		/** Constructor */
 		SerenityEditor_NewCubeActor_Dialog( wxWindow* parent );
 	//// end generated class members
