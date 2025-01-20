@@ -47,6 +47,7 @@
 #include <wx/checklst.h>
 #include <wx/radiobut.h>
 #include <wx/statline.h>
+#include <wx/simplebook.h>
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -1401,6 +1402,71 @@ class NewSphereActor_Dialog : public wxDialog
 		NewSphereActor_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("New Sphere Actor"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 382,177 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~NewSphereActor_Dialog();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class CreateMesh_Dialog
+///////////////////////////////////////////////////////////////////////////////
+class CreateMesh_Dialog : public wxDialog
+{
+	private:
+
+	protected:
+		wxStaticText* m_staticText108;
+		wxTextCtrl* m_meshID_textCtrl;
+		wxStaticText* m_staticText86;
+		wxComboBox* m_comboBox10;
+		wxSimplebook* m_simplebook1;
+		wxPanel* m_plane_panel;
+		wxStaticText* m_staticText87;
+		wxSpinCtrl* m_planeTileWidth_spinCtrl;
+		wxStaticText* m_staticText88;
+		wxSpinCtrl* m_planeTileHeight_spinCtrl;
+		wxStaticText* m_staticText89;
+		wxSpinCtrl* m_planeCountX_spinCtrl;
+		wxStaticText* m_staticText90;
+		wxSpinCtrl* m_planeCountY_spinCtrl;
+		wxStaticText* m_staticText91;
+		wxSpinCtrl* m_planeTxRepeatX_spinCtrl;
+		wxStaticText* m_staticText92;
+		wxSpinCtrl* m_planeTxRepeatY_spinCtrl;
+		wxPanel* m_cone_panel;
+		wxStaticText* m_staticText93;
+		wxSpinCtrlDouble* m_coneRadius_spinCtrlDouble;
+		wxStaticText* m_staticText94;
+		wxSpinCtrlDouble* m_coneLength_spinCtrlDouble;
+		wxStaticText* m_staticText95;
+		wxSpinCtrl* m_coneTesselation_spinCtrl;
+		wxStaticText* m_staticText96;
+		wxColourPickerCtrl* m_coneTopColor_colourPicker;
+		wxStaticText* m_staticText97;
+		wxColourPickerCtrl* m_coneBottomColor_colourPicker;
+		wxPanel* m_cylinder_panel;
+		wxStaticText* m_staticText931;
+		wxSpinCtrlDouble* m_cylinderRadius_spinCtrlDouble;
+		wxStaticText* m_staticText941;
+		wxSpinCtrlDouble* m_cylinderLength_spinCtrlDouble;
+		wxStaticText* m_staticText951;
+		wxSpinCtrl* m_cylinderTesselation_spinCtrl;
+		wxStaticText* m_staticText961;
+		wxColourPickerCtrl* m_cylinderColor_colourPicker;
+		wxStaticText* m_staticText971;
+		wxCheckBox* m_cylinderCloseTop_checkBox;
+		wxButton* m_button89;
+		wxButton* m_button90;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void OnShapeSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnCancel( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnCreate( wxCommandEvent& event ) { event.Skip(); }
+
+
+	public:
+
+		CreateMesh_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Create Mesh"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 647,442 ), long style = wxDEFAULT_DIALOG_STYLE );
+
+		~CreateMesh_Dialog();
 
 };
 

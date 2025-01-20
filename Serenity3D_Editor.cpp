@@ -4028,3 +4028,321 @@ NewSphereActor_Dialog::~NewSphereActor_Dialog()
 	m_create_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewSphereActor_Dialog::OnCreateButtonClicked ), NULL, this );
 
 }
+
+CreateMesh_Dialog::CreateMesh_Dialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+	wxBoxSizer* bSizer237;
+	bSizer237 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer266;
+	bSizer266 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText108 = new wxStaticText( this, wxID_ANY, wxT("Mesh ID"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText108->Wrap( -1 );
+	bSizer266->Add( m_staticText108, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_meshID_textCtrl = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer266->Add( m_meshID_textCtrl, 4, wxALL, 5 );
+
+
+	bSizer237->Add( bSizer266, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer238;
+	bSizer238 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText86 = new wxStaticText( this, wxID_ANY, wxT("Shape"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText86->Wrap( -1 );
+	bSizer238->Add( m_staticText86, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_comboBox10 = new wxComboBox( this, wxID_ANY, wxT("Combo!"), wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	bSizer238->Add( m_comboBox10, 4, wxALL, 5 );
+
+
+	bSizer237->Add( bSizer238, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer239;
+	bSizer239 = new wxBoxSizer( wxVERTICAL );
+
+	m_simplebook1 = new wxSimplebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
+	m_plane_panel = new wxPanel( m_simplebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer240;
+	bSizer240 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer241;
+	bSizer241 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText87 = new wxStaticText( m_plane_panel, wxID_ANY, wxT("Tile Width"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText87->Wrap( -1 );
+	bSizer241->Add( m_staticText87, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_planeTileWidth_spinCtrl = new wxSpinCtrl( m_plane_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10, 0 );
+	bSizer241->Add( m_planeTileWidth_spinCtrl, 4, wxALL, 5 );
+
+
+	bSizer240->Add( bSizer241, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer242;
+	bSizer242 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText88 = new wxStaticText( m_plane_panel, wxID_ANY, wxT("Tile Height"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText88->Wrap( -1 );
+	bSizer242->Add( m_staticText88, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_planeTileHeight_spinCtrl = new wxSpinCtrl( m_plane_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10, 0 );
+	bSizer242->Add( m_planeTileHeight_spinCtrl, 4, wxALL, 5 );
+
+
+	bSizer240->Add( bSizer242, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer243;
+	bSizer243 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText89 = new wxStaticText( m_plane_panel, wxID_ANY, wxT("X Count"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText89->Wrap( -1 );
+	bSizer243->Add( m_staticText89, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_planeCountX_spinCtrl = new wxSpinCtrl( m_plane_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10, 0 );
+	bSizer243->Add( m_planeCountX_spinCtrl, 4, wxALL, 5 );
+
+
+	bSizer240->Add( bSizer243, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer244;
+	bSizer244 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText90 = new wxStaticText( m_plane_panel, wxID_ANY, wxT("Y Count"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText90->Wrap( -1 );
+	bSizer244->Add( m_staticText90, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_planeCountY_spinCtrl = new wxSpinCtrl( m_plane_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10, 0 );
+	bSizer244->Add( m_planeCountY_spinCtrl, 4, wxALL, 5 );
+
+
+	bSizer240->Add( bSizer244, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer245;
+	bSizer245 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText91 = new wxStaticText( m_plane_panel, wxID_ANY, wxT("Texture Repeat X"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText91->Wrap( -1 );
+	bSizer245->Add( m_staticText91, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_planeTxRepeatX_spinCtrl = new wxSpinCtrl( m_plane_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10, 0 );
+	bSizer245->Add( m_planeTxRepeatX_spinCtrl, 4, wxALL, 5 );
+
+
+	bSizer240->Add( bSizer245, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer246;
+	bSizer246 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText92 = new wxStaticText( m_plane_panel, wxID_ANY, wxT("Texture Repeat Y"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText92->Wrap( -1 );
+	bSizer246->Add( m_staticText92, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_planeTxRepeatY_spinCtrl = new wxSpinCtrl( m_plane_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10, 0 );
+	bSizer246->Add( m_planeTxRepeatY_spinCtrl, 4, wxALL, 5 );
+
+
+	bSizer240->Add( bSizer246, 0, wxEXPAND, 5 );
+
+
+	m_plane_panel->SetSizer( bSizer240 );
+	m_plane_panel->Layout();
+	bSizer240->Fit( m_plane_panel );
+	m_simplebook1->AddPage( m_plane_panel, wxT("a page"), false );
+	m_cone_panel = new wxPanel( m_simplebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer248;
+	bSizer248 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer249;
+	bSizer249 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText93 = new wxStaticText( m_cone_panel, wxID_ANY, wxT("Radius"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText93->Wrap( -1 );
+	bSizer249->Add( m_staticText93, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_coneRadius_spinCtrlDouble = new wxSpinCtrlDouble( m_cone_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0, 1 );
+	m_coneRadius_spinCtrlDouble->SetDigits( 0 );
+	bSizer249->Add( m_coneRadius_spinCtrlDouble, 4, wxALL, 5 );
+
+
+	bSizer248->Add( bSizer249, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer250;
+	bSizer250 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText94 = new wxStaticText( m_cone_panel, wxID_ANY, wxT("Length"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText94->Wrap( -1 );
+	bSizer250->Add( m_staticText94, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_coneLength_spinCtrlDouble = new wxSpinCtrlDouble( m_cone_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0, 1 );
+	m_coneLength_spinCtrlDouble->SetDigits( 0 );
+	bSizer250->Add( m_coneLength_spinCtrlDouble, 4, wxALL, 5 );
+
+
+	bSizer248->Add( bSizer250, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer251;
+	bSizer251 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText95 = new wxStaticText( m_cone_panel, wxID_ANY, wxT("Tesselation"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText95->Wrap( -1 );
+	bSizer251->Add( m_staticText95, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_coneTesselation_spinCtrl = new wxSpinCtrl( m_cone_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10, 0 );
+	bSizer251->Add( m_coneTesselation_spinCtrl, 4, wxALL, 5 );
+
+
+	bSizer248->Add( bSizer251, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer252;
+	bSizer252 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText96 = new wxStaticText( m_cone_panel, wxID_ANY, wxT("Top Color"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText96->Wrap( -1 );
+	bSizer252->Add( m_staticText96, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_coneTopColor_colourPicker = new wxColourPickerCtrl( m_cone_panel, wxID_ANY, *wxBLACK, wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE );
+	bSizer252->Add( m_coneTopColor_colourPicker, 4, wxALL, 5 );
+
+
+	bSizer248->Add( bSizer252, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer253;
+	bSizer253 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText97 = new wxStaticText( m_cone_panel, wxID_ANY, wxT("Bottom Color"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText97->Wrap( -1 );
+	bSizer253->Add( m_staticText97, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_coneBottomColor_colourPicker = new wxColourPickerCtrl( m_cone_panel, wxID_ANY, *wxBLACK, wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE );
+	bSizer253->Add( m_coneBottomColor_colourPicker, 4, wxALL, 5 );
+
+
+	bSizer248->Add( bSizer253, 0, wxEXPAND, 5 );
+
+
+	m_cone_panel->SetSizer( bSizer248 );
+	m_cone_panel->Layout();
+	bSizer248->Fit( m_cone_panel );
+	m_simplebook1->AddPage( m_cone_panel, wxT("a page"), false );
+	m_cylinder_panel = new wxPanel( m_simplebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer2481;
+	bSizer2481 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer2491;
+	bSizer2491 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText931 = new wxStaticText( m_cylinder_panel, wxID_ANY, wxT("Radius"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText931->Wrap( -1 );
+	bSizer2491->Add( m_staticText931, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_cylinderRadius_spinCtrlDouble = new wxSpinCtrlDouble( m_cylinder_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0, 1 );
+	m_cylinderRadius_spinCtrlDouble->SetDigits( 0 );
+	bSizer2491->Add( m_cylinderRadius_spinCtrlDouble, 4, wxALL, 5 );
+
+
+	bSizer2481->Add( bSizer2491, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer2501;
+	bSizer2501 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText941 = new wxStaticText( m_cylinder_panel, wxID_ANY, wxT("Length"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText941->Wrap( -1 );
+	bSizer2501->Add( m_staticText941, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_cylinderLength_spinCtrlDouble = new wxSpinCtrlDouble( m_cylinder_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0, 1 );
+	m_cylinderLength_spinCtrlDouble->SetDigits( 0 );
+	bSizer2501->Add( m_cylinderLength_spinCtrlDouble, 4, wxALL, 5 );
+
+
+	bSizer2481->Add( bSizer2501, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer2511;
+	bSizer2511 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText951 = new wxStaticText( m_cylinder_panel, wxID_ANY, wxT("Tesselation"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText951->Wrap( -1 );
+	bSizer2511->Add( m_staticText951, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_cylinderTesselation_spinCtrl = new wxSpinCtrl( m_cylinder_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10, 0 );
+	bSizer2511->Add( m_cylinderTesselation_spinCtrl, 4, wxALL, 5 );
+
+
+	bSizer2481->Add( bSizer2511, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer2521;
+	bSizer2521 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText961 = new wxStaticText( m_cylinder_panel, wxID_ANY, wxT("Color"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText961->Wrap( -1 );
+	bSizer2521->Add( m_staticText961, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_cylinderColor_colourPicker = new wxColourPickerCtrl( m_cylinder_panel, wxID_ANY, *wxBLACK, wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE );
+	bSizer2521->Add( m_cylinderColor_colourPicker, 4, wxALL, 5 );
+
+
+	bSizer2481->Add( bSizer2521, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer2531;
+	bSizer2531 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText971 = new wxStaticText( m_cylinder_panel, wxID_ANY, wxT("Close Top"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText971->Wrap( -1 );
+	bSizer2531->Add( m_staticText971, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_cylinderCloseTop_checkBox = new wxCheckBox( m_cylinder_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer2531->Add( m_cylinderCloseTop_checkBox, 4, wxALL, 5 );
+
+
+	bSizer2481->Add( bSizer2531, 0, wxEXPAND, 5 );
+
+
+	m_cylinder_panel->SetSizer( bSizer2481 );
+	m_cylinder_panel->Layout();
+	bSizer2481->Fit( m_cylinder_panel );
+	m_simplebook1->AddPage( m_cylinder_panel, wxT("a page"), false );
+
+	bSizer239->Add( m_simplebook1, 1, wxEXPAND | wxALL, 5 );
+
+
+	bSizer237->Add( bSizer239, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer247;
+	bSizer247 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer247->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_button89 = new wxButton( this, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer247->Add( m_button89, 0, wxALL, 5 );
+
+	m_button90 = new wxButton( this, wxID_ANY, wxT("Create"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer247->Add( m_button90, 0, wxALL, 5 );
+
+
+	bSizer237->Add( bSizer247, 0, wxEXPAND, 5 );
+
+
+	this->SetSizer( bSizer237 );
+	this->Layout();
+
+	this->Centre( wxBOTH );
+
+	// Connect Events
+	m_comboBox10->Connect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( CreateMesh_Dialog::OnShapeSelected ), NULL, this );
+	m_button89->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CreateMesh_Dialog::OnCancel ), NULL, this );
+	m_button90->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CreateMesh_Dialog::OnCreate ), NULL, this );
+}
+
+CreateMesh_Dialog::~CreateMesh_Dialog()
+{
+	// Disconnect Events
+	m_comboBox10->Disconnect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( CreateMesh_Dialog::OnShapeSelected ), NULL, this );
+	m_button89->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CreateMesh_Dialog::OnCancel ), NULL, this );
+	m_button90->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CreateMesh_Dialog::OnCreate ), NULL, this );
+
+}
