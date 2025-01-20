@@ -837,16 +837,31 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer23 = new wxBoxSizer( wxVERTICAL );
 
 	wxBoxSizer* bSizer251;
-	bSizer251 = new wxBoxSizer( wxHORIZONTAL );
+	bSizer251 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer235;
+	bSizer235 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_mesh_createMesh_button = new wxButton( m_panel28, wxID_ANY, wxT("New"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer235->Add( m_mesh_createMesh_button, 1, wxALL, 5 );
 
 	m_mesh_importMesh_button = new wxButton( m_panel28, wxID_ANY, wxT("Load"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer251->Add( m_mesh_importMesh_button, 1, wxALL, 5 );
+	bSizer235->Add( m_mesh_importMesh_button, 1, wxALL, 5 );
 
-	m_mesh_removeMesh_button = new wxButton( m_panel28, wxID_ANY, wxT("Remove"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer251->Add( m_mesh_removeMesh_button, 1, wxALL, 5 );
+
+	bSizer251->Add( bSizer235, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer234;
+	bSizer234 = new wxBoxSizer( wxHORIZONTAL );
 
 	m_mesh_saveMesh_button = new wxButton( m_panel28, wxID_ANY, wxT("Save"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer251->Add( m_mesh_saveMesh_button, 1, wxALL, 5 );
+	bSizer234->Add( m_mesh_saveMesh_button, 1, wxALL, 5 );
+
+	m_mesh_removeMesh_button = new wxButton( m_panel28, wxID_ANY, wxT("Remove"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer234->Add( m_mesh_removeMesh_button, 1, wxALL, 5 );
+
+
+	bSizer251->Add( bSizer234, 1, wxEXPAND, 5 );
 
 
 	bSizer23->Add( bSizer251, 0, wxEXPAND, 5 );
@@ -1214,10 +1229,10 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer95 = new wxBoxSizer( wxHORIZONTAL );
 
 	m_material_newMaterial_button = new wxButton( m_panel37, wxID_ANY, wxT("New"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer95->Add( m_material_newMaterial_button, 0, wxALL, 5 );
+	bSizer95->Add( m_material_newMaterial_button, 1, wxALL, 5 );
 
 	m_material_loadMaterial_button = new wxButton( m_panel37, wxID_ANY, wxT("Load"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer95->Add( m_material_loadMaterial_button, 0, wxALL, 5 );
+	bSizer95->Add( m_material_loadMaterial_button, 1, wxALL, 5 );
 
 
 	bSizer94->Add( bSizer95, 0, wxEXPAND, 5 );
@@ -1226,10 +1241,10 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer96 = new wxBoxSizer( wxHORIZONTAL );
 
 	m_material_saveMaterial_button = new wxButton( m_panel37, wxID_ANY, wxT("Save"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer96->Add( m_material_saveMaterial_button, 0, wxALL, 5 );
+	bSizer96->Add( m_material_saveMaterial_button, 1, wxALL, 5 );
 
 	m_material_removeMaterial_button = new wxButton( m_panel37, wxID_ANY, wxT("Remove"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer96->Add( m_material_removeMaterial_button, 0, wxALL, 5 );
+	bSizer96->Add( m_material_removeMaterial_button, 1, wxALL, 5 );
 
 
 	bSizer94->Add( bSizer96, 0, wxEXPAND, 5 );
@@ -1778,6 +1793,7 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	// Connect Events
 	m_project_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( Serenity3D_Frame::OnNewProjectMenuSelection ), this, m_newProject_menuItem->GetId());
 	m_project_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( Serenity3D_Frame::OnLoadProjectMenuSelection ), this, m_loadProject_menuItem->GetId());
+	m_project_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( Serenity3D_Frame::OnSaveProjectMenuSelection ), this, m_saveProject_menuItem->GetId());
 	m_editorMain_auinotebook->Connect( wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGED, wxAuiNotebookEventHandler( Serenity3D_Frame::OnMainEditorNotebookPageChanged ), NULL, this );
 	this->Connect( m_s3d_select_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DSelectClicked ) );
 	this->Connect( m_s3d_boxSelect_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DBoxClicked ) );
@@ -1817,9 +1833,10 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_cameraSettings_showRotation_checkBox->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_StageSettings_ShowViewCameraRotation ), NULL, this );
 	m_cameraSettings_moveSpeed_spinCtrlDouble->Connect( wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, wxSpinDoubleEventHandler( Serenity3D_Frame::On_StageSettings_ViewCameraSpeed ), NULL, this );
 	m_viewHUD_color_colourPicker->Connect( wxEVT_COMMAND_COLOURPICKER_CHANGED, wxColourPickerEventHandler( Serenity3D_Frame::On_StageSettings_ViewHUDColor ), NULL, this );
+	m_mesh_createMesh_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_Create_ButtonClick ), NULL, this );
 	m_mesh_importMesh_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_Load_ButtonClick ), NULL, this );
-	m_mesh_removeMesh_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_Remove_ButtonClick ), NULL, this );
 	m_mesh_saveMesh_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_Save_ButtonClick ), NULL, this );
+	m_mesh_removeMesh_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_Remove_ButtonClick ), NULL, this );
 	m_mesh_mesh_listBox->Connect( wxEVT_COMMAND_LISTBOX_SELECTED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_MeshList_Select ), NULL, this );
 	m_mesh_meshID_textCtrl->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_MeshID ), NULL, this );
 	m_button51->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_AddMaterial ), NULL, this );
@@ -1919,9 +1936,10 @@ Serenity3D_Frame::~Serenity3D_Frame()
 	m_cameraSettings_showRotation_checkBox->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_StageSettings_ShowViewCameraRotation ), NULL, this );
 	m_cameraSettings_moveSpeed_spinCtrlDouble->Disconnect( wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, wxSpinDoubleEventHandler( Serenity3D_Frame::On_StageSettings_ViewCameraSpeed ), NULL, this );
 	m_viewHUD_color_colourPicker->Disconnect( wxEVT_COMMAND_COLOURPICKER_CHANGED, wxColourPickerEventHandler( Serenity3D_Frame::On_StageSettings_ViewHUDColor ), NULL, this );
+	m_mesh_createMesh_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_Create_ButtonClick ), NULL, this );
 	m_mesh_importMesh_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_Load_ButtonClick ), NULL, this );
-	m_mesh_removeMesh_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_Remove_ButtonClick ), NULL, this );
 	m_mesh_saveMesh_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_Save_ButtonClick ), NULL, this );
+	m_mesh_removeMesh_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_Remove_ButtonClick ), NULL, this );
 	m_mesh_mesh_listBox->Disconnect( wxEVT_COMMAND_LISTBOX_SELECTED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_MeshList_Select ), NULL, this );
 	m_mesh_meshID_textCtrl->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_MeshID ), NULL, this );
 	m_button51->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_AddMaterial ), NULL, this );
@@ -2321,6 +2339,25 @@ MaterialPreviewSettings_Dialog::MaterialPreviewSettings_Dialog( wxWindow* parent
 
 	wxBoxSizer* bSizer130;
 	bSizer130 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer236;
+	bSizer236 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText85 = new wxStaticText( this, wxID_ANY, wxT("Camera Control"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText85->Wrap( -1 );
+	bSizer236->Add( m_staticText85, 1, wxALL, 5 );
+
+	m_auto_radioBtn = new wxRadioButton( this, wxID_ANY, wxT("Auto"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer236->Add( m_auto_radioBtn, 1, wxALL, 5 );
+
+	m_manual_radioBtn = new wxRadioButton( this, wxID_ANY, wxT("Manual"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer236->Add( m_manual_radioBtn, 1, wxALL, 5 );
+
+
+	bSizer236->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer130->Add( bSizer236, 0, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer131;
 	bSizer131 = new wxBoxSizer( wxHORIZONTAL );

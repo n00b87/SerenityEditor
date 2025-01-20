@@ -45,6 +45,7 @@
 #include <wx/dialog.h>
 #include <wx/filepicker.h>
 #include <wx/checklst.h>
+#include <wx/radiobut.h>
 #include <wx/statline.h>
 
 ///////////////////////////////////////////////////////////////////////////
@@ -410,9 +411,10 @@ class Serenity3D_Frame : public wxFrame
 		wxPanel* m_meshDB_panel;
 		wxSplitterWindow* m_splitter51;
 		wxPanel* m_panel28;
+		wxButton* m_mesh_createMesh_button;
 		wxButton* m_mesh_importMesh_button;
-		wxButton* m_mesh_removeMesh_button;
 		wxButton* m_mesh_saveMesh_button;
+		wxButton* m_mesh_removeMesh_button;
 		wxListBox* m_mesh_mesh_listBox;
 		wxPanel* m_panel291;
 		wxPanel* m_panel41;
@@ -542,6 +544,7 @@ class Serenity3D_Frame : public wxFrame
 		// Virtual event handlers, override them in your derived class
 		virtual void OnNewProjectMenuSelection( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnLoadProjectMenuSelection( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnSaveProjectMenuSelection( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMainEditorNotebookPageChanged( wxAuiNotebookEvent& event ) { event.Skip(); }
 		virtual void OnS3DSelectClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnS3DBoxClicked( wxCommandEvent& event ) { event.Skip(); }
@@ -581,9 +584,10 @@ class Serenity3D_Frame : public wxFrame
 		virtual void On_StageSettings_ShowViewCameraRotation( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_StageSettings_ViewCameraSpeed( wxSpinDoubleEvent& event ) { event.Skip(); }
 		virtual void On_StageSettings_ViewHUDColor( wxColourPickerEvent& event ) { event.Skip(); }
+		virtual void On_Mesh_Create_ButtonClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_Load_ButtonClick( wxCommandEvent& event ) { event.Skip(); }
-		virtual void On_Mesh_Remove_ButtonClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_Save_ButtonClick( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Mesh_Remove_ButtonClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_MeshList_Select( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_MeshID( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_AddMaterial( wxCommandEvent& event ) { event.Skip(); }
@@ -834,6 +838,9 @@ class MaterialPreviewSettings_Dialog : public wxDialog
 	private:
 
 	protected:
+		wxStaticText* m_staticText85;
+		wxRadioButton* m_auto_radioBtn;
+		wxRadioButton* m_manual_radioBtn;
 		wxStaticText* m_staticText50;
 		wxTextCtrl* m_cameraSpeed_textCtrl;
 		wxStaticText* m_staticText51;
@@ -851,7 +858,7 @@ class MaterialPreviewSettings_Dialog : public wxDialog
 
 	public:
 
-		MaterialPreviewSettings_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Material Preview Settings"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 497,223 ), long style = wxDEFAULT_DIALOG_STYLE );
+		MaterialPreviewSettings_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Material Preview Settings"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 530,267 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~MaterialPreviewSettings_Dialog();
 

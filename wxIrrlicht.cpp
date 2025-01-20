@@ -1326,7 +1326,7 @@ void wxIrrlicht::setTransformToolBox()
 
 void wxIrrlicht::OnUpdate()
 {
-	if(window_type == RC_IRR_WINDOW_MATERIAL)
+	if(window_type == RC_IRR_WINDOW_MATERIAL && (!manual_control))
 	{
 		//ROTATE AROUND (0, 0, 0)
 		irr::core::vector3df cam_pos = camera[0].camera.camera->getAbsolutePosition();
@@ -1335,7 +1335,7 @@ void wxIrrlicht::OnUpdate()
 		camera[0].camera.setRotation(camera[0].camera.rx, camera[0].camera.ry-material_view_camera_speed, camera[0].camera.rz);
 		return;
 	}
-	else if(window_type == RC_IRR_WINDOW_ANIMATION)
+	else if(window_type == RC_IRR_WINDOW_ANIMATION || (window_type == RC_IRR_WINDOW_MATERIAL && manual_control))
 	{
 		AnimationPreview_Update();
 		return;

@@ -155,6 +155,7 @@ class wxIrrlicht : public wxControl {
         viewport_camera camera[4];
         int active_camera = 0;
         double material_view_camera_speed = 0.2;
+        bool manual_control = false;
         int num_views = 1; //will either be 1 or 4
 
         font_obj font[MAX_FONTS];

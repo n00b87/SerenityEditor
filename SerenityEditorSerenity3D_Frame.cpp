@@ -676,10 +676,17 @@ void SerenityEditorSerenity3D_Frame::createIrrlichtMaterialWindow()
         test_material_light->setPosition(irr::core::vector3df(0, 30, 30));
         test_material_light->setRadius(material_preview_light_radius);
 
-		material_window->camera[0].camera.setPosition(0, 7, -1 * material_preview_camera_distance);
-		material_window->camera[0].camera.setRotation(26, 0, 0);
+        material_window->SetViews(RC_CAMERA_VIEW_PERSPECTIVE);
 
-		material_window->SetViews(RC_CAMERA_VIEW_PERSPECTIVE);
+		if(material_window)
+		{
+			material_window->camera[0].camera.setPosition(0, 7, -1 * material_preview_camera_distance);
+			material_window->camera[0].camera.setRotation(26, 0, 0);
+			material_window->material_view_camera_speed = material_preview_camera_speed;
+		}
+
+		if(test_material_light)
+			test_material_light->setRadius(material_preview_light_radius);
 }
 
 void SerenityEditorSerenity3D_Frame::createIrrlichtTextureWindow()
@@ -7692,7 +7699,7 @@ void SerenityEditorSerenity3D_Frame::On_Material_previewSettings_Selected( wxCom
 
 	SerenityEditor_MaterialPreviewSettings_Dialog * dialog = new SerenityEditor_MaterialPreviewSettings_Dialog(this);
 
-	dialog->setFields(material_preview_camera_speed, material_preview_camera_distance, material_preview_light_radius);
+	dialog->setFields(material_preview_camera_speed, material_preview_camera_distance, material_preview_light_radius, material_preview_control);
 
 	dialog->ShowModal();
 
@@ -7702,12 +7709,14 @@ void SerenityEditorSerenity3D_Frame::On_Material_previewSettings_Selected( wxCom
 	material_preview_camera_speed = dialog->camera_speed;
 	material_preview_camera_distance = ( dialog->camera_distance < 0 ? dialog->camera_distance * -1: dialog->camera_distance );
 	material_preview_light_radius = dialog->light_radius;
+	material_preview_control = dialog->control_type;
 
 	if(material_window)
 	{
 		material_window->camera[0].camera.setPosition(0, 7, -1 * material_preview_camera_distance);
 		material_window->camera[0].camera.setRotation(26, 0, 0);
 		material_window->material_view_camera_speed = material_preview_camera_speed;
+		material_window->manual_control = (material_preview_control != 0);
 	}
 
 	if(test_material_light)

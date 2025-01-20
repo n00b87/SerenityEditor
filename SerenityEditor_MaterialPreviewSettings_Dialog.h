@@ -22,7 +22,9 @@ class SerenityEditor_MaterialPreviewSettings_Dialog : public MaterialPreviewSett
 		double camera_distance;
 		double light_radius;
 
-		void setFields(double speed, double distance, double radius);
+		int control_type;
+
+		void setFields(double speed, double distance, double radius, int control);
 
 		bool apply_changes;
 		/** Constructor */
