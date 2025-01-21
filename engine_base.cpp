@@ -297,6 +297,7 @@ int serenity_project::load_stage(std::vector<serenity_project_dict_obj> stage_pa
 	fname.AppendDir(_("stages"));
 
 	rc_stage p_stage;
+	p_stage.sky.node = NULL;
 
 	for(int i = 0; i < stage_param.size(); i++)
 	{
@@ -886,6 +887,7 @@ int serenity_project::getSkyType(wxString sky_type_string)
 rc_sky serenity_project::load_sky(std::vector<serenity_project_dict_obj> param)
 {
 	rc_sky p_sky;
+	p_sky.node = NULL;
 
 	for(int i = 0; i < param.size(); i++)
 	{

@@ -215,6 +215,8 @@ struct rc_sky
 {
 	int type;
 
+	irr::scene::ISceneNode* node;
+
 	int dome_texture_index;
 
 	int left_texture_index;

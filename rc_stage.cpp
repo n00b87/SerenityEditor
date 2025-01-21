@@ -68,6 +68,7 @@ rc_stage::rc_stage()
 	sky.txPCT = 0;
 
 	sky.type = 0;
+	sky.node = NULL;
 }
 
 rc_stage::~rc_stage()
@@ -99,6 +100,11 @@ void rc_stage::clearActorVector(std::vector<rc_actor>& actor_vector)
 void rc_stage::clearStage()
 {
 	clearActorVector(actors);
+
+	if(sky.node)
+		sky.node->remove();
+
+	sky.node = NULL;
 }
 
 int rc_stage::addActor(std::string actor_id, int actor_type)

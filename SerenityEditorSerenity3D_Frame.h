@@ -149,6 +149,7 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
 		int stageTab_active_stage_project_index = -1;
 
 		void refresh_actor(int actor_project_index);
+		void refresh_environmentSettings();
 
 		int stageTabGrid_current_stage = -1;
 		int stageTabGrid_current_group = -1;

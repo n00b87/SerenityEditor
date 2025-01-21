@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1737402927 source:/home/n00b/Projects/SerenityEngine/Serenity3D_Editor.cpp
+1737433523 source:/home/n00b/Projects/SerenityEngine/Serenity3D_Editor.cpp
 	"Serenity3D_Editor.h"
 
 1737402927 /home/n00b/Projects/SerenityEngine/Serenity3D_Editor.h
@@ -1434,7 +1434,7 @@
 	"wx/icon.h"
 	"wx/aui/auibook.h"
 
-1737423745 source:/home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.cpp
+1737435510 source:/home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.cpp
 	<wx/stdpaths.h>
 	<wx/propgrid/manager.h>
 	<wx/propgrid/propgridpagestate.h>
@@ -1472,7 +1472,7 @@
 	"SerenityEditor_NewSphereActor_Dialog.h"
 	"SerenityEditor_CreateMesh_Dialog.h"
 
-1737400038 /home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.h
+1737431387 /home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.h
 	<vector>
 	<wx/propgrid/propgrid.h>
 	<wx/propgrid/advprops.h>
@@ -9692,7 +9692,7 @@
 1734930714 /home/n00b/Projects/SerenityEngine/CGridSceneNode.h
 	"irrlicht.h"
 
-1737081329 source:/home/n00b/Projects/SerenityEngine/rc_stage.cpp
+1737435382 source:/home/n00b/Projects/SerenityEngine/rc_stage.cpp
 	<vector>
 	<irrlicht.h>
 	"engine_base.h"
@@ -9706,7 +9706,7 @@
 	<cinttypes>
 	"rc_stage.h"
 
-1737421228 /home/n00b/Projects/SerenityEngine/rc_stage.h
+1737434585 /home/n00b/Projects/SerenityEngine/rc_stage.h
 	<vector>
 	<irrlicht.h>
 	"an8parser.h"
@@ -9721,7 +9721,7 @@
 
 1699484035 /usr/include/wx-3.2/wx/unix/stdpaths.h
 
-1737422225 source:/home/n00b/Projects/SerenityEngine/engine_base.cpp
+1737435477 source:/home/n00b/Projects/SerenityEngine/engine_base.cpp
 	<wx/wx.h>
 	<wx/filename.h>
 	<vector>
@@ -10104,4 +10104,16 @@
 
 1737416842 source:/home/n00b/Projects/SerenityEngine/SerenityEditor_CreateMesh_Dialog.cpp
 	"SerenityEditor_CreateMesh_Dialog.h"
+
+1737429663 source:/home/n00b/Projects/SerenityEngine/icon_images.cpp
+	"icon_images.hpp"
+	<wx/bitmap.h>
+	<wx/image.h>
+	<wx/mstream.h>
+
+1737429663 /home/n00b/Projects/SerenityEngine/icon_images.hpp
+
+1699484035 /usr/include/wx-3.2/wx/mstream.h
+	"wx/defs.h"
+	"wx/stream.h"
 

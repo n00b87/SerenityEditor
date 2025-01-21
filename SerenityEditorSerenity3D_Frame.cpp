@@ -1799,6 +1799,89 @@ void SerenityEditorSerenity3D_Frame::open_stage(int stage_project_index)
 		project.stages[stage_project_index].actors[i].icon_node = NULL;
 		refresh_actor(i);
 	}
+
+	project.stages[stageTab_active_stage_project_index].sky.node = NULL;
+
+	refresh_environmentSettings();
+}
+
+void SerenityEditorSerenity3D_Frame::refresh_environmentSettings()
+{
+	if(!current_window)
+		return;
+
+	int selection = 0;
+
+
+	if(project.stages[stageTab_active_stage_project_index].sky.node)
+		project.stages[stageTab_active_stage_project_index].sky.node->remove();
+
+	project.stages[stageTab_active_stage_project_index].sky.node = NULL;
+
+	switch(project.stages[stageTab_active_stage_project_index].sky.type)
+	{
+		case SN_SKY_TYPE_NONE:
+		break;
+
+		case SN_SKY_TYPE_BOX:
+		{
+			int lf_index = project.stages[stageTab_active_stage_project_index].sky.left_texture_index;
+			int rt_index = project.stages[stageTab_active_stage_project_index].sky.right_texture_index;
+			int up_index = project.stages[stageTab_active_stage_project_index].sky.top_texture_index;
+			int dn_index = project.stages[stageTab_active_stage_project_index].sky.bottom_texture_index;
+			int bk_index = project.stages[stageTab_active_stage_project_index].sky.back_texture_index;
+			int ft_index = project.stages[stageTab_active_stage_project_index].sky.front_texture_index;
+
+			if(lf_index < 0 || rt_index < 0 || up_index < 0 || dn_index < 0 || bk_index < 0 || ft_index < 0)
+				return;
+
+			irr::video::ITexture* lf = project.textures[lf_index].texture;
+			irr::video::ITexture* rt = project.textures[rt_index].texture;
+			irr::video::ITexture* up = project.textures[up_index].texture;
+			irr::video::ITexture* dn = project.textures[dn_index].texture;
+			irr::video::ITexture* ft = project.textures[ft_index].texture;
+			irr::video::ITexture* bk = project.textures[bk_index].texture;
+
+			if(lf == NULL || rt == NULL || up == NULL || dn == NULL || ft == NULL || bk == NULL)
+				return;
+
+			project.stages[stageTab_active_stage_project_index].sky.node = current_window->GetDevice()->getSceneManager()->addSkyBoxSceneNode(up, dn, lf, rt, ft, bk);
+		}
+		break;
+
+		case SN_SKY_TYPE_DOME:
+		{
+			wxPGProperty* skydome_choice = m_stageProperties_propertyGridPage->GetProperty(_("sky_dome_image_id"));
+
+			selection = skydome_choice->GetChoiceSelection();
+			if(selection < 0)
+				return;
+
+			wxString skydome_image = skydome_choice->GetChoices().GetLabel(selection);
+
+			if( skydome_image.compare(_("NONE"))==0 )
+				return;
+
+			int img_index = project.getTextureIndex(skydome_image);
+
+			if(img_index < 0)
+				return;
+
+			irr::video::ITexture* sky_dome = project.textures[img_index].texture;
+
+			if(sky_dome == NULL)
+				return;
+
+			irr::u32 hRes = m_stageProperties_propertyGridPage->GetProperty(_("skydome_hRes"))->GetValue().GetInteger();
+			irr::u32 vRes = m_stageProperties_propertyGridPage->GetProperty(_("skydome_vRes"))->GetValue().GetInteger();
+			irr::f32 tx_pct = m_stageProperties_propertyGridPage->GetProperty(_("sky_texture_pct"))->GetValue().GetDouble();
+			irr::f32 sphere_pct = m_stageProperties_propertyGridPage->GetProperty(_("sky_sphere_pct"))->GetValue().GetDouble();
+			irr::f32 radius = m_stageProperties_propertyGridPage->GetProperty(_("sky_radius"))->GetValue().GetDouble();
+
+			project.stages[stageTab_active_stage_project_index].sky.node = current_window->GetDevice()->getSceneManager()->addSkyDomeSceneNode(sky_dome, hRes, vRes, tx_pct, sphere_pct, radius);
+		}
+		break;
+	}
 }
 
 void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
@@ -2791,32 +2874,62 @@ void SerenityEditorSerenity3D_Frame::OnStagePropertyGridChanged( wxPropertyGridE
 	{
 		int stage_index = stageTabGrid_current_stage;
 		project.stages[stage_index].sky.hRes = m_stageProperties_propertyGridPage->GetPropertyByName(_("skydome_hRes"))->GetValue().GetInteger();
+
+		if(stage_index == stageTab_active_stage_project_index)
+		{
+			refresh_environmentSettings();
+		}
 	}
 	else if(property_name.compare(_("skydome_vRes"))==0)
 	{
 		int stage_index = stageTabGrid_current_stage;
 		project.stages[stage_index].sky.vRes = m_stageProperties_propertyGridPage->GetPropertyByName(_("skydome_vRes"))->GetValue().GetInteger();
+
+		if(stage_index == stageTab_active_stage_project_index)
+		{
+			refresh_environmentSettings();
+		}
 	}
 	else if(property_name.compare(_("sky_texture_pct"))==0)
 	{
 		int stage_index = stageTabGrid_current_stage;
 		project.stages[stage_index].sky.txPCT = m_stageProperties_propertyGridPage->GetPropertyByName(_("sky_texture_pct"))->GetValue().GetDouble();
+
+		if(stage_index == stageTab_active_stage_project_index)
+		{
+			refresh_environmentSettings();
+		}
 	}
 	else if(property_name.compare(_("sky_sphere_pct"))==0)
 	{
 		int stage_index = stageTabGrid_current_stage;
 		project.stages[stage_index].sky.spherePCT = m_stageProperties_propertyGridPage->GetPropertyByName(_("sky_sphere_pct"))->GetValue().GetDouble();
+
+		if(stage_index == stageTab_active_stage_project_index)
+		{
+			refresh_environmentSettings();
+		}
 	}
 	else if(property_name.compare(_("sky_radius"))==0)
 	{
 		int stage_index = stageTabGrid_current_stage;
 		project.stages[stage_index].sky.dome_radius = m_stageProperties_propertyGridPage->GetPropertyByName(_("sky_radius"))->GetValue().GetDouble();
+
+		if(stage_index == stageTab_active_stage_project_index)
+		{
+			refresh_environmentSettings();
+		}
 	}
 	else if(property_name.compare(_("sky_shape"))==0)
 	{
 		int stage_index = stageTabGrid_current_stage;
 		wxString sky_selection = m_stageProperties_propertyGridPage->GetPropertyByName(_("sky_shape"))->GetValueAsString();
 		project.stages[stage_index].sky.type = project.getSkyType(sky_selection);
+
+		if(stage_index == stageTab_active_stage_project_index)
+		{
+			refresh_environmentSettings();
+		}
 	}
 	else if(property_name.compare(_("sky_dome_image_id"))==0)
 	{
@@ -2825,6 +2938,11 @@ void SerenityEditorSerenity3D_Frame::OnStagePropertyGridChanged( wxPropertyGridE
 
 		img_id = m_stageProperties_propertyGridPage->GetPropertyByName(_("sky_dome_image_id"))->GetValueAsString();
 		project.stages[stage_index].sky.dome_texture_index = project.getTextureIndex(img_id);
+
+		if(stage_index == stageTab_active_stage_project_index)
+		{
+			refresh_environmentSettings();
+		}
 	}
 	else if(property_name.compare(_("skybox_left_image"))==0)
 	{
@@ -2833,6 +2951,11 @@ void SerenityEditorSerenity3D_Frame::OnStagePropertyGridChanged( wxPropertyGridE
 
 		img_id = m_stageProperties_propertyGridPage->GetPropertyByName(_("skybox_left_image"))->GetValueAsString();
 		project.stages[stage_index].sky.left_texture_index = project.getTextureIndex(img_id);
+
+		if(stage_index == stageTab_active_stage_project_index)
+		{
+			refresh_environmentSettings();
+		}
 	}
 	else if(property_name.compare(_("skybox_right_image"))==0)
 	{
@@ -2841,6 +2964,11 @@ void SerenityEditorSerenity3D_Frame::OnStagePropertyGridChanged( wxPropertyGridE
 
 		img_id = m_stageProperties_propertyGridPage->GetPropertyByName(_("skybox_right_image"))->GetValueAsString();
 		project.stages[stage_index].sky.right_texture_index = project.getTextureIndex(img_id);
+
+		if(stage_index == stageTab_active_stage_project_index)
+		{
+			refresh_environmentSettings();
+		}
 	}
 	else if(property_name.compare(_("skybox_top_image"))==0)
 	{
@@ -2849,6 +2977,11 @@ void SerenityEditorSerenity3D_Frame::OnStagePropertyGridChanged( wxPropertyGridE
 
 		img_id = m_stageProperties_propertyGridPage->GetPropertyByName(_("skybox_top_image"))->GetValueAsString();
 		project.stages[stage_index].sky.top_texture_index = project.getTextureIndex(img_id);
+
+		if(stage_index == stageTab_active_stage_project_index)
+		{
+			refresh_environmentSettings();
+		}
 	}
 	else if(property_name.compare(_("skybox_bottom_image"))==0)
 	{
@@ -2857,6 +2990,11 @@ void SerenityEditorSerenity3D_Frame::OnStagePropertyGridChanged( wxPropertyGridE
 
 		img_id = m_stageProperties_propertyGridPage->GetPropertyByName(_("skybox_bottom_image"))->GetValueAsString();
 		project.stages[stage_index].sky.bottom_texture_index = project.getTextureIndex(img_id);
+
+		if(stage_index == stageTab_active_stage_project_index)
+		{
+			refresh_environmentSettings();
+		}
 	}
 	else if(property_name.compare(_("skybox_front_image"))==0)
 	{
@@ -2865,6 +3003,11 @@ void SerenityEditorSerenity3D_Frame::OnStagePropertyGridChanged( wxPropertyGridE
 
 		img_id = m_stageProperties_propertyGridPage->GetPropertyByName(_("skybox_front_image"))->GetValueAsString();
 		project.stages[stage_index].sky.front_texture_index = project.getTextureIndex(img_id);
+
+		if(stage_index == stageTab_active_stage_project_index)
+		{
+			refresh_environmentSettings();
+		}
 	}
 	else if(property_name.compare(_("skybox_back_image"))==0)
 	{
@@ -2873,6 +3016,11 @@ void SerenityEditorSerenity3D_Frame::OnStagePropertyGridChanged( wxPropertyGridE
 
 		img_id = m_stageProperties_propertyGridPage->GetPropertyByName(_("skybox_back_image"))->GetValueAsString();
 		project.stages[stage_index].sky.back_texture_index = project.getTextureIndex(img_id);
+
+		if(stage_index == stageTab_active_stage_project_index)
+		{
+			refresh_environmentSettings();
+		}
 	}
 	else if(property_name.compare(_("mesh_id"))==0 || property_name.compare(_("particle_mesh_id"))==0)
 	{

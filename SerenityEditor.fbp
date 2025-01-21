@@ -3434,7 +3434,7 @@
                                                             <property name="type">Float</property>
                                                           </object>
                                                         </object>
-                                                        <object class="propGridPage" expanded="false">
+                                                        <object class="propGridPage" expanded="true">
                                                           <property name="bitmap"></property>
                                                           <property name="label">Stage Properties</property>
                                                           <property name="name">m_stageProperties_propertyGridPage</property>
@@ -3485,7 +3485,7 @@
                                                             <property name="name">m_skyDome_hRes_propertyGridItem</property>
                                                             <property name="permission">protected</property>
                                                             <property name="prop_name">skydome_hRes</property>
-                                                            <property name="type">Float</property>
+                                                            <property name="type">UInt</property>
                                                           </object>
                                                           <object class="propGridItem" expanded="false">
                                                             <property name="help"></property>
@@ -3493,7 +3493,7 @@
                                                             <property name="name">m_skyDome_vRes_propertyGridItem</property>
                                                             <property name="permission">protected</property>
                                                             <property name="prop_name">skydome_vRes</property>
-                                                            <property name="type">Float</property>
+                                                            <property name="type">UInt</property>
                                                           </object>
                                                           <object class="propGridItem" expanded="false">
                                                             <property name="help"></property>
@@ -31142,7 +31142,7 @@
                 <object class="simplebookpage" expanded="true">
                   <property name="label">a page</property>
                   <property name="select">0</property>
-                  <object class="wxPanel" expanded="false">
+                  <object class="wxPanel" expanded="true">
                     <property name="BottomDockable">1</property>
                     <property name="LeftDockable">1</property>
                     <property name="RightDockable">1</property>
@@ -31194,7 +31194,7 @@
                     <property name="window_extra_style"></property>
                     <property name="window_name"></property>
                     <property name="window_style">wxTAB_TRAVERSAL</property>
-                    <object class="wxBoxSizer" expanded="false">
+                    <object class="wxBoxSizer" expanded="true">
                       <property name="minimum_size"></property>
                       <property name="name">bSizer2481</property>
                       <property name="orient">wxVERTICAL</property>

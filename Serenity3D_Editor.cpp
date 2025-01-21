@@ -411,8 +411,8 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_skyShape_propertyGridItem = m_stageProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Sky Shape"), wxT("sky_shape") ) );
 	m_propertyGridItem21 = m_stageProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Sky Dome") ) );
 	m_propertyGridItem14 = m_stageProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Image"), wxT("sky_dome_image_id") ) );
-	m_skyDome_hRes_propertyGridItem = m_stageProperties_propertyGridPage->Append( new wxFloatProperty( wxT("H Res"), wxT("skydome_hRes") ) );
-	m_skyDome_vRes_propertyGridItem = m_stageProperties_propertyGridPage->Append( new wxFloatProperty( wxT("V Res"), wxT("skydome_vRes") ) );
+	m_skyDome_hRes_propertyGridItem = m_stageProperties_propertyGridPage->Append( new wxUIntProperty( wxT("H Res"), wxT("skydome_hRes") ) );
+	m_skyDome_vRes_propertyGridItem = m_stageProperties_propertyGridPage->Append( new wxUIntProperty( wxT("V Res"), wxT("skydome_vRes") ) );
 	m_skyDomeTxPct_propertyGridItem = m_stageProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Texture %"), wxT("sky_texture_pct") ) );
 	m_skyDomeSpherePct_propertyGridItem = m_stageProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Sphere %"), wxT("sky_sphere_pct") ) );
 	m_skyDomeRadius_propertyGridItem = m_stageProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Radius"), wxT("sky_radius") ) );
