@@ -507,6 +507,41 @@ int serenity_project::getActorType(wxString actor_type_string)
 	return -1;
 }
 
+wxString serenity_project::getPhysicsShapeString(int physics_shape)
+{
+	switch(physics_shape)
+	{
+		case SN_PHYSICS_SHAPE_BOX:			return _("BOX");
+		case SN_PHYSICS_SHAPE_SPHERE:		return _("SPHERE");
+		case SN_PHYSICS_SHAPE_CYLINDER:		return _("CYLINDER");
+		case SN_PHYSICS_SHAPE_CAPSULE:		return _("CAPSULE");
+		case SN_PHYSICS_SHAPE_CONE:			return _("CONE");
+		case SN_PHYSICS_SHAPE_CONVEXHULL:	return _("CONVEXHULL");
+		case SN_PHYSICS_SHAPE_TRIMESH:		return _("TRIMESH");
+	}
+	return _("NONE");
+}
+
+int serenity_project::getPhysicsShape(wxString physics_shape_string)
+{
+	if(physics_shape_string.compare(_("BOX"))==0)
+		return SN_PHYSICS_SHAPE_BOX;
+	else if(physics_shape_string.compare(_("SPHERE"))==0)
+		return SN_PHYSICS_SHAPE_SPHERE;
+	else if(physics_shape_string.compare(_("CYLINDER"))==0)
+		return SN_PHYSICS_SHAPE_CYLINDER;
+	else if(physics_shape_string.compare(_("CAPSULE"))==0)
+		return SN_PHYSICS_SHAPE_CAPSULE;
+	else if(physics_shape_string.compare(_("CONE"))==0)
+		return SN_PHYSICS_SHAPE_CONE;
+	else if(physics_shape_string.compare(_("CONVEXHULL"))==0)
+		return SN_PHYSICS_SHAPE_CONVEXHULL;
+	else if(physics_shape_string.compare(_("TRIMESH"))==0)
+		return SN_PHYSICS_SHAPE_TRIMESH;
+
+	return 0;
+}
+
 int serenity_project::getMeshIndex(wxString mesh_id)
 {
 	for(int i = 0; i < meshes.size(); i++)
@@ -622,6 +657,10 @@ rc_actor serenity_project::load_actor(std::vector<serenity_project_dict_obj> par
 	p_actor.inner_cone = 0;
 	p_actor.outer_cone = 0;
 	p_actor.attenuation = irr::core::vector3df(0, 0, 0);
+
+	p_actor.physics.isSolid = true;
+	p_actor.physics.shape = SN_PHYSICS_SHAPE_BOX;
+	p_actor.physics.mass = 1;
 
 	double constant_n = 0;
 	double linear_n = 0;
@@ -797,6 +836,12 @@ rc_actor serenity_project::load_actor(std::vector<serenity_project_dict_obj> par
 			param[i].val.ToDouble(&linear_n);
 		else if(param[i].key.compare(_("quadratic"))==0)
 			param[i].val.ToDouble(&quadratic_n);
+		else if(param[i].key.compare(_("physics_shape"))==0)
+			p_actor.physics.shape = getPhysicsShape(param[i].val);
+		else if(param[i].key.compare(_("physics_mass"))==0)
+			param[i].val.ToDouble(&p_actor.physics.mass);
+		else if(param[i].key.compare(_("physics_solid"))==0)
+			p_actor.physics.isSolid = (param[i].val.compare(_("true"))==0 ? true : false);
 	}
 
 	p_actor.animation_index = getAnimationIndex(p_actor.mesh_index, animation_id);
@@ -1088,6 +1133,54 @@ int serenity_project::load_mesh(std::vector<serenity_project_dict_obj> param, in
 				p_mesh.isZipped = true;
 				p_mesh.zip_file = zip_file.ToStdString();
 			}
+			else if(param[i].key.compare(_("tile_width"))==0)
+				param[i].val.ToInt(&p_mesh.tile_width);
+			else if(param[i].key.compare(_("tile_height"))==0)
+				param[i].val.ToInt(&p_mesh.tile_height);
+			else if(param[i].key.compare(_("tile_count_x"))==0)
+				param[i].val.ToInt(&p_mesh.tile_count_x);
+			else if(param[i].key.compare(_("tile_count_y"))==0)
+				param[i].val.ToInt(&p_mesh.tile_count_y);
+			else if(param[i].key.compare(_("tx_repeat_x"))==0)
+				param[i].val.ToInt(&p_mesh.tile_txRepeat_x);
+			else if(param[i].key.compare(_("tx_repeat_y"))==0)
+				param[i].val.ToInt(&p_mesh.tile_txRepeat_y);
+			else if(param[i].key.compare(_("radius"))==0)
+			{
+				double dval = 0;
+				param[i].val.ToDouble(&dval);
+				p_mesh.radius = dval;
+			}
+			else if(param[i].key.compare(_("length"))==0)
+			{
+				double dval = 0;
+				param[i].val.ToDouble(&dval);
+				p_mesh.length = dval;
+			}
+			else if(param[i].key.compare(_("tesselation"))==0)
+				param[i].val.ToInt(&p_mesh.tesselation);
+			else if(param[i].key.compare(_("top_color"))==0)
+			{
+				irr::u32 c_val = 0;
+				param[i].val.ToUInt(&c_val);
+				p_mesh.cone_top_color = irr::video::SColor(c_val);
+			}
+			else if(param[i].key.compare(_("bottom_color"))==0)
+			{
+				irr::u32 c_val = 0;
+				param[i].val.ToUInt(&c_val);
+				p_mesh.cone_bottom_color = irr::video::SColor(c_val);
+			}
+			else if(param[i].key.compare(_("cylinder_color"))==0)
+			{
+				irr::u32 c_val = 0;
+				param[i].val.ToUInt(&c_val);
+				p_mesh.cylinder_color = irr::video::SColor(c_val);
+			}
+			else if(param[i].key.compare(_("close_top"))==0)
+			{
+				p_mesh.cylinder_top_close = (param[i].val.compare(_("true"))==0);
+			}
 		}
 	}
 	else
@@ -1106,10 +1199,13 @@ int serenity_project::load_mesh(std::vector<serenity_project_dict_obj> param, in
 	else
 		fname.SetFullName(file_name);
 
-	if(!fname.Exists())
+	if(file_name.Trim().substr(0,1).compare(_("!")) != 0)
 	{
-		wxMessageBox(_("Failed to load model (") + file_name + _("): File not found."));
-		return -1;
+		if(!fname.Exists())
+		{
+			wxMessageBox(_("Failed to load model (") + file_name + _("): File not found."));
+			return -1;
+		}
 	}
 
 	if(m_index < 0)
@@ -1147,6 +1243,25 @@ int serenity_project::load_mesh(std::vector<serenity_project_dict_obj> param, in
 		if(p_mesh.an8_index >= 0 && p_mesh.an8_index < anim8or_projects.size())
 		{
 			p_mesh.mesh = an8::loadAN8Scene(device, anim8or_projects[p_mesh.an8_index].project, p_mesh.an8_scene);
+		}
+	}
+	else if(p_mesh.file.substr(0,1).compare("!")==0)
+	{
+		const irr::scene::IGeometryCreator* gc = device->getSceneManager()->getGeometryCreator();
+		if(p_mesh.file.compare("!plane")==0)
+		{
+			p_mesh.mesh = (irr::scene::IAnimatedMesh*)gc->createPlaneMesh( irr::core::dimension2d<irr::f32>(p_mesh.tile_width, p_mesh.tile_height),
+											   irr::core::dimension2d<irr::u32>(p_mesh.tile_count_x, p_mesh.tile_count_y),
+											   0,
+											   irr::core::dimension2d<irr::f32>(p_mesh.tile_txRepeat_x, p_mesh.tile_txRepeat_y) );
+		}
+		else if(p_mesh.file.compare("!cone")==0)
+		{
+			p_mesh.mesh = (irr::scene::IAnimatedMesh*)gc->createConeMesh(p_mesh.radius, p_mesh.length, p_mesh.tesselation, p_mesh.cone_top_color, p_mesh.cone_bottom_color);
+		}
+		else if(p_mesh.file.compare("!cylinder")==0)
+		{
+			p_mesh.mesh = (irr::scene::IAnimatedMesh*)gc->createCylinderMesh(p_mesh.radius, p_mesh.length, p_mesh.tesselation, p_mesh.cylinder_color, p_mesh.cylinder_top_close);
 		}
 	}
 	else

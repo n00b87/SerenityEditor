@@ -254,7 +254,7 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_stage_propertyGridManager = new wxPropertyGridManager(m_panel311, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxPGMAN_DEFAULT_STYLE|wxPG_SPLITTER_AUTO_CENTER);
 	m_stage_propertyGridManager->SetExtraStyle( wxPG_EX_MODE_BUTTONS );
 
-	m_group_propertyGridPage = m_stage_propertyGridManager->AddPage( wxT("Group"), wxNullBitmap );
+	m_propertyGridPage13 = m_stage_propertyGridManager->AddPage( wxT("Page"), wxNullBitmap );
 
 	m_lightActorProperties_propertyGridPage = m_stage_propertyGridManager->AddPage( wxT("Actor Properties"), wxNullBitmap );
 	m_animatedActorPropertiesCat_propertyGridItem11111 = m_lightActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Light Properties"), wxT("actorPropertiesCat") ) );
@@ -291,6 +291,12 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_propertyGridItem6011111 = m_lightActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Visible"), wxT("visible") ) );
 	m_propertyGridItem6111111 = m_lightActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Shadow"), wxT("shadow") ) );
 	m_propertyGridItem6211111 = m_lightActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Auto Culling"), wxT("auto_culling") ) );
+	m_propertyGridItem2682 = m_lightActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Physics Properties") ) );
+	m_propertyGridItem2692 = m_lightActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Shape"), wxT("physics_shape") ) );
+	m_propertyGridItem2712 = m_lightActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Solid"), wxT("physics_solid") ) );
+	m_propertyGridItem270 = m_lightActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Mass"), wxT("physics_mass") ) );
+
+	m_group_propertyGridPage = m_stage_propertyGridManager->AddPage( wxT("Group"), wxNullBitmap );
 
 	m_animatedActorProperties_propertyGridPage = m_stage_propertyGridManager->AddPage( wxT("Animated Actor Properties"), wxNullBitmap );
 	m_animatedActorPropertiesCat_propertyGridItem = m_animatedActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Animated Actor Properties") ) );
@@ -316,6 +322,10 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_propertyGridItem60 = m_animatedActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Visible"), wxT("visible") ) );
 	m_propertyGridItem61 = m_animatedActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Shadow"), wxT("shadow") ) );
 	m_propertyGridItem62 = m_animatedActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Auto Culling"), wxT("auto_culling") ) );
+	m_propertyGridItem2722 = m_animatedActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Physics Properties") ) );
+	m_propertyGridItem273 = m_animatedActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Shape"), wxT("physics_shape") ) );
+	m_propertyGridItem274 = m_animatedActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Solid"), wxT("physics_solid") ) );
+	m_propertyGridItem275 = m_animatedActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Mass"), wxT("physics_mass") ) );
 
 	m_projectProperties_propertyGridPage = m_stage_propertyGridManager->AddPage( wxT("Page"), wxNullBitmap );
 	m_propertyGridItem432 = m_projectProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Project") ) );
@@ -390,6 +400,10 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_propertyGridItem60111111 = m_particleActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Visible"), wxT("visible") ) );
 	m_propertyGridItem61111111 = m_particleActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Shadow"), wxT("shadow") ) );
 	m_propertyGridItem62111111 = m_particleActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Auto Culling"), wxT("auto_culling") ) );
+	m_propertyGridItem276 = m_particleActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Physics Properties") ) );
+	m_propertyGridItem277 = m_particleActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Shape"), wxT("physics_shape") ) );
+	m_propertyGridItem278 = m_particleActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Solid"), wxT("physics_solid") ) );
+	m_propertyGridItem279 = m_particleActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Mass"), wxT("physics_mass") ) );
 
 	m_stageProperties_propertyGridPage = m_stage_propertyGridManager->AddPage( wxT("Stage Properties"), wxNullBitmap );
 	m_propertyGridItem15 = m_stageProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Stage Properties") ) );
@@ -431,6 +445,10 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_propertyGridItem601 = m_octreeActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Visible"), wxT("visible") ) );
 	m_propertyGridItem611 = m_octreeActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Shadow"), wxT("shadow") ) );
 	m_propertyGridItem621 = m_octreeActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Auto Culling"), wxT("auto_culling") ) );
+	m_propertyGridItem280 = m_octreeActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Physics Properties") ) );
+	m_propertyGridItem281 = m_octreeActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Shape"), wxT("physics_shape") ) );
+	m_propertyGridItem282 = m_octreeActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Solid"), wxT("physics_solid") ) );
+	m_propertyGridItem283 = m_octreeActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Mass"), wxT("physics_mass") ) );
 
 	m_cubeActorProperties_propertyGridPage = m_stage_propertyGridManager->AddPage( wxT("Actor Properties"), wxNullBitmap );
 	m_animatedActorPropertiesCat_propertyGridItem11 = m_cubeActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Cube Properties"), wxT("actorPropertiesCat") ) );
@@ -453,6 +471,10 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_propertyGridItem6011 = m_cubeActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Visible"), wxT("visible") ) );
 	m_propertyGridItem6111 = m_cubeActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Shadow"), wxT("shadow") ) );
 	m_propertyGridItem6211 = m_cubeActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Auto Culling"), wxT("auto_culling") ) );
+	m_propertyGridItem284 = m_cubeActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Physics Properties") ) );
+	m_propertyGridItem285 = m_cubeActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Shape"), wxT("physics_shape") ) );
+	m_propertyGridItem286 = m_cubeActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Solid"), wxT("physics_solid") ) );
+	m_propertyGridItem287 = m_cubeActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Mass"), wxT("physics_mass") ) );
 
 	m_sphereActorProperties_propertyGridPage = m_stage_propertyGridManager->AddPage( wxT("Actor Properties"), wxNullBitmap );
 	m_animatedActorPropertiesCat_propertyGridItem111 = m_sphereActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Sphere Properties"), wxT("actorPropertiesCat") ) );
@@ -475,6 +497,10 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_propertyGridItem60111 = m_sphereActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Visible"), wxT("visible") ) );
 	m_propertyGridItem61111 = m_sphereActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Shadow"), wxT("shadow") ) );
 	m_propertyGridItem62111 = m_sphereActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Auto Culling"), wxT("auto_culling") ) );
+	m_propertyGridItem288 = m_sphereActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Physics Properties") ) );
+	m_propertyGridItem289 = m_sphereActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Shape"), wxT("physics_shape") ) );
+	m_propertyGridItem290 = m_sphereActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Solid"), wxT("physics_solid") ) );
+	m_propertyGridItem291 = m_sphereActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Mass"), wxT("physics_mass") ) );
 
 	m_billboardActorProperties_propertyGridPage = m_stage_propertyGridManager->AddPage( wxT("Actor Properties"), wxNullBitmap );
 	m_animatedActorPropertiesCat_propertyGridItem1111 = m_billboardActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Billboard Properties"), wxT("actorPropertiesCat") ) );
@@ -496,6 +522,10 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_propertyGridItem601111 = m_billboardActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Visible"), wxT("visible") ) );
 	m_propertyGridItem611111 = m_billboardActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Shadow"), wxT("shadow") ) );
 	m_propertyGridItem621111 = m_billboardActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Auto Culling"), wxT("auto_culling") ) );
+	m_propertyGridItem292 = m_billboardActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Physics Properties") ) );
+	m_propertyGridItem293 = m_billboardActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Shape"), wxT("physics_shape") ) );
+	m_propertyGridItem294 = m_billboardActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Solid"), wxT("physics_solid") ) );
+	m_propertyGridItem295 = m_billboardActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Mass"), wxT("physics_mass") ) );
 
 	m_terrainActorProperties_propertyGridPage = m_stage_propertyGridManager->AddPage( wxT("Actor Properties"), wxNullBitmap );
 	m_animatedActorPropertiesCat_propertyGridItem112 = m_terrainActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Terrain Properties"), wxT("actorPropertiesCat") ) );
@@ -518,6 +548,10 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_propertyGridItem60112 = m_terrainActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Visible"), wxT("visible") ) );
 	m_propertyGridItem61112 = m_terrainActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Shadow"), wxT("shadow") ) );
 	m_propertyGridItem62112 = m_terrainActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Auto Culling"), wxT("auto_culling") ) );
+	m_propertyGridItem296 = m_terrainActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Physics Properties") ) );
+	m_propertyGridItem297 = m_terrainActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Shape"), wxT("physics_shape") ) );
+	m_propertyGridItem298 = m_terrainActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Solid"), wxT("physics_solid") ) );
+	m_propertyGridItem299 = m_terrainActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Mass"), wxT("physics_mass") ) );
 
 	m_waterActorProperties_propertyGridPage = m_stage_propertyGridManager->AddPage( wxT("Actor Properties"), wxNullBitmap );
 	m_animatedActorPropertiesCat_propertyGridItem113 = m_waterActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Water Properties"), wxT("actorPropertiesCat") ) );
@@ -544,6 +578,10 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_propertyGridItem60113 = m_waterActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Visible"), wxT("visible") ) );
 	m_propertyGridItem61113 = m_waterActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Shadow"), wxT("shadow") ) );
 	m_propertyGridItem62113 = m_waterActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Auto Culling"), wxT("auto_culling") ) );
+	m_propertyGridItem300 = m_waterActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Physics Properties") ) );
+	m_propertyGridItem301 = m_waterActorProperties_propertyGridPage->Append( new wxEnumProperty( wxT("Shape"), wxT("physics_shape") ) );
+	m_propertyGridItem302 = m_waterActorProperties_propertyGridPage->Append( new wxBoolProperty( wxT("Solid"), wxT("physics_solid") ) );
+	m_propertyGridItem303 = m_waterActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Mass"), wxT("physics_mass") ) );
 	bSizer31->Add( m_stage_propertyGridManager, 1, wxALL|wxEXPAND, 5 );
 
 
@@ -4056,8 +4094,8 @@ CreateMesh_Dialog::CreateMesh_Dialog( wxWindow* parent, wxWindowID id, const wxS
 	m_staticText86->Wrap( -1 );
 	bSizer238->Add( m_staticText86, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_comboBox10 = new wxComboBox( this, wxID_ANY, wxT("Combo!"), wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
-	bSizer238->Add( m_comboBox10, 4, wxALL, 5 );
+	m_shape_comboBox = new wxComboBox( this, wxID_ANY, wxT("Combo!"), wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	bSizer238->Add( m_shape_comboBox, 4, wxALL, 5 );
 
 
 	bSizer237->Add( bSizer238, 0, wxEXPAND, 5 );
@@ -4065,8 +4103,8 @@ CreateMesh_Dialog::CreateMesh_Dialog( wxWindow* parent, wxWindowID id, const wxS
 	wxBoxSizer* bSizer239;
 	bSizer239 = new wxBoxSizer( wxVERTICAL );
 
-	m_simplebook1 = new wxSimplebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
-	m_plane_panel = new wxPanel( m_simplebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	m_shape_simplebook = new wxSimplebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
+	m_plane_panel = new wxPanel( m_shape_simplebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer240;
 	bSizer240 = new wxBoxSizer( wxVERTICAL );
 
@@ -4152,8 +4190,8 @@ CreateMesh_Dialog::CreateMesh_Dialog( wxWindow* parent, wxWindowID id, const wxS
 	m_plane_panel->SetSizer( bSizer240 );
 	m_plane_panel->Layout();
 	bSizer240->Fit( m_plane_panel );
-	m_simplebook1->AddPage( m_plane_panel, wxT("a page"), false );
-	m_cone_panel = new wxPanel( m_simplebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	m_shape_simplebook->AddPage( m_plane_panel, wxT("a page"), false );
+	m_cone_panel = new wxPanel( m_shape_simplebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer248;
 	bSizer248 = new wxBoxSizer( wxVERTICAL );
 
@@ -4228,8 +4266,8 @@ CreateMesh_Dialog::CreateMesh_Dialog( wxWindow* parent, wxWindowID id, const wxS
 	m_cone_panel->SetSizer( bSizer248 );
 	m_cone_panel->Layout();
 	bSizer248->Fit( m_cone_panel );
-	m_simplebook1->AddPage( m_cone_panel, wxT("a page"), false );
-	m_cylinder_panel = new wxPanel( m_simplebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	m_shape_simplebook->AddPage( m_cone_panel, wxT("a page"), false );
+	m_cylinder_panel = new wxPanel( m_shape_simplebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer2481;
 	bSizer2481 = new wxBoxSizer( wxVERTICAL );
 
@@ -4304,9 +4342,9 @@ CreateMesh_Dialog::CreateMesh_Dialog( wxWindow* parent, wxWindowID id, const wxS
 	m_cylinder_panel->SetSizer( bSizer2481 );
 	m_cylinder_panel->Layout();
 	bSizer2481->Fit( m_cylinder_panel );
-	m_simplebook1->AddPage( m_cylinder_panel, wxT("a page"), false );
+	m_shape_simplebook->AddPage( m_cylinder_panel, wxT("a page"), false );
 
-	bSizer239->Add( m_simplebook1, 1, wxEXPAND | wxALL, 5 );
+	bSizer239->Add( m_shape_simplebook, 1, wxEXPAND | wxALL, 5 );
 
 
 	bSizer237->Add( bSizer239, 1, wxEXPAND, 5 );
@@ -4333,7 +4371,7 @@ CreateMesh_Dialog::CreateMesh_Dialog( wxWindow* parent, wxWindowID id, const wxS
 	this->Centre( wxBOTH );
 
 	// Connect Events
-	m_comboBox10->Connect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( CreateMesh_Dialog::OnShapeSelected ), NULL, this );
+	m_shape_comboBox->Connect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( CreateMesh_Dialog::OnShapeSelected ), NULL, this );
 	m_button89->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CreateMesh_Dialog::OnCancel ), NULL, this );
 	m_button90->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CreateMesh_Dialog::OnCreate ), NULL, this );
 }
@@ -4341,7 +4379,7 @@ CreateMesh_Dialog::CreateMesh_Dialog( wxWindow* parent, wxWindowID id, const wxS
 CreateMesh_Dialog::~CreateMesh_Dialog()
 {
 	// Disconnect Events
-	m_comboBox10->Disconnect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( CreateMesh_Dialog::OnShapeSelected ), NULL, this );
+	m_shape_comboBox->Disconnect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( CreateMesh_Dialog::OnShapeSelected ), NULL, this );
 	m_button89->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CreateMesh_Dialog::OnCancel ), NULL, this );
 	m_button90->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CreateMesh_Dialog::OnCreate ), NULL, this );
 

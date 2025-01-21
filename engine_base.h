@@ -91,6 +91,8 @@ public:
 	int getLightType(wxString light_type_string);
 	wxString getParticleTypeString(int particle_type);
 	int getParticleType(wxString particle_type_string);
+	wxString getPhysicsShapeString(int physics_shape);
+	int getPhysicsShape(wxString physics_shape_string);
 
 	void load_material_list(rc_mesh* p_mesh, wxString ml_file);
 	rc_material loadMaterialFile(wxString mfile, wxString mID);

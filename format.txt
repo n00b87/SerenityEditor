@@ -74,6 +74,10 @@ etc.
 	* Image id=id_name file=relative_path color_key=-1
 	etc.
 
+	* Mesh id=id_name  file=!plane	tile_width=n  tile_height=n  tile_count_x=n  tile_count_y=n  tx_repeat_x=n  tx_repeat_y=n
+	* Mesh id=id_name  file=!cone   radius=n   length=n   tesselation=n  top_color=n   bottom_color=n
+	* Mesh id=id_name  file=!cylinder  radius=n   length=n   tesselation=n  cylinder_color=n  close_top={true|false}
+	
 	* Mesh id=id_name  file=relative_path
 	* Mesh id=id_name  file=relative_path
 	* Mesh id=id_name  zip=relative_path  file=filename
@@ -113,6 +117,9 @@ etc.
 	* visible=flag  
 	* shadow=flag  
 	* auto_culling=flag
+	* physics_shape={BOX|SPHERE|CYLINDER|CAPSULE|CONE|CONVEXHULL|TRIMESH}
+	* physics_solid={true|false}
+	* physics_mass=n
 
 * Actor  type=OCTREE  id=actor_id 
 	* mesh=mesh_id  

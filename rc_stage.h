@@ -39,6 +39,9 @@ struct rc_an8
 	an8::an8_project project;
 };
 
+#define SN_MESH_SOURCE_TYPE_FILE	0
+#define SN_MESH_SOURCE_TYPE_GEO		1
+
 struct rc_mesh
 {
 	std::string id_name;
@@ -54,8 +57,44 @@ struct rc_mesh
 	std::string ani_file;
 	bool isMD2;
 
+	int source_type;
+
+	int tile_width;
+	int tile_height;
+	int tile_count_x;
+	int tile_count_y;
+	int tile_txRepeat_x;
+	int tile_txRepeat_y;
+
+	double radius;
+	double length;
+	int tesselation;
+	irr::video::SColor cone_top_color;
+	irr::video::SColor cone_bottom_color;
+
+	irr::video::SColor cylinder_color;
+	bool cylinder_top_close;
+
 	std::vector<std::string> ref_material_id; //this is only used as a place holder when loading meshes but material_index should be used everywhere else
 	std::string ref_an8_id; //same as ref_material_id
+};
+
+
+#define SN_PHYSICS_SHAPE_NONE		0
+#define SN_PHYSICS_SHAPE_BOX		1
+#define SN_PHYSICS_SHAPE_SPHERE		2
+#define SN_PHYSICS_SHAPE_CYLINDER	3
+#define SN_PHYSICS_SHAPE_CAPSULE	4
+#define SN_PHYSICS_SHAPE_CONE		5
+#define SN_PHYSICS_SHAPE_CONVEXHULL	6
+#define SN_PHYSICS_SHAPE_TRIMESH	7
+#define SN_PHYSICS_SHAPE_COUNT		8
+
+struct rc_physics_properties
+{
+	int shape;
+	bool isSolid;
+	double mass;
 };
 
 #define SN_LIGHT_TYPE_POINT			0
@@ -148,6 +187,8 @@ struct rc_actor
 
 	double min_life;
 	double max_life;
+
+	rc_physics_properties physics;
 };
 
 struct rc_waypoint

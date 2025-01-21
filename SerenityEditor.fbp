@@ -2286,10 +2286,10 @@
                                                         <property name="window_name"></property>
                                                         <property name="window_style"></property>
                                                         <event name="OnPropertyGridChanged">OnStagePropertyGridChanged</event>
-                                                        <object class="propGridPage" expanded="false">
+                                                        <object class="propGridPage" expanded="true">
                                                           <property name="bitmap"></property>
-                                                          <property name="label">Group</property>
-                                                          <property name="name">m_group_propertyGridPage</property>
+                                                          <property name="label">Page</property>
+                                                          <property name="name">m_propertyGridPage13</property>
                                                           <property name="permission">protected</property>
                                                         </object>
                                                         <object class="propGridPage" expanded="false">
@@ -2569,6 +2569,44 @@
                                                             <property name="prop_name">auto_culling</property>
                                                             <property name="type">Bool</property>
                                                           </object>
+                                                          <object class="propGridItem" expanded="false">
+                                                            <property name="help"></property>
+                                                            <property name="label">Physics Properties</property>
+                                                            <property name="name">m_propertyGridItem2682</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="prop_name"></property>
+                                                            <property name="type">Category</property>
+                                                          </object>
+                                                          <object class="propGridItem" expanded="false">
+                                                            <property name="help"></property>
+                                                            <property name="label">Shape</property>
+                                                            <property name="name">m_propertyGridItem2692</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="prop_name">physics_shape</property>
+                                                            <property name="type">Enum</property>
+                                                          </object>
+                                                          <object class="propGridItem" expanded="false">
+                                                            <property name="help"></property>
+                                                            <property name="label">Solid</property>
+                                                            <property name="name">m_propertyGridItem2712</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="prop_name">physics_solid</property>
+                                                            <property name="type">Bool</property>
+                                                          </object>
+                                                          <object class="propGridItem" expanded="false">
+                                                            <property name="help"></property>
+                                                            <property name="label">Mass</property>
+                                                            <property name="name">m_propertyGridItem270</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="prop_name">physics_mass</property>
+                                                            <property name="type">Float</property>
+                                                          </object>
+                                                        </object>
+                                                        <object class="propGridPage" expanded="false">
+                                                          <property name="bitmap"></property>
+                                                          <property name="label">Group</property>
+                                                          <property name="name">m_group_propertyGridPage</property>
+                                                          <property name="permission">protected</property>
                                                         </object>
                                                         <object class="propGridPage" expanded="false">
                                                           <property name="bitmap"></property>
@@ -2758,6 +2796,38 @@
                                                             <property name="permission">protected</property>
                                                             <property name="prop_name">auto_culling</property>
                                                             <property name="type">Bool</property>
+                                                          </object>
+                                                          <object class="propGridItem" expanded="false">
+                                                            <property name="help"></property>
+                                                            <property name="label">Physics Properties</property>
+                                                            <property name="name">m_propertyGridItem2722</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="prop_name"></property>
+                                                            <property name="type">Category</property>
+                                                          </object>
+                                                          <object class="propGridItem" expanded="false">
+                                                            <property name="help"></property>
+                                                            <property name="label">Shape</property>
+                                                            <property name="name">m_propertyGridItem273</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="prop_name">physics_shape</property>
+                                                            <property name="type">Enum</property>
+                                                          </object>
+                                                          <object class="propGridItem" expanded="false">
+                                                            <property name="help"></property>
+                                                            <property name="label">Solid</property>
+                                                            <property name="name">m_propertyGridItem274</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="prop_name">physics_solid</property>
+                                                            <property name="type">Bool</property>
+                                                          </object>
+                                                          <object class="propGridItem" expanded="false">
+                                                            <property name="help"></property>
+                                                            <property name="label">Mass</property>
+                                                            <property name="name">m_propertyGridItem275</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="prop_name">physics_mass</property>
+                                                            <property name="type">Float</property>
                                                           </object>
                                                         </object>
                                                         <object class="propGridPage" expanded="false">
@@ -3331,6 +3401,38 @@
                                                             <property name="prop_name">auto_culling</property>
                                                             <property name="type">Bool</property>
                                                           </object>
+                                                          <object class="propGridItem" expanded="false">
+                                                            <property name="help"></property>
+                                                            <property name="label">Physics Properties</property>
+                                                            <property name="name">m_propertyGridItem276</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="prop_name"></property>
+                                                            <property name="type">Category</property>
+                                                          </object>
+                                                          <object class="propGridItem" expanded="false">
+                                                            <property name="help"></property>
+                                                            <property name="label">Shape</property>
+                                                            <property name="name">m_propertyGridItem277</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="prop_name">physics_shape</property>
+                                                            <property name="type">Enum</property>
+                                                          </object>
+                                                          <object class="propGridItem" expanded="false">
+                                                            <property name="help"></property>
+                                                            <property name="label">Solid</property>
+                                                            <property name="name">m_propertyGridItem278</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="prop_name">physics_solid</property>
+                                                            <property name="type">Bool</property>
+                                                          </object>
+                                                          <object class="propGridItem" expanded="false">
+                                                            <property name="help"></property>
+                                                            <property name="label">Mass</property>
+                                                            <property name="name">m_propertyGridItem279</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="prop_name">physics_mass</property>
+                                                            <property name="type">Float</property>
+                                                          </object>
                                                         </object>
                                                         <object class="propGridPage" expanded="false">
                                                           <property name="bitmap"></property>
@@ -3639,6 +3741,38 @@
                                                             <property name="prop_name">auto_culling</property>
                                                             <property name="type">Bool</property>
                                                           </object>
+                                                          <object class="propGridItem" expanded="false">
+                                                            <property name="help"></property>
+                                                            <property name="label">Physics Properties</property>
+                                                            <property name="name">m_propertyGridItem280</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="prop_name"></property>
+                                                            <property name="type">Category</property>
+                                                          </object>
+                                                          <object class="propGridItem" expanded="false">
+                                                            <property name="help"></property>
+                                                            <property name="label">Shape</property>
+                                                            <property name="name">m_propertyGridItem281</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="prop_name">physics_shape</property>
+                                                            <property name="type">Enum</property>
+                                                          </object>
+                                                          <object class="propGridItem" expanded="false">
+                                                            <property name="help"></property>
+                                                            <property name="label">Solid</property>
+                                                            <property name="name">m_propertyGridItem282</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="prop_name">physics_solid</property>
+                                                            <property name="type">Bool</property>
+                                                          </object>
+                                                          <object class="propGridItem" expanded="false">
+                                                            <property name="help"></property>
+                                                            <property name="label">Mass</property>
+                                                            <property name="name">m_propertyGridItem283</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="prop_name">physics_mass</property>
+                                                            <property name="type">Float</property>
+                                                          </object>
                                                         </object>
                                                         <object class="propGridPage" expanded="false">
                                                           <property name="bitmap"></property>
@@ -3804,6 +3938,38 @@
                                                             <property name="permission">protected</property>
                                                             <property name="prop_name">auto_culling</property>
                                                             <property name="type">Bool</property>
+                                                          </object>
+                                                          <object class="propGridItem" expanded="false">
+                                                            <property name="help"></property>
+                                                            <property name="label">Physics Properties</property>
+                                                            <property name="name">m_propertyGridItem284</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="prop_name"></property>
+                                                            <property name="type">Category</property>
+                                                          </object>
+                                                          <object class="propGridItem" expanded="false">
+                                                            <property name="help"></property>
+                                                            <property name="label">Shape</property>
+                                                            <property name="name">m_propertyGridItem285</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="prop_name">physics_shape</property>
+                                                            <property name="type">Enum</property>
+                                                          </object>
+                                                          <object class="propGridItem" expanded="false">
+                                                            <property name="help"></property>
+                                                            <property name="label">Solid</property>
+                                                            <property name="name">m_propertyGridItem286</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="prop_name">physics_solid</property>
+                                                            <property name="type">Bool</property>
+                                                          </object>
+                                                          <object class="propGridItem" expanded="false">
+                                                            <property name="help"></property>
+                                                            <property name="label">Mass</property>
+                                                            <property name="name">m_propertyGridItem287</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="prop_name">physics_mass</property>
+                                                            <property name="type">Float</property>
                                                           </object>
                                                         </object>
                                                         <object class="propGridPage" expanded="false">
@@ -3971,6 +4137,38 @@
                                                             <property name="prop_name">auto_culling</property>
                                                             <property name="type">Bool</property>
                                                           </object>
+                                                          <object class="propGridItem" expanded="false">
+                                                            <property name="help"></property>
+                                                            <property name="label">Physics Properties</property>
+                                                            <property name="name">m_propertyGridItem288</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="prop_name"></property>
+                                                            <property name="type">Category</property>
+                                                          </object>
+                                                          <object class="propGridItem" expanded="false">
+                                                            <property name="help"></property>
+                                                            <property name="label">Shape</property>
+                                                            <property name="name">m_propertyGridItem289</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="prop_name">physics_shape</property>
+                                                            <property name="type">Enum</property>
+                                                          </object>
+                                                          <object class="propGridItem" expanded="false">
+                                                            <property name="help"></property>
+                                                            <property name="label">Solid</property>
+                                                            <property name="name">m_propertyGridItem290</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="prop_name">physics_solid</property>
+                                                            <property name="type">Bool</property>
+                                                          </object>
+                                                          <object class="propGridItem" expanded="false">
+                                                            <property name="help"></property>
+                                                            <property name="label">Mass</property>
+                                                            <property name="name">m_propertyGridItem291</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="prop_name">physics_mass</property>
+                                                            <property name="type">Float</property>
+                                                          </object>
                                                         </object>
                                                         <object class="propGridPage" expanded="false">
                                                           <property name="bitmap"></property>
@@ -4129,8 +4327,40 @@
                                                             <property name="prop_name">auto_culling</property>
                                                             <property name="type">Bool</property>
                                                           </object>
+                                                          <object class="propGridItem" expanded="false">
+                                                            <property name="help"></property>
+                                                            <property name="label">Physics Properties</property>
+                                                            <property name="name">m_propertyGridItem292</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="prop_name"></property>
+                                                            <property name="type">Category</property>
+                                                          </object>
+                                                          <object class="propGridItem" expanded="false">
+                                                            <property name="help"></property>
+                                                            <property name="label">Shape</property>
+                                                            <property name="name">m_propertyGridItem293</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="prop_name">physics_shape</property>
+                                                            <property name="type">Enum</property>
+                                                          </object>
+                                                          <object class="propGridItem" expanded="false">
+                                                            <property name="help"></property>
+                                                            <property name="label">Solid</property>
+                                                            <property name="name">m_propertyGridItem294</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="prop_name">physics_solid</property>
+                                                            <property name="type">Bool</property>
+                                                          </object>
+                                                          <object class="propGridItem" expanded="false">
+                                                            <property name="help"></property>
+                                                            <property name="label">Mass</property>
+                                                            <property name="name">m_propertyGridItem295</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="prop_name">physics_mass</property>
+                                                            <property name="type">Float</property>
+                                                          </object>
                                                         </object>
-                                                        <object class="propGridPage" expanded="true">
+                                                        <object class="propGridPage" expanded="false">
                                                           <property name="bitmap"></property>
                                                           <property name="label">Actor Properties</property>
                                                           <property name="name">m_terrainActorProperties_propertyGridPage</property>
@@ -4294,6 +4524,38 @@
                                                             <property name="permission">protected</property>
                                                             <property name="prop_name">auto_culling</property>
                                                             <property name="type">Bool</property>
+                                                          </object>
+                                                          <object class="propGridItem" expanded="false">
+                                                            <property name="help"></property>
+                                                            <property name="label">Physics Properties</property>
+                                                            <property name="name">m_propertyGridItem296</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="prop_name"></property>
+                                                            <property name="type">Category</property>
+                                                          </object>
+                                                          <object class="propGridItem" expanded="false">
+                                                            <property name="help"></property>
+                                                            <property name="label">Shape</property>
+                                                            <property name="name">m_propertyGridItem297</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="prop_name">physics_shape</property>
+                                                            <property name="type">Enum</property>
+                                                          </object>
+                                                          <object class="propGridItem" expanded="false">
+                                                            <property name="help"></property>
+                                                            <property name="label">Solid</property>
+                                                            <property name="name">m_propertyGridItem298</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="prop_name">physics_solid</property>
+                                                            <property name="type">Bool</property>
+                                                          </object>
+                                                          <object class="propGridItem" expanded="false">
+                                                            <property name="help"></property>
+                                                            <property name="label">Mass</property>
+                                                            <property name="name">m_propertyGridItem299</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="prop_name">physics_mass</property>
+                                                            <property name="type">Float</property>
                                                           </object>
                                                         </object>
                                                         <object class="propGridPage" expanded="false">
@@ -4492,6 +4754,38 @@
                                                             <property name="permission">protected</property>
                                                             <property name="prop_name">auto_culling</property>
                                                             <property name="type">Bool</property>
+                                                          </object>
+                                                          <object class="propGridItem" expanded="false">
+                                                            <property name="help"></property>
+                                                            <property name="label">Physics Properties</property>
+                                                            <property name="name">m_propertyGridItem300</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="prop_name"></property>
+                                                            <property name="type">Category</property>
+                                                          </object>
+                                                          <object class="propGridItem" expanded="false">
+                                                            <property name="help"></property>
+                                                            <property name="label">Shape</property>
+                                                            <property name="name">m_propertyGridItem301</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="prop_name">physics_shape</property>
+                                                            <property name="type">Enum</property>
+                                                          </object>
+                                                          <object class="propGridItem" expanded="false">
+                                                            <property name="help"></property>
+                                                            <property name="label">Solid</property>
+                                                            <property name="name">m_propertyGridItem302</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="prop_name">physics_solid</property>
+                                                            <property name="type">Bool</property>
+                                                          </object>
+                                                          <object class="propGridItem" expanded="false">
+                                                            <property name="help"></property>
+                                                            <property name="label">Mass</property>
+                                                            <property name="name">m_propertyGridItem303</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="prop_name">physics_mass</property>
+                                                            <property name="type">Float</property>
                                                           </object>
                                                         </object>
                                                       </object>
@@ -29124,7 +29418,7 @@
                 <property name="minimize_button">0</property>
                 <property name="minimum_size"></property>
                 <property name="moveable">1</property>
-                <property name="name">m_comboBox10</property>
+                <property name="name">m_shape_comboBox</property>
                 <property name="pane_border">1</property>
                 <property name="pane_position"></property>
                 <property name="pane_size"></property>
@@ -29201,7 +29495,7 @@
                 <property name="minimize_button">0</property>
                 <property name="minimum_size"></property>
                 <property name="moveable">1</property>
-                <property name="name">m_simplebook1</property>
+                <property name="name">m_shape_simplebook</property>
                 <property name="pane_border">1</property>
                 <property name="pane_position"></property>
                 <property name="pane_size"></property>
@@ -29220,7 +29514,7 @@
                 <object class="simplebookpage" expanded="true">
                   <property name="label">a page</property>
                   <property name="select">0</property>
-                  <object class="wxPanel" expanded="true">
+                  <object class="wxPanel" expanded="false">
                     <property name="BottomDockable">1</property>
                     <property name="LeftDockable">1</property>
                     <property name="RightDockable">1</property>
@@ -29272,16 +29566,16 @@
                     <property name="window_extra_style"></property>
                     <property name="window_name"></property>
                     <property name="window_style">wxTAB_TRAVERSAL</property>
-                    <object class="wxBoxSizer" expanded="true">
+                    <object class="wxBoxSizer" expanded="false">
                       <property name="minimum_size"></property>
                       <property name="name">bSizer240</property>
                       <property name="orient">wxVERTICAL</property>
                       <property name="permission">none</property>
-                      <object class="sizeritem" expanded="true">
+                      <object class="sizeritem" expanded="false">
                         <property name="border">5</property>
                         <property name="flag">wxEXPAND</property>
                         <property name="proportion">0</property>
-                        <object class="wxBoxSizer" expanded="true">
+                        <object class="wxBoxSizer" expanded="false">
                           <property name="minimum_size"></property>
                           <property name="name">bSizer241</property>
                           <property name="orient">wxHORIZONTAL</property>

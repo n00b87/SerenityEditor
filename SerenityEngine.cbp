@@ -57,6 +57,8 @@
 		<Unit filename="SerenityEditor_AddMesh_Dialog.h" />
 		<Unit filename="SerenityEditor_AddTexture_Dialog.cpp" />
 		<Unit filename="SerenityEditor_AddTexture_Dialog.h" />
+		<Unit filename="SerenityEditor_CreateMesh_Dialog.cpp" />
+		<Unit filename="SerenityEditor_CreateMesh_Dialog.h" />
 		<Unit filename="SerenityEditor_CreateStageGroup_Dialog.cpp" />
 		<Unit filename="SerenityEditor_CreateStageGroup_Dialog.h" />
 		<Unit filename="SerenityEditor_DeleteActorAlert_Dialog.cpp" />

@@ -652,10 +652,13 @@ void wxIrrlicht::OnRender() {
 				}
 				else if(stage_edit_tool == RC_EDIT_TOOL_ROTATE && selected_actors.size() > 0 && show_axis_rings)
 				{
-					//irr::core::vector3df direction = getDirectionVector(transform_tool_widget.pos, selected_actors[0].node->getRotation());
-					drawCircle(transform_tool_widget.pos, 50, selected_actors[0].node->getRotation(), irr::core::vector3df(1,0,0), irr::video::SColor(255, 255, 0, 0));
-					drawCircle(transform_tool_widget.pos, 50, irr::core::vector3df(0, 0, 1), irr::core::vector3df(0,1,0), irr::video::SColor(255, 0, 255, 0));
-					drawCircle(transform_tool_widget.pos, 50, selected_actors[0].node->getRotation(), irr::core::vector3df(0,0,1), irr::video::SColor(255, 0, 0, 255));
+					if(selected_actors[0].node)
+					{
+						//irr::core::vector3df direction = getDirectionVector(transform_tool_widget.pos, selected_actors[0].node->getRotation());
+						drawCircle(transform_tool_widget.pos, 50, selected_actors[0].node->getRotation(), irr::core::vector3df(1,0,0), irr::video::SColor(255, 255, 0, 0));
+						drawCircle(transform_tool_widget.pos, 50, irr::core::vector3df(0, 0, 1), irr::core::vector3df(0,1,0), irr::video::SColor(255, 0, 255, 0));
+						drawCircle(transform_tool_widget.pos, 50, selected_actors[0].node->getRotation(), irr::core::vector3df(0,0,1), irr::video::SColor(255, 0, 0, 255));
+					}
 				}
 
 				drawAllLightInfluences();
@@ -1446,6 +1449,9 @@ void wxIrrlicht::OnUpdate()
 					selected_actors.clear();
 					for(int i = 0; i < scene_actors.size(); i++)
 					{
+						if(!scene_actors[i].node)
+							continue;
+
 						irr::core::aabbox3df abox = scene_actors[i].node->getBoundingBox();
 
 						if(scene_actors[i].use_override_size)
@@ -1507,6 +1513,9 @@ void wxIrrlicht::OnUpdate()
 
 				for(int i = 0; i < scene_actors.size(); i++)
 				{
+					if(!scene_actors[i].node)
+						continue;
+
 					irr::core::vector3df pos = scene_actors[i].node->getAbsolutePosition();
 					irr::core::vector2d<irr::s32> v1 = collman->getScreenCoordinatesFrom3DPosition(pos, camera[active_camera].camera.camera, true);
 
@@ -1554,6 +1563,9 @@ void wxIrrlicht::OnUpdate()
 				{
 					for(int i = 0; i < selected_actors.size(); i++)
 					{
+						if(!selected_actors[i].node)
+							continue;
+
 						if(selected_actors[i].isTerrain)
 						{
 							selected_actors[i].t_start = selected_actors[i].t_pos;
@@ -1612,6 +1624,9 @@ void wxIrrlicht::OnUpdate()
 
 				for(int i = 0; i < selected_actors.size(); i++)
 				{
+					if(!selected_actors[i].node)
+						continue;
+
 					selected_actors[i].node->setPosition( selected_actors[i].t_start + translate_vector );
 					selected_actors[i].t_pos = selected_actors[i].t_start + translate_vector;
 
@@ -1623,6 +1638,9 @@ void wxIrrlicht::OnUpdate()
 
 				if(selected_actors.size() > 0)
 				{
+					if(!selected_actors[0].node)
+						break;
+
 					transform_tool_widget.pos = selected_actors[0].node->getAbsolutePosition();
 					int widget_half = transform_tool_widget.widget_size/2;
 					irr::core::dimension2du widget_dim(transform_tool_widget.widget_size, transform_tool_widget.widget_size);
@@ -1807,6 +1825,9 @@ void wxIrrlicht::OnUpdate()
 
 				if(selected_actors.size() > 0)
 				{
+					if(!selected_actors[0].node)
+						break;
+
 					transform_tool_widget.pos = selected_actors[0].node->getAbsolutePosition();
 					setTransformToolBox();
 				}
@@ -1840,6 +1861,9 @@ void wxIrrlicht::OnUpdate()
 				{
 					for(int i = 0; i < selected_actors.size(); i++)
 					{
+						if(!selected_actors[i].node)
+							continue;
+
 						selected_actors[i].t_start = selected_actors[i].node->getScale();
 					}
 				}
@@ -1908,11 +1932,17 @@ void wxIrrlicht::OnUpdate()
 
 				for(int i = 0; i < selected_actors.size(); i++)
 				{
+					if(!selected_actors[i].node)
+						continue;
+
 					selected_actors[i].node->setScale( selected_actors[i].t_start + scale_vector );
 				}
 
 				if(selected_actors.size() > 0)
 				{
+					if(!selected_actors[0].node)
+						break;
+
 					transform_tool_widget.pos = selected_actors[0].node->getAbsolutePosition();
 					int widget_half = transform_tool_widget.widget_size/2;
 					irr::core::dimension2du widget_dim(transform_tool_widget.widget_size, transform_tool_widget.widget_size);

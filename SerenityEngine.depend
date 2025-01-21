@@ -1,8 +1,8 @@
 # depslib dependency file v1.0
-1737345984 source:/home/n00b/Projects/SerenityEngine/Serenity3D_Editor.cpp
+1737402927 source:/home/n00b/Projects/SerenityEngine/Serenity3D_Editor.cpp
 	"Serenity3D_Editor.h"
 
-1737394376 /home/n00b/Projects/SerenityEngine/Serenity3D_Editor.h
+1737402927 /home/n00b/Projects/SerenityEngine/Serenity3D_Editor.h
 	<wx/artprov.h>
 	<wx/xrc/xmlres.h>
 	<wx/string.h>
@@ -1434,7 +1434,7 @@
 	"wx/icon.h"
 	"wx/aui/auibook.h"
 
-1737346468 source:/home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.cpp
+1737423745 source:/home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.cpp
 	<wx/stdpaths.h>
 	<wx/propgrid/manager.h>
 	<wx/propgrid/propgridpagestate.h>
@@ -1470,8 +1470,9 @@
 	"SerenityEditor_NewWaterActor_Dialog.h"
 	"SerenityEditor_NewCubeActor_Dialog.h"
 	"SerenityEditor_NewSphereActor_Dialog.h"
+	"SerenityEditor_CreateMesh_Dialog.h"
 
-1737346191 /home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.h
+1737400038 /home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.h
 	<vector>
 	<wx/propgrid/propgrid.h>
 	<wx/propgrid/advprops.h>
@@ -2209,7 +2210,7 @@
 
 1704201762 /usr/include/x86_64-linux-gnu/bits/types/struct_statx.h
 
-1737346575 source:/home/n00b/Projects/SerenityEngine/wxIrrlicht.cpp
+1737414999 source:/home/n00b/Projects/SerenityEngine/wxIrrlicht.cpp
 	<wx/wx.h>
 	<wx/stdpaths.h>
 	<wx/filename.h>
@@ -9697,7 +9698,7 @@
 	"engine_base.h"
 	"rc_stage.h"
 
-1736902942 /home/n00b/Projects/SerenityEngine/engine_base.h
+1737420877 /home/n00b/Projects/SerenityEngine/engine_base.h
 	<wx/wx.h>
 	<wx/filename.h>
 	<vector>
@@ -9705,7 +9706,7 @@
 	<cinttypes>
 	"rc_stage.h"
 
-1737181202 /home/n00b/Projects/SerenityEngine/rc_stage.h
+1737421228 /home/n00b/Projects/SerenityEngine/rc_stage.h
 	<vector>
 	<irrlicht.h>
 	"an8parser.h"
@@ -9720,7 +9721,7 @@
 
 1699484035 /usr/include/wx-3.2/wx/unix/stdpaths.h
 
-1736476819 source:/home/n00b/Projects/SerenityEngine/engine_base.cpp
+1737422225 source:/home/n00b/Projects/SerenityEngine/engine_base.cpp
 	<wx/wx.h>
 	<wx/filename.h>
 	<vector>
@@ -10097,4 +10098,10 @@
 
 1737245802 /home/n00b/Projects/SerenityEngine/SerenityEditor_NewWaterActor_Dialog.h
 	"Serenity3D_Editor.h"
+
+1737405134 /home/n00b/Projects/SerenityEngine/SerenityEditor_CreateMesh_Dialog.h
+	"Serenity3D_Editor.h"
+
+1737416842 source:/home/n00b/Projects/SerenityEngine/SerenityEditor_CreateMesh_Dialog.cpp
+	"SerenityEditor_CreateMesh_Dialog.h"
 

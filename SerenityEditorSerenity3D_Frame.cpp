@@ -33,6 +33,7 @@
 #include "SerenityEditor_NewWaterActor_Dialog.h"
 #include "SerenityEditor_NewCubeActor_Dialog.h"
 #include "SerenityEditor_NewSphereActor_Dialog.h"
+#include "SerenityEditor_CreateMesh_Dialog.h"
 
 SerenityEditorSerenity3D_Frame::SerenityEditorSerenity3D_Frame( wxWindow* parent )
 :
@@ -100,6 +101,26 @@ Serenity3D_Frame( parent )
 	stage_window->camera[3].camera.setRotation(0, 5, 0);
 
 	current_window = stage_window;
+
+	for(int i = 0; i < m_stage_propertyGridManager->GetPageCount(); i++)
+	{
+		wxPropertyGridPage* page = m_stage_propertyGridManager->GetPage(i);
+
+		if(page->GetProperty(_("physics_shape")))
+		{
+			wxPGProperty* shape_choice_property = page->GetProperty(_("physics_shape"));
+
+			wxPGChoices choices;
+			choices.Clear();
+
+			for(int choice_n = 0; choice_n < SN_PHYSICS_SHAPE_COUNT; choice_n++)
+			{
+				choices.Add(project.getPhysicsShapeString(choice_n));
+			}
+
+			shape_choice_property->SetChoices(choices);
+		}
+	}
 
 
 	//----------MATERIALS TAB--------------------------
@@ -576,7 +597,10 @@ void SerenityEditorSerenity3D_Frame::updatePreviewMesh()
 
 	if(!meshTab_preview_obj.node)
 	{
-		meshTab_preview_obj.node = smgr->addAnimatedMeshSceneNode(project.meshes[n].mesh);
+		if(project.meshes[n].file.substr(0,1).compare("!")==0)
+			meshTab_preview_obj.node = (irr::scene::IAnimatedMeshSceneNode*)smgr->addMeshSceneNode(project.meshes[n].mesh);
+		else
+			meshTab_preview_obj.node = smgr->addAnimatedMeshSceneNode(project.meshes[n].mesh);
 
 		if(!meshTab_preview_obj.node)
 			return;
@@ -611,7 +635,11 @@ void SerenityEditorSerenity3D_Frame::updatePreviewMesh()
 	//Set Animation
 	if(meshTab_isPlaying && meshTab_preview_obj.animation_change && meshTab_preview_obj.node != NULL)
 	{
-		if(project.meshes[n].isMD2 && (meshTab_active_animation_index >= 0 && meshTab_active_animation_index < irr::scene::EMAT_COUNT))
+		if(project.meshes[n].file.substr(0,1).compare("!")==0)
+		{
+			//DO NOTHING SINCE THIS IS NOT AN ANIMATED MESH
+		}
+		else if(project.meshes[n].isMD2 && (meshTab_active_animation_index >= 0 && meshTab_active_animation_index < irr::scene::EMAT_COUNT))
 		{
 			meshTab_preview_obj.node->setMD2Animation(project.meshes[n].animation[meshTab_active_animation_index].md2_animation);
 		}
@@ -1699,6 +1727,9 @@ void SerenityEditorSerenity3D_Frame::updateRenderMode()
 
 	for(int i = 0; i < project.stages[stageTab_active_stage_project_index].actors.size(); i++)
 	{
+		if(!project.stages[stageTab_active_stage_project_index].actors[i].node)
+			continue;
+
 		for(int mat = 0; mat < project.stages[stageTab_active_stage_project_index].actors[i].node->getMaterialCount(); mat++)
 		{
 			project.stages[stageTab_active_stage_project_index].actors[i].node->getMaterial(mat).Wireframe = isWireFrame;
@@ -1795,7 +1826,10 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 
 				if(mesh)
 				{
-					project.stages[stage_project_index].actors[i].node = smgr->addAnimatedMeshSceneNode(mesh);
+					if(project.meshes[mesh_index].file.substr(0,1).compare("!")==0)
+						project.stages[stage_project_index].actors[i].node = smgr->addMeshSceneNode(mesh);
+					else
+						project.stages[stage_project_index].actors[i].node = smgr->addAnimatedMeshSceneNode(mesh);
 				}
 			}
 
@@ -1957,7 +1991,7 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 		{
 			int mesh_index = project.stages[stage_project_index].actors[i].mesh_index;
 
-			irr::scene::IAnimatedMesh* mesh = NULL;
+			irr::scene::IMesh* mesh = NULL;
 
 			if(mesh_index >= 0 && mesh_index < project.meshes.size())
 				mesh = project.meshes[mesh_index].mesh;
@@ -2855,7 +2889,8 @@ void SerenityEditorSerenity3D_Frame::OnStagePropertyGridChanged( wxPropertyGridE
 		project.stages[stage_index].actors[actor_index].mesh_index = project.getMeshIndex(property->GetValueAsString());
 		if(stage_index == stageTab_active_stage_project_index)
 		{
-			project.stages[stage_index].actors[actor_index].node->remove();
+			if(project.stages[stage_index].actors[actor_index].node)
+				project.stages[stage_index].actors[actor_index].node->remove();
 			project.stages[stage_index].actors[actor_index].node = NULL;
 			refresh_actor(actor_index);
 		}
@@ -3649,6 +3684,46 @@ void SerenityEditorSerenity3D_Frame::OnStagePropertyGridChanged( wxPropertyGridE
 			refresh_actor(actor_index);
 		}
 	}
+	else if(property_name.compare(_("physics_mass"))==0)
+	{
+		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
+			return;
+
+		if(stageTabGrid_current_actor < 0 || stageTabGrid_current_actor >= project.stages[stageTabGrid_current_stage].actors.size())
+			return;
+
+		int stage_index = stageTabGrid_current_stage;
+		int actor_index = stageTabGrid_current_actor;
+
+		project.stages[stage_index].actors[actor_index].physics.mass = page->GetPropertyByName(_("physics_mass"))->GetValue().GetDouble();
+	}
+	else if(property_name.compare(_("physics_solid"))==0)
+	{
+		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
+			return;
+
+		if(stageTabGrid_current_actor < 0 || stageTabGrid_current_actor >= project.stages[stageTabGrid_current_stage].actors.size())
+			return;
+
+		int stage_index = stageTabGrid_current_stage;
+		int actor_index = stageTabGrid_current_actor;
+
+		project.stages[stage_index].actors[actor_index].physics.isSolid = page->GetPropertyByName(_("physics_solid"))->GetValue().GetBool();
+	}
+	else if(property_name.compare(_("physics_shape"))==0)
+	{
+		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
+			return;
+
+		if(stageTabGrid_current_actor < 0 || stageTabGrid_current_actor >= project.stages[stageTabGrid_current_stage].actors.size())
+			return;
+
+
+		int stage_index = stageTabGrid_current_stage;
+		int actor_index = stageTabGrid_current_actor;
+
+		project.stages[stage_index].actors[actor_index].physics.shape = project.getPhysicsShape(property->GetValueAsString());
+	}
 
 }
 
@@ -3787,7 +3862,17 @@ void SerenityEditorSerenity3D_Frame::setAnimatedActorGrid(int stage_project_inde
 
 
 
-	//m_animatedActorProperties_propertyGridPage->GetPropertyByName(_("scale_x"))
+	int physics_shape = project.stages[stage_project_index].actors[actor_project_index].physics.shape;
+	bool physics_solid = project.stages[stage_project_index].actors[actor_project_index].physics.isSolid;
+	double physics_mass = project.stages[stage_project_index].actors[actor_project_index].physics.mass;
+
+	if(physics_shape >= 0 && physics_shape < SN_PHYSICS_SHAPE_COUNT)
+		m_animatedActorProperties_propertyGridPage->GetPropertyByName(_("physics_shape"))->SetChoiceSelection(physics_shape);
+	else
+		m_animatedActorProperties_propertyGridPage->GetPropertyByName(_("physics_shape"))->SetChoiceSelection(0);
+
+	m_animatedActorProperties_propertyGridPage->GetPropertyByName(_("physics_solid"))->SetValue(physics_solid);
+	m_animatedActorProperties_propertyGridPage->GetPropertyByName(_("physics_mass"))->SetValue(physics_mass);
 }
 
 void SerenityEditorSerenity3D_Frame::setOctreeActorGrid(int stage_project_index, int actor_project_index)
@@ -3899,8 +3984,17 @@ void SerenityEditorSerenity3D_Frame::setOctreeActorGrid(int stage_project_index,
 	if(material_selection >= 0)
 		m_octreeActorProperties_propertyGridPage->GetPropertyByName(_("material_id"))->SetChoiceSelection(material_selection);
 
+	int physics_shape = project.stages[stage_project_index].actors[actor_project_index].physics.shape;
+	bool physics_solid = project.stages[stage_project_index].actors[actor_project_index].physics.isSolid;
+	double physics_mass = project.stages[stage_project_index].actors[actor_project_index].physics.mass;
 
+	if(physics_shape >= 0 && physics_shape < SN_PHYSICS_SHAPE_COUNT)
+		m_octreeActorProperties_propertyGridPage->GetPropertyByName(_("physics_shape"))->SetChoiceSelection(physics_shape);
+	else
+		m_octreeActorProperties_propertyGridPage->GetPropertyByName(_("physics_shape"))->SetChoiceSelection(0);
 
+	m_octreeActorProperties_propertyGridPage->GetPropertyByName(_("physics_solid"))->SetValue(physics_solid);
+	m_octreeActorProperties_propertyGridPage->GetPropertyByName(_("physics_mass"))->SetValue(physics_mass);
 }
 
 void SerenityEditorSerenity3D_Frame::setBillboardActorGrid(int stage_project_index, int actor_project_index)
@@ -3982,6 +4076,19 @@ void SerenityEditorSerenity3D_Frame::setBillboardActorGrid(int stage_project_ind
 
 	bool auto_culling_flag = project.stages[stage_project_index].actors[actor_project_index].auto_culling;
 	m_billboardActorProperties_propertyGridPage->GetPropertyByName(_("auto_culling"))-> wxPGProperty::SetValue(auto_culling_flag);
+
+
+	int physics_shape = project.stages[stage_project_index].actors[actor_project_index].physics.shape;
+	bool physics_solid = project.stages[stage_project_index].actors[actor_project_index].physics.isSolid;
+	double physics_mass = project.stages[stage_project_index].actors[actor_project_index].physics.mass;
+
+	if(physics_shape >= 0 && physics_shape < SN_PHYSICS_SHAPE_COUNT)
+		m_billboardActorProperties_propertyGridPage->GetPropertyByName(_("physics_shape"))->SetChoiceSelection(physics_shape);
+	else
+		m_billboardActorProperties_propertyGridPage->GetPropertyByName(_("physics_shape"))->SetChoiceSelection(0);
+
+	m_billboardActorProperties_propertyGridPage->GetPropertyByName(_("physics_solid"))->SetValue(physics_solid);
+	m_billboardActorProperties_propertyGridPage->GetPropertyByName(_("physics_mass"))->SetValue(physics_mass);
 }
 
 void SerenityEditorSerenity3D_Frame::setLightActorGrid(int stage_project_index, int actor_project_index)
@@ -4119,6 +4226,17 @@ void SerenityEditorSerenity3D_Frame::setLightActorGrid(int stage_project_index, 
 	if(material_selection >= 0)
 		m_lightActorProperties_propertyGridPage->GetPropertyByName(_("material_id"))->SetChoiceSelection(material_selection);
 
+	int physics_shape = project.stages[stage_project_index].actors[actor_project_index].physics.shape;
+	bool physics_solid = project.stages[stage_project_index].actors[actor_project_index].physics.isSolid;
+	double physics_mass = project.stages[stage_project_index].actors[actor_project_index].physics.mass;
+
+	if(physics_shape >= 0 && physics_shape < SN_PHYSICS_SHAPE_COUNT)
+		m_lightActorProperties_propertyGridPage->GetPropertyByName(_("physics_shape"))->SetChoiceSelection(physics_shape);
+	else
+		m_lightActorProperties_propertyGridPage->GetPropertyByName(_("physics_shape"))->SetChoiceSelection(0);
+
+	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("physics_solid"))->SetValue(physics_solid);
+	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("physics_mass"))->SetValue(physics_mass);
 }
 
 void SerenityEditorSerenity3D_Frame::setTerrainActorGrid(int stage_project_index, int actor_project_index)
@@ -4250,6 +4368,18 @@ void SerenityEditorSerenity3D_Frame::setTerrainActorGrid(int stage_project_index
 
 	if(material_selection >= 0)
 		m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("material_id"))->SetChoiceSelection(material_selection);
+
+	int physics_shape = project.stages[stage_project_index].actors[actor_project_index].physics.shape;
+	bool physics_solid = project.stages[stage_project_index].actors[actor_project_index].physics.isSolid;
+	double physics_mass = project.stages[stage_project_index].actors[actor_project_index].physics.mass;
+
+	if(physics_shape >= 0 && physics_shape < SN_PHYSICS_SHAPE_COUNT)
+		m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("physics_shape"))->SetChoiceSelection(physics_shape);
+	else
+		m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("physics_shape"))->SetChoiceSelection(0);
+
+	m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("physics_solid"))->SetValue(physics_solid);
+	m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("physics_mass"))->SetValue(physics_mass);
 }
 
 void SerenityEditorSerenity3D_Frame::setWaterActorGrid(int stage_project_index, int actor_project_index)
@@ -4372,6 +4502,18 @@ void SerenityEditorSerenity3D_Frame::setWaterActorGrid(int stage_project_index, 
 
 	double wave_speed = project.stages[stage_project_index].actors[actor_project_index].wave_speed;
 	m_waterActorProperties_propertyGridPage->GetPropertyByName(_("wave_speed"))->SetValue(wave_speed);
+
+	int physics_shape = project.stages[stage_project_index].actors[actor_project_index].physics.shape;
+	bool physics_solid = project.stages[stage_project_index].actors[actor_project_index].physics.isSolid;
+	double physics_mass = project.stages[stage_project_index].actors[actor_project_index].physics.mass;
+
+	if(physics_shape >= 0 && physics_shape < SN_PHYSICS_SHAPE_COUNT)
+		m_waterActorProperties_propertyGridPage->GetPropertyByName(_("physics_shape"))->SetChoiceSelection(physics_shape);
+	else
+		m_waterActorProperties_propertyGridPage->GetPropertyByName(_("physics_shape"))->SetChoiceSelection(0);
+
+	m_waterActorProperties_propertyGridPage->GetPropertyByName(_("physics_solid"))->SetValue(physics_solid);
+	m_waterActorProperties_propertyGridPage->GetPropertyByName(_("physics_mass"))->SetValue(physics_mass);
 }
 
 void SerenityEditorSerenity3D_Frame::setParticleActorGrid(int stage_project_index, int actor_project_index)
@@ -4609,6 +4751,18 @@ void SerenityEditorSerenity3D_Frame::setParticleActorGrid(int stage_project_inde
 
 	if(material_selection >= 0)
 		m_particleActorProperties_propertyGridPage->GetPropertyByName(_("material_id"))->SetChoiceSelection(material_selection);
+
+	int physics_shape = project.stages[stage_project_index].actors[actor_project_index].physics.shape;
+	bool physics_solid = project.stages[stage_project_index].actors[actor_project_index].physics.isSolid;
+	double physics_mass = project.stages[stage_project_index].actors[actor_project_index].physics.mass;
+
+	if(physics_shape >= 0 && physics_shape < SN_PHYSICS_SHAPE_COUNT)
+		m_particleActorProperties_propertyGridPage->GetPropertyByName(_("physics_shape"))->SetChoiceSelection(physics_shape);
+	else
+		m_particleActorProperties_propertyGridPage->GetPropertyByName(_("physics_shape"))->SetChoiceSelection(0);
+
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("physics_solid"))->SetValue(physics_solid);
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("physics_mass"))->SetValue(physics_mass);
 }
 
 void SerenityEditorSerenity3D_Frame::setCubeActorGrid(int stage_project_index, int actor_project_index)
@@ -4698,6 +4852,18 @@ void SerenityEditorSerenity3D_Frame::setCubeActorGrid(int stage_project_index, i
 	if(material_selection >= 0)
 		m_cubeActorProperties_propertyGridPage->GetPropertyByName(_("material_id"))->SetChoiceSelection(material_selection);
 
+	int physics_shape = project.stages[stage_project_index].actors[actor_project_index].physics.shape;
+	bool physics_solid = project.stages[stage_project_index].actors[actor_project_index].physics.isSolid;
+	double physics_mass = project.stages[stage_project_index].actors[actor_project_index].physics.mass;
+
+	if(physics_shape >= 0 && physics_shape < SN_PHYSICS_SHAPE_COUNT)
+		m_cubeActorProperties_propertyGridPage->GetPropertyByName(_("physics_shape"))->SetChoiceSelection(physics_shape);
+	else
+		m_cubeActorProperties_propertyGridPage->GetPropertyByName(_("physics_shape"))->SetChoiceSelection(0);
+
+	m_cubeActorProperties_propertyGridPage->GetPropertyByName(_("physics_solid"))->SetValue(physics_solid);
+	m_cubeActorProperties_propertyGridPage->GetPropertyByName(_("physics_mass"))->SetValue(physics_mass);
+
 }
 
 void SerenityEditorSerenity3D_Frame::setSphereActorGrid(int stage_project_index, int actor_project_index)
@@ -4786,6 +4952,18 @@ void SerenityEditorSerenity3D_Frame::setSphereActorGrid(int stage_project_index,
 
 	if(material_selection >= 0)
 		m_sphereActorProperties_propertyGridPage->GetPropertyByName(_("material_id"))->SetChoiceSelection(material_selection);
+
+	int physics_shape = project.stages[stage_project_index].actors[actor_project_index].physics.shape;
+	bool physics_solid = project.stages[stage_project_index].actors[actor_project_index].physics.isSolid;
+	double physics_mass = project.stages[stage_project_index].actors[actor_project_index].physics.mass;
+
+	if(physics_shape >= 0 && physics_shape < SN_PHYSICS_SHAPE_COUNT)
+		m_sphereActorProperties_propertyGridPage->GetPropertyByName(_("physics_shape"))->SetChoiceSelection(physics_shape);
+	else
+		m_sphereActorProperties_propertyGridPage->GetPropertyByName(_("physics_shape"))->SetChoiceSelection(0);
+
+	m_sphereActorProperties_propertyGridPage->GetPropertyByName(_("physics_solid"))->SetValue(physics_solid);
+	m_sphereActorProperties_propertyGridPage->GetPropertyByName(_("physics_mass"))->SetValue(physics_mass);
 }
 
 void SerenityEditorSerenity3D_Frame::setStageGrid(int stage_project_index)
@@ -6625,6 +6803,109 @@ void SerenityEditorSerenity3D_Frame::On_Mesh_MeshList_Select( wxCommandEvent& ev
 
 	meshTab_preview_obj.animation_change = true;
 	updatePreviewMesh();
+}
+
+void SerenityEditorSerenity3D_Frame::On_Mesh_Create_ButtonClick( wxCommandEvent& event )
+{
+	if(!current_window)
+		return;
+
+	SerenityEditor_CreateMesh_Dialog* dialog = new SerenityEditor_CreateMesh_Dialog(this);
+
+	dialog->ShowModal();
+
+	if(!dialog->create_flag)
+		return;
+
+	wxString mesh_id = dialog->mesh_id;
+
+	if(!isValidID(mesh_id, RC_ID_MESH))
+	{
+		wxMessageBox(_("Warning: Mesh ID is invalid. A default Mesh ID will be generated."));
+		mesh_id = project.genMeshID().ToStdString();
+	}
+
+	int mesh_index = project.meshes.size();
+	rc_mesh p_mesh;
+	p_mesh.id_name = mesh_id;
+	p_mesh.isAN8Scene = false;
+	p_mesh.isMD2 = false;
+	p_mesh.isZipped = false;
+
+	p_mesh.cone_bottom_color = irr::video::SColor(dialog->cone_bottom_color.Alpha(),
+												dialog->cone_bottom_color.Red(),
+												dialog->cone_bottom_color.Green(),
+												dialog->cone_bottom_color.Blue());
+
+	p_mesh.cone_top_color = irr::video::SColor(dialog->cone_top_color.Alpha(),
+											 dialog->cone_top_color.Red(),
+											 dialog->cone_top_color.Green(),
+											 dialog->cone_top_color.Blue());
+
+	p_mesh.cylinder_color = irr::video::SColor(dialog->cylinder_color.Alpha(),
+											 dialog->cylinder_color.Red(),
+											 dialog->cylinder_color.Green(),
+											 dialog->cylinder_color.Blue());
+
+	p_mesh.length = dialog->length;
+	p_mesh.radius = dialog->radius;
+	p_mesh.source_type = SN_MESH_SOURCE_TYPE_GEO;
+	p_mesh.tesselation = dialog->tesselation;
+	p_mesh.tile_count_x = dialog->tile_x_count;
+	p_mesh.tile_count_y = dialog->tile_y_count;
+	p_mesh.tile_width = dialog->tile_width;
+	p_mesh.tile_height = dialog->tile_height;
+	p_mesh.tile_txRepeat_x = dialog->tile_txRepeat_x;
+	p_mesh.tile_txRepeat_y = dialog->tile_txRepeat_y;
+	p_mesh.cylinder_top_close = dialog->cylinder_close_top;
+
+	switch(dialog->shape_type)
+	{
+		case CREATE_MESH_SHAPE_CONE:
+			p_mesh.file = "!cone";
+			break;
+
+		case CREATE_MESH_SHAPE_CYLINDERER:
+			p_mesh.file = "!cylinder";
+			break;
+
+		case CREATE_MESH_SHAPE_PLANE:
+			p_mesh.file = "!plane";
+			break;
+
+		default:
+			wxMessageBox(_("Cannot create mesh without valid shape"));
+			return;
+	}
+
+	const irr::scene::IGeometryCreator* gc = current_window->GetDevice()->getSceneManager()->getGeometryCreator();
+	p_mesh.mesh = NULL;
+
+	if(p_mesh.file.compare("!plane")==0)
+	{
+		p_mesh.mesh = (irr::scene::IAnimatedMesh*)gc->createPlaneMesh( irr::core::dimension2d<irr::f32>(p_mesh.tile_width, p_mesh.tile_height),
+										   irr::core::dimension2d<irr::u32>(p_mesh.tile_count_x, p_mesh.tile_count_y),
+										   0,
+										   irr::core::dimension2d<irr::f32>(p_mesh.tile_txRepeat_x, p_mesh.tile_txRepeat_y) );
+	}
+	else if(p_mesh.file.compare("!cone")==0)
+	{
+		p_mesh.mesh = (irr::scene::IAnimatedMesh*)gc->createConeMesh(p_mesh.radius, p_mesh.length, p_mesh.tesselation, p_mesh.cone_top_color, p_mesh.cone_bottom_color);
+	}
+	else if(p_mesh.file.compare("!cylinder")==0)
+	{
+		p_mesh.mesh = (irr::scene::IAnimatedMesh*)gc->createCylinderMesh(p_mesh.radius, p_mesh.length, p_mesh.tesselation, p_mesh.cylinder_color, p_mesh.cylinder_top_close);
+	}
+
+	if(!p_mesh.mesh)
+	{
+		wxMessageBox(_("Error: Could not create mesh geometry"));
+		return;
+	}
+
+	project.meshes.push_back(p_mesh);
+
+	m_mesh_mesh_listBox->AppendAndEnsureVisible(wxString::FromUTF8(project.meshes[mesh_index].id_name));
 }
 
 void SerenityEditorSerenity3D_Frame::On_Mesh_Load_ButtonClick( wxCommandEvent& event )
