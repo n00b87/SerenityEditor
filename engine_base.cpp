@@ -383,6 +383,298 @@ int serenity_project::load_stage(std::vector<serenity_project_dict_obj> stage_pa
 
 void serenity_project::save_stage(int stage_id)
 {
+	if(stage_id < 0 || stage_id >= stages.size())
+		return;
+
+	wxFileName stage_fname = project_path;
+	stage_fname.AppendDir(_("stages"));
+	//stage_fname.SetFullName(wxString::FromUTF8(stages[stage_id].file));
+	stage_fname.SetFullName(_("test_out.snst"));
+
+	//wxMessageBox(_("Save to: ") + stage_fname.GetAbsolutePath());
+
+	wxFile stage_file(stage_fname.GetAbsolutePath(), wxFile::write);
+
+	if(!stage_file.IsOpened())
+	{
+		wxMessageBox(_("Stage could not be saved"));
+		return;
+	}
+
+	stage_file.Write(_("Stage id=") + stages[stage_id].id_name + _(";\n"));
+
+	stage_file.Write(_("\n---------------[Resources]----------------;\n\n"));
+
+	for(int i = 0; i < textures.size(); i++)
+	{
+		wxString id_name = wxString::FromUTF8(textures[i].id_name);
+		if(id_name.Trim().compare(_(""))==0)
+			continue;
+
+		id_name = _("id=") + id_name;
+
+		wxString tx_file = _("file=\"") + wxString::FromUTF8(textures[i].file) + _("\"");
+		wxString colkey = textures[i].use_colorKey ? _("color_key=") + wxString::Format(_("%d"), textures[i].colorkey.color) : _("");
+
+		stage_file.Write(_("Image ") + id_name + _(" ") + tx_file + _(" ") + colkey + _(";\n"));
+	}
+
+	stage_file.Write(_("\n\n"));
+
+	for(int i = 0; i < materials.size(); i++)
+	{
+		wxString id_name = wxString::FromUTF8(materials[i].id_name);
+		if(id_name.Trim().compare(_(""))==0)
+			continue;
+
+		id_name = _("id=") + id_name;
+
+		wxString mat_file = _("file=\"") + wxString::FromUTF8(materials[i].file) + _("\"");
+
+		stage_file.Write(_("Material ") + id_name + _(" ") + mat_file + _(";\n"));
+	}
+
+	stage_file.Write(_("\n\n"));
+
+	for(int i = 0; i < anim8or_projects.size(); i++)
+	{
+		wxString id_name = wxString::FromUTF8(anim8or_projects[i].id_name);
+		if(id_name.Trim().compare(_(""))==0)
+			continue;
+
+		id_name = _("id=") + id_name;
+
+		wxString a8_file = _("file=\"") + wxString::FromUTF8(anim8or_projects[i].file) + _("\"");
+
+		stage_file.Write(_("AN8 ") + id_name + _(" ") + a8_file + _(";\n"));
+	}
+
+	stage_file.Write(_("\n\n"));
+
+	for(int i = 0; i < meshes.size(); i++)
+	{
+		wxString id_name = wxString::FromUTF8(meshes[i].id_name);
+		if(id_name.Trim().compare(_(""))==0)
+			continue;
+
+		id_name = _("id=") + id_name;
+
+		wxString mesh_file = _("file=\"") + wxString::FromUTF8(meshes[i].file) + _("\"");
+
+		wxString a8_data = _("");
+		if(meshes[i].isAN8Scene)
+		{
+			a8_data = _("an8=");
+			int a8_index = meshes[i].an8_index;
+			if(a8_index >= 0 && a8_index < anim8or_projects.size())
+				a8_data += wxString::FromUTF8(anim8or_projects[a8_index].id_name);
+
+			a8_data += _(" scene=\"") + wxString::FromUTF8(meshes[i].an8_scene) + _("\"");
+			stage_file.Write(_("Mesh ") + id_name + _(" ") + a8_data);
+		}
+		else if(meshes[i].isZipped)
+		{
+			wxString zip_file = _("zip=\"") + wxString::FromUTF8(meshes[i].zip_file) + _("\"");
+			stage_file.Write(_("Mesh ") + id_name + _(" ") + zip_file + _(" ") + mesh_file);
+		}
+		else if(meshes[i].file.substr(0,1).compare("!")==0)
+		{
+			if(meshes[i].file.compare("!plane")==0)
+			{
+				stage_file.Write(_("Mesh ") + id_name + _(" ") + mesh_file + _(" ") +
+								_("tile_width=") + wxString::Format(_("%d"), meshes[i].tile_width) + _(" ") +
+								_("tile_height=") + wxString::Format(_("%d"), meshes[i].tile_height) + _(" ") +
+								_("tile_count_x=") + wxString::Format(_("%d"), meshes[i].tile_count_x) + _(" ") +
+								_("tile_count_y=") + wxString::Format(_("%d"), meshes[i].tile_count_y) + _(" ") +
+								_("tx_repeat_x=") + wxString::Format(_("%d"), meshes[i].tile_txRepeat_x) + _(" ") +
+								_("tx_repeat_y=") + wxString::Format(_("%d"), meshes[i].tile_txRepeat_y));
+			}
+			else if(meshes[i].file.compare("!cone")==0)
+			{
+				stage_file.Write(_("Mesh ") + id_name + _(" ") + mesh_file + _(" ") +
+								_("radius=") + wxString::FromDouble(meshes[i].radius) + _(" ") +
+								_("length=") + wxString::FromDouble(meshes[i].length) + _(" ") +
+								_("tesselation=") + wxString::Format(_("%d"), meshes[i].tesselation) + _(" ") +
+								_("top_color=") + wxString::Format(_("%d"), meshes[i].cone_top_color.color) + _(" ") +
+								_("bottom_color=") + wxString::Format(_("%d"), meshes[i].cone_bottom_color.color));
+			}
+			else if(meshes[i].file.compare("!cylinder")==0)
+			{
+				stage_file.Write(_("Mesh ") + id_name + _(" ") + mesh_file + _(" ") +
+								_("radius=") + wxString::FromDouble(meshes[i].radius) + _(" ") +
+								_("length=") + wxString::FromDouble(meshes[i].length) + _(" ") +
+								_("tesselation=") + wxString::Format(_("%d"), meshes[i].tesselation) + _(" ") +
+								_("cylinder_color=") + wxString::Format(_("%d"), meshes[i].cylinder_color.color) + _(" ") +
+								_("close_top=") + (meshes[i].cylinder_top_close ? _("true") : _("false")));
+			}
+		}
+		else
+		{
+			stage_file.Write(_("Mesh ") + id_name + _(" ") + mesh_file);
+		}
+
+		for(int m_index = 0; m_index < meshes[i].material_index.size(); m_index++)
+		{
+			int mat_index = meshes[i].material_index[m_index];
+			if(mat_index < 0 || mat_index >= materials.size())
+				stage_file.Write(_(" material=[NULL]"));
+			else
+				stage_file.Write(_(" material=") + (materials[mat_index].id_name.compare("")==0 ? _("[NULL]") :  wxString::FromUTF8(materials[mat_index].id_name)));
+		}
+
+		stage_file.Write(_(";\n"));
+
+	}
+
+
+	stage_file.Write(_("\n\n"));
+
+	for(int i = 0; i < stages[stage_id].groups.size(); i++)
+	{
+		if(stages[stage_id].groups[i].label.compare("")==0)
+			continue;
+
+		stage_file.Write(_("Group label=\"") + wxString::FromUTF8(stages[stage_id].groups[i].label) + ("\";\n"));
+	}
+
+	stage_file.Write(_("\n---------------[Scene]----------------;\n\n"));
+
+	int tx_index = stages[stage_id].sky.dome_texture_index;
+	wxString dome_img = ( tx_index < 0 || tx_index >= textures.size() ? _("[NULL]") : wxString::FromUTF8(textures[tx_index].id_name) );
+
+	tx_index = stages[stage_id].sky.left_texture_index;
+	wxString lf_img = ( tx_index < 0 || tx_index >= textures.size() ? _("[NULL]") : wxString::FromUTF8(textures[tx_index].id_name) );
+
+	tx_index = stages[stage_id].sky.right_texture_index;
+	wxString rt_img = ( tx_index < 0 || tx_index >= textures.size() ? _("[NULL]") : wxString::FromUTF8(textures[tx_index].id_name) );
+
+	tx_index = stages[stage_id].sky.top_texture_index;
+	wxString up_img = ( tx_index < 0 || tx_index >= textures.size() ? _("[NULL]") : wxString::FromUTF8(textures[tx_index].id_name) );
+
+	tx_index = stages[stage_id].sky.bottom_texture_index;
+	wxString dn_img = ( tx_index < 0 || tx_index >= textures.size() ? _("[NULL]") : wxString::FromUTF8(textures[tx_index].id_name) );
+
+	tx_index = stages[stage_id].sky.back_texture_index;
+	wxString bk_img = ( tx_index < 0 || tx_index >= textures.size() ? _("[NULL]") : wxString::FromUTF8(textures[tx_index].id_name) );
+
+	tx_index = stages[stage_id].sky.front_texture_index;
+	wxString ft_img = ( tx_index < 0 || tx_index >= textures.size() ? _("[NULL]") : wxString::FromUTF8(textures[tx_index].id_name) );
+
+	stage_file.Write( _("Sky type=") + getSkyTypeString(stages[stage_id].sky.type) + _(" ") +
+					  _("dome=") + dome_img + _(" ") +
+					  _("lf=") + lf_img + _(" ") +
+					  _("rt=") + rt_img + _(" ") +
+					  _("up=") + up_img + _(" ") +
+					  _("dn=") + dn_img + _(" ") +
+					  _("ft=") + ft_img + _(" ") +
+					  _("bk=") + bk_img + _(" ") +
+					  _("h=") + wxString::FromDouble(stages[stage_id].sky.hRes) + _(" ") +
+					  _("v=") + wxString::FromDouble(stages[stage_id].sky.vRes) + _(" ") +
+					  _("tx_pct=") + wxString::FromDouble(stages[stage_id].sky.txPCT) + _(" ") +
+					  _("sp_pct=") + wxString::FromDouble(stages[stage_id].sky.spherePCT) + _(" ") +
+					  _("radius=") + wxString::FromDouble(stages[stage_id].sky.dome_radius) + _(";\n") );
+
+	stage_file.Write(_("\n\n"));
+
+	for(int i = 0; i < stages[stage_id].actors.size(); i++)
+	{
+		if(stages[stage_id].actors[i].id_name.compare("")==0)
+			continue;
+
+		wxString actor_group = wxString::FromUTF8(stages[stage_id].actors[i].group_name);
+		wxString actor_mesh = _("[NULL]");
+		wxString actor_animation = _("[NULL]");
+		wxString actor_material = _("[NULL]");
+		wxString actor_hmap = _("[NULL]");
+
+		if(stages[stage_id].actors[i].mesh_index >= 0 && stages[stage_id].actors[i].mesh_index < meshes.size())
+		{
+			actor_mesh = wxString::FromUTF8(meshes[ stages[stage_id].actors[i].mesh_index ].id_name);
+
+			int animation_index = stages[stage_id].actors[i].animation_index;
+			if(animation_index >= 0 && animation_index < meshes[ stages[stage_id].actors[i].mesh_index ].animation.size())
+				actor_animation = meshes[ stages[stage_id].actors[i].mesh_index ].animation[animation_index].id_name;
+		}
+
+		if(stages[stage_id].actors[i].override_material_index >= 0 && stages[stage_id].actors[i].override_material_index < materials.size())
+			actor_material = materials[stages[stage_id].actors[i].override_material_index].id_name;
+
+		stage_file.Write(_("Actor type=") + getActorTypeString(stages[stage_id].actors[i].type) + _(" ") +
+							_("id=") + wxString::FromUTF8(stages[stage_id].actors[i].id_name) + _(" ") +
+							( actor_group.Trim().compare(_(""))==0 ? _("") : _("group=\"") + actor_group + _("\"")) + _(" ") +
+							_("mesh=") + actor_mesh + _(" ") +
+							_("animation=") + actor_animation + _(" ") +
+							_("loops=") + wxString::Format(_("%d"), stages[stage_id].actors[i].num_loops) + _(" ") +
+							_("material=") + actor_material + _(" ") +
+							_("pos_x=") + wxString::FromDouble((double)stages[stage_id].actors[i].position.X) + _(" ") +
+							_("pos_y=") + wxString::FromDouble((double)stages[stage_id].actors[i].position.Y) + _(" ") +
+							_("pos_z=") + wxString::FromDouble((double)stages[stage_id].actors[i].position.Z) + _(" ") +
+							_("rot_x=") + wxString::FromDouble((double)stages[stage_id].actors[i].rotation.X) + _(" ") +
+							_("rot_y=") + wxString::FromDouble((double)stages[stage_id].actors[i].rotation.Y) + _(" ") +
+							_("rot_z=") + wxString::FromDouble((double)stages[stage_id].actors[i].rotation.Z) + _(" ") +
+							_("scale_x=") + wxString::FromDouble((double)stages[stage_id].actors[i].scale.X) + _(" ") +
+							_("scale_y=") + wxString::FromDouble((double)stages[stage_id].actors[i].scale.Y) + _(" ") +
+							_("scale_z=") + wxString::FromDouble((double)stages[stage_id].actors[i].scale.Z) + _(" ") +
+							_("visible=") + (stages[stage_id].actors[i].visible ? _("true") : _("false")) + _(" ") +
+							_("shadow=") + (stages[stage_id].actors[i].hasShadow ? _("true") : _("false")) + _(" ") +
+							_("auto_culling=") + (stages[stage_id].actors[i].auto_culling ? _("true") : _("false")) + _(" ") +
+							_("physics_shape=") + getPhysicsShapeString(stages[stage_id].actors[i].physics.shape) + _(" ") +
+							_("physics_solid=") + (stages[stage_id].actors[i].physics.isSolid ? _("true") : _("false")) + _(" ") +
+							_("physics_mass=") + wxString::FromDouble(stages[stage_id].actors[i].physics.mass) + _(" ") +
+							_("cube_size=") + wxString::FromDouble(stages[stage_id].actors[i].cube_size) + _(" ") +
+							_("radius=") + wxString::FromDouble(stages[stage_id].actors[i].radius) + _(" ") +
+							_("cast_shadow=") + (stages[stage_id].actors[i].isCastingShadow ? _("true") : _("false")) + _(" ") +
+							_("light_type=") + getLightTypeString(stages[stage_id].actors[i].light_type) + _(" ") +
+							_("falloff=") + wxString::FromDouble(stages[stage_id].actors[i].falloff) + _(" ") +
+							_("ambient_color=") + wxString::Format(_("%d"), stages[stage_id].actors[i].ambient.color) + _(" ") +
+							_("diffuse_color=") + wxString::Format(_("%d"), stages[stage_id].actors[i].diffuse.color) + _(" ") +
+							_("specular_color=") + wxString::Format(_("%d"), stages[stage_id].actors[i].specular.color) + _(" ") +
+							_("inner_cone=") + wxString::FromDouble(stages[stage_id].actors[i].inner_cone) + _(" ") +
+							_("outer_cone=") + wxString::FromDouble(stages[stage_id].actors[i].outer_cone) + _(" ") +
+							_("constant=") + wxString::FromDouble(stages[stage_id].actors[i].attenuation.X) + _(" ") +
+							_("linear=") + wxString::FromDouble(stages[stage_id].actors[i].attenuation.Y) + _(" ") +
+							_("quadratic=") + wxString::FromDouble(stages[stage_id].actors[i].attenuation.Z) + _(" ") +
+							_("particle_type=") + getParticleTypeString(stages[stage_id].actors[i].particle_type) + _(" ") +
+							_("dir_x=") + wxString::FromDouble(stages[stage_id].actors[i].direction.X) + _(" ") +
+							_("dir_y=") + wxString::FromDouble(stages[stage_id].actors[i].direction.Y) + _(" ") +
+							_("dir_z=") + wxString::FromDouble(stages[stage_id].actors[i].direction.Z) + _(" ") +
+							_("use_every_vertex=") + (stages[stage_id].actors[i].use_every_vertex ? _("true") : _("false")) + _(" ") +
+							_("normal_dir_mod=") + wxString::FromDouble(stages[stage_id].actors[i].normal_direction_modifier) + _(" ") +
+							_("use_normal_dir=") + (stages[stage_id].actors[i].use_normal_direction ? _("true") : _("false")) + _(" ") +
+							_("min_per_sec=") + wxString::FromDouble(stages[stage_id].actors[i].min_per_sec) + _(" ") +
+							_("max_per_sec=") + wxString::FromDouble(stages[stage_id].actors[i].max_per_sec) + _(" ") +
+							_("min_start_color=") + wxString::Format(_("%d"), stages[stage_id].actors[i].min_start_color.color) + _(" ") +
+							_("max_start_color=") + wxString::Format(_("%d"), stages[stage_id].actors[i].max_start_color.color) + _(" ") +
+							_("min_life=") + wxString::FromDouble(stages[stage_id].actors[i].min_life) + _(" ") +
+							_("max_life=") + wxString::FromDouble(stages[stage_id].actors[i].max_life) + _(" ") +
+							_("max_angle=") + wxString::FromDouble(stages[stage_id].actors[i].angle) + _(" ") +
+							_("min_start_width=") + wxString::FromDouble(stages[stage_id].actors[i].min_width) + _(" ") +
+							_("min_start_height=") + wxString::FromDouble(stages[stage_id].actors[i].min_height) + _(" ") +
+							_("max_start_width=") + wxString::FromDouble(stages[stage_id].actors[i].max_width) + _(" ") +
+							_("max_start_height=") + wxString::FromDouble(stages[stage_id].actors[i].max_height) + _(" ") +
+							_("center_x=") + wxString::FromDouble(stages[stage_id].actors[i].center.X) + _(" ") +
+							_("center_y=") + wxString::FromDouble(stages[stage_id].actors[i].center.Y) + _(" ") +
+							_("center_z=") + wxString::FromDouble(stages[stage_id].actors[i].center.Z) + _(" ") +
+							_("ring_thickness=") + wxString::FromDouble(stages[stage_id].actors[i].ring_thickness) + _(" ") +
+							_("box_min_x=") + wxString::FromDouble(stages[stage_id].actors[i].box.MinEdge.X) + _(" ") +
+							_("box_min_y=") + wxString::FromDouble(stages[stage_id].actors[i].box.MinEdge.Y) + _(" ") +
+							_("box_min_z=") + wxString::FromDouble(stages[stage_id].actors[i].box.MinEdge.Z) + _(" ") +
+							_("box_max_x=") + wxString::FromDouble(stages[stage_id].actors[i].box.MaxEdge.X) + _(" ") +
+							_("box_max_y=") + wxString::FromDouble(stages[stage_id].actors[i].box.MaxEdge.Y) + _(" ") +
+							_("box_max_z=") + wxString::FromDouble(stages[stage_id].actors[i].box.MaxEdge.Z) + _(" ") +
+							_("normal_x=") + wxString::FromDouble(stages[stage_id].actors[i].normal.X) + _(" ") +
+							_("normal_y=") + wxString::FromDouble(stages[stage_id].actors[i].normal.Y) + _(" ") +
+							_("normal_z=") + wxString::FromDouble(stages[stage_id].actors[i].normal.Z) + _(" ") +
+							_("length=") + wxString::FromDouble(stages[stage_id].actors[i].cylinder_length) + _(" ") +
+							_("use_outline_only=") + (stages[stage_id].actors[i].use_outline_only ? _("true") : _("false")) + _(" ") +
+							_("terrain_hmap_file=") + wxString::FromUTF8(stages[stage_id].actors[i].terrain_hmap_file) + _(" ") +
+							_("wave_height=") + wxString::FromDouble(stages[stage_id].actors[i].wave_height) + _(" ") +
+							_("wave_speed=") + wxString::FromDouble(stages[stage_id].actors[i].wave_speed) + _(" ") +
+							_("wave_length=") + wxString::FromDouble(stages[stage_id].actors[i].wave_length) + _(";\n") );
+
+	}
+
+	stage_file.Close();
 }
 
 void serenity_project::remove_stage(int stage_id)
@@ -2446,3 +2738,4 @@ void serenity_project::load_material_list(rc_mesh* p_mesh, wxString ml_file)
 		}
 	}
 }
+

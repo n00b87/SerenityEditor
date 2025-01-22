@@ -6545,6 +6545,13 @@ void SerenityEditorSerenity3D_Frame::OnLoadProjectMenuSelection( wxCommandEvent&
 	return;
 }
 
+void SerenityEditorSerenity3D_Frame::OnSaveProjectMenuSelection( wxCommandEvent& event )
+{
+	project.save_stage(0);
+
+	return;
+}
+
 void SerenityEditorSerenity3D_Frame::OnStageViewportMouse( wxMouseEvent& event )
 {
 	return;

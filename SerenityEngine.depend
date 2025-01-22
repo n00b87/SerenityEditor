@@ -1434,7 +1434,7 @@
 	"wx/icon.h"
 	"wx/aui/auibook.h"
 
-1737435510 source:/home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.cpp
+1737502691 source:/home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.cpp
 	<wx/stdpaths.h>
 	<wx/propgrid/manager.h>
 	<wx/propgrid/propgridpagestate.h>
@@ -1472,7 +1472,7 @@
 	"SerenityEditor_NewSphereActor_Dialog.h"
 	"SerenityEditor_CreateMesh_Dialog.h"
 
-1737431387 /home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.h
+1737501178 /home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.h
 	<vector>
 	<wx/propgrid/propgrid.h>
 	<wx/propgrid/advprops.h>
@@ -9692,13 +9692,13 @@
 1734930714 /home/n00b/Projects/SerenityEngine/CGridSceneNode.h
 	"irrlicht.h"
 
-1737435382 source:/home/n00b/Projects/SerenityEngine/rc_stage.cpp
+1737501009 source:/home/n00b/Projects/SerenityEngine/rc_stage.cpp
 	<vector>
 	<irrlicht.h>
 	"engine_base.h"
 	"rc_stage.h"
 
-1737420877 /home/n00b/Projects/SerenityEngine/engine_base.h
+1737502691 /home/n00b/Projects/SerenityEngine/engine_base.h
 	<wx/wx.h>
 	<wx/filename.h>
 	<vector>
@@ -9706,7 +9706,7 @@
 	<cinttypes>
 	"rc_stage.h"
 
-1737434585 /home/n00b/Projects/SerenityEngine/rc_stage.h
+1737518540 /home/n00b/Projects/SerenityEngine/rc_stage.h
 	<vector>
 	<irrlicht.h>
 	"an8parser.h"
@@ -9721,7 +9721,7 @@
 
 1699484035 /usr/include/wx-3.2/wx/unix/stdpaths.h
 
-1737435477 source:/home/n00b/Projects/SerenityEngine/engine_base.cpp
+1737521671 source:/home/n00b/Projects/SerenityEngine/engine_base.cpp
 	<wx/wx.h>
 	<wx/filename.h>
 	<vector>

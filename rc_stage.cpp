@@ -175,6 +175,10 @@ int rc_stage::addActor(std::string actor_id, int actor_type)
 	p_actor.outer_cone = 0;
 	p_actor.attenuation = irr::core::vector3df(0, 0, 0);
 
+	p_actor.physics.isSolid = true;
+	p_actor.physics.mass = 1;
+	p_actor.physics.shape = SN_PHYSICS_SHAPE_BOX;
+
 	int actor_index = actors.size();
 
 	actors.push_back(p_actor);
