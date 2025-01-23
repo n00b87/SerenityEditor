@@ -2339,7 +2339,7 @@ void wxIrrlicht::SetViews(int view_flag, int view0_pov, int view1_pov, int view2
 {
 	if(view_flag == RC_CAMERA_VIEW_ALL)
 	{
-		bool viewport_switch = (num_views == 1);
+		bool viewport_switch = true; //(num_views == 1);
 
 		num_views = 4;
 		camera[0].pov = view0_pov;
@@ -2389,7 +2389,7 @@ void wxIrrlicht::SetViews(int view_flag, int view0_pov, int view1_pov, int view2
 	}
 	else
 	{
-		bool viewport_switch = (num_views == 4);
+		bool viewport_switch = true; //(num_views == 4);
 
 		num_views = 1;
 		camera[0].pov = view_flag;

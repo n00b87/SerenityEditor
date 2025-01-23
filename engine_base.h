@@ -105,6 +105,11 @@ public:
 	void clearProject();
 	void init_project(std::vector<serenity_project_dict_obj> param);
 
+	void init_grid(std::vector<serenity_project_dict_obj> param);
+	void init_tools(std::vector<serenity_project_dict_obj> param);
+	void init_camera(std::vector<serenity_project_dict_obj> param);
+	void init_hud(std::vector<serenity_project_dict_obj> param);
+
 	void setGridVisible(bool flag);
 	void setGridSize(float g_size);
 	void setGridSpacing(float g_spacing);
@@ -114,10 +119,16 @@ public:
 
 	void setDefaults()
 	{
+		setGridColor( irr::video::SColor(255, 70, 70, 70).color );
+		setGridSize(5000);
+		setGridSpacing(100);
 		grid_visible = true;
-		grid_size = 2500;
-		grid_spacing = 100;
-		grid_color = irr::video::SColor(255, 100, 100, 100).color;
+		show_axis_lines = true;
+		show_axis_rings = true;
+		show_camera_pos = false;
+		show_camera_rot = false;
+		camera_speed = 5;
+		hud_color = irr::video::SColor(255,255,255,255);
 	}
 };
 

@@ -166,10 +166,10 @@ serenity_project::serenity_project(std::string project_file, std::string p_name,
 	project_name = p_name;
 	device = scene_device;
 
+	setDefaults();
+
 	if(!project_path.Exists())
 	{
-		//set defaults and return
-		setDefaults();
 		return;
 	}
 
@@ -204,6 +204,15 @@ serenity_project::serenity_project(std::string project_file, std::string p_name,
 				load_stage(dict);
 			else if(dict[0].key.compare(_("Project"))==0)
 				init_project(dict);
+			else if(dict[0].key.compare(_("Grid"))==0)
+				init_grid(dict);
+			else if(dict[0].key.compare(_("Tool"))==0)
+				init_tools(dict);
+			else if(dict[0].key.compare(_("Camera"))==0)
+				init_camera(dict);
+			else if(dict[0].key.compare(_("HUD"))==0)
+				init_hud(dict);
+
 
 			//clear parameters
 			dict_obj.key = _("");
@@ -251,6 +260,84 @@ void serenity_project::init_project(std::vector<serenity_project_dict_obj> param
 		if(param[i].key.compare(_("name"))==0)
 		{
 			project_name = param[i].val.ToStdString();
+		}
+	}
+}
+
+void serenity_project::init_grid(std::vector<serenity_project_dict_obj> param)
+{
+	for(int i = 0; i < param.size(); i++)
+	{
+		if(param[i].key.compare(_("color"))==0)
+		{
+			irr::u32 c_val = 0;
+			param[i].val.ToUInt(&c_val);
+			grid_color = irr::video::SColor(c_val).color;
+		}
+		else if(param[i].key.compare(_("visible"))==0)
+		{
+			grid_visible = (param[i].val.compare(_("true"))==0);
+		}
+		else if(param[i].key.compare(_("size"))==0)
+		{
+			double n = 0;
+			param[i].val.ToDouble(&n);
+			grid_size = n;
+		}
+		else if(param[i].key.compare(_("spacing"))==0)
+		{
+			double n = 0;
+			param[i].val.ToDouble(&n);
+			grid_spacing = n;
+		}
+	}
+}
+
+void serenity_project::init_tools(std::vector<serenity_project_dict_obj> param)
+{
+	for(int i = 0; i < param.size(); i++)
+	{
+		if(param[i].key.compare(_("show_lines"))==0)
+		{
+			show_axis_lines = (param[i].val.compare(_("true"))==0);
+		}
+		else if(param[i].key.compare(_("show_rings"))==0)
+		{
+			show_axis_rings = (param[i].val.compare(_("true"))==0);
+		}
+	}
+}
+
+void serenity_project::init_camera(std::vector<serenity_project_dict_obj> param)
+{
+	for(int i = 0; i < param.size(); i++)
+	{
+		if(param[i].key.compare(_("show_position"))==0)
+		{
+			show_camera_pos = (param[i].val.compare(_("true"))==0);
+		}
+		else if(param[i].key.compare(_("show_rotation"))==0)
+		{
+			show_camera_rot = (param[i].val.compare(_("true"))==0);
+		}
+		else if(param[i].key.compare(_("speed"))==0)
+		{
+			double n = 0;
+			param[i].val.ToDouble(&n);
+			camera_speed = n;
+		}
+	}
+}
+
+void serenity_project::init_hud(std::vector<serenity_project_dict_obj> param)
+{
+	for(int i = 0; i < param.size(); i++)
+	{
+		if(param[i].key.compare(_("color"))==0)
+		{
+			irr::u32 c_val = 0;
+			param[i].val.ToUInt(&c_val);
+			hud_color = irr::video::SColor(c_val);
 		}
 	}
 }
@@ -388,8 +475,8 @@ void serenity_project::save_stage(int stage_id)
 
 	wxFileName stage_fname = project_path;
 	stage_fname.AppendDir(_("stages"));
-	//stage_fname.SetFullName(wxString::FromUTF8(stages[stage_id].file));
-	stage_fname.SetFullName(_("test_out.snst"));
+	stage_fname.SetFullName(wxString::FromUTF8(stages[stage_id].file));
+	//stage_fname.SetFullName(_("test_out.snst"));
 
 	//wxMessageBox(_("Save to: ") + stage_fname.GetAbsolutePath());
 
@@ -414,7 +501,7 @@ void serenity_project::save_stage(int stage_id)
 		id_name = _("id=") + id_name;
 
 		wxString tx_file = _("file=\"") + wxString::FromUTF8(textures[i].file) + _("\"");
-		wxString colkey = textures[i].use_colorKey ? _("color_key=") + wxString::Format(_("%d"), textures[i].colorkey.color) : _("");
+		wxString colkey = textures[i].use_colorKey ? _("color_key=") + wxString::Format(_("%u"), textures[i].colorkey.color) : _("");
 
 		stage_file.Write(_("Image ") + id_name + _(" ") + tx_file + _(" ") + colkey + _(";\n"));
 	}
@@ -495,8 +582,8 @@ void serenity_project::save_stage(int stage_id)
 								_("radius=") + wxString::FromDouble(meshes[i].radius) + _(" ") +
 								_("length=") + wxString::FromDouble(meshes[i].length) + _(" ") +
 								_("tesselation=") + wxString::Format(_("%d"), meshes[i].tesselation) + _(" ") +
-								_("top_color=") + wxString::Format(_("%d"), meshes[i].cone_top_color.color) + _(" ") +
-								_("bottom_color=") + wxString::Format(_("%d"), meshes[i].cone_bottom_color.color));
+								_("top_color=") + wxString::Format(_("%u"), meshes[i].cone_top_color.color) + _(" ") +
+								_("bottom_color=") + wxString::Format(_("%u"), meshes[i].cone_bottom_color.color));
 			}
 			else if(meshes[i].file.compare("!cylinder")==0)
 			{
@@ -504,7 +591,7 @@ void serenity_project::save_stage(int stage_id)
 								_("radius=") + wxString::FromDouble(meshes[i].radius) + _(" ") +
 								_("length=") + wxString::FromDouble(meshes[i].length) + _(" ") +
 								_("tesselation=") + wxString::Format(_("%d"), meshes[i].tesselation) + _(" ") +
-								_("cylinder_color=") + wxString::Format(_("%d"), meshes[i].cylinder_color.color) + _(" ") +
+								_("cylinder_color=") + wxString::Format(_("%u"), meshes[i].cylinder_color.color) + _(" ") +
 								_("close_top=") + (meshes[i].cylinder_top_close ? _("true") : _("false")));
 			}
 		}
@@ -626,9 +713,9 @@ void serenity_project::save_stage(int stage_id)
 							_("cast_shadow=") + (stages[stage_id].actors[i].isCastingShadow ? _("true") : _("false")) + _(" ") +
 							_("light_type=") + getLightTypeString(stages[stage_id].actors[i].light_type) + _(" ") +
 							_("falloff=") + wxString::FromDouble(stages[stage_id].actors[i].falloff) + _(" ") +
-							_("ambient_color=") + wxString::Format(_("%d"), stages[stage_id].actors[i].ambient.color) + _(" ") +
-							_("diffuse_color=") + wxString::Format(_("%d"), stages[stage_id].actors[i].diffuse.color) + _(" ") +
-							_("specular_color=") + wxString::Format(_("%d"), stages[stage_id].actors[i].specular.color) + _(" ") +
+							_("ambient=") + wxString::Format(_("%u"), stages[stage_id].actors[i].ambient.color) + _(" ") +
+							_("diffuse=") + wxString::Format(_("%u"), stages[stage_id].actors[i].diffuse.color) + _(" ") +
+							_("specular=") + wxString::Format(_("%u"), stages[stage_id].actors[i].specular.color) + _(" ") +
 							_("inner_cone=") + wxString::FromDouble(stages[stage_id].actors[i].inner_cone) + _(" ") +
 							_("outer_cone=") + wxString::FromDouble(stages[stage_id].actors[i].outer_cone) + _(" ") +
 							_("constant=") + wxString::FromDouble(stages[stage_id].actors[i].attenuation.X) + _(" ") +
@@ -643,8 +730,8 @@ void serenity_project::save_stage(int stage_id)
 							_("use_normal_dir=") + (stages[stage_id].actors[i].use_normal_direction ? _("true") : _("false")) + _(" ") +
 							_("min_per_sec=") + wxString::FromDouble(stages[stage_id].actors[i].min_per_sec) + _(" ") +
 							_("max_per_sec=") + wxString::FromDouble(stages[stage_id].actors[i].max_per_sec) + _(" ") +
-							_("min_start_color=") + wxString::Format(_("%d"), stages[stage_id].actors[i].min_start_color.color) + _(" ") +
-							_("max_start_color=") + wxString::Format(_("%d"), stages[stage_id].actors[i].max_start_color.color) + _(" ") +
+							_("min_start_color=") + wxString::Format(_("%u"), stages[stage_id].actors[i].min_start_color.color) + _(" ") +
+							_("max_start_color=") + wxString::Format(_("%u"), stages[stage_id].actors[i].max_start_color.color) + _(" ") +
 							_("min_life=") + wxString::FromDouble(stages[stage_id].actors[i].min_life) + _(" ") +
 							_("max_life=") + wxString::FromDouble(stages[stage_id].actors[i].max_life) + _(" ") +
 							_("max_angle=") + wxString::FromDouble(stages[stage_id].actors[i].angle) + _(" ") +
@@ -925,7 +1012,7 @@ rc_actor serenity_project::load_actor(std::vector<serenity_project_dict_obj> par
 
 	p_actor.use_every_vertex = false;
 	p_actor.use_normal_direction = false;
-	p_actor.use_normal_mod = false;
+	p_actor.normal_direction_modifier = 100.0;
 
 	p_actor.cylinder_length = 0;
 	p_actor.use_outline_only = false;
@@ -1095,10 +1182,10 @@ rc_actor serenity_project::load_actor(std::vector<serenity_project_dict_obj> par
 			p_actor.use_every_vertex = (param[i].val.compare(_("true"))==0 ? true : false);
 		else if(param[i].key.compare(_("use_normal_direction"))==0)
 			p_actor.use_normal_direction = (param[i].val.compare(_("true"))==0 ? true : false);
-		else if(param[i].key.compare(_("use_normal_mod"))==0)
-			p_actor.use_normal_mod = (param[i].val.compare(_("true"))==0 ? true : false);
 		else if(param[i].key.compare(_("use_outline_only"))==0)
 			p_actor.use_outline_only = (param[i].val.compare(_("true"))==0 ? true : false);
+		else if(param[i].key.compare(_("normal_dir_mod"))==0)
+			param[i].val.ToDouble(&p_actor.normal_direction_modifier);
 		else if(param[i].key.compare(_("length"))==0)
 			param[i].val.ToDouble(&p_actor.cylinder_length);
 		else if(param[i].key.compare(_("ring_thickness"))==0)
@@ -1377,6 +1464,9 @@ int serenity_project::load_an8(std::vector<serenity_project_dict_obj> param, int
 	rc_an8 p_an8;
 	p_an8.file = file_name.ToStdString();
 	p_an8.id_name = id_name.ToStdString();
+
+	//wxMessageBox(_("LOAD AN8 PROJECT: ") + fname.GetAbsolutePath());
+
 	p_an8.project = an8::loadAN8(fname.GetAbsolutePath().ToStdString());
 
     if(!p_an8.project.exists)

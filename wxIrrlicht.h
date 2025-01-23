@@ -253,7 +253,7 @@ class wxIrrlicht : public wxControl {
         bool show_camera_rot = false;
         irr::video::SColor hud_color;
 
-        int cam_move_speed = 5;
+        double cam_move_speed = 5;
 
         bool VIEW_KEY_W = false;
         bool VIEW_KEY_A = false;

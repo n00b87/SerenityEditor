@@ -109,6 +109,8 @@
 		<Unit filename="engine_base.h" />
 		<Unit filename="gui_freetype_font.cpp" />
 		<Unit filename="gui_freetype_font.h" />
+		<Unit filename="icon_images.cpp" />
+		<Unit filename="icon_images.hpp" />
 		<Unit filename="rc_camera.h" />
 		<Unit filename="rc_defines.h" />
 		<Unit filename="rc_font.h" />

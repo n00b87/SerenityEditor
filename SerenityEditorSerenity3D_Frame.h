@@ -82,6 +82,8 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
 
 		bool load_project(wxFileName pfile);
 
+		wxFileName openFileDialog(wxString title, wxString default_wildcard, int flag);
+
 		int viewport_mode = 0;
 		int mouse_button = 0;
 		int mouse_x = -1;

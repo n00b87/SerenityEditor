@@ -1,5 +1,6 @@
 #include <wx/wx.h>
 #include "SerenityEditor_NewProject_Dialog.h"
+#include "rc_defines.h"
 
 SerenityEditor_NewProject_Dialog::SerenityEditor_NewProject_Dialog( wxWindow* parent )
 :
@@ -45,6 +46,39 @@ void SerenityEditor_NewProject_Dialog::OnCreateButtonClicked( wxCommandEvent& ev
 	}
 
 	project_file.Mkdir();
+
+	//Make sub folders
+	wxFileName tx_dir = project_file;
+	tx_dir.AppendDir(_("textures"));
+	tx_dir.Mkdir();
+
+	wxFileName mat_dir = project_file;
+	mat_dir.AppendDir(_("materials"));
+	mat_dir.Mkdir();
+
+	wxFileName model_dir = project_file;
+	model_dir.AppendDir(_("models"));
+	model_dir.Mkdir();
+
+	wxFileName stage_dir = project_file;
+	stage_dir.AppendDir(_("stages"));
+	stage_dir.Mkdir();
+
+	wxFileName data_dir = project_file;
+	data_dir.AppendDir(_("data"));
+	data_dir.Mkdir();
+
+	wxFile p_file(project_file.GetAbsolutePath(), wxFile::write);
+
+	if(!p_file.IsOpened())
+	{
+		wxMessageBox(_("Error: Could not write to project file"));
+		return;
+	}
+
+	p_file.Write(_("Serenity version=") + _(SERENITY_VERSION_STRING) + _(";\n"));
+	p_file.Write(_("Project name=\"") + project_name + _("\"") + _(";\n"));
+	p_file.Close();
 
 	createFlag = true;
 

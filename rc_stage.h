@@ -166,7 +166,6 @@ struct rc_actor
 
 	bool use_every_vertex;
 	bool use_normal_direction;
-	bool use_normal_mod;
 	double normal_direction_modifier;
 
 	double cylinder_length;

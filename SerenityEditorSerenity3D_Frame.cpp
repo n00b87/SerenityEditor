@@ -3,6 +3,7 @@
 #include <wx/propgrid/propgridpagestate.h>
 #include <wx/propgrid/propgrid.h>
 #include <wx/propgrid/advprops.h>
+#include <wx/dir.h>
 #include <irrlicht.h>
 #include "wxIrrlicht.h"
 #include "SerenityEditorSerenity3D_Frame.h"
@@ -287,6 +288,10 @@ Serenity3D_Frame( parent )
     m_project_stage_treeCtrl->AssignImageList(stage_tree_imageList);
 
 	stage_tree_root = m_project_stage_treeCtrl->AddRoot(wxString::FromUTF8(project.project_name), stage_tree_rootImage);
+
+
+	//Start with an empty property grid page
+	m_stage_propertyGridManager->SelectPage(m_propertyGridPage13);
 }
 
 bool SerenityEditorSerenity3D_Frame::isValidID(wxString id_name, int id_type, int mesh_index)
@@ -563,6 +568,11 @@ void SerenityEditorSerenity3D_Frame::createIrrlichtStageWindow()
 											   current_stage_settings.camera[3].rotation.z);
 
 	stage_window->SetCameraViewParam();
+
+	if(stage_window->num_views == 4)
+	{
+		stage_window->SetViews(RC_CAMERA_VIEW_ALL, RC_CAMERA_VIEW_FRONT, RC_CAMERA_VIEW_RIGHT, RC_CAMERA_VIEW_TOP, RC_CAMERA_VIEW_PERSPECTIVE);
+	}
 }
 
 void SerenityEditorSerenity3D_Frame::updatePreviewMesh()
@@ -2181,7 +2191,7 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 						irr::scene::IParticleMeshEmitter* p_mesh_emitter = p_node->createMeshEmitter(mesh,
 																									 project.stages[stage_project_index].actors[i].use_normal_direction,
 																									 project.stages[stage_project_index].actors[i].direction,
-																									 project.stages[stage_project_index].actors[i].use_normal_mod,
+																									 project.stages[stage_project_index].actors[i].normal_direction_modifier,
 																									 -1,
 																									 project.stages[stage_project_index].actors[i].use_every_vertex,
 																									 project.stages[stage_project_index].actors[i].min_per_sec,
@@ -2596,7 +2606,7 @@ void SerenityEditorSerenity3D_Frame::OnStagePropertyGridChanged( wxPropertyGridE
 	int selected_page_index = m_stage_propertyGridManager->GetSelectedPage();
 	wxPropertyGridPage* page = m_stage_propertyGridManager->GetPage(selected_page_index);
 
-
+	//wxMessageBox(_("PROP: ") + property_name);
 
 	if(property_name.compare(_("actor_id"))==0)
 	{
@@ -3101,25 +3111,6 @@ void SerenityEditorSerenity3D_Frame::OnStagePropertyGridChanged( wxPropertyGridE
 			refresh_actor(actor_index);
 		}
 	}
-	else if(property_name.compare(_("use_normal_mod"))==0)
-	{
-		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
-			return;
-
-		if(stageTabGrid_current_actor < 0 || stageTabGrid_current_actor >= project.stages[stageTabGrid_current_stage].actors.size())
-			return;
-
-		int stage_index = stageTabGrid_current_stage;
-		int actor_index = stageTabGrid_current_actor;
-
-		project.stages[stage_index].actors[actor_index].use_normal_mod = page->GetPropertyByName(_("use_normal_mod"))->GetValue().GetBool();
-		if(stage_index == stageTab_active_stage_project_index)
-		{
-			project.stages[stage_index].actors[actor_index].node->remove();
-			project.stages[stage_index].actors[actor_index].node = NULL;
-			refresh_actor(actor_index);
-		}
-	}
 	else if(property_name.compare(_("use_outline_only"))==0)
 	{
 		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
@@ -3354,6 +3345,26 @@ void SerenityEditorSerenity3D_Frame::OnStagePropertyGridChanged( wxPropertyGridE
 		int actor_index = stageTabGrid_current_actor;
 
 		project.stages[stage_index].actors[actor_index].angle = page->GetPropertyByName(_("max_angle"))->GetValue().GetDouble();
+		if(stage_index == stageTab_active_stage_project_index)
+		{
+			project.stages[stage_index].actors[actor_index].node->remove();
+			project.stages[stage_index].actors[actor_index].node = NULL;
+			refresh_actor(actor_index);
+		}
+	}
+	else if(property_name.compare(_("normal_dir_mod"))==0)
+	{
+		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
+			return;
+
+		if(stageTabGrid_current_actor < 0 || stageTabGrid_current_actor >= project.stages[stageTabGrid_current_stage].actors.size())
+			return;
+
+		int stage_index = stageTabGrid_current_stage;
+		int actor_index = stageTabGrid_current_actor;
+
+		project.stages[stage_index].actors[actor_index].normal_direction_modifier = page->GetPropertyByName(_("normal_dir_mod"))->GetValue().GetDouble();
+
 		if(stage_index == stageTab_active_stage_project_index)
 		{
 			project.stages[stage_index].actors[actor_index].node->remove();
@@ -3641,9 +3652,9 @@ void SerenityEditorSerenity3D_Frame::OnStagePropertyGridChanged( wxPropertyGridE
 			refresh_actor(actor_index);
 		}
 	}
-	else if(property_name.substr(0, 4).compare(_("constant_attenuation"))==0 ||
-			property_name.substr(0, 4).compare(_("linear_attenuation"))==0 ||
-			property_name.substr(0, 4).compare(_("quadratic_attenuation"))==0)
+	else if(property_name.compare(_("constant_attenuation"))==0 ||
+			property_name.compare(_("linear_attenuation"))==0 ||
+			property_name.compare(_("quadratic_attenuation"))==0)
 	{
 		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
 			return;
@@ -3658,6 +3669,8 @@ void SerenityEditorSerenity3D_Frame::OnStagePropertyGridChanged( wxPropertyGridE
 		project.stages[stage_index].actors[actor_index].attenuation.X = page->GetPropertyByName(_("constant_attenuation"))->GetValue().GetDouble();
 		project.stages[stage_index].actors[actor_index].attenuation.Y = page->GetPropertyByName(_("linear_attenuation"))->GetValue().GetDouble();
 		project.stages[stage_index].actors[actor_index].attenuation.Z = page->GetPropertyByName(_("quadratic_attenuation"))->GetValue().GetDouble();
+
+		//wxMessageBox(_("DBG AX: ") + wxString::Format(_("%d"), project.stages[stage_index].actors[actor_index].attenuation.X));
 		if(stage_index == stageTab_active_stage_project_index)
 		{
 			project.stages[stage_index].actors[actor_index].node->remove();
@@ -4837,8 +4850,8 @@ void SerenityEditorSerenity3D_Frame::setParticleActorGrid(int stage_project_inde
 	bool use_normal_direction = project.stages[stage_project_index].actors[actor_project_index].use_normal_direction;
 	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("use_normal_direction"))->SetValue(use_normal_direction);
 
-	bool use_normal_mod = project.stages[stage_project_index].actors[actor_project_index].use_normal_mod;
-	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("use_normal_mod"))->SetValue(use_normal_mod);
+	double normal_dir_mod = project.stages[stage_project_index].actors[actor_project_index].normal_direction_modifier;
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("normal_dir_mod"))->SetValue(normal_dir_mod);
 
 	bool use_outline_only = project.stages[stage_project_index].actors[actor_project_index].use_outline_only;
 	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("use_outline_only"))->SetValue(use_outline_only);
@@ -5440,30 +5453,40 @@ void SerenityEditorSerenity3D_Frame::On_StageSettings_ShowAxisLines( wxCommandEv
 {
 	if(current_window)
 		current_window->show_axis_lines = event.IsChecked();
+
+	project.show_axis_lines = event.IsChecked();
 }
 
 void SerenityEditorSerenity3D_Frame::On_StageSettings_ShowAxisRings( wxCommandEvent& event )
 {
 	if(current_window)
 		current_window->show_axis_rings = event.IsChecked();
+
+	project.show_axis_rings = event.IsChecked();
 }
 
 void SerenityEditorSerenity3D_Frame::On_StageSettings_ShowViewCameraPosition( wxCommandEvent& event )
 {
 	if(current_window)
 		current_window->show_camera_pos = event.IsChecked();
+
+	project.show_camera_pos = event.IsChecked();
 }
 
 void SerenityEditorSerenity3D_Frame::On_StageSettings_ShowViewCameraRotation( wxCommandEvent& event )
 {
 	if(current_window)
 		current_window->show_camera_rot = event.IsChecked();
+
+	project.show_camera_rot = event.IsChecked();
 }
 
 void SerenityEditorSerenity3D_Frame::On_StageSettings_ViewCameraSpeed( wxSpinDoubleEvent& event )
 {
 	if(current_window)
 		current_window->cam_move_speed = event.GetValue();
+
+	project.camera_speed = event.GetValue();
 }
 
 void SerenityEditorSerenity3D_Frame::On_StageSettings_ViewHUDColor( wxColourPickerEvent& event )
@@ -5473,6 +5496,11 @@ void SerenityEditorSerenity3D_Frame::On_StageSettings_ViewHUDColor( wxColourPick
 														event.GetColour().GetRed(),
 														event.GetColour().GetGreen(),
 														event.GetColour().GetBlue() );
+
+	project.hud_color = irr::video::SColor( event.GetColour().GetAlpha(),
+											event.GetColour().GetRed(),
+											event.GetColour().GetGreen(),
+											event.GetColour().GetBlue() );
 }
 
 
@@ -6426,11 +6454,15 @@ void SerenityEditorSerenity3D_Frame::OnNewProjectMenuSelection( wxCommandEvent& 
 	SerenityEditor_NewProject_Dialog* create_project_win = new SerenityEditor_NewProject_Dialog(this);
 	create_project_win->ShowModal();
 
-	if(create_project_win->createFlag)
-	{
-		project.clearProject();
-		project = serenity_project(create_project_win->project_file.GetAbsolutePath().ToStdString(), create_project_win->project_name.ToStdString(), current_window->GetDevice());
-	}
+	if(!create_project_win->createFlag)
+		return;
+
+	project.clearProject();
+	//project = serenity_project(create_project_win->project_file.GetAbsolutePath().ToStdString(), create_project_win->project_name.ToStdString(), current_window->GetDevice());
+	load_project(create_project_win->project_file);
+
+	//wxDir p_dir(create_project_win->project_file.GetPath());
+	//wxMessageBox(_("DIR: ") + create_project_win->project_file.GetPath(true));
 }
 
 bool SerenityEditorSerenity3D_Frame::load_project(wxFileName pfile)
@@ -6440,7 +6472,7 @@ bool SerenityEditorSerenity3D_Frame::load_project(wxFileName pfile)
 	if(!current_window)
 		return false;
 
-	project = serenity_project("/home/n00b/test/stp/test.snprj", "", current_window->GetDevice());
+	project = serenity_project(pfile.GetAbsolutePath().ToStdString(), "", current_window->GetDevice());
 
 	m_material_material_listBox->Clear();
 	m_mesh_mesh_listBox->Clear();
@@ -6538,16 +6570,130 @@ bool SerenityEditorSerenity3D_Frame::load_project(wxFileName pfile)
     return true;
 }
 
+wxFileName SerenityEditorSerenity3D_Frame::openFileDialog(wxString title, wxString default_wildcard, int flag)
+{
+    wxFileDialog openFileDialog(this, title, "", "", default_wildcard, flag);
+    if (openFileDialog.ShowModal() == wxID_CANCEL)
+        return wxFileName();     // the user changed idea...
+
+    wxFileName fname(openFileDialog.GetPath());
+    return fname;
+}
+
 void SerenityEditorSerenity3D_Frame::OnLoadProjectMenuSelection( wxCommandEvent& event )
 {
-	load_project(_("/home/n00b/test/stp/test.snprj"));
+	wxFileName project_fname = openFileDialog(_("Open Project"), _("Serenity3D Project (*.snprj)|*.snprj"), wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+
+	if(project_fname.GetFullPath().compare("")==0)
+		return;
+
+	if(!load_project(project_fname))
+	{
+		wxMessageBox(_("Could not load project"));
+		return;
+	}
+
+	if(stage_window)
+	{
+		//Grid Settings
+		irr::video::SColor p_grid_color(project.grid_color);
+		wxColour w_color(p_grid_color.getRed(), p_grid_color.getGreen(), p_grid_color.getBlue(), p_grid_color.getAlpha());
+
+		m_viewportSettings_gridColor_colourPicker->SetColour( w_color );
+		stage_window->setGridColor(project.grid_color);
+
+		m_viewportSettings_gridSize_spinCtrl->SetValue((int)project.grid_size);
+		stage_window->setGridSize(project.grid_size);
+
+		m_viewportSettings_gridSpacing_spinCtrl->SetValue((int)project.grid_spacing);
+		stage_window->setGridSpacing(project.grid_spacing);
+
+		m_viewportSettings_showGrid_checkBox->SetValue(project.grid_visible);
+		stage_window->grid_visible = project.grid_visible;
+
+		//Tool Settings
+		m_toolSettings_showAxisLines_checkBox->SetValue(project.show_axis_lines);
+		stage_window->show_axis_lines = project.show_axis_lines;
+
+		m_toolSettings_showAxisRings_checkBox->SetValue(project.show_axis_rings);
+		stage_window->show_axis_rings = project.show_axis_rings;
+
+		//Camera Settings
+		m_cameraSettings_showPosition_checkBox->SetValue(project.show_camera_pos);
+		stage_window->show_camera_pos = project.show_camera_pos;
+
+		m_cameraSettings_showRotation_checkBox->SetValue(project.show_camera_rot);
+		stage_window->show_camera_rot = project.show_camera_rot;
+
+		m_cameraSettings_moveSpeed_spinCtrlDouble->SetValue(project.camera_speed);
+		stage_window->cam_move_speed = project.camera_speed;
+
+		//HUD Settings
+		irr::video::SColor p_hud_color(project.hud_color);
+		w_color = wxColour(p_hud_color.getRed(), p_hud_color.getGreen(), p_hud_color.getBlue(), p_hud_color.getAlpha());
+
+		m_viewHUD_color_colourPicker->SetColour(w_color);
+		stage_window->hud_color = project.hud_color;
+	}
 
 	return;
 }
 
 void SerenityEditorSerenity3D_Frame::OnSaveProjectMenuSelection( wxCommandEvent& event )
 {
-	project.save_stage(0);
+	wxFileName pfname = project.project_path;
+
+	if(!wxFileExists(pfname.GetAbsolutePath()))
+	{
+		wxMessageBox(_("Must have open project to save"));
+		return;
+	}
+
+	wxFile pfile(pfname.GetAbsolutePath(), wxFile::write);
+
+	if(!pfile.IsOpened())
+	{
+		wxMessageBox(_("Error: Could not save project. File access denied"));
+	}
+
+	pfile.Write(_("Serenity version=1.0;\n"));
+
+	pfile.Write(_("Project name=\"") + wxString::FromUTF8(project.project_name) + _("\"") + _(";\n"));
+
+	pfile.Write(_("Grid ") +
+				_("color=") + wxString::Format(_("%u"), project.grid_color) + _(" ") +
+				_("visible=") + (project.grid_visible ? _("true") : _("false")) + _(" ") +
+				_("size=") + wxString::FromDouble(project.grid_size) + _(" ") +
+				_("spacing=") + wxString::FromDouble(project.grid_spacing) + _(";\n"));
+
+	pfile.Write(_("Tool ") +
+				_("show_lines=") + (project.show_axis_lines ? _("true") : _("false")) + _(" ") +
+				_("show_rings=") + (project.show_axis_rings ? _("true") : _("false")) + _(";\n") );
+
+	pfile.Write(_("Camera ") +
+				_("show_position=") + (project.show_camera_pos ? _("true") : _("false")) + _(" ") +
+				_("show_rotation=") + (project.show_camera_rot ? _("true") : _("false")) + _(" ") +
+				_("speed=") + wxString::FromDouble(project.camera_speed) + _(";\n") );
+
+	pfile.Write(_("HUD color=") + wxString::Format(_("%u"), project.hud_color.color) + _(";\n") );
+
+	//TODO: NEED TO SAVE TEXTURE DATA
+	//TODO: NEED TO SAVE MATERIALS
+	//TODO: NEED TO SAVE MESHES
+
+
+	for(int i = 0; i < project.stages.size(); i++)
+	{
+		if(project.stages[i].id_name.compare("")==0)
+			continue;
+
+		project.save_stage(i);
+		pfile.Write(_("Stage ") +
+					_("id=") + wxString::FromUTF8(project.stages[i].id_name) + _(" ") +
+					_("file=\"") + wxString::FromUTF8(project.stages[i].file) + _("\"") + _(";\n") );
+	}
+
+	pfile.Close();
 
 	return;
 }

@@ -172,9 +172,9 @@ etc.
 	* light_type=light_type
 	* radius=light_radius
 	* falloff=n
-	* ambient_color=c
-	* diffuse_color=c
-	* specular_color=c
+	* ambient=c
+	* diffuse=c
+	* specular=c
 	* inner_cone=f
 	* outer_cone=f
 	* constant=n

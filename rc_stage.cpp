@@ -149,7 +149,7 @@ int rc_stage::addActor(std::string actor_id, int actor_type)
 
 	p_actor.use_every_vertex = false;
 	p_actor.use_normal_direction = false;
-	p_actor.use_normal_mod = false;
+	p_actor.normal_direction_modifier = 100;
 
 	p_actor.cylinder_length = 0;
 	p_actor.use_outline_only = false;

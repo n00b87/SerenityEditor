@@ -2,29 +2,24 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Debug" />
-	<File name="SerenityEditor_NewOctreeActor_Dialog.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="SerenityEditor_NewCubeActor_Dialog.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="202" topLine="0" />
+			<Cursor1 position="530" topLine="3" />
 		</Cursor>
 	</File>
-	<File name="SerenityEditor_NewLightActor_Dialog.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="SerenityEngineMain.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="537" topLine="7" />
+			<Cursor1 position="0" topLine="47" />
 		</Cursor>
 	</File>
-	<File name="rc_camera.h" open="0" top="0" tabpos="16" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="SerenityEditor_NewParticleActor_Dialog.cpp" open="0" top="0" tabpos="22" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="3604" topLine="128" />
+			<Cursor1 position="592" topLine="6" />
 		</Cursor>
 	</File>
-	<File name="rc_defines.h" open="1" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="SerenityEditor_NewBillboardActor_Dialog.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1350" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="SerenityEditor_NewParticleActor_Dialog.h" open="1" top="0" tabpos="20" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="601" topLine="7" />
+			<Cursor1 position="611" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="SerenityEditor_NewTerrainActor_Dialog.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -34,67 +29,67 @@
 	</File>
 	<File name="SerenityEditor_NewWaterActor_Dialog.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="943" topLine="28" />
+			<Cursor1 position="954" topLine="9" />
+		</Cursor>
+	</File>
+	<File name="SerenityEditor_SetMaterialPreviewMesh_Dialog.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="764" topLine="14" />
+		</Cursor>
+	</File>
+	<File name="SerenityEditor_CreateMesh_Dialog.h" open="0" top="0" tabpos="16" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1067" topLine="8" />
+		</Cursor>
+	</File>
+	<File name="SerenityEditor_NewSphereActor_Dialog.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="598" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="wxIrrlicht.h" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="6424" topLine="201" />
+		</Cursor>
+	</File>
+	<File name="SerenityEditor_CreateMesh_Dialog.cpp" open="0" top="0" tabpos="17" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1424" topLine="34" />
+		</Cursor>
+	</File>
+	<File name="SerenityEngineApp.h" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="439" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="SerenityEditor_CreateStageGroup_Dialog.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="621" topLine="6" />
+		</Cursor>
+	</File>
+	<File name="SerenityEditor_DeleteGroupAlert_Dialog.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="609" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="camera.cpp" open="1" top="0" tabpos="15" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1165" topLine="50" />
 		</Cursor>
 	</File>
 	<File name="engine_base.cpp" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="14397" topLine="607" />
+			<Cursor1 position="53091" topLine="1621" />
 		</Cursor>
 	</File>
-	<File name="SerenityEditor_NewStage_Dialog.h" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="SerenityEditor_NewCubeActor_Dialog.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="476" topLine="0" />
+			<Cursor1 position="393" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="SerenityEditor_AddMaterial_Dialog.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="rc_camera.h" open="0" top="0" tabpos="16" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="885" topLine="13" />
-		</Cursor>
-	</File>
-	<File name="SerenityEngineMain.h" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="379" topLine="6" />
-		</Cursor>
-	</File>
-	<File name="camera.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="0" topLine="47" />
-		</Cursor>
-	</File>
-	<File name="SerenityEditor_SetMaterialTextureLevel_Dialog.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="645" topLine="10" />
-		</Cursor>
-	</File>
-	<File name="SerenityEditor_NewStage_Dialog.cpp" open="0" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="201" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="SerenityEditorSerenity3D_Frame.h" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="6690" topLine="207" />
-		</Cursor>
-	</File>
-	<File name="SerenityEditor_MaterialPreviewSettings_Dialog.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="706" topLine="6" />
-		</Cursor>
-	</File>
-	<File name="engine_base.h" open="1" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="556" topLine="20" />
-		</Cursor>
-	</File>
-	<File name="SerenityEditor_EditStageGroup_Dialog.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2493" topLine="86" />
-		</Cursor>
-	</File>
-	<File name="SerenityEditor_SetMaterialPreviewMesh_Dialog.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1470" topLine="8" />
+			<Cursor1 position="3604" topLine="128" />
 		</Cursor>
 	</File>
 	<File name="SerenityEngineApp.cpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -107,87 +102,14 @@
 			<Cursor1 position="966" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="SerenityEditorSerenity3D_Frame.cpp" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="SerenityEditor_MaterialPreviewSettings_Dialog.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="227214" topLine="4613" />
-		</Cursor>
-		<Folding>
-			<Collapse line="1737" />
-			<Collapse line="1779" />
-			<Collapse line="1796" />
-			<Collapse line="1817" />
-			<Collapse line="1841" />
-			<Collapse line="1908" />
-			<Collapse line="1948" />
-			<Collapse line="2133" />
-			<Collapse line="2142" />
-			<Collapse line="2407" />
-			<Collapse line="2424" />
-			<Collapse line="2445" />
-			<Collapse line="2452" />
-			<Collapse line="2473" />
-			<Collapse line="2515" />
-			<Collapse line="2538" />
-			<Collapse line="2557" />
-			<Collapse line="2569" />
-			<Collapse line="2591" />
-			<Collapse line="2650" />
-			<Collapse line="2671" />
-			<Collapse line="2696" />
-			<Collapse line="2701" />
-			<Collapse line="2706" />
-			<Collapse line="2711" />
-			<Collapse line="2716" />
-			<Collapse line="2721" />
-			<Collapse line="2727" />
-			<Collapse line="2735" />
-			<Collapse line="2743" />
-			<Collapse line="2751" />
-			<Collapse line="2759" />
-			<Collapse line="2767" />
-			<Collapse line="2775" />
-			<Collapse line="2783" />
-			<Collapse line="2803" />
-			<Collapse line="2823" />
-			<Collapse line="2835" />
-			<Collapse line="2842" />
-			<Collapse line="2861" />
-			<Collapse line="2880" />
-			<Collapse line="2899" />
-			<Collapse line="2918" />
-			<Collapse line="2937" />
-			<Collapse line="2949" />
-			<Collapse line="2956" />
-			<Collapse line="2975" />
-			<Collapse line="3002" />
-			<Collapse line="3026" />
-			<Collapse line="3045" />
-			<Collapse line="3064" />
-			<Collapse line="3083" />
-			<Collapse line="3102" />
-			<Collapse line="3121" />
-			<Collapse line="3143" />
-			<Collapse line="3165" />
-			<Collapse line="3206" />
-			<Collapse line="3225" />
-			<Collapse line="3244" />
-			<Collapse line="3271" />
-			<Collapse line="3300" />
-			<Collapse line="3320" />
-			<Collapse line="3347" />
-			<Collapse line="3374" />
-			<Collapse line="3503" />
-			<Collapse line="3573" />
-		</Folding>
-	</File>
-	<File name="SerenityEditor_NewParticleActor_Dialog.cpp" open="1" top="1" tabpos="22" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="592" topLine="6" />
+			<Cursor1 position="245" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="SerenityEditor_SetMaterialPreviewMesh_Dialog.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="camera.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="764" topLine="14" />
+			<Cursor1 position="0" topLine="47" />
 		</Cursor>
 	</File>
 	<File name="SerenityEditor_NewOctreeActor_Dialog.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -195,128 +117,14 @@
 			<Cursor1 position="18" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="SerenityEditor_NewWaterActor_Dialog.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="735" topLine="4" />
-		</Cursor>
-	</File>
-	<File name="SerenityEditor_DeleteStageAlert_Dialog.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="443" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="SerenityEngineMain.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="0" topLine="47" />
-		</Cursor>
-	</File>
-	<File name="wxIrrlicht.cpp" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="53239" topLine="1586" />
-		</Cursor>
-		<Folding>
-			<Collapse line="1837" />
-			<Collapse line="1998" />
-		</Folding>
-	</File>
 	<File name="SerenityEditor_DeleteActorAlert_Dialog.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="408" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="SerenityEditor_DeleteStageAlert_Dialog.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="532" topLine="1" />
-		</Cursor>
-	</File>
-	<File name="SerenityEditor_DeleteGroupAlert_Dialog.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="609" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="SerenityEditor_AddTexture_Dialog.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="717" topLine="4" />
-		</Cursor>
-	</File>
-	<File name="SerenityEditor_AddMesh_Dialog.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="426" topLine="9" />
-		</Cursor>
-	</File>
-	<File name="Serenity3D_Editor.cpp" open="1" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="10770" topLine="194" />
-		</Cursor>
-	</File>
-	<File name="rc_stage.cpp" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2499" topLine="87" />
-		</Cursor>
-	</File>
-	<File name="Serenity3D_Editor.h" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="23181" topLine="544" />
-		</Cursor>
-	</File>
-	<File name="wxIrrlicht.h" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2316" topLine="67" />
-		</Cursor>
-	</File>
-	<File name="SerenityEditor_AddTexture_Dialog.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1997" topLine="75" />
-		</Cursor>
-	</File>
-	<File name="SerenityEditor_DeleteActorAlert_Dialog.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="584" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="SerenityEngineApp.h" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="439" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="SerenityEditor_CreateStageGroup_Dialog.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="584" topLine="1" />
-		</Cursor>
-	</File>
-	<File name="rc_stage.h" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1714" topLine="68" />
-		</Cursor>
-	</File>
-	<File name="SerenityEditor_AddMesh_Dialog.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="773" topLine="7" />
-		</Cursor>
-	</File>
 	<File name="rc_gfx.h" open="1" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="0" topLine="1855" />
-		</Cursor>
-	</File>
-	<File name="SerenityEditor_SetMeshMaterialLevel_Dialog.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="658" topLine="3" />
-		</Cursor>
-	</File>
-	<File name="SerenityEditor_SetMaterialTextureLevel_Dialog.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="979" topLine="23" />
-		</Cursor>
-	</File>
-	<File name="SerenityEditor_NewAnimatedActor_Dialog.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="831" topLine="13" />
-		</Cursor>
-	</File>
-	<File name="SerenityEditor_EditStageGroup_Dialog.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="970" topLine="7" />
+			<Cursor1 position="25461" topLine="987" />
 		</Cursor>
 	</File>
 	<File name="SerenityEditor_NewTerrainActor_Dialog.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -324,34 +132,19 @@
 			<Cursor1 position="667" topLine="6" />
 		</Cursor>
 	</File>
-	<File name="SerenityEditor_MaterialPreviewSettings_Dialog.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="Serenity3D_Editor.cpp" open="1" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="544" topLine="0" />
+			<Cursor1 position="32848" topLine="392" />
 		</Cursor>
 	</File>
-	<File name="SerenityEditor_SetMeshMaterialLevel_Dialog.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="engine_base.h" open="1" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="982" topLine="0" />
+			<Cursor1 position="1990" topLine="61" />
 		</Cursor>
 	</File>
-	<File name="rc_gfx_core.h" open="1" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="SerenityEditor_CreateStageGroup_Dialog.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="20970" topLine="711" />
-		</Cursor>
-	</File>
-	<File name="SerenityEditor_CreateStageGroup_Dialog.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="621" topLine="6" />
-		</Cursor>
-	</File>
-	<File name="SerenityEditor_NewLightActor_Dialog.cpp" open="1" top="0" tabpos="21" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="179" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="SerenityEditor_NewAnimatedActor_Dialog.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="623" topLine="6" />
+			<Cursor1 position="584" topLine="1" />
 		</Cursor>
 	</File>
 	<File name="SerenityEditor_DeleteGroupAlert_Dialog.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -359,9 +152,223 @@
 			<Cursor1 position="590" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="SerenityEditor_NewBillboardActor_Dialog.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="SerenityEditor_AddMaterial_Dialog.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="611" topLine="0" />
+			<Cursor1 position="885" topLine="13" />
+		</Cursor>
+	</File>
+	<File name="SerenityEditor_SetMaterialTextureLevel_Dialog.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="645" topLine="10" />
+		</Cursor>
+	</File>
+	<File name="SerenityEditor_SetMeshMaterialLevel_Dialog.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="658" topLine="3" />
+		</Cursor>
+	</File>
+	<File name="SerenityEditor_AddMesh_Dialog.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="426" topLine="9" />
+		</Cursor>
+	</File>
+	<File name="rc_gfx_core.h" open="1" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="20970" topLine="711" />
+		</Cursor>
+	</File>
+	<File name="SerenityEditor_NewSphereActor_Dialog.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="502" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="SerenityEditor_NewAnimatedActor_Dialog.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="623" topLine="6" />
+		</Cursor>
+	</File>
+	<File name="Serenity3D_Editor.h" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="24705" topLine="585" />
+		</Cursor>
+	</File>
+	<File name="rc_defines.h" open="1" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1350" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="SerenityEditor_EditStageGroup_Dialog.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2493" topLine="86" />
+		</Cursor>
+	</File>
+	<File name="SerenityEditorSerenity3D_Frame.h" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="6037" topLine="209" />
+		</Cursor>
+	</File>
+	<File name="SerenityEditor_SetMeshMaterialLevel_Dialog.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="982" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="SerenityEditor_SetMaterialTextureLevel_Dialog.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="979" topLine="23" />
+		</Cursor>
+	</File>
+	<File name="SerenityEditor_NewParticleActor_Dialog.h" open="0" top="0" tabpos="20" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="601" topLine="7" />
+		</Cursor>
+	</File>
+	<File name="SerenityEditor_NewStage_Dialog.h" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="476" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="SerenityEditor_NewOctreeActor_Dialog.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="202" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="SerenityEditor_AddMesh_Dialog.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="773" topLine="7" />
+		</Cursor>
+	</File>
+	<File name="SerenityEditor_NewLightActor_Dialog.cpp" open="0" top="0" tabpos="21" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="179" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="SerenityEditor_DeleteStageAlert_Dialog.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="443" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="SerenityEditor_MaterialPreviewSettings_Dialog.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="747" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="SerenityEditor_NewAnimatedActor_Dialog.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="831" topLine="13" />
+		</Cursor>
+	</File>
+	<File name="SerenityEditor_AddTexture_Dialog.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1997" topLine="75" />
+		</Cursor>
+	</File>
+	<File name="SerenityEditor_AddTexture_Dialog.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="717" topLine="4" />
+		</Cursor>
+	</File>
+	<File name="SerenityEditor_DeleteStageAlert_Dialog.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="532" topLine="1" />
+		</Cursor>
+	</File>
+	<File name="SerenityEditorSerenity3D_Frame.cpp" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="22318" topLine="545" />
+		</Cursor>
+		<Folding>
+			<Collapse line="1949" />
+			<Collapse line="1966" />
+			<Collapse line="1987" />
+			<Collapse line="2303" />
+			<Collapse line="2312" />
+			<Collapse line="2589" />
+			<Collapse line="2606" />
+			<Collapse line="2627" />
+			<Collapse line="2634" />
+			<Collapse line="2655" />
+			<Collapse line="2697" />
+			<Collapse line="2720" />
+			<Collapse line="2739" />
+			<Collapse line="2751" />
+			<Collapse line="2773" />
+			<Collapse line="2832" />
+			<Collapse line="2853" />
+			<Collapse line="3090" />
+			<Collapse line="3109" />
+			<Collapse line="3128" />
+			<Collapse line="3147" />
+			<Collapse line="3166" />
+			<Collapse line="3185" />
+			<Collapse line="3197" />
+			<Collapse line="3204" />
+			<Collapse line="3223" />
+			<Collapse line="3250" />
+			<Collapse line="3274" />
+			<Collapse line="3293" />
+			<Collapse line="3312" />
+			<Collapse line="3331" />
+			<Collapse line="3350" />
+			<Collapse line="3369" />
+			<Collapse line="3391" />
+			<Collapse line="3413" />
+			<Collapse line="3454" />
+			<Collapse line="3473" />
+			<Collapse line="3492" />
+			<Collapse line="3519" />
+			<Collapse line="3595" />
+			<Collapse line="3622" />
+			<Collapse line="3753" />
+		</Folding>
+	</File>
+	<File name="SerenityEngineMain.h" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="379" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="rc_stage.cpp" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="4455" topLine="139" />
+		</Cursor>
+	</File>
+	<File name="SerenityEditor_DeleteActorAlert_Dialog.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="584" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="SerenityEditor_SetMaterialPreviewMesh_Dialog.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1470" topLine="8" />
+		</Cursor>
+	</File>
+	<File name="SerenityEditor_NewStage_Dialog.cpp" open="0" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="201" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="SerenityEditor_NewWaterActor_Dialog.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="735" topLine="13" />
+		</Cursor>
+	</File>
+	<File name="SerenityEditor_NewLightActor_Dialog.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="537" topLine="7" />
+		</Cursor>
+	</File>
+	<File name="rc_stage.h" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="5133" topLine="244" />
+		</Cursor>
+	</File>
+	<File name="SerenityEditor_EditStageGroup_Dialog.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="970" topLine="7" />
+		</Cursor>
+	</File>
+	<File name="wxIrrlicht.cpp" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="79382" topLine="2414" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>
