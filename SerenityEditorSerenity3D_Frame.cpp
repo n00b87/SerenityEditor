@@ -35,6 +35,7 @@
 #include "SerenityEditor_NewCubeActor_Dialog.h"
 #include "SerenityEditor_NewSphereActor_Dialog.h"
 #include "SerenityEditor_CreateMesh_Dialog.h"
+#include "SerenityEditor_ExitEditorAlert_Dialog.h"
 
 SerenityEditorSerenity3D_Frame::SerenityEditorSerenity3D_Frame( wxWindow* parent )
 :
@@ -89,10 +90,10 @@ Serenity3D_Frame( parent )
 	irr::scene::ISceneManager* smgr = device->getSceneManager();
 	irr::gui::IGUIEnvironment* guienv = device->getGUIEnvironment();
 
-	stage_window->camera[0].camera.setPosition(0, 0, -100);
+	stage_window->camera[0].camera.setPosition(0, 30, -100);
 	stage_window->camera[0].camera.setRotation(0, 0, 0);
 
-	stage_window->camera[1].camera.setPosition(-100, 0, 0);
+	stage_window->camera[1].camera.setPosition(-100, 30, 0);
 	stage_window->camera[1].camera.setRotation(0, 90, 0);
 
 	stage_window->camera[2].camera.setPosition(0, 100, 0);
@@ -100,6 +101,8 @@ Serenity3D_Frame( parent )
 
 	stage_window->camera[3].camera.setPosition(0, 30, -40);
 	stage_window->camera[3].camera.setRotation(0, 5, 0);
+
+	stage_window->SetCameraViewParam();
 
 	current_window = stage_window;
 
@@ -272,7 +275,7 @@ Serenity3D_Frame( parent )
 	wxFileName image_fname(editor_path);
 	image_fname.AppendDir(_("icons"));
 
-	project.project_name = "No Project Loaded";
+	project.project_name = "";
 
 	stage_tree_imageList = new wxImageList(16,16,true);
     stage_tree_rootImage = stage_tree_imageList->Add(wxArtProvider::GetBitmap( wxART_FOLDER, wxART_MENU ));;
@@ -287,7 +290,7 @@ Serenity3D_Frame( parent )
 
     m_project_stage_treeCtrl->AssignImageList(stage_tree_imageList);
 
-	stage_tree_root = m_project_stage_treeCtrl->AddRoot(wxString::FromUTF8(project.project_name), stage_tree_rootImage);
+	stage_tree_root = m_project_stage_treeCtrl->AddRoot(wxString::FromUTF8(_("NO PROJECT")), stage_tree_rootImage);
 
 
 	//Start with an empty property grid page
@@ -1010,6 +1013,9 @@ void SerenityEditorSerenity3D_Frame::On_Stage_NewStage( wxCommandEvent& event )
 
 void SerenityEditorSerenity3D_Frame::On_Stage_DeleteStage( wxCommandEvent& event )
 {
+	if(project.project_name.compare("")==0)
+		return;
+
 	wxTreeItemId selection = m_project_stage_treeCtrl->GetSelection();
 
 	int stage_node_index = -1;
@@ -1273,6 +1279,9 @@ bool SerenityEditorSerenity3D_Frame::delete_actor(int stage_index, int actor_sta
 
 void SerenityEditorSerenity3D_Frame::On_Stage_DeleteGroup( wxCommandEvent& event )
 {
+	if(project.project_name.compare("")==0)
+		return;
+
 	if(stage_window)
 	{
 		stage_window->selected_actors.clear();
@@ -1359,6 +1368,9 @@ void SerenityEditorSerenity3D_Frame::On_Stage_DeleteGroup( wxCommandEvent& event
 
 void SerenityEditorSerenity3D_Frame::On_Stage_EditGroup( wxCommandEvent& event )
 {
+	if(project.project_name.compare("")==0)
+		return;
+
 	SerenityEditor_EditStageGroup_Dialog* dialog = new SerenityEditor_EditStageGroup_Dialog(this);
 
 
@@ -1503,6 +1515,9 @@ void SerenityEditorSerenity3D_Frame::On_Stage_EditGroup( wxCommandEvent& event )
 
 void SerenityEditorSerenity3D_Frame::On_Stage_DeleteActor( wxCommandEvent& event )
 {
+	if(project.project_name.compare("")==0)
+		return;
+
 	int stage_project_index = -1;
 	int actor_project_index = -1;
 
@@ -6700,14 +6715,14 @@ void SerenityEditorSerenity3D_Frame::OnLoadProjectMenuSelection( wxCommandEvent&
 	return;
 }
 
-void SerenityEditorSerenity3D_Frame::OnSaveProjectMenuSelection( wxCommandEvent& event )
+bool SerenityEditorSerenity3D_Frame::save_project()
 {
 	wxFileName pfname = project.project_path;
 
 	if(!wxFileExists(pfname.GetAbsolutePath()))
 	{
 		wxMessageBox(_("Must have open project to save"));
-		return;
+		return false;
 	}
 
 	wxFile pfile(pfname.GetAbsolutePath(), wxFile::write);
@@ -6768,11 +6783,27 @@ void SerenityEditorSerenity3D_Frame::OnSaveProjectMenuSelection( wxCommandEvent&
 
 	pfile.Close();
 
-	return;
+	return true;
+}
+
+void SerenityEditorSerenity3D_Frame::OnSaveProjectMenuSelection( wxCommandEvent& event )
+{
+	save_project();
 }
 
 void SerenityEditorSerenity3D_Frame::OnExitMenuSelection( wxCommandEvent& event )
 {
+	SerenityEditor_ExitEditorAlert_Dialog* dialog = new SerenityEditor_ExitEditorAlert_Dialog(this);
+	dialog->ShowModal();
+
+	if(dialog->save_flag)
+	{
+		save_project();
+	}
+
+	if(!dialog->exit_flag)
+		return;
+
 	project.clearProject();
 	Close();
 }

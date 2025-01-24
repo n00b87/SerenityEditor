@@ -80,6 +80,7 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
 
 		serenity_project project;
 
+		bool save_project();
 		bool load_project(wxFileName pfile);
 
 		wxFileName openFileDialog(wxString title, wxString default_wildcard, int flag);

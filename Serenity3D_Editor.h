@@ -779,6 +779,33 @@ class NewProject_Dialog : public wxDialog
 };
 
 ///////////////////////////////////////////////////////////////////////////////
+/// Class ExitEditorAlert_Dialog
+///////////////////////////////////////////////////////////////////////////////
+class ExitEditorAlert_Dialog : public wxDialog
+{
+	private:
+
+	protected:
+		wxStaticText* m_alert_staticText;
+		wxButton* m_button56;
+		wxButton* m_button95;
+		wxButton* m_button57;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void OnSave( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnDiscard( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnCancel( wxCommandEvent& event ) { event.Skip(); }
+
+
+	public:
+
+		ExitEditorAlert_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Exit Project"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE );
+
+		~ExitEditorAlert_Dialog();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
 /// Class AddTexture_Dialog
 ///////////////////////////////////////////////////////////////////////////////
 class AddTexture_Dialog : public wxDialog
@@ -1108,7 +1135,7 @@ class NewStage_Dialog : public wxDialog
 
 	public:
 
-		NewStage_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Create New Stage"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 440,120 ), long style = wxDEFAULT_DIALOG_STYLE );
+		NewStage_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Create New Stage"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 440,128 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~NewStage_Dialog();
 

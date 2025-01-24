@@ -1931,6 +1931,9 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_texture_textureID_textCtrl->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( Serenity3D_Frame::On_Texture_TextureID_Update ), NULL, this );
 	m_texture_useColorKey_checkBox->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Texture_UseColorkey_Update ), NULL, this );
 	m_texture_colorKey_colourPicker->Connect( wxEVT_COMMAND_COLOURPICKER_CHANGED, wxColourPickerEventHandler( Serenity3D_Frame::On_Texture_Colorkey_Update ), NULL, this );
+	this->Connect( m_tool33->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnNewProjectMenuSelection ) );
+	this->Connect( m_tool34->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnLoadProjectMenuSelection ) );
+	this->Connect( m_tool35->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnSaveProjectMenuSelection ) );
 }
 
 Serenity3D_Frame::~Serenity3D_Frame()
@@ -2034,6 +2037,9 @@ Serenity3D_Frame::~Serenity3D_Frame()
 	m_texture_textureID_textCtrl->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( Serenity3D_Frame::On_Texture_TextureID_Update ), NULL, this );
 	m_texture_useColorKey_checkBox->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Texture_UseColorkey_Update ), NULL, this );
 	m_texture_colorKey_colourPicker->Disconnect( wxEVT_COMMAND_COLOURPICKER_CHANGED, wxColourPickerEventHandler( Serenity3D_Frame::On_Texture_Colorkey_Update ), NULL, this );
+	this->Disconnect( m_tool33->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnNewProjectMenuSelection ) );
+	this->Disconnect( m_tool34->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnLoadProjectMenuSelection ) );
+	this->Disconnect( m_tool35->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnSaveProjectMenuSelection ) );
 
 }
 
@@ -2164,6 +2170,75 @@ NewProject_Dialog::~NewProject_Dialog()
 	// Disconnect Events
 	m_cancel_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewProject_Dialog::OnCancelButtonClicked ), NULL, this );
 	m_create_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewProject_Dialog::OnCreateButtonClicked ), NULL, this );
+
+}
+
+ExitEditorAlert_Dialog::ExitEditorAlert_Dialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+	wxBoxSizer* bSizer146;
+	bSizer146 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer148;
+	bSizer148 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer148->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_alert_staticText = new wxStaticText( this, wxID_ANY, wxT("Do you want to save the project?"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_alert_staticText->Wrap( -1 );
+	bSizer148->Add( m_alert_staticText, 0, wxALL, 5 );
+
+
+	bSizer148->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer146->Add( bSizer148, 1, wxEXPAND, 5 );
+
+
+	bSizer146->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer149;
+	bSizer149 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer149->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_button56 = new wxButton( this, wxID_ANY, wxT("Save"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer149->Add( m_button56, 0, wxALL, 5 );
+
+	m_button95 = new wxButton( this, wxID_ANY, wxT("Discard"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer149->Add( m_button95, 0, wxALL, 5 );
+
+	m_button57 = new wxButton( this, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer149->Add( m_button57, 0, wxALL, 5 );
+
+
+	bSizer149->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer146->Add( bSizer149, 1, wxEXPAND, 5 );
+
+
+	this->SetSizer( bSizer146 );
+	this->Layout();
+	bSizer146->Fit( this );
+
+	this->Centre( wxBOTH );
+
+	// Connect Events
+	m_button56->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ExitEditorAlert_Dialog::OnSave ), NULL, this );
+	m_button95->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ExitEditorAlert_Dialog::OnDiscard ), NULL, this );
+	m_button57->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ExitEditorAlert_Dialog::OnCancel ), NULL, this );
+}
+
+ExitEditorAlert_Dialog::~ExitEditorAlert_Dialog()
+{
+	// Disconnect Events
+	m_button56->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ExitEditorAlert_Dialog::OnSave ), NULL, this );
+	m_button95->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ExitEditorAlert_Dialog::OnDiscard ), NULL, this );
+	m_button57->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ExitEditorAlert_Dialog::OnCancel ), NULL, this );
 
 }
 

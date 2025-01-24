@@ -69,6 +69,8 @@
 		<Unit filename="SerenityEditor_DeleteStageAlert_Dialog.h" />
 		<Unit filename="SerenityEditor_EditStageGroup_Dialog.cpp" />
 		<Unit filename="SerenityEditor_EditStageGroup_Dialog.h" />
+		<Unit filename="SerenityEditor_ExitEditorAlert_Dialog.cpp" />
+		<Unit filename="SerenityEditor_ExitEditorAlert_Dialog.h" />
 		<Unit filename="SerenityEditor_MaterialPreviewSettings_Dialog.cpp" />
 		<Unit filename="SerenityEditor_MaterialPreviewSettings_Dialog.h" />
 		<Unit filename="SerenityEditor_NewAnimatedActor_Dialog.cpp" />

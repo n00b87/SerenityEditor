@@ -1,8 +1,8 @@
 # depslib dependency file v1.0
-1737746786 source:/home/n00b/Projects/SerenityEngine/Serenity3D_Editor.cpp
+1737751903 source:/home/n00b/Projects/SerenityEngine/Serenity3D_Editor.cpp
 	"Serenity3D_Editor.h"
 
-1737746786 /home/n00b/Projects/SerenityEngine/Serenity3D_Editor.h
+1737758088 /home/n00b/Projects/SerenityEngine/Serenity3D_Editor.h
 	<wx/artprov.h>
 	<wx/xrc/xmlres.h>
 	<wx/string.h>
@@ -1434,7 +1434,7 @@
 	"wx/icon.h"
 	"wx/aui/auibook.h"
 
-1737746880 source:/home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.cpp
+1737754970 source:/home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.cpp
 	<wx/stdpaths.h>
 	<wx/propgrid/manager.h>
 	<wx/propgrid/propgridpagestate.h>
@@ -1472,8 +1472,9 @@
 	"SerenityEditor_NewCubeActor_Dialog.h"
 	"SerenityEditor_NewSphereActor_Dialog.h"
 	"SerenityEditor_CreateMesh_Dialog.h"
+	"SerenityEditor_ExitEditorAlert_Dialog.h"
 
-1737746804 /home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.h
+1737753345 /home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.h
 	<vector>
 	<wx/propgrid/propgrid.h>
 	<wx/propgrid/advprops.h>
@@ -2211,7 +2212,7 @@
 
 1704201762 /usr/include/x86_64-linux-gnu/bits/types/struct_statx.h
 
-1737591680 source:/home/n00b/Projects/SerenityEngine/wxIrrlicht.cpp
+1737754197 source:/home/n00b/Projects/SerenityEngine/wxIrrlicht.cpp
 	<wx/wx.h>
 	<wx/stdpaths.h>
 	<wx/filename.h>
@@ -10118,4 +10119,10 @@
 1699484035 /usr/include/wx-3.2/wx/mstream.h
 	"wx/defs.h"
 	"wx/stream.h"
+
+1737752252 source:/home/n00b/Projects/SerenityEngine/SerenityEditor_ExitEditorAlert_Dialog.cpp
+	"SerenityEditor_ExitEditorAlert_Dialog.h"
+
+1737752177 /home/n00b/Projects/SerenityEngine/SerenityEditor_ExitEditorAlert_Dialog.h
+	"Serenity3D_Editor.h"
 

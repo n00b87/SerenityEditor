@@ -225,7 +225,7 @@ actual_params->WindowId = (HWND)this->GetHandle();
 	num_views = 4;
 	SetCameraViewParam();
 
-	ortho_matrix.buildProjectionMatrixOrthoLH(500.0f,300.0f,1.0f,-500.0f);
+	ortho_matrix.buildProjectionMatrixOrthoLH(500.0f,300.0f,1.0f,-1000.0f);
 	perspective_matrix = camera[0].camera.camera->getProjectionMatrix();
 
 	view2D_texture = NULL;
