@@ -721,6 +721,7 @@ void SerenityEditorSerenity3D_Frame::createIrrlichtMaterialWindow()
 			material_window->camera[0].camera.setPosition(0, 7, -1 * material_preview_camera_distance);
 			material_window->camera[0].camera.setRotation(26, 0, 0);
 			material_window->material_view_camera_speed = material_preview_camera_speed;
+			material_window->manual_control = (material_preview_control==1);
 		}
 
 		if(test_material_light)
@@ -6474,10 +6475,70 @@ bool SerenityEditorSerenity3D_Frame::load_project(wxFileName pfile)
 
 	project = serenity_project(pfile.GetAbsolutePath().ToStdString(), "", current_window->GetDevice());
 
-	m_material_material_listBox->Clear();
+	selected_actor_in_active_stage = -1;
+	stageTab_active_stage_project_index = -1;
+
+	stageTabGrid_current_stage = -1;
+	stageTabGrid_current_group = -1;
+	stageTabGrid_current_actor = -1;
+
+
 	m_mesh_mesh_listBox->Clear();
-	m_texture_textureList_listBox->Clear();
+	m_mesh_materialList_listBox->Clear();
+	m_mesh_meshAnimation_listBox->Clear();
+
+	m_mesh_meshID_textCtrl->Clear();
+	m_mesh_meshFile_textCtrl->Clear();
+	m_mesh_animationID_textCtrl->Clear();
+	m_mesh_animationStartFrame_textCtrl->Clear();
+	m_mesh_animationEndFrame_textCtrl->Clear();
+	m_mesh_animationSpeed_textCtrl->Clear();
+
+	meshTab_active_animation_index = -1; //index in current mesh
+	meshTab_isPlaying = false;
+	meshTab_selected_mesh_project_index = -1;
+
+
+	m_material_material_listBox->Clear();
 	m_material_textureLevel_listBox->Clear();
+
+	m_material_id_textCtrl->Clear();
+	m_material_materialFile_textCtrl->Clear();
+	m_material_type_comboBox->SetSelection(0);
+	m_material_ambient_colourPicker->SetColour(wxColour(0,0,0,0));
+	m_material_diffuse_colourPicker->SetColour(wxColour(0,0,0,0));
+	m_material_emissive_colourPicker->SetColour(wxColour(0,0,0,0));
+	m_material_specular_colourPicker->SetColour(wxColour(0,0,0,0));
+
+	m_material_antiAlias_comboBox->SetSelection(0);
+	m_material_backFaceCulling_checkBox->SetValue(false);
+	m_material_frontFaceCulling_checkBox->SetValue(false);
+	m_material_blendFactor_spinCtrlDouble->SetValue(0);
+	m_material_blendMode_comboBox->SetSelection(0);
+	m_material_colorMask_comboBox->SetSelection(0);
+	m_material_colorMode_comboBox->SetSelection(0);
+	m_material_fog_checkBox->SetValue(false);
+	m_material_gouradShading_checkBox->SetValue(false);
+	m_material_lighting_checkBox->SetValue(false);
+	m_material_normalize_checkBox->SetValue(false);
+	m_material_pointCloud_checkBox->SetValue(false);
+	m_material_shineness_spinCtrl->SetValue(0);
+
+	materialTab_selected_material_project_index = -1;
+
+	material_preview_camera_speed = 0.2;
+	material_preview_camera_distance = 15;
+	material_preview_light_radius = 30;
+	material_preview_control = 1;
+
+
+	m_texture_textureList_listBox->Clear();
+	m_texture_textureID_textCtrl->Clear();
+	m_texture_textureFile_textCtrl->Clear();
+	m_texture_useColorKey_checkBox->SetValue(false);
+	m_texture_colorKey_colourPicker->SetColour(wxColour(0,0,0,0));
+
+	textureTab_selected_texture_project_index = -1;
 
 	//populate materials from project
 	for(int i = 0; i < project.materials.size(); i++)
@@ -6677,9 +6738,21 @@ void SerenityEditorSerenity3D_Frame::OnSaveProjectMenuSelection( wxCommandEvent&
 
 	pfile.Write(_("HUD color=") + wxString::Format(_("%u"), project.hud_color.color) + _(";\n") );
 
-	//TODO: NEED TO SAVE TEXTURE DATA
-	//TODO: NEED TO SAVE MATERIALS
-	//TODO: NEED TO SAVE MESHES
+
+	//Save Materials
+	for(int i = 0; i < project.materials.size(); i++)
+	{
+		project.save_material(i);
+	}
+
+	//Save Mesh Material List and animations
+	for(int i = 0; i < project.meshes.size(); i++)
+	{
+		if(project.meshes[i].id_name.compare("")==0)
+			continue;
+
+		project.save_mesh_properties(i); //This saves both animations and material list
+	}
 
 
 	for(int i = 0; i < project.stages.size(); i++)
@@ -6696,6 +6769,12 @@ void SerenityEditorSerenity3D_Frame::OnSaveProjectMenuSelection( wxCommandEvent&
 	pfile.Close();
 
 	return;
+}
+
+void SerenityEditorSerenity3D_Frame::OnExitMenuSelection( wxCommandEvent& event )
+{
+	project.clearProject();
+	Close();
 }
 
 void SerenityEditorSerenity3D_Frame::OnStageViewportMouse( wxMouseEvent& event )
@@ -7235,6 +7314,8 @@ void SerenityEditorSerenity3D_Frame::On_Mesh_Load_ButtonClick( wxCommandEvent& e
 
 	wxString id_name = _("");
 
+
+
 	for(int i = 0; i < dialog->selected_files.size(); i++)
 	{
 		p_obj.key = _("Mesh");
@@ -7248,22 +7329,110 @@ void SerenityEditorSerenity3D_Frame::On_Mesh_Load_ButtonClick( wxCommandEvent& e
 
 		p_obj.key = _("file");
 		p_obj.val = dialog->selected_files[i];
-		param.push_back(p_obj);
+
+		wxString file_ext = _("");
+		if(p_obj.val.length() > 4)
+			file_ext = p_obj.val.substr(p_obj.val.length()-4,4).Lower();
+
+		bool isAN8 = false;
+		int an8_index = -1;
+
+		if(file_ext.compare(_(".an8"))==0)
+		{
+			an8_index = -1;
+			for(int n = 0; n < project.anim8or_projects.size(); n++)
+			{
+				if(project.anim8or_projects[n].file.compare(p_obj.val)==0)
+				{
+					an8_index = n;
+					break;
+				}
+			}
+			wxString an8_id;
+
+			if(an8_index < 0)
+			{
+				std::vector<serenity_project_dict_obj> an8_param;
+				an8_id = project.genAN8ID();
+				serenity_project_dict_obj an8_dict_obj;
+
+				an8_dict_obj.key = _("AN8");
+				an8_param.push_back(an8_dict_obj);
+
+				an8_dict_obj.key = _("id");
+				an8_dict_obj.val = an8_id;
+
+				an8_param.push_back(an8_dict_obj);
+
+				an8_dict_obj.key = _("file");
+				an8_dict_obj.val = p_obj.val;
+
+				an8_param.push_back(an8_dict_obj);
+
+				an8_index = project.load_an8(an8_param);
+			}
+			else
+				an8_id = project.anim8or_projects[an8_index].id_name;
+
+			p_obj.key = _("an8");
+			p_obj.val = an8_id;
+
+			param.push_back(p_obj);
+			isAN8 = true;
+		}
+		else
+		{
+			param.push_back(p_obj);
+		}
 
 		fname.SetFullName(id_name + _(".snmd"));
-		if(fname.Exists())
-			wxRemoveFile(fname.GetAbsolutePath());
+		//if(fname.Exists())
+		//	wxRemoveFile(fname.GetAbsolutePath());
 
 		fname.SetFullName(id_name + _(".sna"));
-		if(fname.Exists())
-			wxRemoveFile(fname.GetAbsolutePath());
+		//if(fname.Exists())
+		//	wxRemoveFile(fname.GetAbsolutePath());
 
-		int mesh_index = project.load_mesh(param);
-
-		if(mesh_index >= 0)
+		if(isAN8)
 		{
-			if(project.meshes[mesh_index].id_name.compare("")!=0)
-				m_mesh_mesh_listBox->AppendAndEnsureVisible(wxString::FromUTF8(project.meshes[mesh_index].id_name));
+			if( an8_index < 0 || an8_index >= project.anim8or_projects.size())
+			{
+				wxMessageBox(_("Could not load Anim8or project."));
+				continue;
+			}
+
+			std::vector<serenity_project_dict_obj> a_param;
+			serenity_project_dict_obj a_dict_obj;
+			for(int n = 0; n < project.anim8or_projects[an8_index].project.scenes.size(); n++)
+			{
+				a_param = param;
+
+				//wxMessageBox(_("N = ") + wxString::Format(_("%d"), n));
+				std::string tst = project.anim8or_projects[an8_index].project.scenes[n].name;
+
+				a_dict_obj.key = _("scene");
+				a_dict_obj.val = wxString::FromAscii(project.anim8or_projects[an8_index].project.scenes[n].name.c_str());
+
+				a_param.push_back(a_dict_obj);
+
+				int mesh_index = project.load_mesh(a_param);
+
+				if(mesh_index >= 0)
+				{
+					if(project.meshes[mesh_index].id_name.compare("")!=0)
+						m_mesh_mesh_listBox->AppendAndEnsureVisible(wxString::FromUTF8(project.meshes[mesh_index].id_name));
+				}
+			}
+		}
+		else
+		{
+			int mesh_index = project.load_mesh(param);
+
+			if(mesh_index >= 0)
+			{
+				if(project.meshes[mesh_index].id_name.compare("")!=0)
+					m_mesh_mesh_listBox->AppendAndEnsureVisible(wxString::FromUTF8(project.meshes[mesh_index].id_name));
+			}
 		}
 	}
 
@@ -7921,6 +8090,9 @@ void SerenityEditorSerenity3D_Frame::On_Material_MaterialID_Update( wxCommandEve
 	int n = materialTab_selected_material_project_index;
 
 	project.materials[n].id_name = m_material_id_textCtrl->GetValue().ToStdString();
+	project.materials[n].file = project.materials[n].id_name + ".snmtl";
+
+	m_material_materialFile_textCtrl->SetValue(wxString::FromUTF8(project.materials[n].file));
 
 	int current_list_item = m_material_material_listBox->GetSelection();
 
@@ -8564,6 +8736,7 @@ void SerenityEditorSerenity3D_Frame::On_Texture_TextureList_Select( wxCommandEve
 					  project.textures[n].colorkey.getGreen(),
 					  project.textures[n].colorkey.getBlue(),
 					  project.textures[n].colorkey.getAlpha());
+	//wxMessageBox(_("COL: ") + wxString::Format(_("%u"), project.textures[n].colorkey.color));
 	m_texture_colorKey_colourPicker->SetColour(color_key);
 
 	if(current_window)

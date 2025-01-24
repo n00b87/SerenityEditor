@@ -95,6 +95,7 @@ public:
 	int getPhysicsShape(wxString physics_shape_string);
 
 	void load_material_list(rc_mesh* p_mesh, wxString ml_file);
+	bool save_material_list(rc_mesh p_mesh);
 	rc_material loadMaterialFile(wxString mfile, wxString mID);
 	bool save_material(int material_index);
 	bool save_mesh_properties(int mesh_index);

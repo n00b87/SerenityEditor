@@ -1,8 +1,8 @@
 # depslib dependency file v1.0
-1737612310 source:/home/n00b/Projects/SerenityEngine/Serenity3D_Editor.cpp
+1737746786 source:/home/n00b/Projects/SerenityEngine/Serenity3D_Editor.cpp
 	"Serenity3D_Editor.h"
 
-1737612310 /home/n00b/Projects/SerenityEngine/Serenity3D_Editor.h
+1737746786 /home/n00b/Projects/SerenityEngine/Serenity3D_Editor.h
 	<wx/artprov.h>
 	<wx/xrc/xmlres.h>
 	<wx/string.h>
@@ -1434,7 +1434,7 @@
 	"wx/icon.h"
 	"wx/aui/auibook.h"
 
-1737617505 source:/home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.cpp
+1737746880 source:/home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.cpp
 	<wx/stdpaths.h>
 	<wx/propgrid/manager.h>
 	<wx/propgrid/propgridpagestate.h>
@@ -1473,7 +1473,7 @@
 	"SerenityEditor_NewSphereActor_Dialog.h"
 	"SerenityEditor_CreateMesh_Dialog.h"
 
-1737589871 /home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.h
+1737746804 /home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.h
 	<vector>
 	<wx/propgrid/propgrid.h>
 	<wx/propgrid/advprops.h>
@@ -9699,7 +9699,7 @@
 	"engine_base.h"
 	"rc_stage.h"
 
-1737571374 /home/n00b/Projects/SerenityEngine/engine_base.h
+1737727890 /home/n00b/Projects/SerenityEngine/engine_base.h
 	<wx/wx.h>
 	<wx/filename.h>
 	<vector>
@@ -9722,7 +9722,7 @@
 
 1699484035 /usr/include/wx-3.2/wx/unix/stdpaths.h
 
-1737612455 source:/home/n00b/Projects/SerenityEngine/engine_base.cpp
+1737746550 source:/home/n00b/Projects/SerenityEngine/engine_base.cpp
 	<wx/wx.h>
 	<wx/filename.h>
 	<vector>
@@ -9898,7 +9898,7 @@
 	"SerenityEditor_NewProject_Dialog.h"
 	"rc_defines.h"
 
-1735440217 /home/n00b/Projects/an8-parser/an8parser.h
+1737682355 /home/n00b/Projects/an8-parser/an8parser.h
 	<iostream>
 	<fstream>
 	<vector>

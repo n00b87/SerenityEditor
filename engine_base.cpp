@@ -88,6 +88,9 @@ std::vector<serenity_project_file_obj> serenity_project::getParams(wxString p_da
 
 	bool in_quotes = false;
 
+	bool dbg_out = false;
+	int dbg_index = 0;
+
 	for(int i = 0; i < p_data.length(); i++)
 	{
 		if(p_data.substr(i, 1).compare(_(";"))==0)
@@ -103,6 +106,12 @@ std::vector<serenity_project_file_obj> serenity_project::getParams(wxString p_da
 
 		if( (in_quotes && p_data.substr(i, 1).compare(_("\""))==0) || ((!in_quotes) && p_data.substr(i, 1).compare(_(" "))==0) )
 		{
+			/*if(dict_obj.val.compare(_("sydney"))==0)
+			{
+				dbg_out = true;
+				dbg_index = dlist.size();
+			}*/
+
 			if(dict_obj.key.compare(_(""))!=0)
 				dlist_obj.dict.push_back(dict_obj);
 			dict_obj.key = _("");
@@ -127,6 +136,12 @@ std::vector<serenity_project_file_obj> serenity_project::getParams(wxString p_da
 			dict_obj.val.Append(p_data.substr(i,1));
 		}
 	}
+
+	/*if(dbg_out)
+	{
+		for(int i = 0; i < dlist[dbg_index].dict.size(); i++)
+			wxMessageBox(_("Key=") + dlist[dbg_index].dict[i].key + _(",   Value=") + dlist[dbg_index].dict[i].val);
+	}*/
 
 	return dlist;
 }
@@ -1332,7 +1347,7 @@ int serenity_project::load_texture(std::vector<serenity_project_dict_obj> param,
 	wxString file_name = _("");
 
 	bool has_colorKey = false;
-	int color_key = -1;
+	irr::u32 color_key = -1;
 
 	if(reload_index >= 0)
 	{
@@ -1352,7 +1367,7 @@ int serenity_project::load_texture(std::vector<serenity_project_dict_obj> param,
 			else if(param[i].key.compare(_("color_key"))==0)
 			{
 				has_colorKey = true;
-				param[i].val.ToInt(&color_key);
+				param[i].val.ToUInt(&color_key);
 			}
 		}
 	}
@@ -1383,6 +1398,7 @@ int serenity_project::load_texture(std::vector<serenity_project_dict_obj> param,
 	p_texture.id_name = id_name.ToStdString();
 	p_texture.texture = device->getVideoDriver()->getTexture(image_fname.GetAbsolutePath().ToStdString().c_str());
 	p_texture.use_colorKey = has_colorKey;
+	p_texture.colorkey.set(0);
 
     if(p_texture.texture == NULL)
 	{
@@ -1455,9 +1471,9 @@ int serenity_project::load_an8(std::vector<serenity_project_dict_obj> param, int
 
 	for(int i = 0; i < anim8or_projects.size(); i++)
 	{
-		if(anim8or_projects[i].id_name.compare(id_name)==0)
+		if(anim8or_projects[i].file.compare(file_name.ToStdString())==0)
 		{
-			return -1; //don't add image if id is already loaded
+			return i; //don't add image if id is already loaded
 		}
 	}
 
@@ -1487,6 +1503,7 @@ int serenity_project::load_mesh(std::vector<serenity_project_dict_obj> param, in
 	p_mesh.ref_an8_id = "";
 	p_mesh.isAN8Scene = false;
 	p_mesh.isMD2 = false;
+	p_mesh.isZipped = false;
 
 	bool in_zip = false;
 	wxString zip_file = "";
@@ -1606,6 +1623,8 @@ int serenity_project::load_mesh(std::vector<serenity_project_dict_obj> param, in
 	p_mesh.id_name = id_name.ToStdString();
 	p_mesh.file = file_name.ToStdString();
 
+	//wxMessageBox(_("MESH R: ") + p_mesh.id_name + _(" -- ") + (p_mesh.isAN8Scene ? _("true") : _("false")) + _(" -- ") + (in_zip ? _("true") : _("false")));
+
 	if(in_zip)
 	{
 		device->getFileSystem()->addFileArchive(fname.GetAbsolutePath().ToStdString().c_str());
@@ -1614,6 +1633,9 @@ int serenity_project::load_mesh(std::vector<serenity_project_dict_obj> param, in
 	}
 	else if(p_mesh.isAN8Scene)
 	{
+		//if(m_index >= 0)
+		//	wxMessageBox(_("RELOAD AN8"));
+
 		p_mesh.an8_index = -1;
 		for(int i = 0; i < anim8or_projects.size(); i++)
 		{
@@ -1627,6 +1649,7 @@ int serenity_project::load_mesh(std::vector<serenity_project_dict_obj> param, in
 		if(p_mesh.an8_index >= 0 && p_mesh.an8_index < anim8or_projects.size())
 		{
 			p_mesh.mesh = an8::loadAN8Scene(device, anim8or_projects[p_mesh.an8_index].project, p_mesh.an8_scene);
+			//wxMessageBox(_("AN8 LOADED"));
 		}
 	}
 	else if(p_mesh.file.substr(0,1).compare("!")==0)
@@ -2717,7 +2740,7 @@ bool serenity_project::save_material(int material_index)
 
 			if(textures[tx_id].file.compare(_(""))!=0 && textures[tx_id].id_name.compare(_(""))!=0)
 			{
-				mat_file.Write(_("texture  level=") + wxString::Format(_("%d"), i) + _("  file=") + textures[tx_id].file + _(";"));
+				mat_file.Write(_("texture  level=") + wxString::Format(_("%d"), i) + _("  file=\"") + textures[tx_id].file + _("\";"));
 				mat_file.Write(_("\n"));
 			}
 		}
@@ -2827,5 +2850,36 @@ void serenity_project::load_material_list(rc_mesh* p_mesh, wxString ml_file)
 				p_mesh->ref_material_id.push_back(file_obj[i].dict[0].val.ToStdString());
 		}
 	}
+}
+
+
+bool serenity_project::save_material_list(rc_mesh p_mesh)
+{
+	wxFileName fname = project_path;
+	fname.AppendDir(_("data"));
+
+	wxString ml_file = wxString::FromUTF8(p_mesh.id_name) + _(".snmd");
+	fname.SetFullName(ml_file);
+
+
+	wxFile mfile(fname.GetAbsolutePath(), wxFile::write);
+
+	if(!mfile.IsOpened())
+	{
+		wxMessageBox(_("Error: Could not write to material list"));
+		return false;
+	}
+
+	for(int i = 0; i < p_mesh.material_index.size(); i++)
+	{
+		int mat_index = p_mesh.material_index[i];
+		wxString material_id = ( (mat_index >= 0 && mat_index < materials.size()) ? wxString::FromUTF8(materials[mat_index].id_name) : _("[NULL]") );
+
+		mfile.Write(_("material=") + (material_id.compare(_(""))==0 ? _("[NULL]") : material_id) + _(";\n"));
+	}
+
+	mfile.Close();
+
+	return true;
 }
 

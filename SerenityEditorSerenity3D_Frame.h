@@ -203,7 +203,7 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
 		double material_preview_camera_speed = 0.2;
 		double material_preview_camera_distance = 1;
 		double material_preview_light_radius = 30;
-		int material_preview_control = 0;
+		int material_preview_control = 1;
 
 		//-------TEXTURE TAB--------------------
 		int textureTab_selected_texture_project_index = -1;
@@ -212,6 +212,7 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
     	void OnNewProjectMenuSelection( wxCommandEvent& event );
     	void OnLoadProjectMenuSelection( wxCommandEvent& event );
     	void OnSaveProjectMenuSelection( wxCommandEvent& event );
+    	void OnExitMenuSelection( wxCommandEvent& event );
     	void OnMainEditorNotebookPageChanged( wxAuiNotebookEvent& event );
     	void OnS3DSelectClicked( wxCommandEvent& event );
 		void OnS3DBoxClicked( wxCommandEvent& event );

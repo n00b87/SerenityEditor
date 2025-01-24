@@ -583,6 +583,7 @@ class Serenity3D_Frame : public wxFrame
 		virtual void OnNewProjectMenuSelection( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnLoadProjectMenuSelection( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnSaveProjectMenuSelection( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnExitMenuSelection( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMainEditorNotebookPageChanged( wxAuiNotebookEvent& event ) { event.Skip(); }
 		virtual void OnS3DSelectClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnS3DBoxClicked( wxCommandEvent& event ) { event.Skip(); }
