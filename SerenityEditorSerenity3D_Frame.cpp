@@ -6808,6 +6808,14 @@ void SerenityEditorSerenity3D_Frame::OnExitMenuSelection( wxCommandEvent& event 
 	Close();
 }
 
+void SerenityEditorSerenity3D_Frame::OnCodeGen( wxCommandEvent& event )
+{
+	if(project.project_name.compare("")==0)
+		return;
+
+	project.genRCBasicProject();
+}
+
 void SerenityEditorSerenity3D_Frame::OnStageViewportMouse( wxMouseEvent& event )
 {
 	return;
@@ -6888,7 +6896,7 @@ void SerenityEditorSerenity3D_Frame::OnStageViewportKillFocus( wxFocusEvent& eve
 }
 
 
-void SerenityEditorSerenity3D_Frame::OnViewComboSelect( wxCommandEvent& event )
+void SerenityEditorSerenity3D_Frame::select_pov()
 {
 	wxString pov_selection = m_stagePOV_comboBox->GetStringSelection();
 	//wxMessageBox(_("SELECT: ") + pov_selection);
@@ -6944,12 +6952,29 @@ void SerenityEditorSerenity3D_Frame::OnViewComboSelect( wxCommandEvent& event )
 	}
 }
 
+void SerenityEditorSerenity3D_Frame::OnViewComboSelect( wxCommandEvent& event )
+{
+	select_pov();
+}
+
 void SerenityEditorSerenity3D_Frame::OnStageViewComboOpen( wxCommandEvent& event )
 {
 }
 
 void SerenityEditorSerenity3D_Frame::OnStageViewComboClose( wxCommandEvent& event )
 {
+	#ifndef _WIN32
+		return;
+	#endif // _WIN32
+
+	int pov = m_stagePOV_comboBox->GetSelection();
+
+	if(pov < 0 || pov >= m_stagePOV_comboBox->GetCount())
+		return;
+
+	m_stagePOV_comboBox->SetSelection(pov);
+
+	select_pov();
 }
 
 

@@ -268,6 +268,16 @@ serenity_project::~serenity_project()
 {
 }
 
+bool serenity_project::genRCBasicProject()
+{
+	rcbasic_project_path = project_path;
+	rcbasic_project_path.SetExt(_("rcprj"));
+
+	wxMessageBox(_("RC: ") + rcbasic_project_path.GetAbsolutePath());
+
+	return true;
+}
+
 void serenity_project::init_project(std::vector<serenity_project_dict_obj> param)
 {
 	for(int i = 0; i < param.size(); i++)

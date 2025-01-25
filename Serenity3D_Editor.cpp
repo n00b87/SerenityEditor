@@ -1936,6 +1936,7 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	this->Connect( m_tool33->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnNewProjectMenuSelection ) );
 	this->Connect( m_tool34->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnLoadProjectMenuSelection ) );
 	this->Connect( m_tool35->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnSaveProjectMenuSelection ) );
+	this->Connect( m_tool36->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnCodeGen ) );
 }
 
 Serenity3D_Frame::~Serenity3D_Frame()
@@ -2044,6 +2045,7 @@ Serenity3D_Frame::~Serenity3D_Frame()
 	this->Disconnect( m_tool33->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnNewProjectMenuSelection ) );
 	this->Disconnect( m_tool34->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnLoadProjectMenuSelection ) );
 	this->Disconnect( m_tool35->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnSaveProjectMenuSelection ) );
+	this->Disconnect( m_tool36->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnCodeGen ) );
 
 }
 
@@ -4195,7 +4197,7 @@ CreateMesh_Dialog::CreateMesh_Dialog( wxWindow* parent, wxWindowID id, const wxS
 	m_staticText87->Wrap( -1 );
 	bSizer241->Add( m_staticText87, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_planeTileWidth_spinCtrl = new wxSpinCtrl( m_plane_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10, 0 );
+	m_planeTileWidth_spinCtrl = new wxSpinCtrl( m_plane_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10000, 10 );
 	bSizer241->Add( m_planeTileWidth_spinCtrl, 4, wxALL, 5 );
 
 
@@ -4208,7 +4210,7 @@ CreateMesh_Dialog::CreateMesh_Dialog( wxWindow* parent, wxWindowID id, const wxS
 	m_staticText88->Wrap( -1 );
 	bSizer242->Add( m_staticText88, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_planeTileHeight_spinCtrl = new wxSpinCtrl( m_plane_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10, 0 );
+	m_planeTileHeight_spinCtrl = new wxSpinCtrl( m_plane_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10000, 10 );
 	bSizer242->Add( m_planeTileHeight_spinCtrl, 4, wxALL, 5 );
 
 
@@ -4221,7 +4223,7 @@ CreateMesh_Dialog::CreateMesh_Dialog( wxWindow* parent, wxWindowID id, const wxS
 	m_staticText89->Wrap( -1 );
 	bSizer243->Add( m_staticText89, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_planeCountX_spinCtrl = new wxSpinCtrl( m_plane_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10, 0 );
+	m_planeCountX_spinCtrl = new wxSpinCtrl( m_plane_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10000, 10 );
 	bSizer243->Add( m_planeCountX_spinCtrl, 4, wxALL, 5 );
 
 
@@ -4234,7 +4236,7 @@ CreateMesh_Dialog::CreateMesh_Dialog( wxWindow* parent, wxWindowID id, const wxS
 	m_staticText90->Wrap( -1 );
 	bSizer244->Add( m_staticText90, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_planeCountY_spinCtrl = new wxSpinCtrl( m_plane_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10, 0 );
+	m_planeCountY_spinCtrl = new wxSpinCtrl( m_plane_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10000, 10 );
 	bSizer244->Add( m_planeCountY_spinCtrl, 4, wxALL, 5 );
 
 
@@ -4247,7 +4249,7 @@ CreateMesh_Dialog::CreateMesh_Dialog( wxWindow* parent, wxWindowID id, const wxS
 	m_staticText91->Wrap( -1 );
 	bSizer245->Add( m_staticText91, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_planeTxRepeatX_spinCtrl = new wxSpinCtrl( m_plane_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10, 0 );
+	m_planeTxRepeatX_spinCtrl = new wxSpinCtrl( m_plane_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10000, 10 );
 	bSizer245->Add( m_planeTxRepeatX_spinCtrl, 4, wxALL, 5 );
 
 
@@ -4260,7 +4262,7 @@ CreateMesh_Dialog::CreateMesh_Dialog( wxWindow* parent, wxWindowID id, const wxS
 	m_staticText92->Wrap( -1 );
 	bSizer246->Add( m_staticText92, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_planeTxRepeatY_spinCtrl = new wxSpinCtrl( m_plane_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10, 0 );
+	m_planeTxRepeatY_spinCtrl = new wxSpinCtrl( m_plane_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10000, 10 );
 	bSizer246->Add( m_planeTxRepeatY_spinCtrl, 4, wxALL, 5 );
 
 
@@ -4282,7 +4284,7 @@ CreateMesh_Dialog::CreateMesh_Dialog( wxWindow* parent, wxWindowID id, const wxS
 	m_staticText93->Wrap( -1 );
 	bSizer249->Add( m_staticText93, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_coneRadius_spinCtrlDouble = new wxSpinCtrlDouble( m_cone_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0, 1 );
+	m_coneRadius_spinCtrlDouble = new wxSpinCtrlDouble( m_cone_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10000, 5, 1 );
 	m_coneRadius_spinCtrlDouble->SetDigits( 0 );
 	bSizer249->Add( m_coneRadius_spinCtrlDouble, 4, wxALL, 5 );
 
@@ -4296,7 +4298,7 @@ CreateMesh_Dialog::CreateMesh_Dialog( wxWindow* parent, wxWindowID id, const wxS
 	m_staticText94->Wrap( -1 );
 	bSizer250->Add( m_staticText94, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_coneLength_spinCtrlDouble = new wxSpinCtrlDouble( m_cone_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0, 1 );
+	m_coneLength_spinCtrlDouble = new wxSpinCtrlDouble( m_cone_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10000, 20, 1 );
 	m_coneLength_spinCtrlDouble->SetDigits( 0 );
 	bSizer250->Add( m_coneLength_spinCtrlDouble, 4, wxALL, 5 );
 
@@ -4310,7 +4312,7 @@ CreateMesh_Dialog::CreateMesh_Dialog( wxWindow* parent, wxWindowID id, const wxS
 	m_staticText95->Wrap( -1 );
 	bSizer251->Add( m_staticText95, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_coneTesselation_spinCtrl = new wxSpinCtrl( m_cone_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10, 0 );
+	m_coneTesselation_spinCtrl = new wxSpinCtrl( m_cone_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10000, 10 );
 	bSizer251->Add( m_coneTesselation_spinCtrl, 4, wxALL, 5 );
 
 
@@ -4358,7 +4360,7 @@ CreateMesh_Dialog::CreateMesh_Dialog( wxWindow* parent, wxWindowID id, const wxS
 	m_staticText931->Wrap( -1 );
 	bSizer2491->Add( m_staticText931, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_cylinderRadius_spinCtrlDouble = new wxSpinCtrlDouble( m_cylinder_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0, 1 );
+	m_cylinderRadius_spinCtrlDouble = new wxSpinCtrlDouble( m_cylinder_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10000, 10, 1 );
 	m_cylinderRadius_spinCtrlDouble->SetDigits( 0 );
 	bSizer2491->Add( m_cylinderRadius_spinCtrlDouble, 4, wxALL, 5 );
 
@@ -4372,7 +4374,7 @@ CreateMesh_Dialog::CreateMesh_Dialog( wxWindow* parent, wxWindowID id, const wxS
 	m_staticText941->Wrap( -1 );
 	bSizer2501->Add( m_staticText941, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_cylinderLength_spinCtrlDouble = new wxSpinCtrlDouble( m_cylinder_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0, 1 );
+	m_cylinderLength_spinCtrlDouble = new wxSpinCtrlDouble( m_cylinder_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10000, 15, 1 );
 	m_cylinderLength_spinCtrlDouble->SetDigits( 0 );
 	bSizer2501->Add( m_cylinderLength_spinCtrlDouble, 4, wxALL, 5 );
 
@@ -4386,7 +4388,7 @@ CreateMesh_Dialog::CreateMesh_Dialog( wxWindow* parent, wxWindowID id, const wxS
 	m_staticText951->Wrap( -1 );
 	bSizer2511->Add( m_staticText951, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_cylinderTesselation_spinCtrl = new wxSpinCtrl( m_cylinder_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10, 0 );
+	m_cylinderTesselation_spinCtrl = new wxSpinCtrl( m_cylinder_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10000, 10 );
 	bSizer2511->Add( m_cylinderTesselation_spinCtrl, 4, wxALL, 5 );
 
 

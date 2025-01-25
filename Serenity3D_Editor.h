@@ -684,6 +684,7 @@ class Serenity3D_Frame : public wxFrame
 		virtual void On_Texture_TextureID_Update( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Texture_UseColorkey_Update( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Texture_Colorkey_Update( wxColourPickerEvent& event ) { event.Skip(); }
+		virtual void OnCodeGen( wxCommandEvent& event ) { event.Skip(); }
 
 
 	public:

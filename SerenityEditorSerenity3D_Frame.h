@@ -126,6 +126,7 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
 		int stage_tree_pathImage;
 		int stage_tree_groupImage;
 
+		void select_pov();
 		void updateProjectFromStageEdit();
 		int getCurrentStageNodeIndex();
 		int getActorNodeIndex(int stage_node_index, int actor_project_index);
@@ -214,6 +215,8 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
     	void OnLoadProjectMenuSelection( wxCommandEvent& event );
     	void OnSaveProjectMenuSelection( wxCommandEvent& event );
     	void OnExitMenuSelection( wxCommandEvent& event );
+    	void OnCodeGen( wxCommandEvent& event );
+
     	void OnMainEditorNotebookPageChanged( wxAuiNotebookEvent& event );
     	void OnS3DSelectClicked( wxCommandEvent& event );
 		void OnS3DBoxClicked( wxCommandEvent& event );

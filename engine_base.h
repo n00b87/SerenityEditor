@@ -54,6 +54,9 @@ public:
 	}
 	~serenity_project();
 
+	wxFileName rcbasic_project_path;
+	bool genRCBasicProject();
+
 	void reload_assets();
 
 	int load_stage(std::vector<serenity_project_dict_obj> stage_param, bool isActive=false);
