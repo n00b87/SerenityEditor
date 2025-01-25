@@ -275,6 +275,8 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
 		void OnStageContainerMouse( wxMouseEvent& event );
 
 		void OnViewComboSelect( wxCommandEvent& event );
+		void OnStageViewComboClose( wxCommandEvent& event );
+		void OnStageViewComboOpen( wxCommandEvent& event );
 
 
 		//Mesh Tab

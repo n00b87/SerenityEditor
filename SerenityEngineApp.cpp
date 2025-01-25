@@ -7,6 +7,8 @@
  * License:
  **************************************************************/
 
+#include <wx/wx.h>
+
 #ifdef WX_PRECOMP
 #include "wx_pch.h"
 #endif
@@ -22,6 +24,7 @@ IMPLEMENT_APP(SerenityEngineApp);
 
 bool SerenityEngineApp::OnInit()
 {
+	wxInitAllImageHandlers();
     SerenityEditorSerenity3D_Frame* frame = new SerenityEditorSerenity3D_Frame(NULL);
 
     frame->Show();

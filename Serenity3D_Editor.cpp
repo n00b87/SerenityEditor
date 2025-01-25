@@ -1849,6 +1849,8 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	this->Connect( m_s3d_cube_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DCubeClicked ) );
 	this->Connect( m_s3d_sphere_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DSphereClicked ) );
 	m_stagePOV_comboBox->Connect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( Serenity3D_Frame::OnViewComboSelect ), NULL, this );
+	m_stagePOV_comboBox->Connect( wxEVT_COMBOBOX_CLOSEUP, wxCommandEventHandler( Serenity3D_Frame::OnStageViewComboClose ), NULL, this );
+	m_stagePOV_comboBox->Connect( wxEVT_COMBOBOX_DROPDOWN, wxCommandEventHandler( Serenity3D_Frame::OnStageViewComboOpen ), NULL, this );
 	this->Connect( m_render_wire_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_RenderMode_WireFrame ) );
 	this->Connect( m_render_solid_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_RenderMode_Solid ) );
 	m_stageViewport_panel->Connect( wxEVT_UPDATE_UI, wxUpdateUIEventHandler( Serenity3D_Frame::OnStageUpdate ), NULL, this );
@@ -1955,6 +1957,8 @@ Serenity3D_Frame::~Serenity3D_Frame()
 	this->Disconnect( m_s3d_cube_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DCubeClicked ) );
 	this->Disconnect( m_s3d_sphere_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DSphereClicked ) );
 	m_stagePOV_comboBox->Disconnect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( Serenity3D_Frame::OnViewComboSelect ), NULL, this );
+	m_stagePOV_comboBox->Disconnect( wxEVT_COMBOBOX_CLOSEUP, wxCommandEventHandler( Serenity3D_Frame::OnStageViewComboClose ), NULL, this );
+	m_stagePOV_comboBox->Disconnect( wxEVT_COMBOBOX_DROPDOWN, wxCommandEventHandler( Serenity3D_Frame::OnStageViewComboOpen ), NULL, this );
 	this->Disconnect( m_render_wire_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_RenderMode_WireFrame ) );
 	this->Disconnect( m_render_solid_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_RenderMode_Solid ) );
 	m_stageViewport_panel->Disconnect( wxEVT_UPDATE_UI, wxUpdateUIEventHandler( Serenity3D_Frame::OnStageUpdate ), NULL, this );

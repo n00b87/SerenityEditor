@@ -150,6 +150,7 @@ actual_params->WindowId = (HWND)this->GetHandle();
 
     m_forceWindowActive = true;
     rendering = false;
+    view_combo_active = false;
 	Refresh();
 
 	back_buffer = m_pDriver->addRenderTargetTexture(irr::core::dimension2d<irr::u32>((irr::u32)2048, (irr::u32)2048), "rt", ECF_A8R8G8B8);
@@ -673,8 +674,8 @@ void wxIrrlicht::OnRender() {
 
 		for(int i = 0; i < num_views; i++)
 		{
-			irr::core::rect src( irr::core::position2di(0, 0), irr::core::dimension2di(camera[i].w, camera[i].h) );
-			irr::core::rect dest( irr::core::position2di(camera[i].x, camera[i].y), irr::core::dimension2di(camera[i].w, camera[i].h) );
+			irr::core::rect<irr::s32> src( irr::core::position2di(0, 0), irr::core::dimension2du(camera[i].w, camera[i].h) );
+			irr::core::rect dest( irr::core::position2di(camera[i].x, camera[i].y), irr::core::dimension2du(camera[i].w, camera[i].h) );
 			m_pDriver->draw2DImage(camera[i].texture, dest, src);
 			m_pDriver->draw2DImage(camera[i].ui_layer, dest, src, 0, 0, true);
 
@@ -702,12 +703,12 @@ void wxIrrlicht::OnRender() {
 				m_pDriver->draw2DRectangleOutline(box_select_shape);
 			}
 
-			m_pDriver->draw2DRectangleOutline( irr::core::rect( irr::core::position2di(camera[i].x, camera[i].y), irr::core::dimension2di(camera[i].w, camera[i].h) ), irr::video::SColor(255, 40, 40, 40) );
+			m_pDriver->draw2DRectangleOutline( irr::core::recti( irr::core::position2di(camera[i].x, camera[i].y), irr::core::dimension2du(camera[i].w, camera[i].h) ), irr::video::SColor(255, 40, 40, 40) );
 		}
 
         m_pDriver->setRenderTarget(0);
 
-        irr::core::rect bb_rect( irr::core::position2di(0, 0), irr::core::dimension2di(this->GetSize().GetWidth(), this->GetSize().GetHeight()) );
+        irr::core::recti bb_rect( irr::core::position2di(0, 0), irr::core::dimension2du(this->GetSize().GetWidth(), this->GetSize().GetHeight()) );
         m_pDriver->draw2DImage(back_buffer, bb_rect, bb_rect );
 
 
@@ -915,9 +916,9 @@ void wxIrrlicht::OnTimer(wxTimerEvent& event) {
 	}
 
     #ifdef _WIN32
-	m_forceWindowActive = true;
-	parent->Refresh();
-	Refresh();
+	//m_forceWindowActive = true;
+	//parent->Refresh();
+	//Refresh();
 	#endif // _WIN32
 }
 
@@ -1045,7 +1046,7 @@ void wxIrrlicht::force_refresh()
         m_pCameraNode->setAspectRatio((float)w / (float)h);
 	}//if
 
-	m_pDevice->setWindowSize(irr::core::dimension2d((irr::u32)w,(irr::u32)h));
+	m_pDevice->setWindowSize(irr::core::dimension2du((irr::u32)w,(irr::u32)h));
 
 	m_forceWindowActive = true;
 	parent->Refresh();
@@ -1329,6 +1330,9 @@ void wxIrrlicht::setTransformToolBox()
 
 void wxIrrlicht::OnUpdate()
 {
+	if(view_combo_active)
+		return;
+
 	if(window_type == RC_IRR_WINDOW_MATERIAL && (!manual_control))
 	{
 		//ROTATE AROUND (0, 0, 0)

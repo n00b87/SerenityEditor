@@ -600,6 +600,8 @@ class Serenity3D_Frame : public wxFrame
 		virtual void OnS3DCubeClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnS3DSphereClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnViewComboSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnStageViewComboClose( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnStageViewComboOpen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Stage_RenderMode_WireFrame( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Stage_RenderMode_Solid( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnStageUpdate( wxUpdateUIEvent& event ) { event.Skip(); }

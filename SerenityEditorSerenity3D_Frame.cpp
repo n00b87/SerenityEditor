@@ -4877,7 +4877,7 @@ void SerenityEditorSerenity3D_Frame::setParticleActorGrid(int stage_project_inde
 	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("cylinder_length"))->SetValue(cylinder_length);
 
 
-	irr::core::aabbox3d box = project.stages[stage_project_index].actors[actor_project_index].box;
+	irr::core::aabbox3df box = project.stages[stage_project_index].actors[actor_project_index].box;
 	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("min_box_x"))->SetValue(box.MinEdge.X);
 	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("min_box_y"))->SetValue(box.MinEdge.Y);
 	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("min_box_z"))->SetValue(box.MinEdge.Z);
@@ -6942,6 +6942,18 @@ void SerenityEditorSerenity3D_Frame::OnViewComboSelect( wxCommandEvent& event )
         //stage_window->camera[3].camera.setPosition(0, 30, -40);
         stage_window->camera[3].camera.setRotation(0, 5, 0);
 	}
+}
+
+void SerenityEditorSerenity3D_Frame::OnStageViewComboOpen( wxCommandEvent& event )
+{
+	if(stage_window)
+		stage_window->view_combo_active = true;
+}
+
+void SerenityEditorSerenity3D_Frame::OnStageViewComboClose( wxCommandEvent& event )
+{
+	if(stage_window)
+		stage_window->view_combo_active = true;
 }
 
 

@@ -988,6 +988,8 @@
                                                           <property name="window_name"></property>
                                                           <property name="window_style"></property>
                                                           <event name="OnCombobox">OnViewComboSelect</event>
+                                                          <event name="OnComboboxCloseup">OnStageViewComboClose</event>
+                                                          <event name="OnComboboxDropdown">OnStageViewComboOpen</event>
                                                         </object>
                                                       </object>
                                                       <object class="sizeritem" expanded="false">
