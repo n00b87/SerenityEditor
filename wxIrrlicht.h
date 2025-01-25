@@ -152,8 +152,6 @@ class wxIrrlicht : public wxControl {
         wxWindow* parent_window;
         wxGLCanvas* canvas;
 
-        bool view_combo_active = false;
-
         viewport_camera camera[4];
         int active_camera = 0;
         double material_view_camera_speed = 0.2;

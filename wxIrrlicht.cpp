@@ -150,8 +150,7 @@ actual_params->WindowId = (HWND)this->GetHandle();
 
     m_forceWindowActive = true;
     rendering = false;
-    view_combo_active = false;
-	Refresh();
+    Refresh();
 
 	back_buffer = m_pDriver->addRenderTargetTexture(irr::core::dimension2d<irr::u32>((irr::u32)2048, (irr::u32)2048), "rt", ECF_A8R8G8B8);
 
@@ -1330,9 +1329,6 @@ void wxIrrlicht::setTransformToolBox()
 
 void wxIrrlicht::OnUpdate()
 {
-	if(view_combo_active)
-		return;
-
 	if(window_type == RC_IRR_WINDOW_MATERIAL && (!manual_control))
 	{
 		//ROTATE AROUND (0, 0, 0)

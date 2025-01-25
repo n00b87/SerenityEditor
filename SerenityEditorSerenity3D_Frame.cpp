@@ -6946,14 +6946,10 @@ void SerenityEditorSerenity3D_Frame::OnViewComboSelect( wxCommandEvent& event )
 
 void SerenityEditorSerenity3D_Frame::OnStageViewComboOpen( wxCommandEvent& event )
 {
-	if(stage_window)
-		stage_window->view_combo_active = true;
 }
 
 void SerenityEditorSerenity3D_Frame::OnStageViewComboClose( wxCommandEvent& event )
 {
-	if(stage_window)
-		stage_window->view_combo_active = false;
 }
 
 
