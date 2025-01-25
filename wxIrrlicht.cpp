@@ -492,8 +492,8 @@ void wxIrrlicht::OnRender() {
 
 					fit_factor = (fit_factor < 1 ? 1 : fit_factor);
 
-					irr::core::rect src( irr::core::position2di(0, 0), texture_size );
-					irr::core::rect dst( irr::core::position2di(0, 0), irr::core::dimension2d(texture_size.Width * fit_factor, texture_size.Height * fit_factor) );
+					irr::core::rect<irr::s32> src( irr::core::position2di(0, 0), texture_size );
+					irr::core::rect<irr::s32> dst( irr::core::position2di(0, 0), irr::core::dimension2d<irr::s32>(texture_size.Width * fit_factor, texture_size.Height * fit_factor) );
 					m_pDriver->draw2DImage(view2D_texture, dst, src);
 				}
 
@@ -674,8 +674,8 @@ void wxIrrlicht::OnRender() {
 
 		for(int i = 0; i < num_views; i++)
 		{
-			irr::core::rect<irr::s32> src( irr::core::position2di(0, 0), irr::core::dimension2du(camera[i].w, camera[i].h) );
-			irr::core::rect dest( irr::core::position2di(camera[i].x, camera[i].y), irr::core::dimension2du(camera[i].w, camera[i].h) );
+			irr::core::rect<irr::s32> src( irr::core::position2di(0, 0), irr::core::dimension2d<irr::s32>(camera[i].w, camera[i].h) );
+			irr::core::rect<irr::s32> dest( irr::core::position2di(camera[i].x, camera[i].y), irr::core::dimension2d<irr::s32>(camera[i].w, camera[i].h) );
 			m_pDriver->draw2DImage(camera[i].texture, dest, src);
 			m_pDriver->draw2DImage(camera[i].ui_layer, dest, src, 0, 0, true);
 
@@ -767,7 +767,7 @@ void wxIrrlicht::OnParentSize(wxSizeEvent& event)
         m_pCameraNode->setAspectRatio((float)w / (float)h);
 	}//if
 
-	m_pDevice->setWindowSize(irr::core::dimension2d((irr::u32)w,(irr::u32)h));
+	m_pDevice->setWindowSize(irr::core::dimension2d<irr::u32>((irr::u32)w,(irr::u32)h));
 	SetCameraViewParam();
 
 	m_forceWindowActive = true;
