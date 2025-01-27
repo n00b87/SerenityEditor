@@ -275,6 +275,1573 @@ bool serenity_project::genRCBasicProject()
 
 	wxMessageBox(_("RC: ") + rcbasic_project_path.GetAbsolutePath());
 
+	if(!rcbasic_project_path.Exists())
+	{
+		wxFile rc_project_file(rcbasic_project_path.GetAbsolutePath(), wxFile::write);
+
+		if(!rc_project_file.IsOpened())
+		{
+			wxMessageBox(_("Error: Failed to generate RCBasic Studio Project"));
+			return false;
+		}
+
+		//Project File stuff here
+		//RCBASIC_STUDIO:1.0
+		//PROJECT_NAME:Simple 3D Platformer
+		//PROJECT_MAIN:main.bas
+		//AUTHOR:n00b
+		//WEBSITE:rcbasic.freeforums.net
+		//DESCRIPTION:A simple physics example in RCBasic 4
+		//SOURCE_REL:main.bas
+		//SOURCE_REL:util.bas
+
+		rcbasic_main_bas = _("serenity_main.bas");
+
+		rc_project_file.Write(_("RCBASIC_STUDIO:1.0") + _("\n"));
+		rc_project_file.Write(_("PROJECT_NAME:") + wxString::FromUTF8(project_name) + _("\n"));
+		rc_project_file.Write(_("PROJECT_MAIN:") + rcbasic_main_bas + _("\n"));
+		rc_project_file.Write(_("SOURCE_REL:") + rcbasic_main_bas + _("\n"));
+		rc_project_file.Write(_("SOURCE_REL:main.bas") + _("\n"));
+
+
+		rc_project_file.Close();
+	}
+
+	//Write project structures to rcbasic_main_bas
+	wxFileName main_file_path = project_path;
+	main_file_path.SetFullName(_("serenity_main.bas"));
+	wxFile pfile(main_file_path.GetAbsolutePath(), wxFile::write);
+
+	if(!pfile.IsOpened())
+	{
+		wxMessageBox(_("Error: Failed to output project structures"));
+		return false;
+	}
+
+	pfile.Write(_("path_separator$ = \"/\" : "));
+
+	pfile.Write(_("If OS$ = \"WINDOWS\" : path_separator$ = \"\\\\\" : End If") + _("\n"));
+	pfile.Write(_("\n\n"));
+
+	pfile.Write(_("Const SN_MESH_TYPE_NORMAL = 0") + _("\n"));
+	pfile.Write(_("Const SN_MESH_TYPE_ZIPPED = 1") + _("\n"));
+	pfile.Write(_("Const SN_MESH_TYPE_AN8_SCENE = 2") + _("\n"));
+
+	pfile.Write(_("\n"));
+
+	pfile.Write(_("Const SN_LIGHT_TYPE_POINT = 0") + _("\n"));
+	pfile.Write(_("Const SN_LIGHT_TYPE_SPOT = 1") + _("\n"));
+	pfile.Write(_("Const SN_LIGHT_TYPE_DIRECTIONAL = 2") + _("\n"));
+
+	pfile.Write(_("\n"));
+
+	pfile.Write(_("Const SN_PARTICLE_TYPE_POINT = 0") + _("\n"));
+	pfile.Write(_("Const SN_PARTICLE_TYPE_BOX = 1") + _("\n"));
+	pfile.Write(_("Const SN_PARTICLE_TYPE_SPHERE = 2") + _("\n"));
+	pfile.Write(_("Const SN_PARTICLE_TYPE_CYLINDER = 3") + _("\n"));
+	pfile.Write(_("Const SN_PARTICLE_TYPE_MESH = 4") + _("\n"));
+	pfile.Write(_("Const SN_PARTICLE_TYPE_RING = 5") + _("\n"));
+
+	pfile.Write(_("\n"));
+
+	pfile.Write(_("Const SN_PHYSICS_SHAPE_NONE = 0") + _("\n"));
+	pfile.Write(_("Const SN_PHYSICS_SHAPE_BOX = 1") + _("\n"));
+	pfile.Write(_("Const SN_PHYSICS_SHAPE_SPHERE = 2") + _("\n"));
+	pfile.Write(_("Const SN_PHYSICS_SHAPE_CYLINDER = 3") + _("\n"));
+	pfile.Write(_("Const SN_PHYSICS_SHAPE_CAPSULE = 4") + _("\n"));
+	pfile.Write(_("Const SN_PHYSICS_SHAPE_CONE = 5") + _("\n"));
+	pfile.Write(_("Const SN_PHYSICS_SHAPE_CONVEXHULL = 6") + _("\n"));
+	pfile.Write(_("Const SN_PHYSICS_SHAPE_TRIMESH = 7") + _("\n"));
+
+	pfile.Write(_("\n"));
+
+	pfile.Write(_("Const SN_ACTOR_TYPE_ANIMATED = 0") + _("\n"));
+	pfile.Write(_("Const SN_ACTOR_TYPE_OCTREE = 1") + _("\n"));
+	pfile.Write(_("Const SN_ACTOR_TYPE_LIGHT = 2") + _("\n"));
+	pfile.Write(_("Const SN_ACTOR_TYPE_BILLBOARD = 3") + _("\n"));
+	pfile.Write(_("Const SN_ACTOR_TYPE_TERRAIN = 4") + _("\n"));
+	pfile.Write(_("Const SN_ACTOR_TYPE_WATER = 5") + _("\n"));
+	pfile.Write(_("Const SN_ACTOR_TYPE_PARTICLE = 6") + _("\n"));
+	pfile.Write(_("Const SN_ACTOR_TYPE_CUBE = 7") + _("\n"));
+	pfile.Write(_("Const SN_ACTOR_TYPE_SPHERE = 8") + _("\n"));
+	pfile.Write(_("Const SN_ACTOR_TYPE_PLANE = 9") + _("\n"));
+
+	pfile.Write(_("\n"));
+
+	pfile.Write(_("Const SN_SKY_TYPE_NONE = 0") + _("\n"));
+	pfile.Write(_("Const SN_SKY_TYPE_BOX = 1") + _("\n"));
+	pfile.Write(_("Const SN_SKY_TYPE_DOME = 2") + _("\n"));
+
+	pfile.Write(_("\n\n"));
+
+	//Vector Structure
+	pfile.Write(_("Type Serenity_Vector3D") + _("\n"));
+	pfile.Write(_("Dim x") + _("\n"));
+	pfile.Write(_("Dim y") + _("\n"));
+	pfile.Write(_("Dim z") + _("\n"));
+	pfile.Write(_("End Type") + _("\n"));
+
+	pfile.Write(_("\n"));
+
+	//Size Structure
+	pfile.Write(_("Type Serenity_Size") + _("\n"));
+	pfile.Write(_("Dim Width") + _("\n"));
+	pfile.Write(_("Dim Height") + _("\n"));
+	pfile.Write(_("Dim Depth") + _("\n")); //won't be used for much but I don't want to have 2 size structs for 2d and 3d
+	pfile.Write(_("End Type") + _("\n"));
+
+	pfile.Write(_("\n"));
+
+
+	//Create Vector3D Function
+	pfile.Write(_("Function Serenity_CreateVector3D(x, y, z) As Serenity_Vector3D") + _("\n"));
+	pfile.Write(_("\tDim v As Serenity_Vector3D") + _("\n"));
+	pfile.Write(_("\tv.x = x") + _("\n"));
+	pfile.Write(_("\tv.y = y") + _("\n"));
+	pfile.Write(_("\tv.z = z") + _("\n"));
+	pfile.Write(_("\tReturn v") + _("\n"));
+	pfile.Write(_("End Function") + _("\n"));
+
+	pfile.Write(_("\n"));
+
+	//Create Size3D Function
+	pfile.Write(_("Function Serenity_CreateSize3D(w, h, d) As Serenity_Size") + _("\n"));
+	pfile.Write(_("\tDim v As Serenity_Size") + _("\n"));
+	pfile.Write(_("\tv.width = w") + _("\n"));
+	pfile.Write(_("\tv.height = h") + _("\n"));
+	pfile.Write(_("\tv.depth = d") + _("\n"));
+	pfile.Write(_("\tReturn v") + _("\n"));
+	pfile.Write(_("End Function") + _("\n"));
+
+	pfile.Write(_("\n"));
+
+	//Create Texture Structure
+	pfile.Write(_("Type Serenity_Texture") + _("\n"));
+	pfile.Write(_("Dim ID") + _("\n"));
+	pfile.Write(_("Dim File$ ") + _("\n"));
+	pfile.Write(_("Dim UseColorKey") + _("\n"));
+	pfile.Write(_("Dim TextureColorKey ") + _("\n"));
+	pfile.Write(_("End Type") + _("\n"));
+	pfile.Write(_("\n"));
+
+	//Create Texture Reference Structure
+	pfile.Write(_("Type Serenity_Texture_Reference") + _("\n"));
+	pfile.Write(_("Dim SN_ID") + _("\n"));
+	pfile.Write(_("End Type") + _("\n"));
+	pfile.Write(_("\n"));
+
+	pfile.Write(_("Dim Serenity_Global_Texture_List[") + wxString::Format(_("%d"),(int)(textures.size() == 0 ? 1 : textures.size())) + _("] As Serenity_Texture") + _("\n"));
+	pfile.Write(_("\n"));
+
+
+	//Create Textures List Structure
+	wxString p_textures_list_struct_name = _("Serenity_Textures_List_Structure");
+	std::vector<wxString> p_textures_list_struct_field_define;
+	pfile.Write(_("Type ") + p_textures_list_struct_name  + _("\n"));
+
+	wxString p_texture_define = _("");
+
+	uint32_t tx_sn_id = 0;
+
+	for(int i = 0; i < textures.size(); i++)
+	{
+		if(textures[i].id_name.compare("")!=0)
+		{
+			pfile.Write(_("Dim ") + wxString::FromUTF8(textures[i].id_name)  + _(" As Serenity_Texture_Reference\n"));
+
+			wxString tx_id = _("Serenity_Global_Texture_List[") + wxString::Format(_("%u"),tx_sn_id) + _("]");
+
+			wxString tx_file = tx_id + _(".File$");
+			wxString tx_colorkey = tx_id + _(".TextureColorKey");
+			wxString p_cmd = _("\t") + _("Serenity_Global_Texture_List[ ") + _("Textures.") + wxString::FromUTF8(textures[i].id_name) + _(".SN_ID ].ID = ") +
+															(textures[i].use_colorKey ? _("LoadImageEx(") + tx_file + _(", ") + tx_colorkey + _(")") :
+																						_("LoadImage(") + tx_file + _(")") ) + _("\n");
+
+			textures[i].p_cmd = p_cmd.ToStdString();
+
+			p_texture_define += _("Textures.") + wxString::FromUTF8(textures[i].id_name) + _(".SN_ID = ") + wxString::Format(_("%u"),tx_sn_id) + _("\n");
+			p_texture_define += tx_id + _(".ID = -1") + _("\n");
+			p_texture_define += tx_id + _(".File$ = \"") + wxString::FromUTF8(textures[i].file) + _("\"") + _("\n");
+			p_texture_define += tx_id + _(".TextureColorKey = ") + wxString::Format(_("%u"), textures[i].colorkey.color) + _("\n");
+			p_texture_define += _("\n");
+
+			tx_sn_id++;
+		}
+	}
+
+	pfile.Write(_("End Type")  + _("\n"));
+
+	pfile.Write(_("\n\n"));
+
+
+	//Create Texture Reference Structure
+	pfile.Write(_("Type Serenity_Material") + _("\n"));
+	pfile.Write(_("Dim ID") + _("\n"));
+	pfile.Write(_("Dim Textures[30] \'Index in Serenity_Global_Texture_List") + _("\n"));
+	pfile.Write(_("End Type") + _("\n"));
+	pfile.Write(_("\n"));
+
+	//Create Texture Reference Structure
+	pfile.Write(_("Type Serenity_Material_Reference") + _("\n"));
+	pfile.Write(_("Dim SN_ID") + _("\n"));
+	pfile.Write(_("End Type") + _("\n"));
+	pfile.Write(_("\n"));
+
+	pfile.Write(_("Dim Serenity_Global_Material_List[") + wxString::Format(_("%d"), (int)(materials.size() == 0 ? 1 : materials.size())) + _("] As Serenity_Material") + _("\n"));
+	pfile.Write(_("\n"));
+
+
+
+	//Create Materials List Structure
+	wxString p_materials_list_struct_name = _("Serenity_Materials_List_Structure");
+	std::vector<wxString> p_materials_list_struct_field_define;
+	pfile.Write(_("Type ") + p_materials_list_struct_name  + _("\n"));
+
+	uint32_t mat_sn_id = 0;
+
+	for(int i = 0; i < materials.size(); i++)
+	{
+		if(materials[i].id_name.compare("")!=0)
+		{
+			pfile.Write(_("Dim ") + wxString::FromUTF8(materials[i].id_name)  + _(" As Serenity_Material_Reference\n"));
+
+			wxString mat_ref_id = _("Materials") + _(".") + wxString::FromUTF8(materials[i].id_name) + _(".SN_ID");
+
+			wxString mat_id = _("Serenity_Global_Material_List[") + wxString::Format(_("%u"), mat_sn_id) + _("].ID");
+			wxString mat_str = _("\'------------MATERIAL[ ") + wxString::FromUTF8(materials[i].id_name) + _(" ]---------------") + _("\n");
+			mat_str += mat_ref_id + _(" = ") + wxString::Format(_("%u"), mat_sn_id) + _("\n\n");
+
+			mat_str += mat_id + _(" = CreateMaterial()") + _(" \n");
+
+			mat_str += _("SetMaterialAmbientColor(") + mat_id + _(", ") + wxString::Format(_("%u"), materials[i].material.AmbientColor.color) + _(")") + _(" \n");
+			mat_str += _("SetMaterialDiffuseColor(") + mat_id + _(", ") + wxString::Format(_("%u"), materials[i].material.DiffuseColor.color) + _(")") + _(" \n");
+			mat_str += _("SetMaterialEmissiveColor(") + mat_id + _(", ") + wxString::Format(_("%u"), materials[i].material.EmissiveColor.color) + _(")") + _(" \n");
+			mat_str += _("SetMaterialSpecularColor(") + mat_id + _(", ") + wxString::Format(_("%u"), materials[i].material.SpecularColor.color) + _(")") + _(" \n");
+
+			switch(materials[i].material.AntiAliasing)
+			{
+				case irr::video::EAAM_OFF:
+				{
+					mat_str += _("SetMaterialAntiAliasing(") + mat_id + _(", AA_MODE_OFF )") + _(" \n");
+				}
+				break;
+
+				case irr::video::EAAM_SIMPLE:
+				{
+					mat_str += _("SetMaterialAntiAliasing(") + mat_id + _(", AA_MODE_SIMPLE )") + _(" \n");
+				}
+				break;
+
+				case irr::video::EAAM_QUALITY:
+				{
+					mat_str += _("SetMaterialAntiAliasing(") + mat_id + _(", AA_MODE_QUALITY )") + _(" \n");
+				}
+				break;
+
+				case irr::video::EAAM_LINE_SMOOTH:
+				{
+					mat_str += _("SetMaterialAntiAliasing(") + mat_id + _(", AA_MODE_LINE_SMOOTH )") + _(" \n");
+				}
+				break;
+
+				case irr::video::EAAM_POINT_SMOOTH:
+				{
+					mat_str += _("SetMaterialAntiAliasing(") + mat_id + _(", AA_MODE_POINT_SMOOTH )") + _(" \n");
+				}
+				break;
+
+				case irr::video::EAAM_FULL_BASIC:
+				{
+					mat_str += _("SetMaterialAntiAliasing(") + mat_id + _(", AA_MODE_FULL_BASIC )") + _(" \n");
+				}
+				break;
+
+				case irr::video::EAAM_ALPHA_TO_COVERAGE:
+				{
+					mat_str += _("SetMaterialAntiAliasing(") + mat_id + _(", AA_MODE_ALPHA_TO_COVERAGE )") + _(" \n");
+				}
+				break;
+			}
+
+			mat_str += _("SetMaterialBackfaceCulling(") + mat_id + _(", ") + (materials[i].material.BackfaceCulling ? _("TRUE") : _("FALSE")) + _(")") + _(" \n");
+			mat_str += _("SetMaterialFrontfaceCulling(") + mat_id + _(", ") + (materials[i].material.BackfaceCulling ? _("TRUE") : _("FALSE")) + _(")") + _(" \n");
+
+			mat_str += _("SetMaterialBlendFactor(") + mat_id + _(", ") + wxString::FromDouble((double)materials[i].material.BlendFactor) + _(")") + _(" \n");
+
+			switch(materials[i].material.BlendOperation)
+			{
+				case irr::video::EBO_NONE:
+				{
+					mat_str += _("SetMaterialBlendMode(") + mat_id + _(", BLEND_MODE_NONE )") + _(" \n");
+				}
+				break;
+
+				case irr::video::EBO_ADD:
+				{
+					mat_str += _("SetMaterialBlendMode(") + mat_id + _(", BLEND_MODE_ADD )") + _(" \n");
+				}
+				break;
+
+				case irr::video::EBO_SUBTRACT:
+				{
+					mat_str += _("SetMaterialBlendMode(") + mat_id + _(", BLEND_MODE_SUBTRACT )") + _(" \n");
+				}
+				break;
+
+				case irr::video::EBO_REVSUBTRACT:
+				{
+					mat_str += _("SetMaterialBlendMode(") + mat_id + _(", BLEND_MODE_REVSUBTRACT )") + _(" \n");
+				}
+				break;
+
+				case irr::video::EBO_MIN:
+				{
+					mat_str += _("SetMaterialBlendMode(") + mat_id + _(", BLEND_MODE_MIN )") + _(" \n");
+				}
+				break;
+
+				case irr::video::EBO_MAX:
+				{
+					mat_str += _("SetMaterialBlendMode(") + mat_id + _(", BLEND_MODE_MAX )") + _(" \n");
+				}
+				break;
+
+				case irr::video::EBO_MIN_FACTOR:
+				{
+					mat_str += _("SetMaterialBlendMode(") + mat_id + _(", BLEND_MODE_MIN_FACTOR )") + _(" \n");
+				}
+				break;
+
+				case irr::video::EBO_MAX_FACTOR:
+				{
+					mat_str += _("SetMaterialBlendMode(") + mat_id + _(", BLEND_MODE_MAX_FACTOR )") + _(" \n");
+				}
+				break;
+
+				case irr::video::EBO_MIN_ALPHA:
+				{
+					mat_str += _("SetMaterialBlendMode(") + mat_id + _(", BLEND_MODE_MIN_ALPHA )") + _(" \n");
+				}
+				break;
+
+				case irr::video::EBO_MAX_ALPHA:
+				{
+					mat_str += _("SetMaterialBlendMode(") + mat_id + _(", BLEND_MODE_MAX_ALPHA )") + _(" \n");
+				}
+				break;
+			}
+
+
+
+			switch(materials[i].material.ColorMask)
+			{
+				case irr::video::ECP_NONE:
+				{
+					mat_str += _("SetMaterialColorMask(") + mat_id + _(", COLOR_MASK_NONE )") + _(" \n");
+				}
+				break;
+
+				case irr::video::ECP_ALPHA:
+				{
+					mat_str += _("SetMaterialColorMask(") + mat_id + _(", COLOR_MASK_ALPHA )") + _(" \n");
+				}
+				break;
+
+				case irr::video::ECP_RED:
+				{
+					mat_str += _("SetMaterialColorMask(") + mat_id + _(", COLOR_MASK_RED )") + _(" \n");
+				}
+				break;
+
+				case irr::video::ECP_GREEN:
+				{
+					mat_str += _("SetMaterialColorMask(") + mat_id + _(", COLOR_MASK_GREEN )") + _(" \n");
+				}
+				break;
+
+				case irr::video::ECP_BLUE:
+				{
+					mat_str += _("SetMaterialColorMask(") + mat_id + _(", COLOR_MASK_BLUE )") + _(" \n");
+				}
+				break;
+
+				case irr::video::ECP_RGB:
+				{
+					mat_str += _("SetMaterialColorMask(") + mat_id + _(", COLOR_MASK_RGB )") + _(" \n");
+				}
+				break;
+
+				case irr::video::ECP_ALL:
+				{
+					mat_str += _("SetMaterialColorMask(") + mat_id + _(", COLOR_MASK_ALL )") + _(" \n");
+				}
+				break;
+			}
+
+
+
+			switch(materials[i].material.ColorMaterial)
+			{
+				case irr::video::ECM_NONE:
+				{
+					mat_str += _("SetMaterialColorMode(") + mat_id + _(", COLOR_MODE_NONE )") + _(" \n");
+				}
+				break;
+
+				case irr::video::ECM_DIFFUSE:
+				{
+					mat_str += _("SetMaterialColorMode(") + mat_id + _(", COLOR_MODE_DIFFUSE )") + _(" \n");
+				}
+				break;
+
+				case irr::video::ECM_AMBIENT:
+				{
+					mat_str += _("SetMaterialColorMode(") + mat_id + _(", COLOR_MODE_AMBIENT )") + _(" \n");
+				}
+				break;
+
+				case irr::video::ECM_EMISSIVE:
+				{
+					mat_str += _("SetMaterialColorMode(") + mat_id + _(", COLOR_MODE_EMISSIVE )") + _(" \n");
+				}
+				break;
+
+				case irr::video::ECM_SPECULAR:
+				{
+					mat_str += _("SetMaterialColorMode(") + mat_id + _(", COLOR_MODE_SPECULAR )") + _(" \n");
+				}
+				break;
+
+				case irr::video::ECM_DIFFUSE_AND_AMBIENT:
+				{
+					mat_str += _("SetMaterialColorMode(") + mat_id + _(", COLOR_MODE_DIFFUSE_AND_AMBIENT )") + _(" \n");
+				}
+				break;
+			}
+
+
+			mat_str += _("SetMaterialFog(") + mat_id + _(", ") + (materials[i].material.FogEnable ? _("TRUE") : _("FALSE")) + _(")") + _(" \n");
+			mat_str += _("SetMaterialGouraudShading(") + mat_id + _(", ") + (materials[i].material.GouraudShading ? _("TRUE") : _("FALSE")) + _(")") + _(" \n");
+			mat_str += _("SetMaterialLighting(") + mat_id + _(", ") + (materials[i].material.Lighting ? _("TRUE") : _("FALSE")) + _(")") + _(" \n");
+
+			switch(materials[i].material.MaterialType)
+			{
+				case irr::video::EMT_DETAIL_MAP:
+				{
+					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_DETAIL_MAP )") + _(" \n");
+				}
+				break;
+
+				case irr::video::EMT_LIGHTMAP:
+				{
+					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_LIGHTMAP )") + _(" \n");
+				}
+				break;
+
+				case irr::video::EMT_LIGHTMAP_ADD:
+				{
+					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_LIGHTMAP_ADD )") + _(" \n");
+				}
+				break;
+
+				case irr::video::EMT_LIGHTMAP_LIGHTING:
+				{
+					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_LIGHTMAP_LIGHTING )") + _(" \n");
+				}
+				break;
+
+				case irr::video::EMT_LIGHTMAP_LIGHTING_M2:
+				{
+					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_LIGHTMAP_LIGHTING_M2 )") + _(" \n");
+				}
+				break;
+
+				case irr::video::EMT_LIGHTMAP_LIGHTING_M4:
+				{
+					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_LIGHTMAP_LIGHTING_M4 )") + _(" \n");
+				}
+				break;
+
+				case irr::video::EMT_LIGHTMAP_M2:
+				{
+					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_LIGHTMAP_M2 )") + _(" \n");
+				}
+				break;
+
+				case irr::video::EMT_LIGHTMAP_M4:
+				{
+					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_LIGHTMAP_M4 )") + _(" \n");
+				}
+				break;
+
+				case irr::video::EMT_NORMAL_MAP_SOLID:
+				{
+					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_NORMAL_MAP_SOLID )") + _(" \n");
+				}
+				break;
+
+				case irr::video::EMT_NORMAL_MAP_TRANSPARENT_ADD_COLOR:
+				{
+					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_NORMAL_MAP_TRANSPARENT_ADD_COLOR )") + _(" \n");
+				}
+				break;
+
+				case irr::video::EMT_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA:
+				{
+					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA )") + _(" \n");
+				}
+				break;
+
+				case irr::video::EMT_ONETEXTURE_BLEND:
+				{
+					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_ONETEXTURE_BLEND )") + _(" \n");
+				}
+				break;
+
+				case irr::video::EMT_PARALLAX_MAP_SOLID:
+				{
+					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_PARALLAX_MAP_SOLID )") + _(" \n");
+				}
+				break;
+
+				case irr::video::EMT_PARALLAX_MAP_TRANSPARENT_ADD_COLOR:
+				{
+					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_PARALLAX_MAP_TRANSPARENT_ADD_COLOR )") + _(" \n");
+				}
+				break;
+
+				case irr::video::EMT_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA:
+				{
+					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA )") + _(" \n");
+				}
+				break;
+
+				case irr::video::EMT_REFLECTION_2_LAYER:
+				{
+					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_REFLECTION_2_LAYER )") + _(" \n");
+				}
+				break;
+
+				case irr::video::EMT_SOLID:
+				{
+					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_SOLID )") + _(" \n");
+				}
+				break;
+
+				case irr::video::EMT_SOLID_2_LAYER:
+				{
+					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_SOLID_2_LAYER )") + _(" \n");
+				}
+				break;
+
+				case irr::video::EMT_SPHERE_MAP:
+				{
+					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_SPHERE_MAP )") + _(" \n");
+				}
+				break;
+
+				case irr::video::EMT_TRANSPARENT_ADD_COLOR:
+				{
+					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_TRANSPARENT_ADD_COLOR )") + _(" \n");
+				}
+				break;
+
+				case irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL:
+				{
+					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_TRANSPARENT_ALPHA_CHANNEL )") + _(" \n");
+				}
+				break;
+
+				case irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL_REF:
+				{
+					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_TRANSPARENT_ALPHA_CHANNEL_REF )") + _(" \n");
+				}
+				break;
+
+				case irr::video::EMT_TRANSPARENT_REFLECTION_2_LAYER:
+				{
+					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_TRANSPARENT_REFLECTION_2_LAYER )") + _(" \n");
+				}
+				break;
+
+				case irr::video::EMT_TRANSPARENT_VERTEX_ALPHA:
+				{
+					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_TRANSPARENT_VERTEX_ALPHA )") + _(" \n");
+				}
+				break;
+			}
+
+			mat_str += _("SetMaterialNormalize(") + mat_id + _(", ") + (materials[i].material.NormalizeNormals ? _("TRUE") : _("FALSE")) + _(")") + _(" \n");
+			mat_str += _("SetMaterialPointCloud(") + mat_id + _(", ") + (materials[i].material.PointCloud ? _("TRUE") : _("FALSE")) + _(")") + _(" \n");
+
+			mat_str += _("SetMaterialShininess(") + mat_id + _(", ") + wxString::FromDouble((double)materials[i].material.Shininess) + _(")") + _(" \n");
+			mat_str += _("SetMaterialThickness(") + mat_id + _(", ") + wxString::FromDouble((double)materials[i].material.Thickness) + _(")") + _(" \n");
+
+			mat_str += _("SetMaterialWireframe(") + mat_id + _(", ") + (materials[i].material.Wireframe ? _("TRUE") : _("FALSE")) + _(")") + _(" \n");
+
+			mat_str += _("\n");
+
+
+			wxString p_onLoad_cmd = _("");
+			for(int m_texture_level = 0; m_texture_level < materials[i].texture_id.size(); m_texture_level++)
+			{
+				int mt_index = materials[i].texture_id[m_texture_level];
+
+				if(mt_index < 0 || mt_index >= textures.size())
+					continue;
+
+				wxString tx_id = wxString::FromUTF8(textures[mt_index].id_name).Trim();
+
+				if(tx_id.compare(_(""))==0)
+					continue;
+
+				tx_id = _("Textures.") + tx_id + _(".SN_ID");
+
+				wxString mat_struct = _("Serenity_Global_Material_List[") + wxString::Format(_("%u"), mat_sn_id) + _("]");
+
+				mat_str += mat_struct + _(".Textures[") + wxString::Format(_("%d"), m_texture_level) + _("] = ") + tx_id + _("\n");
+
+				p_onLoad_cmd += _("\t") + _("SetMaterialTexture(") + mat_id + _(", ") + wxString::Format(_("%d"), m_texture_level) + _(", Serenity_Global_Texture_List[") + tx_id + _("].ID )") + _(" \n");
+			}
+
+			mat_sn_id++;
+
+			materials[i].p_cmd = mat_str.ToStdString();
+			materials[i].p_onLoad_cmd = p_onLoad_cmd.ToStdString();
+		}
+	}
+
+	pfile.Write(_("End Type") + _("\n"));
+
+
+	pfile.Write(_("\n"));
+
+	//Create Anim8or project structures
+	wxString p_an8_structure_name = _("Serenity_AN8_Projects_Structure");
+	pfile.Write(_("Type ") + p_an8_structure_name + _("\n"));
+
+	for(int i = 0; i < anim8or_projects.size(); i++)
+	{
+		wxString an8_id = wxString::FromUTF8(anim8or_projects[i].id_name).Trim();
+		if(an8_id.compare("")==0)
+			continue;
+
+		pfile.Write(_("Dim ") + an8_id + _("\n"));
+
+		wxString mesh_path = _("\"models\" + path_separator$ + ");
+		wxString p_cmd = _("Anim8or_Projects.") + an8_id + _(" = LoadAN8(") + mesh_path + _("\"") + wxString::FromUTF8(anim8or_projects[i].file) + _("\")");
+		anim8or_projects[i].p_cmd = p_cmd.ToStdString();
+	}
+
+	pfile.Write(_("End Type") + _(" \n"));
+
+	pfile.Write(_("\n"));
+
+	//Create Mesh Animation Structure
+	pfile.Write(_("Type Serenity_Mesh_Animation") + _("\n"));
+	pfile.Write(_("Dim Name$ ") + _("\n"));
+	pfile.Write(_("Dim Start_Frame") + _("\n"));
+	pfile.Write(_("Dim End_Frame") + _("\n"));
+	pfile.Write(_("Dim Speed") + _("\n"));
+	pfile.Write(_("End Type") + _("\n"));
+	pfile.Write(_("\n"));
+
+
+	//Create Mesh Structures
+	pfile.Write(_("Type Serenity_Mesh") + _("\n"));
+
+	pfile.Write(_("Dim ID ") + _("\n"));
+	pfile.Write(_("Dim SN_ID") + _("\n"));
+	pfile.Write(_("Dim MeshType ") + _("\n"));
+	pfile.Write(_("Dim AN8 ") + _("\n"));
+	pfile.Write(_("Dim AN8_Scene$ ") + _("\n"));
+	pfile.Write(_("Dim Zip$ ") + _("\n"));
+	pfile.Write(_("Dim File$ ") + _("\n"));
+	pfile.Write(_("Dim Materials[30] ") + _("\n"));
+	pfile.Write(_("Dim MaterialCount ") + _("\n"));
+	pfile.Write(_("Dim Animations[20] As Serenity_Mesh_Animation") + _("\n"));
+	pfile.Write(_("Dim AnimationCount ") + _("\n"));
+
+	pfile.Write(_("End Type") + _("\n"));
+
+	pfile.Write(_("\n"));
+
+	//Create Mesh Structures
+	pfile.Write(_("Type Serenity_Mesh_Reference") + _("\n"));
+	pfile.Write(_("Dim SN_ID") + _("\n"));
+	pfile.Write(_("End Type") + _("\n"));
+
+
+	pfile.Write(_("\n"));
+
+	pfile.Write(_("Dim Serenity_Global_Mesh_List[") + wxString::Format(_("%u"), (int)(meshes.size()==0 ? 1 : meshes.size())) + _("] As Serenity_Mesh") + _("\n"));
+
+	pfile.Write(_("\n"));
+
+
+	//Create Mesh and Animation List Structures (A different animation structure will be made for every mesh)
+	std::vector<wxString> p_mesh_struct_field_define;
+	int mesh_sn_id = 0;
+
+	for(int i = 0; i < meshes.size(); i++)
+	{
+		wxString mesh_id = wxString::FromUTF8(meshes[i].id_name).Trim();
+
+		if(mesh_id.compare(_(""))==0)
+			continue;
+
+		wxString mesh_struct_field = _("Dim ") + mesh_id + _(" As Serenity_Mesh_Reference") + _(" \n");
+		p_mesh_struct_field_define.push_back(mesh_struct_field);
+
+		wxString p_cmd = _("\'-----MESH[ ") + mesh_id + _(" ]------------") + _("\n");
+
+		wxString mesh_path = _("\"models\" + path_separator$ + ");
+
+		meshes[i].sn_id = mesh_sn_id;
+		p_cmd += _("Meshes.") + mesh_id + _(".SN_ID = ") + wxString::Format(_("%d"), mesh_sn_id) + _("\n");
+
+		wxString mesh_list_id = _("Serenity_Global_Mesh_List[") + wxString::Format(_("%d"), mesh_sn_id) + _("]");
+		mesh_sn_id++;
+
+
+		if(meshes[i].isAN8Scene)
+		{
+			p_cmd += mesh_list_id + _(".MeshType = SN_MESH_TYPE_AN8_SCENE") + _("\n");
+
+			int an8_index = meshes[i].an8_index;
+			wxString an8_id = _("-1");
+			if(an8_index >= 0 && an8_index < anim8or_projects.size())
+			{
+				an8_id = wxString::FromUTF8(anim8or_projects[an8_index].id_name);
+			}
+			p_cmd += mesh_list_id + _(".AN8 = Anim8or_Projects.") + an8_id + _("\n");
+
+			wxString an8_scene = wxString::FromUTF8(meshes[i].an8_scene);
+			p_cmd += mesh_list_id + _(".AN8_Scene$ = \"") + an8_scene + _("\" \n");
+
+			meshes[i].p_cmd = p_cmd.ToStdString();
+
+			//OnLoad
+			p_cmd = mesh_list_id + _(".ID = LoadMeshFromAN8(") + an8_id + _(", \"") + an8_scene + _("\")") + _("\n");
+			meshes[i].p_onLoad_cmd = p_cmd;
+
+			p_cmd = _("");
+		}
+		else if(meshes[i].isZipped)
+		{
+			p_cmd += mesh_list_id + _(".MeshType = SN_MESH_TYPE_ZIPPED") + _("\n");
+			p_cmd += mesh_list_id + _(".Zip$ = ") + _("\"") + wxString::FromUTF8(meshes[i].zip_file) + _("\"") + _("\n");
+			p_cmd += mesh_list_id + _(".File$ = \"") + wxString::FromUTF8(meshes[i].file) + _("\"") + _("\n");
+
+			meshes[i].p_cmd = p_cmd.ToStdString();
+
+			p_cmd = _("");
+			p_cmd = mesh_list_id + _(".ID = LoadMeshFromArchive(") + mesh_path + _("\"") + wxString::FromUTF8(meshes[i].zip_file) + _("\", \"") + wxString::FromUTF8(meshes[i].file) + _("\")") + _("\n");
+			meshes[i].p_onLoad_cmd = p_cmd;
+		}
+		else
+		{
+			p_cmd += mesh_list_id + _(".MeshType = SN_MESH_TYPE_NORMAL") + _("\n");
+			p_cmd += mesh_list_id + _(".File$ = ") +  _("\"") + wxString::FromUTF8(meshes[i].file) + _("\"") + _("\n");
+
+			meshes[i].p_cmd = p_cmd.ToStdString();
+
+			p_cmd = mesh_list_id + _(".ID = LoadMesh(") + mesh_path + _("\"") + wxString::FromUTF8(meshes[i].file) + _("\")") + _("\n");
+			meshes[i].p_onLoad_cmd = p_cmd;
+		}
+
+		p_cmd = _("\n");
+		p_cmd += mesh_list_id + _(".AnimationCount = ") + wxString::Format(_("%d"), (int)meshes[i].animation.size()) + _("\n");
+
+		if(!meshes[i].isMD2)
+		{
+			for(uint32_t ani = 0; ani < meshes[i].animation.size(); ani++)
+			{
+				p_cmd += mesh_list_id + _(".Animations[") + wxString::Format(_("%u"), ani) + _("].Name$ = \"") + wxString::FromUTF8(meshes[i].animation[ani].id_name) + _("\"\n");
+				p_cmd += mesh_list_id + _(".Animations[") + wxString::Format(_("%u"), ani) + _("].Start_Frame = ") + wxString::Format(_("%d"), meshes[i].animation[ani].start_frame) + _("\n");
+				p_cmd += mesh_list_id + _(".Animations[") + wxString::Format(_("%u"), ani) + _("].End_Frame = ") + wxString::Format(_("%d"), meshes[i].animation[ani].end_frame) + _("\n");
+				p_cmd += mesh_list_id + _(".Animations[") + wxString::Format(_("%u"), ani) + _("].Speed = ") + wxString::FromDouble(meshes[i].animation[ani].speed) + _("\n");
+				p_cmd += _("\n");
+			}
+
+			meshes[i].p_cmd += p_cmd.ToStdString();
+		}
+
+		p_cmd = _("");
+
+		if(meshes[i].material_index.size() > 30)
+		{
+			//Resizing TYPE fields does not currently work in RCBasic. I will come back to this once I add this feature to RCBasic
+			//p_cmd += _("ReDim ") + mesh_list_id + _(".Materials[") wxString::Format(_("%d"), meshes[i].material_index.size()) + _("]") + _("\n");
+		}
+
+		for(int mat = 0; mat < meshes[i].material_index.size(); mat++)
+		{
+			if(meshes[i].material_index[mat] >= 0 && meshes[i].material_index[mat] < materials.size())
+			{
+				int mat_index = meshes[i].material_index[mat];
+
+				if(materials[mat_index].id_name.compare("")==0)
+					continue;
+
+				wxString mat_ref_id = _("Materials") + _(".") + wxString::FromUTF8(materials[mat_index].id_name) + _(".SN_ID");
+				p_cmd += mesh_list_id + _(".Materials[") + wxString::Format(_("%d"), mat) + _("] = ") + mat_ref_id + _("\n");
+			}
+		}
+
+		meshes[i].p_cmd += p_cmd.ToStdString();
+	}
+
+	//Output Global Mesh Project Structure
+	pfile.Write(_("\n"));
+	pfile.Write(_("Type Serenity_Meshes_List_Structure") + _(" \n"));
+
+	for(int i = 0; i < p_mesh_struct_field_define.size(); i++)
+	{
+		pfile.Write(p_mesh_struct_field_define[i]);
+	}
+
+	pfile.Write(_("End Type")  + _("\n"));
+
+	//Create Sky Structure
+	pfile.Write(_("\n"));
+
+	wxString p_sky_struct_name = _("Serenity_Sky_Structure");
+
+	pfile.Write(_("Type Serenity_Sky_Dome") + _("\n"));
+	pfile.Write(_("Dim Image ") + _("\n"));
+	pfile.Write(_("Dim hRes ") + _("\n"));
+	pfile.Write(_("Dim vRes ") + _("\n"));
+	pfile.Write(_("Dim TexturePCT ") + _("\n"));
+	pfile.Write(_("Dim SpherePCT ") + _("\n"));
+	pfile.Write(_("Dim Radius ") + _("\n"));
+	pfile.Write(_("End Type ") + _("\n"));
+	pfile.Write(_("\n"));
+
+	pfile.Write(_("Type Serenity_Sky_Box ") + _("\n"));
+	pfile.Write(_("Dim Image_Left ") + _("\n"));
+	pfile.Write(_("Dim Image_Right ") + _("\n"));
+	pfile.Write(_("Dim Image_Top ") + _("\n"));
+	pfile.Write(_("Dim Image_Bottom ") + _("\n"));
+	pfile.Write(_("Dim Image_Front ") + _("\n"));
+	pfile.Write(_("Dim Image_Back ") + _("\n"));
+	pfile.Write(_("End Type ") + _("\n"));
+	pfile.Write(_("\n"));
+
+	pfile.Write(_("Type ") + p_sky_struct_name + _("\n"));
+	pfile.Write(_("Dim Shape ") + _("\n"));
+	pfile.Write(_("Dim Dome As Serenity_Sky_Dome ") + _("\n"));
+	pfile.Write(_("Dim Box As Serenity_Sky_Box ") + _("\n"));
+	pfile.Write(_("End Type ") + _("\n"));
+	pfile.Write(_("\n"));
+
+	//Create Stage Structures
+	pfile.Write(_("\n"));
+
+	//Actor Physics Structure
+	pfile.Write(_("Type Serenity_Actor_Physics") + _("\n"));
+	pfile.Write(_("Dim Shape") + _("\n"));
+	pfile.Write(_("Dim Mass") + _("\n"));
+	pfile.Write(_("Dim isSolid") + _("\n"));
+	pfile.Write(_("End Type") + _("\n"));
+
+	pfile.Write(_("\n"));
+
+
+
+	//Actor Light Structure
+	pfile.Write(_("Type Serenity_Light_Properties") + _("\n"));
+	pfile.Write(_("Dim LightType") + _("\n"));
+	pfile.Write(_("Dim CastShadow") + _("\n"));
+	pfile.Write(_("Dim InnerCone") + _("\n"));
+	pfile.Write(_("Dim OuterCone") + _("\n"));
+	pfile.Write(_("Dim Radius") + _("\n"));
+	pfile.Write(_("Dim FallOff") + _("\n"));
+	pfile.Write(_("Dim Ambient") + _("\n"));
+	pfile.Write(_("Dim Diffuse") + _("\n"));
+	pfile.Write(_("Dim Specular") + _("\n"));
+	pfile.Write(_("Dim Constant") + _("\n"));
+	pfile.Write(_("Dim Linear") + _("\n"));
+	pfile.Write(_("Dim Quadratic") + _("\n"));
+	pfile.Write(_("End Type") + _("\n"));
+
+	pfile.Write(_("\n"));
+
+	//Actor Terrain Structure
+	pfile.Write(_("Type Serenity_Terrain_Properties") + _("\n"));
+	pfile.Write(_("Dim HeightMap$") + _("\n"));
+	pfile.Write(_("End Type") + _("\n"));
+
+	pfile.Write(_("\n"));
+
+	//Actor Animation Structure
+	pfile.Write(_("Type Serenity_ActorAnimation_Properties") + _("\n"));
+	pfile.Write(_("Dim AnimationID") + _("\n"));
+	pfile.Write(_("Dim NumLoops") + _("\n"));
+	pfile.Write(_("End Type") + _("\n"));
+
+	pfile.Write(_("\n"));
+
+	//Actor Water Structure
+	pfile.Write(_("Type Serenity_Water_Properties") + _("\n"));
+	pfile.Write(_("Dim WaveHeight") + _("\n"));
+	pfile.Write(_("Dim WaveLength") + _("\n"));
+	pfile.Write(_("Dim WaveSpeed") + _("\n"));
+	pfile.Write(_("End Type") + _("\n"));
+
+	pfile.Write(_("\n"));
+
+	//Actor Particle Structure
+	pfile.Write(_("Type Serenity_Particle_Properties") + _("\n"));
+	pfile.Write(_("Dim ParticleType") + _("\n"));
+	pfile.Write(_("Dim MinSize As Serenity_Size") + _("\n"));
+	pfile.Write(_("Dim MaxSize As Serenity_Size") + _("\n"));
+	pfile.Write(_("Dim MinStartColor") + _("\n"));
+	pfile.Write(_("Dim MaxStartColor") + _("\n"));
+	pfile.Write(_("Dim MinSpeed") + _("\n"));
+	pfile.Write(_("Dim MaxSpeed") + _("\n"));
+	pfile.Write(_("Dim MinLife") + _("\n"));
+	pfile.Write(_("Dim MaxLife") + _("\n"));
+	pfile.Write(_("Dim Normal As Serenity_Vector3D") + _("\n"));
+	pfile.Write(_("Dim Direction As Serenity_Vector3D") + _("\n"));
+	pfile.Write(_("Dim MaxAngle") + _("\n"));
+	pfile.Write(_("Dim CircleCenter As Serenity_Vector3D") + _("\n"));
+	pfile.Write(_("Dim Radius") + _("\n"));
+	pfile.Write(_("Dim UseEveryVertex") + _("\n"));
+	pfile.Write(_("Dim UseNormalDirection") + _("\n"));
+	pfile.Write(_("Dim NormalDirectionModifier") + _("\n"));
+	pfile.Write(_("Dim CylinderLength") + _("\n"));
+	pfile.Write(_("Dim UseOutlineOnly") + _("\n"));
+	pfile.Write(_("Dim MinBoxSize As Serenity_Size") + _("\n"));
+	pfile.Write(_("Dim MaxBoxSize As Serenity_Size") + _("\n"));
+	pfile.Write(_("Dim RingThickness") + _("\n"));
+	pfile.Write(_("End Type") + _("\n"));
+
+	pfile.Write(_("\n"));
+
+
+	//Actor Structure
+	pfile.Write(_("Type Serenity_Actor") + _("\n"));
+	pfile.Write(_("Dim ID ") + _("\n"));
+	pfile.Write(_("Dim SN_ID ") + _("\n"));
+	pfile.Write(_("Dim ActorType ") + _("\n"));
+	pfile.Write(_("Dim Mesh  \'Index in Global Mesh list") + _("\n"));
+	pfile.Write(_("Dim Position As Serenity_Vector3D") + _("\n"));
+	pfile.Write(_("Dim Rotation As Serenity_Vector3D") + _("\n"));
+	pfile.Write(_("Dim Scale As Serenity_Vector3D") + _("\n"));
+	pfile.Write(_("Dim Material") + _("\n"));
+	pfile.Write(_("Dim Shadow") + _("\n"));
+	pfile.Write(_("Dim AutoCulling") + _("\n"));
+	pfile.Write(_("Dim Physics As Serenity_Actor_Physics") + _("\n"));
+	pfile.Write(_("Dim Animation As Serenity_ActorAnimation_Properties") + _("\n"));
+	pfile.Write(_("Dim Light As Serenity_Light_Properties") + _("\n"));
+	pfile.Write(_("Dim Terrain As Serenity_Terrain_Properties") + _("\n"));
+	pfile.Write(_("Dim Water As Serenity_Water_Properties") + _("\n"));
+	pfile.Write(_("Dim Particle As Serenity_Particle_Properties") + _("\n"));
+	pfile.Write(_("Dim CubeSize") + _("\n"));
+	pfile.Write(_("Dim SphereRadius") + _("\n"));
+	pfile.Write(_("End Type ") + _("\n"));
+
+	pfile.Write(_("\n"));
+
+	//Actor Structure
+	pfile.Write(_("Type Serenity_Actor_Reference") + _("\n"));
+	pfile.Write(_("Dim SN_ID ") + _("\n"));
+	pfile.Write(_("End Type ") + _("\n"));
+	pfile.Write(_("\n"));
+
+
+	wxString p_stage_struct_name_template = _("Serenity_Stage_[STAGE_ID]_Structure");
+	wxString p_stage_actors_struct_name_template = _("Serenity_Stage_Actors_[STAGE_ID]_Structure");
+
+	wxString p_stage_define = _("");
+	wxString p_stage_actor_define;
+
+	for(int stage_index = 0; stage_index < stages.size(); stage_index++)
+	{
+		if(stages[stage_index].id_name.compare("")==0)
+			continue;
+
+		pfile.Write(_("\'----------------STAGE[") + wxString::FromUTF8(stages[stage_index].id_name) + _("]----------------------\n"));
+
+		p_stage_actor_define = _("");
+
+		//Create Actor Structures
+		for(int actor_index = 0; actor_index < stages[stage_index].actors.size(); actor_index++)
+		{
+			wxString actor_id = wxString::FromUTF8(stages[stage_index].actors[actor_index].id_name).Trim();
+
+			if(actor_id.compare(_(""))==0)
+				continue;
+
+			p_stage_actor_define += _("Dim ") + actor_id + _(" As Serenity_Actor_Reference") + _("\n");
+		}
+
+		pfile.Write(_("\n"));
+
+		wxString stage_actors_struct = p_stage_actors_struct_name_template;
+		stage_actors_struct.Replace(_("[STAGE_ID]"), wxString::FromUTF8(stages[stage_index].id_name));
+
+		pfile.Write(_("Type ") + stage_actors_struct + _("\n"));
+
+		pfile.Write(p_stage_actor_define);
+
+		pfile.Write(_("End Type ") + _("\n"));
+
+		pfile.Write(_("\n"));
+
+		wxString stage_struct = p_stage_struct_name_template;
+		stage_struct.Replace(_("[STAGE_ID]"), wxString::FromUTF8(stages[stage_index].id_name));
+
+		uint32_t num_actors = (int)stages[stage_index].actors.size();
+
+		pfile.Write(_("Type ") + stage_struct + _("\n"));
+		pfile.Write(_("Dim ID ") + _("\n"));
+		pfile.Write(_("Dim ActorList[") + wxString::Format(_("%u"), (num_actors == 0 ? 1 : num_actors)) + _("] As Serenity_Actor") + _("\n"));
+		pfile.Write(_("Dim Actors As ") + stage_actors_struct + _("\n"));
+		pfile.Write(_("Dim Sky As ") + p_sky_struct_name + _("\n"));
+		pfile.Write(_("End Type ") + _("\n"));
+
+		p_stage_define += _("Dim ") + wxString::FromUTF8(stages[stage_index].id_name) + _(" As ") + stage_struct + _("\n");
+
+		pfile.Write(_("\n"));
+	}
+
+	pfile.Write(_("\n"));
+
+	pfile.Write(_("Type Serenity_Stages_Structure") + _("\n"));
+	pfile.Write(p_stage_define);
+	pfile.Write(_("End Type") + _("\n"));
+
+	pfile.Write(_("\n"));
+
+	pfile.Write(_("Dim Textures As Serenity_Textures_List_Structure") + _("\n"));
+	pfile.Write(_("\'TEXTURES ARE LOADED AND UNLOADED WHEN LOADSTAGE() IS CALLED") + _("\n"));
+	pfile.Write(p_texture_define);
+	pfile.Write(_("\n"));
+
+
+	pfile.Write(_("Dim Materials As Serenity_Materials_List_Structure") + _("\n"));
+	pfile.Write(_("\'-----------------DEFINE MATERIALS---------------") + _("\n"));
+
+	for(int i = 0; i < materials.size(); i++)
+	{
+		if(materials[i].id_name.compare("")==0)
+			continue;
+
+		pfile.Write(wxString::FromUTF8(materials[i].p_cmd));
+		pfile.Write(_("\n\n"));
+	}
+	pfile.Write(_("\n"));
+
+
+	pfile.Write(_("Dim Anim8or_Projects As ") + p_an8_structure_name + _("\n"));
+	pfile.Write(_("\'-----------------LOAD AN8 PROJECTS---------------") + _("\n"));
+
+	for(int i = 0; i < anim8or_projects.size(); i++)
+	{
+		if(anim8or_projects[i].id_name.compare("")==0)
+			continue;
+
+		pfile.Write(wxString::FromUTF8(anim8or_projects[i].p_cmd) + _("\n"));
+		//pfile.Write(wxString::FromUTF8(anim8or_projects[i]) _("LoadAN8(") + mesh_path + _("\"") + wxString::FromUTF8(anim8or_projects[i].file) + _("\")") + _("\n"));
+	}
+
+	pfile.Write(_("\n"));
+
+	pfile.Write(_("Dim Meshes As Serenity_Meshes_List_Structure") + _("\n"));
+	pfile.Write(_("\'-----------------DEFINE MESHES---------------") + _("\n"));
+	for(int i = 0; i < meshes.size(); i++)
+	{
+		if(meshes[i].id_name.compare("")==0)
+			continue;
+
+		pfile.Write(wxString::FromUTF8(meshes[i].p_cmd) + _("\n"));
+	}
+
+	pfile.Write(_("\n\n"));
+
+
+	pfile.Write(_("Dim Stages As Serenity_Stages_Structure") + _("\n"));
+	pfile.Write(_("\'-----------------DEFINE STAGES---------------") + _("\n"));
+
+	int num_actor_types = 10;
+	wxString actor_type_str[num_actor_types];
+	actor_type_str[0] = _("SN_ACTOR_TYPE_ANIMATED");
+	actor_type_str[1] = _("SN_ACTOR_TYPE_OCTREE");
+	actor_type_str[2] = _("SN_ACTOR_TYPE_LIGHT");
+	actor_type_str[3] = _("SN_ACTOR_TYPE_BILLBOARD");
+	actor_type_str[4] = _("SN_ACTOR_TYPE_TERRAIN");
+	actor_type_str[5] = _("SN_ACTOR_TYPE_WATER");
+	actor_type_str[6] = _("SN_ACTOR_TYPE_PARTICLE");
+	actor_type_str[7] = _("SN_ACTOR_TYPE_CUBE");
+	actor_type_str[8] = _("SN_ACTOR_TYPE_SPHERE");
+	actor_type_str[9] = _("SN_ACTOR_TYPE_PLANE");
+
+	wxString sky_type_str[3];
+	sky_type_str[0] = _("SN_SKY_TYPE_NONE");
+	sky_type_str[1] = _("SN_SKY_TYPE_BOX");
+	sky_type_str[2] = _("SN_SKY_TYPE_DOME");
+
+	int actor_sn_id = 0;
+
+	int stage_sn_id = 0;
+
+	wxString stage_load_fn = _("");
+
+	for(int stage = 0; stage < stages.size(); stage++)
+	{
+		if(stages[stage].id_name.compare("")==0)
+			continue;
+
+		for(int n = 0; n < materials.size(); n++)
+			materials[n].load_flag = false;
+
+		for(int n = 0; n < meshes.size(); n++)
+			meshes[n].load_flag = false;
+
+		for(int n = 0; n < textures.size(); n++)
+			textures[n].load_flag = false;
+
+		wxString stage_id = _("Stages.") + wxString::FromUTF8(stages[stage].id_name);
+
+		stage_load_fn += _("Sub Load_") + wxString::FromUTF8(stages[stage].id_name) + _("( )") + _("\n");
+
+		pfile.Write(_("\'----------------INIT STAGE: [ ") + wxString::FromUTF8(stages[stage].id_name) + _(" ]-----------------------\n"));
+
+		pfile.Write(stage_id + _(".ID = ") + wxString::Format(_("%d"), stage_sn_id) + _("\n"));
+		stage_sn_id++;
+
+		switch(stages[stage].sky.type)
+		{
+			case SN_SKY_TYPE_BOX:
+			{
+				pfile.Write(stage_id + _(".Sky.Shape = SN_SKY_TYPE_BOX") + _("\n"));
+
+				int img_index = -1;
+				wxString img_id = _("");
+
+				bool hasSkyBoxComplete = true;
+
+				//LEFT
+				img_id = _("");
+				img_index = stages[stage].sky.left_texture_index;
+				if(img_index >= 0 && img_index < textures.size())
+					img_id = wxString::FromUTF8(textures[img_index].id_name).Trim();
+
+				if(img_id.compare(_(""))!=0)
+					pfile.Write(stage_id + _(".Sky.Box.Image_Left = Textures.") + img_id + _(".SN_ID") + _("\n"));
+				else
+					hasSkyBoxComplete = false;
+
+				//RIGHT
+				img_id = _("");
+				img_index = stages[stage].sky.right_texture_index;
+				if(img_index >= 0 && img_index < textures.size())
+					img_id = wxString::FromUTF8(textures[img_index].id_name).Trim();
+
+				if(img_id.compare(_(""))!=0)
+					pfile.Write(stage_id + _(".Sky.Box.Image_Right = Textures.") + img_id + _(".SN_ID") + _("\n"));
+				else
+					hasSkyBoxComplete = false;
+
+				//FRONT
+				img_id = _("");
+				img_index = stages[stage].sky.front_texture_index;
+				if(img_index >= 0 && img_index < textures.size())
+					img_id = wxString::FromUTF8(textures[img_index].id_name).Trim();
+
+				if(img_id.compare(_(""))!=0)
+					pfile.Write(stage_id + _(".Sky.Box.Image_Front = Textures.") + img_id + _(".SN_ID") + _("\n"));
+				else
+					hasSkyBoxComplete = false;
+
+				//BACK
+				img_id = _("");
+				img_index = stages[stage].sky.back_texture_index;
+				if(img_index >= 0 && img_index < textures.size())
+					img_id = wxString::FromUTF8(textures[img_index].id_name).Trim();
+
+				if(img_id.compare(_(""))!=0)
+					pfile.Write(stage_id + _(".Sky.Box.Image_Back = Textures.") + img_id + _(".SN_ID") + _("\n"));
+				else
+					hasSkyBoxComplete = false;
+
+				//TOP
+				img_id = _("");
+				img_index = stages[stage].sky.top_texture_index;
+				if(img_index >= 0 && img_index < textures.size())
+					img_id = wxString::FromUTF8(textures[img_index].id_name).Trim();
+
+				if(img_id.compare(_(""))!=0)
+					pfile.Write(stage_id + _(".Sky.Box.Image_Top = Textures.") + img_id + _(".SN_ID") + _("\n"));
+				else
+					hasSkyBoxComplete = false;
+
+				//RIGHT
+				img_id = _("");
+				img_index = stages[stage].sky.bottom_texture_index;
+				if(img_index >= 0 && img_index < textures.size())
+					img_id = wxString::FromUTF8(textures[img_index].id_name).Trim();
+
+				if(img_id.compare(_(""))!=0)
+					pfile.Write(stage_id + _(".Sky.Box.Image_Bottom = Textures.") + img_id + _(".SN_ID") + _("\n"));
+				else
+					hasSkyBoxComplete = false;
+
+				if(hasSkyBoxComplete)
+				{
+					wxString box_id = stage_id + _(".Sky.Box");
+					stage_load_fn += _("\tAddSceneSkyBox(") + box_id + _(".Image_Top, ") +
+															  box_id + _(".Image_Bottom, ") +
+															  box_id + _(".Image_Left, ") +
+															  box_id + _(".Image_Right, ") +
+															  box_id + _(".Image_Front, ") +
+															  box_id + _(".Image_Back )") + _("\n");
+				}
+			}
+			break;
+
+			case SN_SKY_TYPE_DOME:
+			{
+				pfile.Write(stage_id + _(".Sky.Shape = SN_SKY_TYPE_DOME") + _("\n"));
+
+				int img_index = -1;
+				wxString img_id = _("");
+
+				//LEFT
+				img_id = _("");
+				img_index = stages[stage].sky.dome_texture_index;
+				if(img_index >= 0 && img_index < textures.size())
+					img_id = wxString::FromUTF8(textures[img_index].id_name).Trim();
+
+				bool hasDomeImage = true;
+
+				if(img_id.compare(_(""))!=0)
+					pfile.Write(stage_id + _(".Sky.Dome.Image = Textures.") + img_id + _(".SN_ID") + _("\n"));
+				else
+					hasDomeImage = false;
+
+				pfile.Write(stage_id + _(".Sky.Dome.hRes = ") + wxString::FromDouble(stages[stage].sky.hRes) + _("\n"));
+				pfile.Write(stage_id + _(".Sky.Dome.vRes = ") + wxString::FromDouble(stages[stage].sky.vRes) + _("\n"));
+				pfile.Write(stage_id + _(".Sky.Dome.TexturePCT = ") + wxString::FromDouble(stages[stage].sky.txPCT) + _("\n"));
+				pfile.Write(stage_id + _(".Sky.Dome.SpherePCT = ") + wxString::FromDouble(stages[stage].sky.spherePCT) + _("\n"));
+				pfile.Write(stage_id + _(".Sky.Dome.Radius = ") + wxString::FromDouble(stages[stage].sky.dome_radius) + _("\n"));
+
+				if(hasDomeImage)
+				{
+					wxString dome_id = stage_id + _(".Sky.Dome");
+
+					stage_load_fn += _("\tAddSceneSkyDomeEx( ") + dome_id + _(".Image, ") +
+																  dome_id + _(".hRes, ") +
+																  dome_id + _(".vRes, ") +
+																  dome_id + _(".TexturePCT, ") +
+																  dome_id + _(".SpherePCT, ") +
+																  dome_id + _(".TexturePCT ) ") + _("\n");
+				}
+
+			}
+			break;
+		}
+
+		pfile.Write(_("\n"));
+
+		actor_sn_id = 0;
+
+		for(int actor = 0; actor < stages[stage].actors.size(); actor++)
+		{
+			if(stages[stage].actors[actor].id_name.compare("")==0)
+				continue;
+
+			stages[stage].actors[actor].sn_id = actor_sn_id;
+			actor_sn_id++;
+
+			wxString actor_define = _("\'-----------ACTOR [ ") + stage_id + _(".Actors.") + wxString::FromUTF8(stages[stage].actors[actor].id_name) + _(" ]----------------\n");
+			actor_define += stage_id + _(".Actors.") + wxString::FromUTF8(stages[stage].actors[actor].id_name) + _(".SN_ID = ") + wxString::Format(_("%d"), stages[stage].actors[actor].sn_id) + _("\n\n");
+
+			wxString actor_id = stage_id + _(".ActorList[") + wxString::Format(_("%d"), stages[stage].actors[actor].sn_id) + _("]");
+
+			int actor_type = stages[stage].actors[actor].type;
+			actor_type = ((actor_type < 0 || actor_type >= num_actor_types) ? 0 : actor_type);
+
+			actor_define += actor_id + _(".ID = -1") + _("\n");
+			actor_define += actor_id + _(".ActorType = ") + actor_type_str[actor_type] + _("\n");
+
+			int mesh_index = stages[stage].actors[actor].mesh_index;
+			wxString mesh_id = _("");
+
+			if(mesh_index >= 0 && mesh_index < meshes.size())
+				mesh_id = wxString::FromUTF8(meshes[mesh_index].id_name).Trim();
+
+			wxString mesh_material_str = _("");
+
+			if(mesh_id.compare("")!=0)
+			{
+				actor_define += actor_id + _(".Mesh = Meshes.") + mesh_id + _(".SN_ID") + _("\n");
+
+				if(!meshes[mesh_index].load_flag)
+				{
+					meshes[mesh_index].load_flag = true;
+					//Load Materials For mesh if flag is not set
+					for(int mat = 0; mat < meshes[mesh_index].material_index.size(); mat++)
+					{
+						int mat_index = meshes[mesh_index].material_index[mat];
+
+						if(materials[mat_index].id_name.compare("")==0)
+							continue;
+
+						if(materials[mat_index].load_flag)
+							continue;
+
+						wxString mat_str = _("");
+
+						stage_load_fn += _("\t") + _("\'----------LOAD MATERIAL TEXTURE LEVELS [ ") + wxString::FromUTF8(materials[mat_index].id_name) + _("]-----------") + _("\n");
+
+						//Load Texture Levels for material
+						for(int tx = 0; tx < materials[mat_index].texture_id.size(); tx++)
+						{
+							int tx_index = materials[mat_index].texture_id[tx];
+
+							if(textures[tx_index].id_name.compare("")==0)
+								continue;
+
+							if(textures[tx_index].load_flag)
+								continue;
+
+							stage_load_fn += wxString::FromUTF8(textures[tx_index].p_cmd);
+							textures[tx_index].load_flag = true;
+						}
+						stage_load_fn += _("\n");
+
+						stage_load_fn += wxString::FromUTF8(materials[mat_index].p_onLoad_cmd);
+						materials[mat_index].load_flag = true;
+
+						wxString mat_sn_id = _("Materials.") + wxString::FromUTF8(materials[mat_index].id_name) + _(".SN_ID");
+						wxString mat_id = _("Serenity_Global_Material_List[") + mat_sn_id + _("].ID");
+						mesh_material_str += _("SetActorMaterial( [ACTOR], ") + wxString::Format(_("%d"), mat) + _(", ") + mat_id + _(" )") + _("\n");
+
+						stage_load_fn += _("\n");
+					}
+
+					meshes[mesh_index].mat_load_str = mesh_material_str.ToStdString();
+				}
+			}
+
+			wxString actor_pos_str = wxString::FromDouble((double)stages[stage].actors[actor].position.X) + _(", ") +
+									 wxString::FromDouble((double)stages[stage].actors[actor].position.Y) + _(", ") +
+									 wxString::FromDouble((double)stages[stage].actors[actor].position.Z);
+			actor_define += actor_id + _(".Position = Serenity_CreateVector3D(") + actor_pos_str + _(")") + _("\n");
+
+			wxString actor_rot_str = wxString::FromDouble((double)stages[stage].actors[actor].rotation.X) + _(", ") +
+									 wxString::FromDouble((double)stages[stage].actors[actor].rotation.Y) + _(", ") +
+									 wxString::FromDouble((double)stages[stage].actors[actor].rotation.Z);
+			actor_define += actor_id + _(".Rotation = Serenity_CreateVector3D(") + actor_rot_str + _(")") + _("\n");
+
+			wxString actor_scale_str = wxString::FromDouble((double)stages[stage].actors[actor].scale.X) + _(", ") +
+									   wxString::FromDouble((double)stages[stage].actors[actor].scale.Y) + _(", ") +
+									   wxString::FromDouble((double)stages[stage].actors[actor].scale.Z);
+			actor_define += actor_id + _(".Scale = Serenity_CreateVector3D(") + actor_scale_str + _(")") + _("\n");
+
+			int mat_index = stages[stage].actors[actor].override_material_index;
+			wxString mat_id = _("");
+
+			if(mat_index >= 0 && mat_index < materials.size())
+				mat_id = wxString::FromUTF8(materials[mat_index].id_name).Trim();
+
+			if(mat_id.compare(_(""))!=0)
+				actor_define += actor_id + _(".Material = Materials.") + mat_id + _(".SN_ID") + _("\n");
+
+			actor_define += actor_id + _(".Shadow = ") + (stages[stage].actors[actor].hasShadow ? _("TRUE") : _("FALSE")) + _("\n");
+			actor_define += actor_id + _(".AutoCulling = ") + (stages[stage].actors[actor].hasShadow ? _("TRUE") : _("FALSE")) + _("\n");
+
+			//Physics Properties
+			actor_define += actor_id + _(".Physics.isSolid = ") + (stages[stage].actors[actor].physics.isSolid ? _("TRUE") : _("FALSE")) + _("\n");
+			actor_define += actor_id + _(".Physics.Mass = ") + wxString::FromDouble(stages[stage].actors[actor].physics.mass) + _("\n");
+			actor_define += actor_id + _(".Physics.Shape = ") + wxString::Format(_("%d"), stages[stage].actors[actor].physics.shape) + _("\n");
+
+			switch(stages[stage].actors[actor].type)
+			{
+				case SN_ACTOR_TYPE_ANIMATED:
+				{
+					//Animation Properties
+					int animation_index = stages[stage].actors[actor].animation_index;
+					wxString animation_id = _("");
+
+					if(mesh_index >= 0 && mesh_index < meshes.size())
+						if(animation_index >= 0 && animation_index < meshes[mesh_index].animation.size())
+							animation_id = wxString::FromUTF8(meshes[mesh_index].animation[animation_index].id_name);
+
+					if(animation_id.compare(_(""))!=0)
+					{
+						actor_define += actor_id + _(".Animation.AnimationID = ") + animation_id + _("\n");
+						actor_define += actor_id + _(".Animation.NumLoops = ") + wxString::Format(_("%d"),stages[stage].actors[actor].num_loops) + _("\n");
+					}
+
+					if(mesh_id.compare(_(""))!=0)
+					{
+						stage_load_fn += _("\t") + actor_id + _(".ID = ") + _(" CreateAnimatedActor( Serenity_Global_Mesh_List[") +  actor_id + _(".Mesh].ID ) ") + _("\n");
+					}
+				}
+				break;
+
+				case SN_ACTOR_TYPE_OCTREE:
+				{
+					if(mesh_id.compare(_(""))!=0)
+					{
+						stage_load_fn += _("\t") + actor_id + _(".ID = ") + _(" CreateOctreeActor( Serenity_Global_Mesh_List[") +  actor_id + _(".Mesh].ID ) ") + _("\n");
+					}
+				}
+				break;
+
+				case SN_ACTOR_TYPE_BILLBOARD:
+				{
+					stage_load_fn += _("\t") + actor_id + _(".ID = ") + _(" CreateBillboardActor( ) ") + _("\n");
+				}
+				break;
+
+				case SN_ACTOR_TYPE_LIGHT:
+				{
+					actor_define += actor_id + _(".Light.LightType = SN_LIGHT_TYPE_") + getLightTypeString(stages[stage].actors[actor].light_type) + _("\n");
+					actor_define += actor_id + _(".Light.CastShadow = ") + (stages[stage].actors[actor].isCastingShadow ? _("TRUE") : _("FALSE")) + _("\n");
+					actor_define += actor_id + _(".Light.InnerCone = ") + wxString::FromDouble(stages[stage].actors[actor].inner_cone) + _("\n");
+					actor_define += actor_id + _(".Light.OuterCone = ") + wxString::FromDouble(stages[stage].actors[actor].outer_cone) + _("\n");
+					actor_define += actor_id + _(".Light.Radius = ") + wxString::FromDouble(stages[stage].actors[actor].radius) + _("\n");
+					actor_define += actor_id + _(".Light.FallOff = ") + wxString::FromDouble(stages[stage].actors[actor].falloff) + _("\n");
+					actor_define += actor_id + _(".Light.Ambient = ") + wxString::Format(_("%u"), stages[stage].actors[actor].ambient.color) + _("\n");
+					actor_define += actor_id + _(".Light.Diffuse = ") + wxString::Format(_("%u"), stages[stage].actors[actor].diffuse.color) + _("\n");
+					actor_define += actor_id + _(".Light.Specular = ") + wxString::Format(_("%u"), stages[stage].actors[actor].specular.color) + _("\n");
+					actor_define += actor_id + _(".Light.Constant = ") + wxString::FromDouble(stages[stage].actors[actor].attenuation.X) + _("\n");
+					actor_define += actor_id + _(".Light.Linear = ") + wxString::FromDouble(stages[stage].actors[actor].attenuation.Y) + _("\n");
+					actor_define += actor_id + _(".Light.Quadratic = ") + wxString::FromDouble(stages[stage].actors[actor].attenuation.Z) + _("\n");
+
+					stage_load_fn += _("\t") + actor_id + _(".ID = ") + _(" CreateLightActor( ) ") + _("\n");
+				}
+				break;
+
+				case SN_ACTOR_TYPE_TERRAIN:
+				{
+					actor_define += actor_id + _(".Terrain.HeightMap$ = \"") + wxString::FromUTF8(stages[stage].actors[actor].terrain_hmap_file) + _("\"\n");
+
+					stage_load_fn += _("\t") + actor_id + _(".ID = ") + _(" CreateTerrainActor( ") + actor_id + _(".Terrain.HeightMap$ ) ") + _("\n");
+				}
+				break;
+
+				case SN_ACTOR_TYPE_WATER:
+				{
+					actor_define += actor_id + _(".Water.WaveHeight = ") + wxString::FromDouble(stages[stage].actors[actor].wave_height) + _("\n");
+					actor_define += actor_id + _(".Water.WaveLength = ") + wxString::FromDouble(stages[stage].actors[actor].wave_length) + _("\n");
+					actor_define += actor_id + _(".Water.WaveSpeed = ") + wxString::FromDouble(stages[stage].actors[actor].wave_speed) + _("\n");
+
+					if(mesh_id.compare(_(""))!=0)
+					{
+						stage_load_fn += _("\t") + actor_id + _(".ID = ") + _(" CreateWaterActor( Serenity_Global_Mesh_List[") +  actor_id + _(".Mesh].ID, ") +
+																					    actor_id + _(".Water.WaveHeight, ") +
+																					    actor_id + _(".Water.WaveSpeed, ") +
+																					    actor_id + _(".Water.WaveLength ) ") + _("\n");
+					}
+				}
+				break;
+
+				case SN_ACTOR_TYPE_PARTICLE:
+				{
+					actor_define += actor_id + _(".Particle.ParticleType = SN_PARTICLE_TYPE_") + getParticleTypeString(stages[stage].actors[actor].particle_type) + _("\n");
+
+					wxString minSize_str = wxString::FromDouble((double)stages[stage].actors[actor].min_width) + _(", ") +
+										   wxString::FromDouble((double)stages[stage].actors[actor].min_height) + _(", ") +
+										   wxString::FromDouble((double)0);
+					actor_define += actor_id + _(".Particle.MinSize = Serenity_CreateSize3D(") + minSize_str + _(")") + _("\n");
+
+					wxString maxSize_str = wxString::FromDouble((double)stages[stage].actors[actor].max_width) + _(", ") +
+										   wxString::FromDouble((double)stages[stage].actors[actor].max_height) + _(", ") +
+										   wxString::FromDouble((double)0);
+					actor_define += actor_id + _(".Particle.MaxSize = Serenity_CreateSize3D(") + maxSize_str + _(")") + _("\n");
+
+					actor_define += actor_id + _(".Particle.MinStartColor = ") + wxString::Format(_("%u"), stages[stage].actors[actor].min_start_color.color) + _("\n");
+					actor_define += actor_id + _(".Particle.MaxStartColor = ") + wxString::Format(_("%u"), stages[stage].actors[actor].max_start_color.color) + _("\n");
+
+					actor_define += actor_id + _(".Particle.MinSpeed = ") + wxString::FromDouble(stages[stage].actors[actor].min_per_sec) + _("\n");
+					actor_define += actor_id + _(".Particle.MaxSpeed = ") + wxString::FromDouble(stages[stage].actors[actor].max_per_sec) + _("\n");
+
+					actor_define += actor_id + _(".Particle.MinLife = ") + wxString::FromDouble(stages[stage].actors[actor].min_life) + _("\n");
+					actor_define += actor_id + _(".Particle.MaxLife = ") + wxString::FromDouble(stages[stage].actors[actor].max_life) + _("\n");
+
+					wxString normal_str = wxString::FromDouble((double)stages[stage].actors[actor].normal.X) + _(", ") +
+										   wxString::FromDouble((double)stages[stage].actors[actor].normal.Y) + _(", ") +
+										   wxString::FromDouble((double)stages[stage].actors[actor].normal.Z);
+					actor_define += actor_id + _(".Particle.Normal = Serenity_CreateVector3D(") + normal_str + _(")") + _("\n");
+
+					wxString direction_str = wxString::FromDouble((double)stages[stage].actors[actor].direction.X) + _(", ") +
+										     wxString::FromDouble((double)stages[stage].actors[actor].direction.Y) + _(", ") +
+										     wxString::FromDouble((double)stages[stage].actors[actor].direction.Z);
+					actor_define += actor_id + _(".Particle.Direction = Serenity_CreateVector3D(") + direction_str + _(")") + _("\n");
+
+					actor_define += actor_id + _(".Particle.MaxAngle = ") + wxString::FromDouble(stages[stage].actors[actor].angle) + _("\n");
+
+					wxString center_str = wxString::FromDouble((double)stages[stage].actors[actor].center.X) + _(", ") +
+										  wxString::FromDouble((double)stages[stage].actors[actor].center.Y) + _(", ") +
+										  wxString::FromDouble((double)stages[stage].actors[actor].center.Z);
+					actor_define += actor_id + _(".Particle.CircleCenter = Serenity_CreateVector3D(") + center_str + _(")") + _("\n");
+
+					actor_define += actor_id + _(".Particle.Radius = ") + wxString::FromDouble(stages[stage].actors[actor].radius) + _("\n");
+
+					actor_define += actor_id + _(".Particle.UseEveryVertex = ") + (stages[stage].actors[actor].use_every_vertex ? _("TRUE") : _("FALSE")) + _("\n");
+					actor_define += actor_id + _(".Particle.UseNormalDirection = ") + (stages[stage].actors[actor].use_normal_direction ? _("TRUE") : _("FALSE")) + _("\n");
+					actor_define += actor_id + _(".Particle.NormalDirectionModifier = ") + wxString::FromDouble(stages[stage].actors[actor].normal_direction_modifier) + _("\n");
+
+					actor_define += actor_id + _(".Particle.CylinderLength = ") + wxString::FromDouble(stages[stage].actors[actor].cylinder_length) + _("\n");
+					actor_define += actor_id + _(".Particle.UseOutlineOnly = ") + (stages[stage].actors[actor].use_outline_only ? _("TRUE") : _("FALSE")) + _("\n");
+
+					wxString minBoxSize_str = wxString::FromDouble((double)stages[stage].actors[actor].box.MinEdge.X) + _(", ") +
+											  wxString::FromDouble((double)stages[stage].actors[actor].box.MinEdge.Y) + _(", ") +
+											  wxString::FromDouble((double)stages[stage].actors[actor].box.MinEdge.Z);
+					actor_define += actor_id + _(".Particle.MinBoxSize = Serenity_CreateSize3D(") + minBoxSize_str + _(")") + _("\n");
+
+					wxString maxBoxSize_str = wxString::FromDouble((double)stages[stage].actors[actor].box.MaxEdge.X) + _(", ") +
+											  wxString::FromDouble((double)stages[stage].actors[actor].box.MaxEdge.Y) + _(", ") +
+											  wxString::FromDouble((double)stages[stage].actors[actor].box.MaxEdge.Z);
+					actor_define += actor_id + _(".Particle.MaxBoxSize = Serenity_CreateSize3D(") + maxBoxSize_str + _(")") + _("\n");
+
+					actor_define += actor_id + _(".Particle.RingThickness = ") + wxString::FromDouble(stages[stage].actors[actor].ring_thickness) + _("\n");
+
+					stage_load_fn += _("\t") + actor_id + _(".ID = ") + _(" CreateParticleActor( ") + actor_id + _(".Particle.ParticleType ) ") + _("\n");
+				}
+				break;
+
+				case SN_ACTOR_TYPE_CUBE:
+				{
+					actor_define += actor_id + _(".CubeSize = ") + wxString::FromDouble(stages[stage].actors[actor].cube_size) + _("\n");
+
+					stage_load_fn += _("\t") + actor_id + _(".ID = ") + _(" CreateCubeActor( ") + actor_id + _(".CubeSize ) ") + _("\n");
+				}
+				break;
+
+				case SN_ACTOR_TYPE_SPHERE:
+				{
+					actor_define += actor_id + _(".SphereRadius = ") + wxString::FromDouble(stages[stage].actors[actor].radius) + _("\n");
+
+					stage_load_fn += _("\t") + actor_id + _(".ID = ") + _(" CreateSphereActor( ") + actor_id + _(".SphereRadius ) ") + _("\n");
+				}
+				break;
+			}
+
+			pfile.Write(actor_define);
+
+			stage_load_fn += _("\n");
+
+			pfile.Write(_("\n"));
+		}
+
+		stage_load_fn += _("End Sub") + _("\n\n\n\n");
+
+		pfile.Write(_("\n"));
+	}
+
+	pfile.Write(_("\'------------[STAGE LOAD FUNCTIONS]-----------") + _("\n"));
+	pfile.Write(stage_load_fn);
+	pfile.Write(_("\n"));
+
+	pfile.Close();
+
 	return true;
 }
 

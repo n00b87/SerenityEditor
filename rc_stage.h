@@ -12,6 +12,10 @@ struct rc_texture
 	irr::video::ITexture* texture;
 	bool use_colorKey;
 	irr::video::SColor colorkey;
+
+	std::string p_cmd;
+
+	bool load_flag = false;
 };
 
 struct rc_material
@@ -20,6 +24,11 @@ struct rc_material
 	std::string file;
 	std::vector<int> texture_id; //in project
 	irr::video::SMaterial material;
+
+	std::string p_cmd;
+	std::string p_onLoad_cmd;
+
+	bool load_flag = false;
 };
 
 struct rc_animation
@@ -30,6 +39,8 @@ struct rc_animation
 	float speed = 0;
 
 	irr::scene::EMD2_ANIMATION_TYPE md2_animation;
+
+	std::string p_cmd;
 };
 
 struct rc_an8
@@ -37,6 +48,8 @@ struct rc_an8
 	std::string id_name;
 	std::string file;
 	an8::an8_project project;
+
+	std::string p_cmd;
 };
 
 #define SN_MESH_SOURCE_TYPE_FILE	0
@@ -77,6 +90,13 @@ struct rc_mesh
 
 	std::vector<std::string> ref_material_id; //this is only used as a place holder when loading meshes but material_index should be used everywhere else
 	std::string ref_an8_id; //same as ref_material_id
+
+	std::string p_cmd;
+	std::string p_onLoad_cmd;
+	int sn_id;
+
+	bool load_flag = false;
+	std::string mat_load_str;
 };
 
 
@@ -95,6 +115,8 @@ struct rc_physics_properties
 	int shape;
 	bool isSolid;
 	double mass;
+
+	std::string p_cmd;
 };
 
 #define SN_LIGHT_TYPE_POINT			0
@@ -189,6 +211,9 @@ struct rc_actor
 	double max_life;
 
 	rc_physics_properties physics;
+
+	std::string p_cmd;
+	int sn_id;
 };
 
 struct rc_waypoint
@@ -231,6 +256,8 @@ struct rc_sky
 	double txPCT;
 	double spherePCT;
 	double dome_radius;
+
+	std::string p_cmd;
 };
 
 struct rc_material_keyval_pair

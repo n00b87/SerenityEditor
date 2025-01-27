@@ -55,6 +55,7 @@ public:
 	~serenity_project();
 
 	wxFileName rcbasic_project_path;
+	wxString rcbasic_main_bas;
 	bool genRCBasicProject();
 
 	void reload_assets();
