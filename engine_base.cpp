@@ -449,9 +449,10 @@ bool serenity_project::genRCBasicProject()
 		{
 			pfile.Write(_("Dim ") + wxString::FromUTF8(textures[i].id_name)  + _(" As Serenity_Texture_Reference\n"));
 
-			wxString tx_id = _("Serenity_Global_Texture_List[") + wxString::Format(_("%u"),tx_sn_id) + _("]");
+			wxString tx_id = _("Serenity_Global_Texture_List[") + _("Textures.") + wxString::FromUTF8(textures[i].id_name) + _(".SN_ID") + _("]");
 
-			wxString tx_file = tx_id + _(".File$");
+			wxString tx_path = _("\"textures\" + path_separator$ + ");
+			wxString tx_file = tx_path + tx_id + _(".File$");
 			wxString tx_colorkey = tx_id + _(".TextureColorKey");
 			wxString p_cmd = _("\t") + _("Serenity_Global_Texture_List[ ") + _("Textures.") + wxString::FromUTF8(textures[i].id_name) + _(".SN_ID ].ID = ") +
 															(textures[i].use_colorKey ? _("LoadImageEx(") + tx_file + _(", ") + tx_colorkey + _(")") :
@@ -507,7 +508,7 @@ bool serenity_project::genRCBasicProject()
 
 			wxString mat_ref_id = _("Materials") + _(".") + wxString::FromUTF8(materials[i].id_name) + _(".SN_ID");
 
-			wxString mat_id = _("Serenity_Global_Material_List[") + wxString::Format(_("%u"), mat_sn_id) + _("].ID");
+			wxString mat_id = _("Serenity_Global_Material_List[") + mat_ref_id + _("].ID");
 			wxString mat_str = _("\'------------MATERIAL[ ") + wxString::FromUTF8(materials[i].id_name) + _(" ]---------------") + _("\n");
 			mat_str += mat_ref_id + _(" = ") + wxString::Format(_("%u"), mat_sn_id) + _("\n\n");
 
@@ -564,7 +565,7 @@ bool serenity_project::genRCBasicProject()
 			}
 
 			mat_str += _("SetMaterialBackfaceCulling(") + mat_id + _(", ") + (materials[i].material.BackfaceCulling ? _("TRUE") : _("FALSE")) + _(")") + _(" \n");
-			mat_str += _("SetMaterialFrontfaceCulling(") + mat_id + _(", ") + (materials[i].material.BackfaceCulling ? _("TRUE") : _("FALSE")) + _(")") + _(" \n");
+			mat_str += _("SetMaterialFrontfaceCulling(") + mat_id + _(", ") + (materials[i].material.FrontfaceCulling ? _("TRUE") : _("FALSE")) + _(")") + _(" \n");
 
 			mat_str += _("SetMaterialBlendFactor(") + mat_id + _(", ") + wxString::FromDouble((double)materials[i].material.BlendFactor) + _(")") + _(" \n");
 
@@ -897,7 +898,7 @@ bool serenity_project::genRCBasicProject()
 
 				tx_id = _("Textures.") + tx_id + _(".SN_ID");
 
-				wxString mat_struct = _("Serenity_Global_Material_List[") + wxString::Format(_("%u"), mat_sn_id) + _("]");
+				wxString mat_struct = _("Serenity_Global_Material_List[") + mat_ref_id + _("]");
 
 				mat_str += mat_struct + _(".Textures[") + wxString::Format(_("%d"), m_texture_level) + _("] = ") + tx_id + _("\n");
 
@@ -998,9 +999,10 @@ bool serenity_project::genRCBasicProject()
 		wxString mesh_path = _("\"models\" + path_separator$ + ");
 
 		meshes[i].sn_id = mesh_sn_id;
+		wxString mesh_sn_str = _("Meshes.") + mesh_id + _(".SN_ID");
 		p_cmd += _("Meshes.") + mesh_id + _(".SN_ID = ") + wxString::Format(_("%d"), mesh_sn_id) + _("\n");
 
-		wxString mesh_list_id = _("Serenity_Global_Mesh_List[") + wxString::Format(_("%d"), mesh_sn_id) + _("]");
+		wxString mesh_list_id = _("Serenity_Global_Mesh_List[") + mesh_sn_str + _("]");
 		mesh_sn_id++;
 
 
@@ -1240,6 +1242,7 @@ bool serenity_project::genRCBasicProject()
 	pfile.Write(_("Dim Particle As Serenity_Particle_Properties") + _("\n"));
 	pfile.Write(_("Dim CubeSize") + _("\n"));
 	pfile.Write(_("Dim SphereRadius") + _("\n"));
+	pfile.Write(_("Dim Visible") + _("\n"));
 	pfile.Write(_("End Type ") + _("\n"));
 
 	pfile.Write(_("\n"));
@@ -1389,6 +1392,8 @@ bool serenity_project::genRCBasicProject()
 
 	wxString stage_load_fn = _("");
 
+	wxString actor_load_properties = _("");
+
 	for(int stage = 0; stage < stages.size(); stage++)
 	{
 		if(stages[stage].id_name.compare("")==0)
@@ -1403,9 +1408,15 @@ bool serenity_project::genRCBasicProject()
 		for(int n = 0; n < textures.size(); n++)
 			textures[n].load_flag = false;
 
+		wxString tx_load = _("");
+		wxString mat_load = _("");
+		wxString mesh_load = _("");
+
+
 		wxString stage_id = _("Stages.") + wxString::FromUTF8(stages[stage].id_name);
 
 		stage_load_fn += _("Sub Load_") + wxString::FromUTF8(stages[stage].id_name) + _("( )") + _("\n");
+		stage_load_fn += _("[PREPEND_MATERIAL_TEXTURE_BLOCK]") + _("\n");
 
 		pfile.Write(_("\'----------------INIT STAGE: [ ") + wxString::FromUTF8(stages[stage].id_name) + _(" ]-----------------------\n"));
 
@@ -1418,16 +1429,22 @@ bool serenity_project::genRCBasicProject()
 			{
 				pfile.Write(stage_id + _(".Sky.Shape = SN_SKY_TYPE_BOX") + _("\n"));
 
-				int img_index = -1;
+				int left_img_index = -1;
+				int right_img_index = -1;
+				int front_img_index = -1;
+				int back_img_index = -1;
+				int top_img_index = -1;
+				int bottom_img_index = -1;
+
 				wxString img_id = _("");
 
 				bool hasSkyBoxComplete = true;
 
 				//LEFT
 				img_id = _("");
-				img_index = stages[stage].sky.left_texture_index;
-				if(img_index >= 0 && img_index < textures.size())
-					img_id = wxString::FromUTF8(textures[img_index].id_name).Trim();
+				left_img_index = stages[stage].sky.left_texture_index;
+				if(left_img_index >= 0 && left_img_index < textures.size())
+					img_id = wxString::FromUTF8(textures[left_img_index].id_name).Trim();
 
 				if(img_id.compare(_(""))!=0)
 					pfile.Write(stage_id + _(".Sky.Box.Image_Left = Textures.") + img_id + _(".SN_ID") + _("\n"));
@@ -1436,9 +1453,9 @@ bool serenity_project::genRCBasicProject()
 
 				//RIGHT
 				img_id = _("");
-				img_index = stages[stage].sky.right_texture_index;
-				if(img_index >= 0 && img_index < textures.size())
-					img_id = wxString::FromUTF8(textures[img_index].id_name).Trim();
+				right_img_index = stages[stage].sky.right_texture_index;
+				if(right_img_index >= 0 && right_img_index < textures.size())
+					img_id = wxString::FromUTF8(textures[right_img_index].id_name).Trim();
 
 				if(img_id.compare(_(""))!=0)
 					pfile.Write(stage_id + _(".Sky.Box.Image_Right = Textures.") + img_id + _(".SN_ID") + _("\n"));
@@ -1447,9 +1464,9 @@ bool serenity_project::genRCBasicProject()
 
 				//FRONT
 				img_id = _("");
-				img_index = stages[stage].sky.front_texture_index;
-				if(img_index >= 0 && img_index < textures.size())
-					img_id = wxString::FromUTF8(textures[img_index].id_name).Trim();
+				front_img_index = stages[stage].sky.front_texture_index;
+				if(front_img_index >= 0 && front_img_index < textures.size())
+					img_id = wxString::FromUTF8(textures[front_img_index].id_name).Trim();
 
 				if(img_id.compare(_(""))!=0)
 					pfile.Write(stage_id + _(".Sky.Box.Image_Front = Textures.") + img_id + _(".SN_ID") + _("\n"));
@@ -1458,9 +1475,9 @@ bool serenity_project::genRCBasicProject()
 
 				//BACK
 				img_id = _("");
-				img_index = stages[stage].sky.back_texture_index;
-				if(img_index >= 0 && img_index < textures.size())
-					img_id = wxString::FromUTF8(textures[img_index].id_name).Trim();
+				back_img_index = stages[stage].sky.back_texture_index;
+				if(back_img_index >= 0 && back_img_index < textures.size())
+					img_id = wxString::FromUTF8(textures[back_img_index].id_name).Trim();
 
 				if(img_id.compare(_(""))!=0)
 					pfile.Write(stage_id + _(".Sky.Box.Image_Back = Textures.") + img_id + _(".SN_ID") + _("\n"));
@@ -1469,20 +1486,20 @@ bool serenity_project::genRCBasicProject()
 
 				//TOP
 				img_id = _("");
-				img_index = stages[stage].sky.top_texture_index;
-				if(img_index >= 0 && img_index < textures.size())
-					img_id = wxString::FromUTF8(textures[img_index].id_name).Trim();
+				top_img_index = stages[stage].sky.top_texture_index;
+				if(top_img_index >= 0 && top_img_index < textures.size())
+					img_id = wxString::FromUTF8(textures[top_img_index].id_name).Trim();
 
 				if(img_id.compare(_(""))!=0)
 					pfile.Write(stage_id + _(".Sky.Box.Image_Top = Textures.") + img_id + _(".SN_ID") + _("\n"));
 				else
 					hasSkyBoxComplete = false;
 
-				//RIGHT
+				//BOTTOM
 				img_id = _("");
-				img_index = stages[stage].sky.bottom_texture_index;
-				if(img_index >= 0 && img_index < textures.size())
-					img_id = wxString::FromUTF8(textures[img_index].id_name).Trim();
+				bottom_img_index = stages[stage].sky.bottom_texture_index;
+				if(bottom_img_index >= 0 && bottom_img_index < textures.size())
+					img_id = wxString::FromUTF8(textures[bottom_img_index].id_name).Trim();
 
 				if(img_id.compare(_(""))!=0)
 					pfile.Write(stage_id + _(".Sky.Box.Image_Bottom = Textures.") + img_id + _(".SN_ID") + _("\n"));
@@ -1492,12 +1509,27 @@ bool serenity_project::genRCBasicProject()
 				if(hasSkyBoxComplete)
 				{
 					wxString box_id = stage_id + _(".Sky.Box");
-					stage_load_fn += _("\tAddSceneSkyBox(") + box_id + _(".Image_Top, ") +
-															  box_id + _(".Image_Bottom, ") +
-															  box_id + _(".Image_Left, ") +
-															  box_id + _(".Image_Right, ") +
-															  box_id + _(".Image_Front, ") +
-															  box_id + _(".Image_Back )") + _("\n");
+
+					tx_load += _("\t") + _("Serenity_Global_Texture_List[ ") + box_id + _(".Image_Top ].ID = LoadImage( \"textures\" + path_separator$ + Serenity_Global_Texture_List[ ") + box_id + _(".Image_Top ].File$ )") + _("\n");
+					tx_load += _("\t") + _("Serenity_Global_Texture_List[ ") + box_id + _(".Image_Bottom ].ID = LoadImage( \"textures\" + path_separator$ + Serenity_Global_Texture_List[ ") + box_id + _(".Image_Bottom ].File$ )") + _("\n");
+					tx_load += _("\t") + _("Serenity_Global_Texture_List[ ") + box_id + _(".Image_Left ].ID = LoadImage( \"textures\" + path_separator$ + Serenity_Global_Texture_List[ ") + box_id + _(".Image_Left ].File$ )") + _("\n");
+					tx_load += _("\t") + _("Serenity_Global_Texture_List[ ") + box_id + _(".Image_Right ].ID = LoadImage( \"textures\" + path_separator$ + Serenity_Global_Texture_List[ ") + box_id + _(".Image_Right ].File$ )") + _("\n");
+					tx_load += _("\t") + _("Serenity_Global_Texture_List[ ") + box_id + _(".Image_Front ].ID = LoadImage( \"textures\" + path_separator$ + Serenity_Global_Texture_List[ ") + box_id + _(".Image_Front ].File$ )") + _("\n");
+					tx_load += _("\t") + _("Serenity_Global_Texture_List[ ") + box_id + _(".Image_Back ].ID = LoadImage( \"textures\" + path_separator$ + Serenity_Global_Texture_List[ ") + box_id + _(".Image_Back ].File$ )") + _("\n");
+
+					textures[left_img_index].load_flag = true;
+					textures[right_img_index].load_flag = true;
+					textures[front_img_index].load_flag = true;
+					textures[back_img_index].load_flag = true;
+					textures[top_img_index].load_flag = true;
+					textures[bottom_img_index].load_flag = true;
+
+					stage_load_fn += _("\tAddSceneSkyBox(") + _("Serenity_Global_Texture_List[ ") + box_id + _(".Image_Top ].ID, ") +
+															  _("Serenity_Global_Texture_List[ ") + box_id + _(".Image_Bottom ].ID, ") +
+															  _("Serenity_Global_Texture_List[ ") + box_id + _(".Image_Left ].ID, ") +
+															  _("Serenity_Global_Texture_List[ ") + box_id + _(".Image_Right ].ID, ") +
+															  _("Serenity_Global_Texture_List[ ") + box_id + _(".Image_Front ].ID, ") +
+															  _("Serenity_Global_Texture_List[ ") + box_id + _(".Image_Back ].ID )") + _("\n");
 				}
 			}
 			break;
@@ -1532,12 +1564,15 @@ bool serenity_project::genRCBasicProject()
 				{
 					wxString dome_id = stage_id + _(".Sky.Dome");
 
-					stage_load_fn += _("\tAddSceneSkyDomeEx( ") + dome_id + _(".Image, ") +
+					tx_load += _("\t") + _("Serenity_Global_Texture_List[ ") + dome_id + _(".Image ].ID = LoadImage( \"textures\" + path_separator$ + Serenity_Global_Texture_List[") + dome_id + _(".Image].File$ )") + _("\n");
+					textures[img_index].load_flag = true;
+
+					stage_load_fn += _("\tAddSceneSkyDomeEx( ") + _("Serenity_Global_Texture_List[ ") + dome_id + _(".Image ].ID, ") +
 																  dome_id + _(".hRes, ") +
 																  dome_id + _(".vRes, ") +
 																  dome_id + _(".TexturePCT, ") +
 																  dome_id + _(".SpherePCT, ") +
-																  dome_id + _(".TexturePCT ) ") + _("\n");
+																  dome_id + _(".Radius ) ") + _("\n");
 				}
 
 			}
@@ -1552,6 +1587,8 @@ bool serenity_project::genRCBasicProject()
 		{
 			if(stages[stage].actors[actor].id_name.compare("")==0)
 				continue;
+
+			actor_load_properties = _("");
 
 			stages[stage].actors[actor].sn_id = actor_sn_id;
 			actor_sn_id++;
@@ -1581,6 +1618,7 @@ bool serenity_project::genRCBasicProject()
 
 				if(!meshes[mesh_index].load_flag)
 				{
+					mesh_load += wxString::FromUTF8(meshes[mesh_index].p_onLoad_cmd) + _("\n");
 					meshes[mesh_index].load_flag = true;
 					//Load Materials For mesh if flag is not set
 					for(int mat = 0; mat < meshes[mesh_index].material_index.size(); mat++)
@@ -1595,7 +1633,7 @@ bool serenity_project::genRCBasicProject()
 
 						wxString mat_str = _("");
 
-						stage_load_fn += _("\t") + _("\'----------LOAD MATERIAL TEXTURE LEVELS [ ") + wxString::FromUTF8(materials[mat_index].id_name) + _("]-----------") + _("\n");
+						mat_str += _("\t") + _("\'----------LOAD MATERIAL TEXTURE LEVELS [ ") + wxString::FromUTF8(materials[mat_index].id_name) + _("]-----------") + _("\n");
 
 						//Load Texture Levels for material
 						for(int tx = 0; tx < materials[mat_index].texture_id.size(); tx++)
@@ -1608,19 +1646,16 @@ bool serenity_project::genRCBasicProject()
 							if(textures[tx_index].load_flag)
 								continue;
 
-							stage_load_fn += wxString::FromUTF8(textures[tx_index].p_cmd);
+							tx_load += wxString::FromUTF8(textures[tx_index].p_cmd);
 							textures[tx_index].load_flag = true;
 						}
-						stage_load_fn += _("\n");
 
-						stage_load_fn += wxString::FromUTF8(materials[mat_index].p_onLoad_cmd);
+						mat_load += wxString::FromUTF8(materials[mat_index].p_onLoad_cmd);
 						materials[mat_index].load_flag = true;
 
 						wxString mat_sn_id = _("Materials.") + wxString::FromUTF8(materials[mat_index].id_name) + _(".SN_ID");
 						wxString mat_id = _("Serenity_Global_Material_List[") + mat_sn_id + _("].ID");
 						mesh_material_str += _("SetActorMaterial( [ACTOR], ") + wxString::Format(_("%d"), mat) + _(", ") + mat_id + _(" )") + _("\n");
-
-						stage_load_fn += _("\n");
 					}
 
 					meshes[mesh_index].mat_load_str = mesh_material_str.ToStdString();
@@ -1632,15 +1667,27 @@ bool serenity_project::genRCBasicProject()
 									 wxString::FromDouble((double)stages[stage].actors[actor].position.Z);
 			actor_define += actor_id + _(".Position = Serenity_CreateVector3D(") + actor_pos_str + _(")") + _("\n");
 
+			actor_load_properties += _("\t") + _("SetActorPosition( [ACTOR], ") + actor_id + _(".Position.X, ") +
+																				  actor_id + _(".Position.Y, ") +
+																				  actor_id + _(".Position.Z ) ") + _("\n");
+
 			wxString actor_rot_str = wxString::FromDouble((double)stages[stage].actors[actor].rotation.X) + _(", ") +
 									 wxString::FromDouble((double)stages[stage].actors[actor].rotation.Y) + _(", ") +
 									 wxString::FromDouble((double)stages[stage].actors[actor].rotation.Z);
 			actor_define += actor_id + _(".Rotation = Serenity_CreateVector3D(") + actor_rot_str + _(")") + _("\n");
 
+			actor_load_properties += _("\t") + _("SetActorRotation( [ACTOR], ") + actor_id + _(".Rotation.X, ") +
+																				  actor_id + _(".Rotation.Y, ") +
+																				  actor_id + _(".Rotation.Z ) ") + _("\n");
+
 			wxString actor_scale_str = wxString::FromDouble((double)stages[stage].actors[actor].scale.X) + _(", ") +
 									   wxString::FromDouble((double)stages[stage].actors[actor].scale.Y) + _(", ") +
 									   wxString::FromDouble((double)stages[stage].actors[actor].scale.Z);
 			actor_define += actor_id + _(".Scale = Serenity_CreateVector3D(") + actor_scale_str + _(")") + _("\n");
+
+			actor_load_properties += _("\t") + _("SetActorScale( [ACTOR], ") + actor_id + _(".Scale.X, ") +
+																			   actor_id + _(".Scale.Y, ") +
+																			   actor_id + _(".Scale.Z ) ") + _("\n");
 
 			int mat_index = stages[stage].actors[actor].override_material_index;
 			wxString mat_id = _("");
@@ -1649,10 +1696,15 @@ bool serenity_project::genRCBasicProject()
 				mat_id = wxString::FromUTF8(materials[mat_index].id_name).Trim();
 
 			if(mat_id.compare(_(""))!=0)
+			{
 				actor_define += actor_id + _(".Material = Materials.") + mat_id + _(".SN_ID") + _("\n");
 
+				actor_load_properties += _("\t") + _("SetActorMaterial( [ACTOR], 0, Serenity_Global_Material_List[ ") + _("Materials.") + mat_id + _(".SN_ID ].ID )") + _("\n");
+			}
+
 			actor_define += actor_id + _(".Shadow = ") + (stages[stage].actors[actor].hasShadow ? _("TRUE") : _("FALSE")) + _("\n");
-			actor_define += actor_id + _(".AutoCulling = ") + (stages[stage].actors[actor].hasShadow ? _("TRUE") : _("FALSE")) + _("\n");
+			actor_define += actor_id + _(".AutoCulling = ") + (stages[stage].actors[actor].auto_culling ? _("TRUE") : _("FALSE")) + _("\n");
+			actor_define += actor_id + _(".Visible = ") + (stages[stage].actors[actor].visible ? _("TRUE") : _("FALSE")) + _("\n");
 
 			//Physics Properties
 			actor_define += actor_id + _(".Physics.isSolid = ") + (stages[stage].actors[actor].physics.isSolid ? _("TRUE") : _("FALSE")) + _("\n");
@@ -1680,6 +1732,25 @@ bool serenity_project::genRCBasicProject()
 					if(mesh_id.compare(_(""))!=0)
 					{
 						stage_load_fn += _("\t") + actor_id + _(".ID = ") + _(" CreateAnimatedActor( Serenity_Global_Mesh_List[") +  actor_id + _(".Mesh].ID ) ") + _("\n");
+
+						uint32_t ani_sn_id = 0;
+						for(int ani = 0; ani < meshes[mesh_index].animation.size(); ani++)
+						{
+							if(meshes[mesh_index].animation[ani].id_name.compare("")==0)
+								continue;
+
+							wxString ani_sn_id_str = wxString::Format(_("%u"), ani_sn_id);
+							ani_sn_id++;
+
+							wxString start_frame_str = _("Serenity_Global_Mesh_List[") +  actor_id + _(".Mesh].Animations[") + ani_sn_id_str + _("].Start_Frame");
+							wxString end_frame_str = _("Serenity_Global_Mesh_List[") +  actor_id + _(".Mesh].Animations[") + ani_sn_id_str + _("].End_Frame");
+							wxString speed_str = _("Serenity_Global_Mesh_List[") +  actor_id + _(".Mesh].Animations[") + ani_sn_id_str + _("].Speed");
+
+							actor_load_properties += _("\t") + _("CreateActorAnimation( [ACTOR], ") + start_frame_str + _(", ") + end_frame_str + _(", ") + speed_str + _(" )") + _("\n");
+						}
+
+						actor_load_properties += _("\n");
+						actor_load_properties += _("\t") + _("SetActorAnimation( [ACTOR], ") + actor_id + _(".Animation.AnimationID, ") + actor_id + _(".Animation.NumLoops ) ") + _("\n");
 					}
 				}
 				break;
@@ -1701,19 +1772,74 @@ bool serenity_project::genRCBasicProject()
 
 				case SN_ACTOR_TYPE_LIGHT:
 				{
+					//Light Type
 					actor_define += actor_id + _(".Light.LightType = SN_LIGHT_TYPE_") + getLightTypeString(stages[stage].actors[actor].light_type) + _("\n");
+
+					wxString lightType_id_str = actor_id + _(".Light.LightType");
+					actor_load_properties += _("\t") + _("SetLightType( [ACTOR], ") + lightType_id_str + _(" )") + _("\n");
+
+					//Cast Shadow
 					actor_define += actor_id + _(".Light.CastShadow = ") + (stages[stage].actors[actor].isCastingShadow ? _("TRUE") : _("FALSE")) + _("\n");
+
+					wxString castShadow_id_str = actor_id + _(".Light.CastShadow");
+					actor_load_properties += _("\t") + _("SetLightShadowCast( [ACTOR], ") + castShadow_id_str + _(" )") + _("\n");
+
+					//Inner Cone
 					actor_define += actor_id + _(".Light.InnerCone = ") + wxString::FromDouble(stages[stage].actors[actor].inner_cone) + _("\n");
+
+					wxString innerCone_id_str = actor_id + _(".Light.InnerCone");
+					actor_load_properties += _("\t") + _("SetLightInnerCone( [ACTOR], ") + innerCone_id_str + _(" )") + _("\n");
+
+					//Outer Cone
 					actor_define += actor_id + _(".Light.OuterCone = ") + wxString::FromDouble(stages[stage].actors[actor].outer_cone) + _("\n");
+
+					wxString outerCone_id_str = actor_id + _(".Light.OuterCone");
+					actor_load_properties += _("\t") + _("SetLightOuterCone( [ACTOR], ") + outerCone_id_str + _(" )") + _("\n");
+
+					//Radius
 					actor_define += actor_id + _(".Light.Radius = ") + wxString::FromDouble(stages[stage].actors[actor].radius) + _("\n");
+
+					wxString radius_id_str = actor_id + _(".Light.Radius");
+					actor_load_properties += _("\t") + _("SetLightRadius( [ACTOR], ") + radius_id_str + _(" )") + _("\n");
+
+					//Fall Off
 					actor_define += actor_id + _(".Light.FallOff = ") + wxString::FromDouble(stages[stage].actors[actor].falloff) + _("\n");
+
+					wxString fallOff_id_str = actor_id + _(".Light.FallOff");
+					actor_load_properties += _("\t") + _("SetLightFallOff( [ACTOR], ") + fallOff_id_str + _(" )") + _("\n");
+
+					//Ambient
 					actor_define += actor_id + _(".Light.Ambient = ") + wxString::Format(_("%u"), stages[stage].actors[actor].ambient.color) + _("\n");
+
+					wxString ambient_id_str = actor_id + _(".Light.Ambient");
+					actor_load_properties += _("\t") + _("SetLightAmbientColor( [ACTOR], ") + ambient_id_str + _(" )") + _("\n");
+
+					//Diffuse
 					actor_define += actor_id + _(".Light.Diffuse = ") + wxString::Format(_("%u"), stages[stage].actors[actor].diffuse.color) + _("\n");
+
+					wxString diffuse_id_str = actor_id + _(".Light.Diffuse");
+					actor_load_properties += _("\t") + _("SetLightDiffuseColor( [ACTOR], ") + diffuse_id_str + _(" )") + _("\n");
+
+					//Specular
 					actor_define += actor_id + _(".Light.Specular = ") + wxString::Format(_("%u"), stages[stage].actors[actor].specular.color) + _("\n");
+
+					wxString specular_id_str = actor_id + _(".Light.Specular");
+					actor_load_properties += _("\t") + _("SetLightSpecularColor( [ACTOR], ") + specular_id_str + _(" )") + _("\n");
+
+					//Attenuation
 					actor_define += actor_id + _(".Light.Constant = ") + wxString::FromDouble(stages[stage].actors[actor].attenuation.X) + _("\n");
 					actor_define += actor_id + _(".Light.Linear = ") + wxString::FromDouble(stages[stage].actors[actor].attenuation.Y) + _("\n");
 					actor_define += actor_id + _(".Light.Quadratic = ") + wxString::FromDouble(stages[stage].actors[actor].attenuation.Z) + _("\n");
 
+					wxString constant_id_str = actor_id + _(".Light.Constant");
+					wxString linear_id_str = actor_id + _(".Light.Linear");
+					wxString quadratic_id_str = actor_id + _(".Light.Quadratic");
+					actor_load_properties += _("\t") + _("SetLightAttenuation( [ACTOR], ") + constant_id_str + _(", ") +
+																							 linear_id_str + _(", ") +
+																							 quadratic_id_str + _(" ) ") + _("\n");
+
+
+					//Create Light Actor
 					stage_load_fn += _("\t") + actor_id + _(".ID = ") + _(" CreateLightActor( ) ") + _("\n");
 				}
 				break;
@@ -1722,7 +1848,7 @@ bool serenity_project::genRCBasicProject()
 				{
 					actor_define += actor_id + _(".Terrain.HeightMap$ = \"") + wxString::FromUTF8(stages[stage].actors[actor].terrain_hmap_file) + _("\"\n");
 
-					stage_load_fn += _("\t") + actor_id + _(".ID = ") + _(" CreateTerrainActor( ") + actor_id + _(".Terrain.HeightMap$ ) ") + _("\n");
+					stage_load_fn += _("\t") + actor_id + _(".ID = ") + _(" CreateTerrainActor( ") + _("\"textures\" + path_separator$ + ") + actor_id + _(".Terrain.HeightMap$ ) ") + _("\n");
 				}
 				break;
 
@@ -1746,51 +1872,135 @@ bool serenity_project::genRCBasicProject()
 				{
 					actor_define += actor_id + _(".Particle.ParticleType = SN_PARTICLE_TYPE_") + getParticleTypeString(stages[stage].actors[actor].particle_type) + _("\n");
 
+					//Min Size
 					wxString minSize_str = wxString::FromDouble((double)stages[stage].actors[actor].min_width) + _(", ") +
 										   wxString::FromDouble((double)stages[stage].actors[actor].min_height) + _(", ") +
 										   wxString::FromDouble((double)0);
 					actor_define += actor_id + _(".Particle.MinSize = Serenity_CreateSize3D(") + minSize_str + _(")") + _("\n");
 
+					wxString minSize_id_str = actor_id + _(".Particle.MinSize");
+					actor_load_properties += _("\t") + _("setParticleMinStartSize( [ACTOR], ") + minSize_id_str + _(".Width, ") + minSize_id_str + _(".Height )") + _("\n");
+
+					//Max Size
 					wxString maxSize_str = wxString::FromDouble((double)stages[stage].actors[actor].max_width) + _(", ") +
 										   wxString::FromDouble((double)stages[stage].actors[actor].max_height) + _(", ") +
 										   wxString::FromDouble((double)0);
 					actor_define += actor_id + _(".Particle.MaxSize = Serenity_CreateSize3D(") + maxSize_str + _(")") + _("\n");
 
+					wxString maxSize_id_str = actor_id + _(".Particle.MaxSize");
+					actor_load_properties += _("\t") + _("setParticleMaxStartSize( [ACTOR], ") + maxSize_id_str + _(".Width, ") + maxSize_id_str + _(".Height )") + _("\n");
+
+					//Min Color
 					actor_define += actor_id + _(".Particle.MinStartColor = ") + wxString::Format(_("%u"), stages[stage].actors[actor].min_start_color.color) + _("\n");
+
+					wxString minStartColor_id_str = actor_id + _(".Particle.MinStartColor");
+					actor_load_properties += _("\t") + _("setParticleMinStartColor( [ACTOR], ") + minStartColor_id_str + _(" )") + _("\n");
+
+					//Max Color
 					actor_define += actor_id + _(".Particle.MaxStartColor = ") + wxString::Format(_("%u"), stages[stage].actors[actor].max_start_color.color) + _("\n");
 
+					wxString maxStartColor_id_str = actor_id + _(".Particle.MaxStartColor");
+					actor_load_properties += _("\t") + _("setParticleMaxStartColor( [ACTOR], ") + maxStartColor_id_str + _(" )") + _("\n");
+
+					//Min Speed
 					actor_define += actor_id + _(".Particle.MinSpeed = ") + wxString::FromDouble(stages[stage].actors[actor].min_per_sec) + _("\n");
+
+					wxString minSpeed_id_str = actor_id + _(".Particle.MinSpeed");
+					actor_load_properties += _("\t") + _("SetMinParticlesPerSecond( [ACTOR], ") + minSpeed_id_str + _(" )") + _("\n");
+
+					//Max Speed
 					actor_define += actor_id + _(".Particle.MaxSpeed = ") + wxString::FromDouble(stages[stage].actors[actor].max_per_sec) + _("\n");
 
+					wxString maxSpeed_id_str = actor_id + _(".Particle.MaxSpeed");
+					actor_load_properties += _("\t") + _("SetMaxParticlesPerSecond( [ACTOR], ") + maxSpeed_id_str + _(" )") + _("\n");
+
+					//Min Life
 					actor_define += actor_id + _(".Particle.MinLife = ") + wxString::FromDouble(stages[stage].actors[actor].min_life) + _("\n");
+
+					wxString minLife_id_str = actor_id + _(".Particle.MinLife");
+					actor_load_properties += _("\t") + _("SetParticleMinLife( [ACTOR], ") + minLife_id_str + _(" )") + _("\n");
+
+					//Max  Life
 					actor_define += actor_id + _(".Particle.MaxLife = ") + wxString::FromDouble(stages[stage].actors[actor].max_life) + _("\n");
 
+					wxString maxLife_id_str = actor_id + _(".Particle.MaxLife");
+					actor_load_properties += _("\t") + _("SetParticleMaxLife( [ACTOR], ") + maxLife_id_str + _(" )") + _("\n");
+
+
+					//Normal
 					wxString normal_str = wxString::FromDouble((double)stages[stage].actors[actor].normal.X) + _(", ") +
 										   wxString::FromDouble((double)stages[stage].actors[actor].normal.Y) + _(", ") +
 										   wxString::FromDouble((double)stages[stage].actors[actor].normal.Z);
 					actor_define += actor_id + _(".Particle.Normal = Serenity_CreateVector3D(") + normal_str + _(")") + _("\n");
 
+					wxString normal_id_str = actor_id + _(".Particle.Normal");
+					actor_load_properties += _("\t") + _("SetParticleNormal( [ACTOR], ") + normal_id_str + _(".X, ") + normal_id_str + _(".Y, ") + normal_id_str + _(".Z") + _(" )") + _("\n");
+
+					//Direction
 					wxString direction_str = wxString::FromDouble((double)stages[stage].actors[actor].direction.X) + _(", ") +
 										     wxString::FromDouble((double)stages[stage].actors[actor].direction.Y) + _(", ") +
 										     wxString::FromDouble((double)stages[stage].actors[actor].direction.Z);
 					actor_define += actor_id + _(".Particle.Direction = Serenity_CreateVector3D(") + direction_str + _(")") + _("\n");
 
+					wxString direction_id_str = actor_id + _(".Particle.Direction");
+					actor_load_properties += _("\t") + _("SetParticleDirection( [ACTOR], ") + direction_id_str + _(".X, ") + direction_id_str + _(".Y, ") + direction_id_str + _(".Z") + _(" )") + _("\n");
+
+
+					//Max Angle
 					actor_define += actor_id + _(".Particle.MaxAngle = ") + wxString::FromDouble(stages[stage].actors[actor].angle) + _("\n");
 
+					wxString maxAngle_id_str = actor_id + _(".Particle.MaxAngle");
+					actor_load_properties += _("\t") + _("SetParticleMaxAngle( [ACTOR], ") + maxAngle_id_str + _(" )") + _("\n");
+
+
+					//Circle Center
 					wxString center_str = wxString::FromDouble((double)stages[stage].actors[actor].center.X) + _(", ") +
 										  wxString::FromDouble((double)stages[stage].actors[actor].center.Y) + _(", ") +
 										  wxString::FromDouble((double)stages[stage].actors[actor].center.Z);
 					actor_define += actor_id + _(".Particle.CircleCenter = Serenity_CreateVector3D(") + center_str + _(")") + _("\n");
 
+					wxString center_id_str = actor_id + _(".Particle.CircleCenter");
+					actor_load_properties += _("\t") + _("SetParticleCenter( [ACTOR], ") + center_id_str + _(".X, ") + center_id_str + _(".Y, ") + center_id_str + _(".Z") + _(" )") + _("\n");
+
+
+					//Radius
 					actor_define += actor_id + _(".Particle.Radius = ") + wxString::FromDouble(stages[stage].actors[actor].radius) + _("\n");
 
+					wxString radius_id_str = actor_id + _(".Particle.Radius");
+					actor_load_properties += _("\t") + _("SetParticleRadius( [ACTOR], ") + radius_id_str + _(" )") + _("\n");
+
+					//Use Every Vertex
 					actor_define += actor_id + _(".Particle.UseEveryVertex = ") + (stages[stage].actors[actor].use_every_vertex ? _("TRUE") : _("FALSE")) + _("\n");
+
+					wxString useVertex_id_str = actor_id + _(".Particle.UseEveryVertex");
+					actor_load_properties += _("\t") + _("UseParticleEveryMeshVertex( [ACTOR], ") + useVertex_id_str + _(" )") + _("\n");
+
+					//Use Normal Direction
 					actor_define += actor_id + _(".Particle.UseNormalDirection = ") + (stages[stage].actors[actor].use_normal_direction ? _("TRUE") : _("FALSE")) + _("\n");
+
+					wxString useNormal_id_str = actor_id + _(".Particle.UseNormalDirection");
+					actor_load_properties += _("\t") + _("UseParticleNormalDirection( [ACTOR], ") + useNormal_id_str + _(" )") + _("\n");
+
+					//Normal Direction Modifier
 					actor_define += actor_id + _(".Particle.NormalDirectionModifier = ") + wxString::FromDouble(stages[stage].actors[actor].normal_direction_modifier) + _("\n");
 
+					wxString normalDirMod_id_str = actor_id + _(".Particle.NormalDirectionModifier");
+					actor_load_properties += _("\t") + _("SetParticleNormalDirectionMod( [ACTOR], ") + normalDirMod_id_str + _(" )") + _("\n");
+
+					//Cylinder Length
 					actor_define += actor_id + _(".Particle.CylinderLength = ") + wxString::FromDouble(stages[stage].actors[actor].cylinder_length) + _("\n");
+
+					wxString cylinderLength_id_str = actor_id + _(".Particle.CylinderLength");
+					actor_load_properties += _("\t") + _("SetParticleLength( [ACTOR], ") + cylinderLength_id_str + _(" )") + _("\n");
+
+					//Use Outline Only
 					actor_define += actor_id + _(".Particle.UseOutlineOnly = ") + (stages[stage].actors[actor].use_outline_only ? _("TRUE") : _("FALSE")) + _("\n");
 
+					wxString useOutline_id_str = actor_id + _(".Particle.UseOutlineOnly");
+					actor_load_properties += _("\t") + _("UseParticleOutlineOnly( [ACTOR], ") + useOutline_id_str + _(" )") + _("\n");
+
+
+					//Box Size
 					wxString minBoxSize_str = wxString::FromDouble((double)stages[stage].actors[actor].box.MinEdge.X) + _(", ") +
 											  wxString::FromDouble((double)stages[stage].actors[actor].box.MinEdge.Y) + _(", ") +
 											  wxString::FromDouble((double)stages[stage].actors[actor].box.MinEdge.Z);
@@ -1801,9 +2011,29 @@ bool serenity_project::genRCBasicProject()
 											  wxString::FromDouble((double)stages[stage].actors[actor].box.MaxEdge.Z);
 					actor_define += actor_id + _(".Particle.MaxBoxSize = Serenity_CreateSize3D(") + maxBoxSize_str + _(")") + _("\n");
 
+
+					wxString minBox_id_str = actor_id + _(".Particle.MinBoxSize");
+					wxString maxBox_id_str = actor_id + _(".Particle.MaxBoxSize");
+					actor_load_properties += _("\t") + _("SetParticleBox( [ACTOR], ") + minBox_id_str + _(".Width, ") +
+																						minBox_id_str + _(".Height, ") +
+																						minBox_id_str + _(".Depth, ") +
+																						maxBox_id_str + _(".Width, ") +
+																						maxBox_id_str + _(".Height, ") +
+																						maxBox_id_str + _(".Depth ) ") + _("\n");
+
+
+
+					//Ring Thickness
 					actor_define += actor_id + _(".Particle.RingThickness = ") + wxString::FromDouble(stages[stage].actors[actor].ring_thickness) + _("\n");
 
+					wxString ringThickness_id_str = actor_id + _(".Particle.RingThickness");
+					actor_load_properties += _("\t") + _("SetParticleRingThickness( [ACTOR], ") + ringThickness_id_str + _(" )") + _("\n");
+
+
+					//Create Particle Actor
 					stage_load_fn += _("\t") + actor_id + _(".ID = ") + _(" CreateParticleActor( ") + actor_id + _(".Particle.ParticleType ) ") + _("\n");
+
+
 				}
 				break;
 
@@ -1824,14 +2054,45 @@ bool serenity_project::genRCBasicProject()
 				break;
 			}
 
+			actor_load_properties += _("\n");
+
+			actor_load_properties += _("\t") + _("SetActorVisible( [ACTOR], ") + actor_id + _(".Visible ) ") + _("\n");
+			actor_load_properties += _("\t") + _("SetActorAutoCulling( [ACTOR], ") + actor_id + _(".AutoCulling ) ") + _("\n");
+
+			if(stages[stage].actors[actor].type != SN_ACTOR_TYPE_TERRAIN && stages[stage].actors[actor].type != SN_ACTOR_TYPE_WATER && stages[stage].actors[actor].type != SN_ACTOR_TYPE_LIGHT)
+				actor_load_properties += _("\t") + (stages[stage].actors[actor].hasShadow ? _("AddActorShadow( [ACTOR] ) ") : _("RemoveActorShadow( [ACTOR] ) ") )  + _("\n");
+
+			actor_load_properties += _("\t") + _("SetActorCollisionShape( [ACTOR], ") + actor_id + _(".Physics.Shape, ") + actor_id + _(".Physics.Mass ) ") + _("\n");
+			actor_load_properties += _("\t") + _("SetActorSolid( [ACTOR], ") + actor_id + _(".Physics.isSolid ) ") + _("\n");
+
+			actor_load_properties += _("\n");
+
+			actor_load_properties.Replace(_("[ACTOR]"), actor_id + _(".ID"));
+
 			pfile.Write(actor_define);
 
 			stage_load_fn += _("\n");
+			stage_load_fn += actor_load_properties + _("\n");
+
 
 			pfile.Write(_("\n"));
 		}
 
+		wxString prepend_block = _("\t") + _("\'---------STAGE TEXTURES-------------") + _("\n");
+		prepend_block += _("\t") + tx_load + _("\n");
+		prepend_block += _("\n");
+
+		prepend_block += _("\t") + _("\'---------STAGE MATERIALS-------------") + _("\n");
+		prepend_block += _("\t") + mat_load + _("\n");
+		prepend_block += _("\n");
+
+		prepend_block += _("\t") + _("\'---------STAGE MESHES-------------") + _("\n");
+		prepend_block += _("\t") + mesh_load + _("\n");
+		prepend_block += _("\n");
+
+
 		stage_load_fn += _("End Sub") + _("\n\n\n\n");
+		stage_load_fn.Replace(_("[PREPEND_MATERIAL_TEXTURE_BLOCK]"), prepend_block);
 
 		pfile.Write(_("\n"));
 	}
