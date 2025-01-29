@@ -22,6 +22,60 @@ void rc_addAntiAliasType(std::string rc_aa_val, irr::video::E_ANTI_ALIASING_MODE
 	rc_anti_alias_types_list.push_back(aa_obj);
 }
 
+void rc_addAutoCullingType(std::string rc_ac_val, irr::scene::E_CULLING_TYPE irr_ac_val)
+{
+	rc_auto_cull_keyval_pair ac_obj;
+	ac_obj.key = rc_ac_val;
+	ac_obj.val = irr_ac_val;
+
+	rc_auto_cull_types_list.push_back(ac_obj);
+}
+
+irr::scene::E_CULLING_TYPE rc_getAutoCullingValue(std::string rc_ac_val)
+{
+	irr::scene::E_CULLING_TYPE ac_val = irr::scene::EAC_OFF;
+	for(int i = 0; i < rc_auto_cull_types_list.size(); i++)
+	{
+		if(rc_ac_val.compare(rc_auto_cull_types_list[i].key)==0)
+		{
+			ac_val = rc_auto_cull_types_list[i].val;
+			break;
+		}
+	}
+
+	return ac_val;
+}
+
+int rc_getAutoCullingIndex(irr::u32 rc_ac_val)
+{
+	int ac_index = 0;
+	for(int i = 0; i < rc_auto_cull_types_list.size(); i++)
+	{
+		if(rc_ac_val == ((irr::u32)rc_auto_cull_types_list[i].val))
+		{
+			ac_index = i;
+			break;
+		}
+	}
+
+	return ac_index;
+}
+
+std::string rc_getAutoCullingName(irr::u32 rc_ac_val)
+{
+	int ac_index = 0;
+	for(int i = 0; i < rc_auto_cull_types_list.size(); i++)
+	{
+		if(rc_ac_val == ((irr::u32)rc_auto_cull_types_list[i].val))
+		{
+			ac_index = i;
+			break;
+		}
+	}
+
+	return rc_auto_cull_types_list[ac_index].key;
+}
+
 void rc_addBlendModeType(std::string rc_bmode_val, irr::video::E_BLEND_OPERATION irr_bmode_val)
 {
 	rc_blendmode_keyval_pair bm_obj;
@@ -178,6 +232,9 @@ int rc_stage::addActor(std::string actor_id, int actor_type)
 	p_actor.physics.isSolid = true;
 	p_actor.physics.mass = 1;
 	p_actor.physics.shape = SN_PHYSICS_SHAPE_BOX;
+
+	p_actor.auto_culling = irr::scene::EAC_BOX;
+	p_actor.use_light_attenuation = false;
 
 	int actor_index = actors.size();
 

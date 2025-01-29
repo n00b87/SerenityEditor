@@ -1703,7 +1703,7 @@ bool serenity_project::genRCBasicProject()
 			}
 
 			actor_define += actor_id + _(".Shadow = ") + (stages[stage].actors[actor].hasShadow ? _("TRUE") : _("FALSE")) + _("\n");
-			actor_define += actor_id + _(".AutoCulling = ") + (stages[stage].actors[actor].auto_culling ? _("TRUE") : _("FALSE")) + _("\n");
+			actor_define += actor_id + _(".AutoCulling = ") + wxString::FromUTF8( rc_getAutoCullingName(stages[stage].actors[actor].auto_culling)) + _("\n");
 			actor_define += actor_id + _(".Visible = ") + (stages[stage].actors[actor].visible ? _("TRUE") : _("FALSE")) + _("\n");
 
 			//Physics Properties
@@ -1725,7 +1725,8 @@ bool serenity_project::genRCBasicProject()
 
 					if(animation_id.compare(_(""))!=0)
 					{
-						actor_define += actor_id + _(".Animation.AnimationID = ") + animation_id + _("\n");
+						//adding 1 because 0 is the default animation of the first frame
+						actor_define += actor_id + _(".Animation.AnimationID = ") + wxString::Format(_("%d"), animation_index+1) + _("\n");
 						actor_define += actor_id + _(".Animation.NumLoops = ") + wxString::Format(_("%d"),stages[stage].actors[actor].num_loops) + _("\n");
 					}
 
@@ -1796,12 +1797,6 @@ bool serenity_project::genRCBasicProject()
 					wxString outerCone_id_str = actor_id + _(".Light.OuterCone");
 					actor_load_properties += _("\t") + _("SetLightOuterCone( [ACTOR], ") + outerCone_id_str + _(" )") + _("\n");
 
-					//Radius
-					actor_define += actor_id + _(".Light.Radius = ") + wxString::FromDouble(stages[stage].actors[actor].radius) + _("\n");
-
-					wxString radius_id_str = actor_id + _(".Light.Radius");
-					actor_load_properties += _("\t") + _("SetLightRadius( [ACTOR], ") + radius_id_str + _(" )") + _("\n");
-
 					//Fall Off
 					actor_define += actor_id + _(".Light.FallOff = ") + wxString::FromDouble(stages[stage].actors[actor].falloff) + _("\n");
 
@@ -1826,17 +1821,28 @@ bool serenity_project::genRCBasicProject()
 					wxString specular_id_str = actor_id + _(".Light.Specular");
 					actor_load_properties += _("\t") + _("SetLightSpecularColor( [ACTOR], ") + specular_id_str + _(" )") + _("\n");
 
-					//Attenuation
-					actor_define += actor_id + _(".Light.Constant = ") + wxString::FromDouble(stages[stage].actors[actor].attenuation.X) + _("\n");
-					actor_define += actor_id + _(".Light.Linear = ") + wxString::FromDouble(stages[stage].actors[actor].attenuation.Y) + _("\n");
-					actor_define += actor_id + _(".Light.Quadratic = ") + wxString::FromDouble(stages[stage].actors[actor].attenuation.Z) + _("\n");
+					if(stages[stage].actors[actor].use_light_attenuation)
+					{
+						//Attenuation
+						actor_define += actor_id + _(".Light.Constant = ") + wxString::FromDouble(stages[stage].actors[actor].attenuation.X) + _("\n");
+						actor_define += actor_id + _(".Light.Linear = ") + wxString::FromDouble(stages[stage].actors[actor].attenuation.Y) + _("\n");
+						actor_define += actor_id + _(".Light.Quadratic = ") + wxString::FromDouble(stages[stage].actors[actor].attenuation.Z) + _("\n");
 
-					wxString constant_id_str = actor_id + _(".Light.Constant");
-					wxString linear_id_str = actor_id + _(".Light.Linear");
-					wxString quadratic_id_str = actor_id + _(".Light.Quadratic");
-					actor_load_properties += _("\t") + _("SetLightAttenuation( [ACTOR], ") + constant_id_str + _(", ") +
-																							 linear_id_str + _(", ") +
-																							 quadratic_id_str + _(" ) ") + _("\n");
+						wxString constant_id_str = actor_id + _(".Light.Constant");
+						wxString linear_id_str = actor_id + _(".Light.Linear");
+						wxString quadratic_id_str = actor_id + _(".Light.Quadratic");
+						actor_load_properties += _("\t") + _("SetLightAttenuation( [ACTOR], ") + constant_id_str + _(", ") +
+																								 linear_id_str + _(", ") +
+																								 quadratic_id_str + _(" ) ") + _("\n");
+					}
+					else
+					{
+						//Radius
+						actor_define += actor_id + _(".Light.Radius = ") + wxString::FromDouble(stages[stage].actors[actor].radius) + _("\n");
+
+						wxString radius_id_str = actor_id + _(".Light.Radius");
+						actor_load_properties += _("\t") + _("SetLightRadius( [ACTOR], ") + radius_id_str + _(" )") + _("\n");
+					}
 
 
 					//Create Light Actor
@@ -2557,12 +2563,13 @@ void serenity_project::save_stage(int stage_id)
 							_("scale_z=") + wxString::FromDouble((double)stages[stage_id].actors[i].scale.Z) + _(" ") +
 							_("visible=") + (stages[stage_id].actors[i].visible ? _("true") : _("false")) + _(" ") +
 							_("shadow=") + (stages[stage_id].actors[i].hasShadow ? _("true") : _("false")) + _(" ") +
-							_("auto_culling=") + (stages[stage_id].actors[i].auto_culling ? _("true") : _("false")) + _(" ") +
+							_("auto_culling=") + wxString::FromUTF8(rc_getAutoCullingName(stages[stage_id].actors[i].auto_culling)) + _(" ") +
 							_("physics_shape=") + getPhysicsShapeString(stages[stage_id].actors[i].physics.shape) + _(" ") +
 							_("physics_solid=") + (stages[stage_id].actors[i].physics.isSolid ? _("true") : _("false")) + _(" ") +
 							_("physics_mass=") + wxString::FromDouble(stages[stage_id].actors[i].physics.mass) + _(" ") +
 							_("cube_size=") + wxString::FromDouble(stages[stage_id].actors[i].cube_size) + _(" ") +
 							_("radius=") + wxString::FromDouble(stages[stage_id].actors[i].radius) + _(" ") +
+							_("use_attenuation=") + (stages[stage_id].actors[i].use_light_attenuation ? _("true") : _("false")) + _(" ") +
 							_("cast_shadow=") + (stages[stage_id].actors[i].isCastingShadow ? _("true") : _("false")) + _(" ") +
 							_("light_type=") + getLightTypeString(stages[stage_id].actors[i].light_type) + _(" ") +
 							_("falloff=") + wxString::FromDouble(stages[stage_id].actors[i].falloff) + _(" ") +
@@ -2842,7 +2849,7 @@ rc_actor serenity_project::load_actor(std::vector<serenity_project_dict_obj> par
 	p_actor.visible = true;
 	p_actor.hasShadow = true;
 	p_actor.isCastingShadow = true; //LIGHTS ONLY
-	p_actor.auto_culling = true;
+	p_actor.auto_culling = irr::scene::EAC_BOX;;
 	p_actor.cube_size = 1;
 	p_actor.radius = 1;
 	p_actor.texture_index = -1; //in project
@@ -2890,6 +2897,7 @@ rc_actor serenity_project::load_actor(std::vector<serenity_project_dict_obj> par
 	p_actor.inner_cone = 0;
 	p_actor.outer_cone = 0;
 	p_actor.attenuation = irr::core::vector3df(0, 0, 0);
+	p_actor.use_light_attenuation = false;
 
 	p_actor.physics.isSolid = true;
 	p_actor.physics.shape = SN_PHYSICS_SHAPE_BOX;
@@ -2942,11 +2950,13 @@ rc_actor serenity_project::load_actor(std::vector<serenity_project_dict_obj> par
 		else if(param[i].key.compare(_("cast_shadow"))==0)
 			p_actor.isCastingShadow = (param[i].val.compare(_("true"))==0 ? true : false);
 		else if(param[i].key.compare(_("auto_culling"))==0)
-			p_actor.auto_culling = (param[i].val.compare(_("true"))==0 ? true : false);
+			p_actor.auto_culling = rc_getAutoCullingValue(param[i].val.ToStdString());
 		else if(param[i].key.compare(_("cube_size"))==0)
 			param[i].val.ToDouble(&p_actor.cube_size);
 		else if(param[i].key.compare(_("radius"))==0)
 			param[i].val.ToDouble(&p_actor.radius);
+		else if(param[i].key.compare(_("use_attenuation"))==0)
+			p_actor.use_light_attenuation = (param[i].val.compare(_("true"))==0 ? true : false);
 		else if(param[i].key.compare(_("texture"))==0)
 			p_actor.texture_index = getTextureIndex(param[i].val);
 		else if(param[i].key.compare(_("light_type"))==0)

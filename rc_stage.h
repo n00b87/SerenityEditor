@@ -161,11 +161,12 @@ struct rc_actor
 	bool visible;
 	bool hasShadow;
 	bool isCastingShadow; //LIGHTS ONLY
-	bool auto_culling;
+	irr::u32 auto_culling;
 	double cube_size;
 	double radius;
 	int texture_index; //in project
 	int light_type;
+	bool use_light_attenuation;
 	double angle;
 	double falloff;
 	double inner_cone;
@@ -272,6 +273,12 @@ struct rc_anti_alias_keyval_pair
 	irr::video::E_ANTI_ALIASING_MODE val;
 };
 
+struct rc_auto_cull_keyval_pair
+{
+	std::string key;
+	irr::scene::E_CULLING_TYPE val;
+};
+
 struct rc_blendmode_keyval_pair
 {
 	std::string key;
@@ -294,12 +301,17 @@ struct rc_colormode_keyval_pair
 
 std::vector<rc_material_keyval_pair> rc_material_types_list;
 std::vector<rc_anti_alias_keyval_pair> rc_anti_alias_types_list;
+std::vector<rc_auto_cull_keyval_pair> rc_auto_cull_types_list;
 std::vector<rc_blendmode_keyval_pair> rc_blendmode_types_list;
 std::vector<rc_colormask_keyval_pair> rc_colormask_types_list;
 std::vector<rc_colormode_keyval_pair> rc_colormode_types_list;
 
 void rc_addMaterialType(std::string rc_mat_val, irr::video::E_MATERIAL_TYPE irr_mat_val);
 void rc_addAntiAliasType(std::string rc_aa_val, irr::video::E_ANTI_ALIASING_MODE irr_aa_val);
+void rc_addAutoCullingType(std::string rc_ac_val, irr::scene::E_CULLING_TYPE irr_ac_val);
+irr::scene::E_CULLING_TYPE rc_getAutoCullingValue(std::string rc_ac_val);
+int rc_getAutoCullingIndex(irr::u32 rc_ac_val);
+std::string rc_getAutoCullingName(irr::u32 rc_ac_val);
 void rc_addBlendModeType(std::string rc_bmode_val, irr::video::E_BLEND_OPERATION irr_bmode_val);
 void rc_addColorMaskType(std::string rc_cmask_val, irr::video::E_COLOR_PLANE irr_cmask_val);
 void rc_addColorModeType(std::string rc_cmode_val, irr::video::E_COLOR_MATERIAL irr_cmode_val);

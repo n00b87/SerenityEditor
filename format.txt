@@ -167,7 +167,8 @@ etc.
 	* rot_x=rx  rot_y=ry  rot_z=rz  
 	* scale_x=sx  scale_y=sy  scale_z=sz  
 	* visible=flag
-	  
+	
+	* use_attenuation=flag  
 	* cast_shadow=flag
 	* light_type=light_type
 	* radius=light_radius

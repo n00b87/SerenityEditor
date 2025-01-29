@@ -178,6 +178,33 @@ Serenity3D_Frame( parent )
 	}
 
 
+	//AUTOMATIC CULLING
+	rc_addAutoCullingType("AUTOCULLING_OFF", irr::scene::EAC_OFF);
+	rc_addAutoCullingType("AUTOCULLING_BOX", irr::scene::EAC_BOX);
+	rc_addAutoCullingType("AUTOCULLING_FRUSTUM_BOX", irr::scene::EAC_FRUSTUM_BOX);
+	rc_addAutoCullingType("AUTOCULLING_FRUSTUM_SPHERE", irr::scene::EAC_FRUSTUM_SPHERE);
+	rc_addAutoCullingType("AUTOCULLING_OCC_QUERY", irr::scene::EAC_OCC_QUERY);
+
+	wxPGChoices auto_cull_choices;
+	auto_cull_choices.Clear();
+
+	for(int i = 0; i < rc_auto_cull_types_list.size(); i++)
+	{
+		auto_cull_choices.Add(wxString::FromUTF8(rc_auto_cull_types_list[i].key.c_str()));
+	}
+
+	for(int i = 0; i < m_stage_propertyGridManager->GetPageCount(); i++)
+	{
+		wxPropertyGridPage* page = m_stage_propertyGridManager->GetPage(i);
+		wxPGProperty* property = page->GetProperty(_("auto_culling"));
+		if(property)
+		{
+			//wxMessageBox(_("Add AUTP"));
+			property->SetChoices(auto_cull_choices);
+		}
+	}
+
+
 	//BLEND MODE
 	rc_addBlendModeType("BLENDMODE_ADD", irr::video::EBO_ADD);
 	rc_addBlendModeType("BLENDMODE_MAX", irr::video::EBO_MAX);
@@ -2053,12 +2080,20 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 				node->getLightData().AmbientColor = project.stages[stage_project_index].actors[i].ambient;
 				node->getLightData().DiffuseColor = project.stages[stage_project_index].actors[i].diffuse;
 				node->getLightData().SpecularColor = project.stages[stage_project_index].actors[i].specular;
-				node->getLightData().Attenuation = project.stages[stage_project_index].actors[i].attenuation;
+
+				if(project.stages[stage_project_index].actors[i].use_light_attenuation)
+				{
+					node->getLightData().Attenuation = project.stages[stage_project_index].actors[i].attenuation;
+				}
+				else
+				{
+					node->setRadius(project.stages[stage_project_index].actors[i].radius);
+				}
+
 				node->enableCastShadow(project.stages[stage_project_index].actors[i].isCastingShadow);
 				node->getLightData().Falloff = project.stages[stage_project_index].actors[i].falloff;
 				node->getLightData().InnerCone = project.stages[stage_project_index].actors[i].inner_cone;
 				node->getLightData().OuterCone = project.stages[stage_project_index].actors[i].outer_cone;
-				node->setRadius(project.stages[stage_project_index].actors[i].radius);
 
 				//if(!project.stages[stage_project_index].actors[i].icon_node)
 					project.stages[stage_project_index].actors[i].icon_node = smgr->addBillboardSceneNode(0, irr::core::dimension2df(10, 10));
@@ -2486,7 +2521,7 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 
 		//-----Render Settings----------------
 		node->setVisible(project.stages[stage_project_index].actors[i].visible);
-		node->setAutomaticCulling(project.stages[stage_project_index].actors[i].auto_culling);
+		node->setAutomaticCulling((irr::scene::E_CULLING_TYPE) project.stages[stage_project_index].actors[i].auto_culling);
 
 		//------ICON NODE-------------------
 		bool use_icon_bbox = false;
@@ -2791,6 +2826,23 @@ void SerenityEditorSerenity3D_Frame::OnStagePropertyGridChanged( wxPropertyGridE
 			refresh_actor(actor_index);
 		}
 	}
+	else if(property_name.compare(_("use_attenuation"))==0)
+	{
+		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
+			return;
+
+		if(stageTabGrid_current_actor < 0 || stageTabGrid_current_actor >= project.stages[stageTabGrid_current_stage].actors.size())
+			return;
+
+		int stage_index = stageTabGrid_current_stage;
+		int actor_index = stageTabGrid_current_actor;
+
+		project.stages[stage_index].actors[actor_index].use_light_attenuation = page->GetPropertyByName(_("use_attenuation"))->GetValue().GetBool();
+		if(stage_index == stageTab_active_stage_project_index)
+		{
+			refresh_actor(actor_index);
+		}
+	}
 	else if(property_name.compare(_("auto_culling"))==0)
 	{
 		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
@@ -2802,7 +2854,15 @@ void SerenityEditorSerenity3D_Frame::OnStagePropertyGridChanged( wxPropertyGridE
 		int stage_index = stageTabGrid_current_stage;
 		int actor_index = stageTabGrid_current_actor;
 
-		project.stages[stage_index].actors[actor_index].auto_culling = page->GetPropertyByName(_("auto_culling"))->GetValue().GetBool();
+		int selection = page->GetPropertyByName(_("auto_culling"))->GetChoiceSelection();
+
+		if(selection < 0 || selection >= page->GetPropertyByName(_("auto_culling"))->GetChoices().GetCount())
+			return;
+
+		wxString selection_string = page->GetPropertyByName(_("auto_culling"))->GetChoices().GetLabel(selection);
+
+		project.stages[stage_index].actors[actor_index].auto_culling = (irr::u32)rc_getAutoCullingValue(selection_string.ToStdString());
+
 		if(stage_index == stageTab_active_stage_project_index)
 		{
 			refresh_actor(actor_index);
@@ -3993,13 +4053,13 @@ void SerenityEditorSerenity3D_Frame::setAnimatedActorGrid(int stage_project_inde
 
 	//------------Render Settings------------------------------
 	bool visible_flag = project.stages[stage_project_index].actors[actor_project_index].visible;
-	m_animatedActorProperties_propertyGridPage->GetPropertyByName(_("visible"))-> wxPGProperty::SetValue(visible_flag);
+	m_animatedActorProperties_propertyGridPage->GetPropertyByName(_("visible"))->SetValue(visible_flag);
 
 	bool shadow_flag = project.stages[stage_project_index].actors[actor_project_index].hasShadow;
-	m_animatedActorProperties_propertyGridPage->GetPropertyByName(_("shadow"))-> wxPGProperty::SetValue(shadow_flag);
+	m_animatedActorProperties_propertyGridPage->GetPropertyByName(_("shadow"))->SetValue(shadow_flag);
 
-	bool auto_culling_flag = project.stages[stage_project_index].actors[actor_project_index].auto_culling;
-	m_animatedActorProperties_propertyGridPage->GetPropertyByName(_("auto_culling"))-> wxPGProperty::SetValue(auto_culling_flag);
+	int auto_culling_index = rc_getAutoCullingIndex(project.stages[stage_project_index].actors[actor_project_index].auto_culling);
+	m_animatedActorProperties_propertyGridPage->GetPropertyByName(_("auto_culling"))->SetChoiceSelection(auto_culling_index);
 
 	//-------------Materials----------------------------------
 	int material_selection = 0;
@@ -4117,13 +4177,13 @@ void SerenityEditorSerenity3D_Frame::setOctreeActorGrid(int stage_project_index,
 
 	//------------Render Settings------------------------------
 	bool visible_flag = project.stages[stage_project_index].actors[actor_project_index].visible;
-	m_octreeActorProperties_propertyGridPage->GetPropertyByName(_("visible"))-> wxPGProperty::SetValue(visible_flag);
+	m_octreeActorProperties_propertyGridPage->GetPropertyByName(_("visible"))->SetValue(visible_flag);
 
 	bool shadow_flag = project.stages[stage_project_index].actors[actor_project_index].hasShadow;
-	m_octreeActorProperties_propertyGridPage->GetPropertyByName(_("shadow"))-> wxPGProperty::SetValue(shadow_flag);
+	m_octreeActorProperties_propertyGridPage->GetPropertyByName(_("shadow"))->SetValue(shadow_flag);
 
-	bool auto_culling_flag = project.stages[stage_project_index].actors[actor_project_index].auto_culling;
-	m_octreeActorProperties_propertyGridPage->GetPropertyByName(_("auto_culling"))-> wxPGProperty::SetValue(auto_culling_flag);
+	int auto_culling_index = rc_getAutoCullingIndex(project.stages[stage_project_index].actors[actor_project_index].auto_culling);
+	m_octreeActorProperties_propertyGridPage->GetPropertyByName(_("auto_culling"))->SetChoiceSelection(auto_culling_index);
 
 	//-------------Materials----------------------------------
 	int material_selection = 0;
@@ -4246,13 +4306,13 @@ void SerenityEditorSerenity3D_Frame::setBillboardActorGrid(int stage_project_ind
 
 	//------------Render Settings------------------------------
 	bool visible_flag = project.stages[stage_project_index].actors[actor_project_index].visible;
-	m_billboardActorProperties_propertyGridPage->GetPropertyByName(_("visible"))-> wxPGProperty::SetValue(visible_flag);
+	m_billboardActorProperties_propertyGridPage->GetPropertyByName(_("visible"))->SetValue(visible_flag);
 
 	bool shadow_flag = project.stages[stage_project_index].actors[actor_project_index].hasShadow;
-	m_billboardActorProperties_propertyGridPage->GetPropertyByName(_("shadow"))-> wxPGProperty::SetValue(shadow_flag);
+	m_billboardActorProperties_propertyGridPage->GetPropertyByName(_("shadow"))->SetValue(shadow_flag);
 
-	bool auto_culling_flag = project.stages[stage_project_index].actors[actor_project_index].auto_culling;
-	m_billboardActorProperties_propertyGridPage->GetPropertyByName(_("auto_culling"))-> wxPGProperty::SetValue(auto_culling_flag);
+	int auto_culling_index = rc_getAutoCullingIndex(project.stages[stage_project_index].actors[actor_project_index].auto_culling);
+	m_billboardActorProperties_propertyGridPage->GetPropertyByName(_("auto_culling"))->SetChoiceSelection(auto_culling_index);
 
 
 	int physics_shape = project.stages[stage_project_index].actors[actor_project_index].physics.shape;
@@ -4323,8 +4383,11 @@ void SerenityEditorSerenity3D_Frame::setLightActorGrid(int stage_project_index, 
 	bool shadow_flag = project.stages[stage_project_index].actors[actor_project_index].hasShadow;
 	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("shadow"))->SetValue(shadow_flag);
 
-	bool auto_culling_flag = project.stages[stage_project_index].actors[actor_project_index].auto_culling;
-	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("auto_culling"))->SetValue(auto_culling_flag);
+	bool use_attenuation_flag = project.stages[stage_project_index].actors[actor_project_index].use_light_attenuation;
+	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("use_attenuation"))->SetValue(use_attenuation_flag);
+
+	int auto_culling_index = rc_getAutoCullingIndex(project.stages[stage_project_index].actors[actor_project_index].auto_culling);
+	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("auto_culling"))->SetChoiceSelection(auto_culling_index);
 
 
 
@@ -4502,13 +4565,13 @@ void SerenityEditorSerenity3D_Frame::setTerrainActorGrid(int stage_project_index
 
 	//------------Render Settings------------------------------
 	bool visible_flag = project.stages[stage_project_index].actors[actor_project_index].visible;
-	m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("visible"))-> wxPGProperty::SetValue(visible_flag);
+	m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("visible"))->SetValue(visible_flag);
 
 	bool shadow_flag = project.stages[stage_project_index].actors[actor_project_index].hasShadow;
-	m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("shadow"))-> wxPGProperty::SetValue(shadow_flag);
+	m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("shadow"))->SetValue(shadow_flag);
 
-	bool auto_culling_flag = project.stages[stage_project_index].actors[actor_project_index].auto_culling;
-	m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("auto_culling"))-> wxPGProperty::SetValue(auto_culling_flag);
+	int auto_culling_index = rc_getAutoCullingIndex(project.stages[stage_project_index].actors[actor_project_index].auto_culling);
+	m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("auto_culling"))->SetChoiceSelection(auto_culling_index);
 
 	//-------------Materials----------------------------------
 	int material_selection = 0;
@@ -4624,13 +4687,13 @@ void SerenityEditorSerenity3D_Frame::setWaterActorGrid(int stage_project_index, 
 
 	//------------Render Settings------------------------------
 	bool visible_flag = project.stages[stage_project_index].actors[actor_project_index].visible;
-	m_waterActorProperties_propertyGridPage->GetPropertyByName(_("visible"))-> wxPGProperty::SetValue(visible_flag);
+	m_waterActorProperties_propertyGridPage->GetPropertyByName(_("visible"))->SetValue(visible_flag);
 
 	bool shadow_flag = project.stages[stage_project_index].actors[actor_project_index].hasShadow;
-	m_waterActorProperties_propertyGridPage->GetPropertyByName(_("shadow"))-> wxPGProperty::SetValue(shadow_flag);
+	m_waterActorProperties_propertyGridPage->GetPropertyByName(_("shadow"))->SetValue(shadow_flag);
 
-	bool auto_culling_flag = project.stages[stage_project_index].actors[actor_project_index].auto_culling;
-	m_waterActorProperties_propertyGridPage->GetPropertyByName(_("auto_culling"))-> wxPGProperty::SetValue(auto_culling_flag);
+	int auto_culling_index = rc_getAutoCullingIndex(project.stages[stage_project_index].actors[actor_project_index].auto_culling);
+	m_waterActorProperties_propertyGridPage->GetPropertyByName(_("auto_culling"))->SetChoiceSelection(auto_culling_index);
 
 
 	//-------------Materials----------------------------------
@@ -4783,8 +4846,8 @@ void SerenityEditorSerenity3D_Frame::setParticleActorGrid(int stage_project_inde
 	bool shadow_flag = project.stages[stage_project_index].actors[actor_project_index].hasShadow;
 	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("shadow"))->SetValue(shadow_flag);
 
-	bool auto_culling_flag = project.stages[stage_project_index].actors[actor_project_index].auto_culling;
-	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("auto_culling"))->SetValue(auto_culling_flag);
+	int auto_culling_index = rc_getAutoCullingIndex(project.stages[stage_project_index].actors[actor_project_index].auto_culling);
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("auto_culling"))->SetChoiceSelection(auto_culling_index);
 
 
 	//----------------SIZE----------------------------
@@ -4990,8 +5053,8 @@ void SerenityEditorSerenity3D_Frame::setCubeActorGrid(int stage_project_index, i
 	bool shadow_flag = project.stages[stage_project_index].actors[actor_project_index].hasShadow;
 	m_cubeActorProperties_propertyGridPage->GetPropertyByName(_("shadow"))-> wxPGProperty::SetValue(shadow_flag);
 
-	bool auto_culling_flag = project.stages[stage_project_index].actors[actor_project_index].auto_culling;
-	m_cubeActorProperties_propertyGridPage->GetPropertyByName(_("auto_culling"))-> wxPGProperty::SetValue(auto_culling_flag);
+	int auto_culling_index = rc_getAutoCullingIndex(project.stages[stage_project_index].actors[actor_project_index].auto_culling);
+	m_cubeActorProperties_propertyGridPage->GetPropertyByName(_("auto_culling"))->SetChoiceSelection(auto_culling_index);
 
 	//-------------Materials----------------------------------
 	int material_selection = 0;
@@ -5086,13 +5149,13 @@ void SerenityEditorSerenity3D_Frame::setSphereActorGrid(int stage_project_index,
 
 	//------------Render Settings------------------------------
 	bool visible_flag = project.stages[stage_project_index].actors[actor_project_index].visible;
-	m_sphereActorProperties_propertyGridPage->GetPropertyByName(_("visible"))-> wxPGProperty::SetValue(visible_flag);
+	m_sphereActorProperties_propertyGridPage->GetPropertyByName(_("visible"))->SetValue(visible_flag);
 
 	bool shadow_flag = project.stages[stage_project_index].actors[actor_project_index].hasShadow;
-	m_sphereActorProperties_propertyGridPage->GetPropertyByName(_("shadow"))-> wxPGProperty::SetValue(shadow_flag);
+	m_sphereActorProperties_propertyGridPage->GetPropertyByName(_("shadow"))->SetValue(shadow_flag);
 
-	bool auto_culling_flag = project.stages[stage_project_index].actors[actor_project_index].auto_culling;
-	m_sphereActorProperties_propertyGridPage->GetPropertyByName(_("auto_culling"))-> wxPGProperty::SetValue(auto_culling_flag);
+	int auto_culling_index = rc_getAutoCullingIndex(project.stages[stage_project_index].actors[actor_project_index].auto_culling);
+	m_sphereActorProperties_propertyGridPage->GetPropertyByName(_("auto_culling"))->SetChoiceSelection(auto_culling_index);
 
 	//-------------Materials----------------------------------
 	int material_selection = 0;
