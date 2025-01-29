@@ -169,9 +169,6 @@ class wxIrrlicht : public wxControl {
         irr::video::SColor grid_color;
         bool grid_visible = true;
 
-        irr::core::vector3df camera_position;
-        irr::core::vector3df camera_rotation;
-
         int stage_edit_tool = -1;
         irr::core::array<actor_object> selected_actors;
         irr::core::array<actor_object> scene_actors;

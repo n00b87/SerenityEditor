@@ -1,8 +1,8 @@
 # depslib dependency file v1.0
-1738115506 source:/home/n00b/Projects/SerenityEngine/Serenity3D_Editor.cpp
+1738189745 source:/home/n00b/Projects/SerenityEngine/Serenity3D_Editor.cpp
 	"Serenity3D_Editor.h"
 
-1738115506 /home/n00b/Projects/SerenityEngine/Serenity3D_Editor.h
+1738189745 /home/n00b/Projects/SerenityEngine/Serenity3D_Editor.h
 	<wx/artprov.h>
 	<wx/xrc/xmlres.h>
 	<wx/string.h>
@@ -1434,7 +1434,7 @@
 	"wx/icon.h"
 	"wx/aui/auibook.h"
 
-1738123566 source:/home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.cpp
+1738190198 source:/home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.cpp
 	<wx/stdpaths.h>
 	<wx/propgrid/manager.h>
 	<wx/propgrid/propgridpagestate.h>
@@ -1473,8 +1473,9 @@
 	"SerenityEditor_NewSphereActor_Dialog.h"
 	"SerenityEditor_CreateMesh_Dialog.h"
 	"SerenityEditor_ExitEditorAlert_Dialog.h"
+	"SerenityEditor_SetCamera_Dialog.h"
 
-1737788040 /home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.h
+1738180176 /home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.h
 	<vector>
 	<wx/propgrid/propgrid.h>
 	<wx/propgrid/advprops.h>
@@ -5395,7 +5396,7 @@
 
 1720630994 /usr/include/gtk-3.0/gtk/gtk-autocleanups.h
 
-1737769808 /home/n00b/Projects/SerenityEngine/wxIrrlicht.h
+1738182392 /home/n00b/Projects/SerenityEngine/wxIrrlicht.h
 	<windows.h>
 	<irrlicht.h>
 	<wx/wx.h>
@@ -9724,7 +9725,7 @@
 
 1699484035 /usr/include/wx-3.2/wx/unix/stdpaths.h
 
-1738122106 source:/home/n00b/Projects/SerenityEngine/engine_base.cpp
+1738172625 source:/home/n00b/Projects/SerenityEngine/engine_base.cpp
 	<wx/wx.h>
 	<wx/filename.h>
 	<vector>
@@ -10125,5 +10126,11 @@
 	"SerenityEditor_ExitEditorAlert_Dialog.h"
 
 1737752177 /home/n00b/Projects/SerenityEngine/SerenityEditor_ExitEditorAlert_Dialog.h
+	"Serenity3D_Editor.h"
+
+1738182284 source:/home/n00b/Projects/SerenityEngine/SerenityEditor_SetCamera_Dialog.cpp
+	"SerenityEditor_SetCamera_Dialog.h"
+
+1738182290 /home/n00b/Projects/SerenityEngine/SerenityEditor_SetCamera_Dialog.h
 	"Serenity3D_Editor.h"
 

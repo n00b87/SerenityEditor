@@ -124,7 +124,17 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer46->Add( m_staticText12, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 	m_stagePOV_comboBox = new wxComboBox( m_panel47, wxID_ANY, wxT("Combo!"), wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
-	bSizer46->Add( m_stagePOV_comboBox, 0, wxALL, 5 );
+	bSizer46->Add( m_stagePOV_comboBox, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+
+	bSizer46->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_auiToolBar5 = new wxAuiToolBar( m_panel47, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_TB_HORZ_LAYOUT );
+	m_tool30 = m_auiToolBar5->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/camera.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+
+	m_auiToolBar5->Realize();
+
+	bSizer46->Add( m_auiToolBar5, 0, wxALL, 5 );
 
 
 	bSizer46->Add( 0, 0, 1, wxEXPAND, 5 );
@@ -1852,6 +1862,7 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_stagePOV_comboBox->Connect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( Serenity3D_Frame::OnViewComboSelect ), NULL, this );
 	m_stagePOV_comboBox->Connect( wxEVT_COMBOBOX_CLOSEUP, wxCommandEventHandler( Serenity3D_Frame::OnStageViewComboClose ), NULL, this );
 	m_stagePOV_comboBox->Connect( wxEVT_COMBOBOX_DROPDOWN, wxCommandEventHandler( Serenity3D_Frame::OnStageViewComboOpen ), NULL, this );
+	this->Connect( m_tool30->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnStageCameraNavigate ) );
 	this->Connect( m_render_wire_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_RenderMode_WireFrame ) );
 	this->Connect( m_render_solid_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_RenderMode_Solid ) );
 	m_stageViewport_panel->Connect( wxEVT_UPDATE_UI, wxUpdateUIEventHandler( Serenity3D_Frame::OnStageUpdate ), NULL, this );
@@ -1961,6 +1972,7 @@ Serenity3D_Frame::~Serenity3D_Frame()
 	m_stagePOV_comboBox->Disconnect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( Serenity3D_Frame::OnViewComboSelect ), NULL, this );
 	m_stagePOV_comboBox->Disconnect( wxEVT_COMBOBOX_CLOSEUP, wxCommandEventHandler( Serenity3D_Frame::OnStageViewComboClose ), NULL, this );
 	m_stagePOV_comboBox->Disconnect( wxEVT_COMBOBOX_DROPDOWN, wxCommandEventHandler( Serenity3D_Frame::OnStageViewComboOpen ), NULL, this );
+	this->Disconnect( m_tool30->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnStageCameraNavigate ) );
 	this->Disconnect( m_render_wire_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_RenderMode_WireFrame ) );
 	this->Disconnect( m_render_solid_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_RenderMode_Solid ) );
 	m_stageViewport_panel->Disconnect( wxEVT_UPDATE_UI, wxUpdateUIEventHandler( Serenity3D_Frame::OnStageUpdate ), NULL, this );
@@ -4465,5 +4477,118 @@ CreateMesh_Dialog::~CreateMesh_Dialog()
 	m_shape_comboBox->Disconnect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( CreateMesh_Dialog::OnShapeSelected ), NULL, this );
 	m_button89->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CreateMesh_Dialog::OnCancel ), NULL, this );
 	m_button90->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CreateMesh_Dialog::OnCreate ), NULL, this );
+
+}
+
+SetCamera_Dialog::SetCamera_Dialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+	wxBoxSizer* bSizer264;
+	bSizer264 = new wxBoxSizer( wxVERTICAL );
+
+	m_panel53 = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer265;
+	bSizer265 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer266;
+	bSizer266 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText105 = new wxStaticText( m_panel53, wxID_ANY, wxT("Position"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText105->Wrap( -1 );
+	bSizer266->Add( m_staticText105, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_staticText108 = new wxStaticText( m_panel53, wxID_ANY, wxT("X:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText108->Wrap( -1 );
+	bSizer266->Add( m_staticText108, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_posX_textCtrl = new wxTextCtrl( m_panel53, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer266->Add( m_posX_textCtrl, 0, wxALL, 5 );
+
+	m_staticText109 = new wxStaticText( m_panel53, wxID_ANY, wxT("Y:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText109->Wrap( -1 );
+	bSizer266->Add( m_staticText109, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_posY_textCtrl = new wxTextCtrl( m_panel53, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer266->Add( m_posY_textCtrl, 0, wxALL, 5 );
+
+	m_staticText110 = new wxStaticText( m_panel53, wxID_ANY, wxT("Z:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText110->Wrap( -1 );
+	bSizer266->Add( m_staticText110, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_posZ_textCtrl = new wxTextCtrl( m_panel53, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer266->Add( m_posZ_textCtrl, 0, wxALL, 5 );
+
+
+	bSizer265->Add( bSizer266, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer2661;
+	bSizer2661 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText1051 = new wxStaticText( m_panel53, wxID_ANY, wxT("Rotation"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText1051->Wrap( -1 );
+	bSizer2661->Add( m_staticText1051, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_staticText111 = new wxStaticText( m_panel53, wxID_ANY, wxT("X:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText111->Wrap( -1 );
+	bSizer2661->Add( m_staticText111, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_rotX_textCtrl = new wxTextCtrl( m_panel53, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer2661->Add( m_rotX_textCtrl, 0, wxALL, 5 );
+
+	m_staticText112 = new wxStaticText( m_panel53, wxID_ANY, wxT("Y:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText112->Wrap( -1 );
+	bSizer2661->Add( m_staticText112, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_rotY_textCtrl = new wxTextCtrl( m_panel53, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer2661->Add( m_rotY_textCtrl, 0, wxALL, 5 );
+
+	m_staticText113 = new wxStaticText( m_panel53, wxID_ANY, wxT("Z:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText113->Wrap( -1 );
+	bSizer2661->Add( m_staticText113, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_rotZ_textCtrl = new wxTextCtrl( m_panel53, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
+	bSizer2661->Add( m_rotZ_textCtrl, 0, wxALL, 5 );
+
+
+	bSizer265->Add( bSizer2661, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer270;
+	bSizer270 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer270->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_button94 = new wxButton( m_panel53, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer270->Add( m_button94, 0, wxALL, 5 );
+
+	m_button95 = new wxButton( m_panel53, wxID_ANY, wxT("Set"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer270->Add( m_button95, 0, wxALL, 5 );
+
+
+	bSizer265->Add( bSizer270, 0, wxEXPAND, 5 );
+
+
+	m_panel53->SetSizer( bSizer265 );
+	m_panel53->Layout();
+	bSizer265->Fit( m_panel53 );
+	bSizer264->Add( m_panel53, 1, wxEXPAND | wxALL, 5 );
+
+
+	this->SetSizer( bSizer264 );
+	this->Layout();
+
+	this->Centre( wxBOTH );
+
+	// Connect Events
+	m_button94->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( SetCamera_Dialog::OnCancel ), NULL, this );
+	m_button95->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( SetCamera_Dialog::OnSet ), NULL, this );
+}
+
+SetCamera_Dialog::~SetCamera_Dialog()
+{
+	// Disconnect Events
+	m_button94->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( SetCamera_Dialog::OnCancel ), NULL, this );
+	m_button95->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( SetCamera_Dialog::OnSet ), NULL, this );
 
 }

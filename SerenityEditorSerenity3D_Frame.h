@@ -240,6 +240,7 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
 		void OnS3DModeCameraClicked( wxCommandEvent& event );
 
 		void OnStageUpdate( wxUpdateUIEvent& event );
+		void OnStageCameraNavigate( wxCommandEvent& event );
 		void On_Stage_RenderMode_WireFrame( wxCommandEvent& event );
 		void On_Stage_RenderMode_Solid( wxCommandEvent& event );
 

@@ -85,6 +85,8 @@ class Serenity3D_Frame : public wxFrame
 		wxPanel* m_panel47;
 		wxStaticText* m_staticText12;
 		wxComboBox* m_stagePOV_comboBox;
+		wxAuiToolBar* m_auiToolBar5;
+		wxAuiToolBarItem* m_tool30;
 		wxStaticText* m_staticText84;
 		wxAuiToolBar* m_renderMode_auiToolBar;
 		wxAuiToolBarItem* m_render_wire_tool;
@@ -603,6 +605,7 @@ class Serenity3D_Frame : public wxFrame
 		virtual void OnViewComboSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnStageViewComboClose( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnStageViewComboOpen( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnStageCameraNavigate( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Stage_RenderMode_WireFrame( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Stage_RenderMode_Solid( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnStageUpdate( wxUpdateUIEvent& event ) { event.Skip(); }
@@ -1536,6 +1539,45 @@ class CreateMesh_Dialog : public wxDialog
 		CreateMesh_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Create Mesh"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 647,442 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~CreateMesh_Dialog();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class SetCamera_Dialog
+///////////////////////////////////////////////////////////////////////////////
+class SetCamera_Dialog : public wxDialog
+{
+	private:
+
+	protected:
+		wxPanel* m_panel53;
+		wxStaticText* m_staticText105;
+		wxStaticText* m_staticText108;
+		wxTextCtrl* m_posX_textCtrl;
+		wxStaticText* m_staticText109;
+		wxTextCtrl* m_posY_textCtrl;
+		wxStaticText* m_staticText110;
+		wxTextCtrl* m_posZ_textCtrl;
+		wxStaticText* m_staticText1051;
+		wxStaticText* m_staticText111;
+		wxTextCtrl* m_rotX_textCtrl;
+		wxStaticText* m_staticText112;
+		wxTextCtrl* m_rotY_textCtrl;
+		wxStaticText* m_staticText113;
+		wxTextCtrl* m_rotZ_textCtrl;
+		wxButton* m_button94;
+		wxButton* m_button95;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void OnCancel( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnSet( wxCommandEvent& event ) { event.Skip(); }
+
+
+	public:
+
+		SetCamera_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Set Viewport Camera"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 494,177 ), long style = wxDEFAULT_DIALOG_STYLE );
+
+		~SetCamera_Dialog();
 
 };
 

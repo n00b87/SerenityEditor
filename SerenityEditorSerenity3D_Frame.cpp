@@ -36,6 +36,7 @@
 #include "SerenityEditor_NewSphereActor_Dialog.h"
 #include "SerenityEditor_CreateMesh_Dialog.h"
 #include "SerenityEditor_ExitEditorAlert_Dialog.h"
+#include "SerenityEditor_SetCamera_Dialog.h"
 
 SerenityEditorSerenity3D_Frame::SerenityEditorSerenity3D_Frame( wxWindow* parent )
 :
@@ -1794,6 +1795,86 @@ void SerenityEditorSerenity3D_Frame::updateRenderMode()
 			}
 		}
 	}
+}
+
+void SerenityEditorSerenity3D_Frame::OnStageCameraNavigate( wxCommandEvent& event )
+{
+	if(!stage_window)
+		return;
+
+	SerenityEditor_SetCamera_Dialog* dialog = new SerenityEditor_SetCamera_Dialog(this);
+
+	float px, py, pz, rx, ry, rz;
+
+	for(int i = 0; i < 4; i++)
+	{
+		if(stage_window->camera[i].pov == RC_CAMERA_VIEW_PERSPECTIVE)
+		{
+			if(stage_window->num_views == 4)
+			{
+				stage_window->active_camera = i;
+			}
+		}
+	}
+
+	stage_window->camera[stage_window->active_camera].camera.getPosition(px, py, pz);
+	rx = stage_window->camera[stage_window->active_camera].camera.rx;
+	ry = stage_window->camera[stage_window->active_camera].camera.ry;
+	rz = stage_window->camera[stage_window->active_camera].camera.rz;
+
+	dialog->px = px;
+	dialog->py = py;
+	dialog->pz = pz;
+
+	dialog->rx = rx;
+	dialog->ry = ry;
+	dialog->rz = rz;
+
+	dialog->refresh_values();
+
+	dialog->ShowModal();
+
+
+	if(!dialog->set_flag)
+		return;
+
+
+	px = dialog->px;
+	py = dialog->py;
+	pz = dialog->pz;
+
+	rx = dialog->rx;
+	ry = dialog->ry;
+	rz = dialog->rz;
+
+
+	//wxMessageBox(_("Change POS: ") + wxString::FromDouble((double)px) + _(", ") + wxString::FromDouble((double)py) + _(", ") + wxString::FromDouble((double)pz) + _(" "));
+
+	for(int i = 0; i < 4; i++)
+	{
+		stage_window->camera[i].camera.setPosition(px, py, pz);
+
+		if(stage_window->camera[i].pov == RC_CAMERA_VIEW_PERSPECTIVE)
+		{
+			stage_window->camera[i].camera.setRotation(0, ry, 0);
+			stage_window->camera[i].camera.rotate(rx, 0, 0);
+
+			if(stage_window->num_views == 4)
+			{
+				stage_window->active_camera = i;
+			}
+		}
+	}
+
+	if(stage_window->num_views == 4)
+	{
+		stage_window->SetViews(RC_CAMERA_VIEW_ALL, RC_CAMERA_VIEW_FRONT, RC_CAMERA_VIEW_RIGHT, RC_CAMERA_VIEW_TOP, RC_CAMERA_VIEW_PERSPECTIVE);
+	}
+	else
+	{
+		stage_window->SetViews(stage_window->camera[stage_window->active_camera].pov);
+	}
+
 }
 
 void SerenityEditorSerenity3D_Frame::On_Stage_RenderMode_WireFrame( wxCommandEvent& event )
