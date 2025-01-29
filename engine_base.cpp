@@ -459,6 +459,9 @@ bool serenity_project::genRCBasicProject()
 																						_("LoadImage(") + tx_file + _(")") ) + _("\n");
 
 			textures[i].p_cmd = p_cmd.ToStdString();
+			wxString p_onClear_cmd = _("\t") + _("DeleteImage( ") + _("Serenity_Global_Texture_List[ ") + _("Textures.") + wxString::FromUTF8(textures[i].id_name) + _(".SN_ID ].ID )") + _("\n");
+			p_onClear_cmd += _("\t") + _("Serenity_Global_Texture_List[ ") + _("Textures.") + wxString::FromUTF8(textures[i].id_name) + _(".SN_ID ].ID = -1") + _("\n");
+			textures[i].p_onClear_cmd = p_onClear_cmd.ToStdString();
 
 			p_texture_define += _("Textures.") + wxString::FromUTF8(textures[i].id_name) + _(".SN_ID = ") + wxString::Format(_("%u"),tx_sn_id) + _("\n");
 			p_texture_define += tx_id + _(".ID = -1") + _("\n");
@@ -884,6 +887,9 @@ bool serenity_project::genRCBasicProject()
 
 
 			wxString p_onLoad_cmd = _("");
+
+			wxString p_onClear_cmd = _("");
+
 			for(int m_texture_level = 0; m_texture_level < materials[i].texture_id.size(); m_texture_level++)
 			{
 				int mt_index = materials[i].texture_id[m_texture_level];
@@ -903,12 +909,15 @@ bool serenity_project::genRCBasicProject()
 				mat_str += mat_struct + _(".Textures[") + wxString::Format(_("%d"), m_texture_level) + _("] = ") + tx_id + _("\n");
 
 				p_onLoad_cmd += _("\t") + _("SetMaterialTexture(") + mat_id + _(", ") + wxString::Format(_("%d"), m_texture_level) + _(", Serenity_Global_Texture_List[") + tx_id + _("].ID )") + _(" \n");
+
+				p_onClear_cmd += _("\t") + _("SetMaterialTexture(") + mat_id + _(", ") + wxString::Format(_("%d"), m_texture_level) + _(", -1 )") + _(" \n");
 			}
 
 			mat_sn_id++;
 
 			materials[i].p_cmd = mat_str.ToStdString();
 			materials[i].p_onLoad_cmd = p_onLoad_cmd.ToStdString();
+			materials[i].p_onClear_cmd = p_onClear_cmd.ToStdString();
 		}
 	}
 
@@ -1028,6 +1037,9 @@ bool serenity_project::genRCBasicProject()
 			meshes[i].p_onLoad_cmd = p_cmd;
 
 			p_cmd = _("");
+			p_cmd += _("\t") + _("DeleteMesh( ") + mesh_list_id + _(".ID )") + _("\n");
+			p_cmd += _("\t") + mesh_list_id + _(".ID = -1") + _("\n");
+			meshes[i].p_onClear_cmd = p_cmd.ToStdString();
 		}
 		else if(meshes[i].isZipped)
 		{
@@ -1039,7 +1051,12 @@ bool serenity_project::genRCBasicProject()
 
 			p_cmd = _("");
 			p_cmd = mesh_list_id + _(".ID = LoadMeshFromArchive(") + mesh_path + _("\"") + wxString::FromUTF8(meshes[i].zip_file) + _("\", \"") + wxString::FromUTF8(meshes[i].file) + _("\")") + _("\n");
-			meshes[i].p_onLoad_cmd = p_cmd;
+			meshes[i].p_onLoad_cmd = p_cmd.ToStdString();
+
+			p_cmd = _("");
+			p_cmd += _("\t") + _("DeleteMesh( ") + mesh_list_id + _(".ID )") + _("\n");
+			p_cmd += _("\t") + mesh_list_id + _(".ID = -1") + _("\n");
+			meshes[i].p_onClear_cmd = p_cmd.ToStdString();
 		}
 		else
 		{
@@ -1049,7 +1066,12 @@ bool serenity_project::genRCBasicProject()
 			meshes[i].p_cmd = p_cmd.ToStdString();
 
 			p_cmd = mesh_list_id + _(".ID = LoadMesh(") + mesh_path + _("\"") + wxString::FromUTF8(meshes[i].file) + _("\")") + _("\n");
-			meshes[i].p_onLoad_cmd = p_cmd;
+			meshes[i].p_onLoad_cmd = p_cmd.ToStdString();
+
+			p_cmd = _("");
+			p_cmd += _("\t") + _("DeleteMesh( ") + mesh_list_id + _(".ID )") + _("\n");
+			p_cmd += _("\t") + mesh_list_id + _(".ID = -1") + _("\n");
+			meshes[i].p_onClear_cmd = p_cmd.ToStdString();
 		}
 
 		p_cmd = _("\n");
@@ -1392,6 +1414,8 @@ bool serenity_project::genRCBasicProject()
 
 	wxString stage_load_fn = _("");
 
+	wxString stage_clear_fn = _("");
+
 	wxString actor_load_properties = _("");
 
 	for(int stage = 0; stage < stages.size(); stage++)
@@ -1412,10 +1436,17 @@ bool serenity_project::genRCBasicProject()
 		wxString mat_load = _("");
 		wxString mesh_load = _("");
 
+		wxString tx_clear = _("");
+		wxString mat_clear = _("");
+		wxString mesh_clear = _("");
+
 
 		wxString stage_id = _("Stages.") + wxString::FromUTF8(stages[stage].id_name);
 
 		stage_load_fn += _("Sub Load_") + wxString::FromUTF8(stages[stage].id_name) + _("( )") + _("\n");
+
+		stage_clear_fn += _("Sub Clear_") + wxString::FromUTF8(stages[stage].id_name) + _("( )") + _("\n");
+
 		stage_load_fn += _("[PREPEND_MATERIAL_TEXTURE_BLOCK]") + _("\n");
 
 		pfile.Write(_("\'----------------INIT STAGE: [ ") + wxString::FromUTF8(stages[stage].id_name) + _(" ]-----------------------\n"));
@@ -1530,6 +1561,29 @@ bool serenity_project::genRCBasicProject()
 															  _("Serenity_Global_Texture_List[ ") + box_id + _(".Image_Right ].ID, ") +
 															  _("Serenity_Global_Texture_List[ ") + box_id + _(".Image_Front ].ID, ") +
 															  _("Serenity_Global_Texture_List[ ") + box_id + _(".Image_Back ].ID )") + _("\n");
+
+					stage_clear_fn += _("\t") + _("RemoveSceneSky()") + _("\n");
+					stage_clear_fn += _("\t") + _("\'---------DELETE SKYBOX TEXTURES------------") + _("\n");
+
+					stage_clear_fn += _("\t") + _("DeleteImage(") +  _(" Serenity_Global_Texture_List[ ") + box_id + _(".Image_Top ].ID ") + _(")") + _("\n");
+					stage_clear_fn += _("\t") + _("Serenity_Global_Texture_List[ ") + box_id + _(".Image_Top ].ID = -1") + _("\n");
+					stage_clear_fn += _("\n");
+					stage_clear_fn += _("\t") + _("DeleteImage(") +  _(" Serenity_Global_Texture_List[ ") + box_id + _(".Image_Bottom ].ID ") + _(")") + _("\n");
+					stage_clear_fn += _("\t") + _("Serenity_Global_Texture_List[ ") + box_id + _(".Image_Bottom ].ID = -1") + _("\n");
+					stage_clear_fn += _("\n");
+					stage_clear_fn += _("\t") + _("DeleteImage(") +  _(" Serenity_Global_Texture_List[ ") + box_id + _(".Image_Left ].ID ") + _(")") + _("\n");
+					stage_clear_fn += _("\t") + _("Serenity_Global_Texture_List[ ") + box_id + _(".Image_Left ].ID = -1") + _("\n");
+					stage_clear_fn += _("\n");
+					stage_clear_fn += _("\t") + _("DeleteImage(") +  _(" Serenity_Global_Texture_List[ ") + box_id + _(".Image_Right ].ID ") + _(")") + _("\n");
+					stage_clear_fn += _("\t") + _("Serenity_Global_Texture_List[ ") + box_id + _(".Image_Right ].ID = -1") + _("\n");
+					stage_clear_fn += _("\n");
+					stage_clear_fn += _("\t") + _("DeleteImage(") +  _(" Serenity_Global_Texture_List[ ") + box_id + _(".Image_Front ].ID ") + _(")") + _("\n");
+					stage_clear_fn += _("\t") + _("Serenity_Global_Texture_List[ ") + box_id + _(".Image_Front ].ID = -1") + _("\n");
+					stage_clear_fn += _("\n");
+					stage_clear_fn += _("\t") + _("DeleteImage(") +  _(" Serenity_Global_Texture_List[ ") + box_id + _(".Image_Back ].ID ") + _(")") + _("\n");
+					stage_clear_fn += _("\t") + _("Serenity_Global_Texture_List[ ") + box_id + _(".Image_Back ].ID = -1") + _("\n");
+					stage_clear_fn += _("\n");
+					stage_clear_fn += _("\n");
 				}
 			}
 			break;
@@ -1573,6 +1627,10 @@ bool serenity_project::genRCBasicProject()
 																  dome_id + _(".TexturePCT, ") +
 																  dome_id + _(".SpherePCT, ") +
 																  dome_id + _(".Radius ) ") + _("\n");
+
+					stage_clear_fn += _("\t") + _("RemoveSceneSky()") + _("\n");
+					stage_clear_fn += _("\t") + _("DeleteImage(") +  _(" Serenity_Global_Texture_List[ ") + dome_id + _(".Image ].ID ") + _(")") + _("\n");
+					stage_clear_fn += _("\n");
 				}
 
 			}
@@ -1582,6 +1640,8 @@ bool serenity_project::genRCBasicProject()
 		pfile.Write(_("\n"));
 
 		actor_sn_id = 0;
+
+		stage_clear_fn += _("\t") + _("\'---------STAGE ACTORS-------------") + _("\n");
 
 		for(int actor = 0; actor < stages[stage].actors.size(); actor++)
 		{
@@ -1619,6 +1679,8 @@ bool serenity_project::genRCBasicProject()
 				if(!meshes[mesh_index].load_flag)
 				{
 					mesh_load += wxString::FromUTF8(meshes[mesh_index].p_onLoad_cmd) + _("\n");
+					mesh_clear += wxString::FromUTF8(meshes[mesh_index].p_onClear_cmd) + _("\n");
+
 					meshes[mesh_index].load_flag = true;
 					//Load Materials For mesh if flag is not set
 					for(int mat = 0; mat < meshes[mesh_index].material_index.size(); mat++)
@@ -1647,10 +1709,12 @@ bool serenity_project::genRCBasicProject()
 								continue;
 
 							tx_load += wxString::FromUTF8(textures[tx_index].p_cmd);
+							tx_clear += wxString::FromUTF8(textures[tx_index].p_onClear_cmd);
 							textures[tx_index].load_flag = true;
 						}
 
 						mat_load += wxString::FromUTF8(materials[mat_index].p_onLoad_cmd);
+						mat_clear += wxString::FromUTF8(materials[mat_index].p_onClear_cmd);
 						materials[mat_index].load_flag = true;
 
 						wxString mat_sn_id = _("Materials.") + wxString::FromUTF8(materials[mat_index].id_name) + _(".SN_ID");
@@ -1734,6 +1798,9 @@ bool serenity_project::genRCBasicProject()
 					{
 						stage_load_fn += _("\t") + actor_id + _(".ID = ") + _(" CreateAnimatedActor( Serenity_Global_Mesh_List[") +  actor_id + _(".Mesh].ID ) ") + _("\n");
 
+						stage_clear_fn += _("\t") + _("DeleteActor( ") + actor_id + _(".ID )") + _("\n");
+						stage_clear_fn += _("\t") + actor_id + _(".ID = -1") + _("\n");
+
 						uint32_t ani_sn_id = 0;
 						for(int ani = 0; ani < meshes[mesh_index].animation.size(); ani++)
 						{
@@ -1761,6 +1828,9 @@ bool serenity_project::genRCBasicProject()
 					if(mesh_id.compare(_(""))!=0)
 					{
 						stage_load_fn += _("\t") + actor_id + _(".ID = ") + _(" CreateOctreeActor( Serenity_Global_Mesh_List[") +  actor_id + _(".Mesh].ID ) ") + _("\n");
+
+						stage_clear_fn += _("\t") + _("DeleteActor( ") + actor_id + _(".ID )") + _("\n");
+						stage_clear_fn += _("\t") + actor_id + _(".ID = -1") + _("\n");
 					}
 				}
 				break;
@@ -1768,6 +1838,9 @@ bool serenity_project::genRCBasicProject()
 				case SN_ACTOR_TYPE_BILLBOARD:
 				{
 					stage_load_fn += _("\t") + actor_id + _(".ID = ") + _(" CreateBillboardActor( ) ") + _("\n");
+
+					stage_clear_fn += _("\t") + _("DeleteActor( ") + actor_id + _(".ID )") + _("\n");
+					stage_clear_fn += _("\t") + actor_id + _(".ID = -1") + _("\n");
 				}
 				break;
 
@@ -1847,6 +1920,9 @@ bool serenity_project::genRCBasicProject()
 
 					//Create Light Actor
 					stage_load_fn += _("\t") + actor_id + _(".ID = ") + _(" CreateLightActor( ) ") + _("\n");
+
+					stage_clear_fn += _("\t") + _("DeleteActor( ") + actor_id + _(".ID )") + _("\n");
+					stage_clear_fn += _("\t") + actor_id + _(".ID = -1") + _("\n");
 				}
 				break;
 
@@ -1855,6 +1931,9 @@ bool serenity_project::genRCBasicProject()
 					actor_define += actor_id + _(".Terrain.HeightMap$ = \"") + wxString::FromUTF8(stages[stage].actors[actor].terrain_hmap_file) + _("\"\n");
 
 					stage_load_fn += _("\t") + actor_id + _(".ID = ") + _(" CreateTerrainActor( ") + _("\"textures\" + path_separator$ + ") + actor_id + _(".Terrain.HeightMap$ ) ") + _("\n");
+
+					stage_clear_fn += _("\t") + _("DeleteActor( ") + actor_id + _(".ID )") + _("\n");
+					stage_clear_fn += _("\t") + actor_id + _(".ID = -1") + _("\n");
 				}
 				break;
 
@@ -1870,6 +1949,9 @@ bool serenity_project::genRCBasicProject()
 																					    actor_id + _(".Water.WaveHeight, ") +
 																					    actor_id + _(".Water.WaveSpeed, ") +
 																					    actor_id + _(".Water.WaveLength ) ") + _("\n");
+
+						stage_clear_fn += _("\t") + _("DeleteActor( ") + actor_id + _(".ID )") + _("\n");
+						stage_clear_fn += _("\t") + actor_id + _(".ID = -1") + _("\n");
 					}
 				}
 				break;
@@ -2039,6 +2121,9 @@ bool serenity_project::genRCBasicProject()
 					//Create Particle Actor
 					stage_load_fn += _("\t") + actor_id + _(".ID = ") + _(" CreateParticleActor( ") + actor_id + _(".Particle.ParticleType ) ") + _("\n");
 
+					stage_clear_fn += _("\t") + _("DeleteActor( ") + actor_id + _(".ID )") + _("\n");
+					stage_clear_fn += _("\t") + actor_id + _(".ID = -1") + _("\n");
+
 
 				}
 				break;
@@ -2048,6 +2133,9 @@ bool serenity_project::genRCBasicProject()
 					actor_define += actor_id + _(".CubeSize = ") + wxString::FromDouble(stages[stage].actors[actor].cube_size) + _("\n");
 
 					stage_load_fn += _("\t") + actor_id + _(".ID = ") + _(" CreateCubeActor( ") + actor_id + _(".CubeSize ) ") + _("\n");
+
+					stage_clear_fn += _("\t") + _("DeleteActor( ") + actor_id + _(".ID )") + _("\n");
+					stage_clear_fn += _("\t") + actor_id + _(".ID = -1") + _("\n");
 				}
 				break;
 
@@ -2056,6 +2144,9 @@ bool serenity_project::genRCBasicProject()
 					actor_define += actor_id + _(".SphereRadius = ") + wxString::FromDouble(stages[stage].actors[actor].radius) + _("\n");
 
 					stage_load_fn += _("\t") + actor_id + _(".ID = ") + _(" CreateSphereActor( ") + actor_id + _(".SphereRadius ) ") + _("\n");
+
+					stage_clear_fn += _("\t") + _("DeleteActor( ") + actor_id + _(".ID )") + _("\n");
+					stage_clear_fn += _("\t") + actor_id + _(".ID = -1") + _("\n");
 				}
 				break;
 			}
@@ -2084,27 +2175,54 @@ bool serenity_project::genRCBasicProject()
 			pfile.Write(_("\n"));
 		}
 
+		//-----------------LOAD STAGE----------------------------
 		wxString prepend_block = _("\t") + _("\'---------STAGE TEXTURES-------------") + _("\n");
-		prepend_block += _("\t") + tx_load + _("\n");
+		prepend_block += tx_load + _("\n");
 		prepend_block += _("\n");
 
 		prepend_block += _("\t") + _("\'---------STAGE MATERIALS-------------") + _("\n");
-		prepend_block += _("\t") + mat_load + _("\n");
+		prepend_block += mat_load + _("\n");
 		prepend_block += _("\n");
 
 		prepend_block += _("\t") + _("\'---------STAGE MESHES-------------") + _("\n");
-		prepend_block += _("\t") + mesh_load + _("\n");
+		prepend_block += mesh_load + _("\n");
 		prepend_block += _("\n");
 
 
 		stage_load_fn += _("End Sub") + _("\n\n\n\n");
 		stage_load_fn.Replace(_("[PREPEND_MATERIAL_TEXTURE_BLOCK]"), prepend_block);
+		//------------------------------------------------------------------------------
 
+		//-----------------CLEAR STAGE--------------------------------
+		wxString post_block = _("");
+
+		post_block += _("\t") + _("\'---------STAGE MESHES-------------") + _("\n");
+		post_block += mesh_clear + _("\n");
+		post_block += _("\n");
+
+		post_block += _("\t") + _("\'---------STAGE MATERIALS-------------") + _("\n");
+		post_block +=  mat_clear + _("\n");
+		post_block += _("\n");
+
+		post_block += _("\t") + _("\'---------STAGE TEXTURES-------------") + _("\n");
+		post_block += tx_clear + _("\n");
+		post_block += _("\n");
+
+		stage_clear_fn += post_block;
+
+		stage_clear_fn += _("End Sub") + _("\n\n\n\n");
+
+		//------------------------------------------------------------------------------
 		pfile.Write(_("\n"));
 	}
 
 	pfile.Write(_("\'------------[STAGE LOAD FUNCTIONS]-----------") + _("\n"));
 	pfile.Write(stage_load_fn);
+	pfile.Write(_("\n"));
+	pfile.Write(_("\n"));
+
+	pfile.Write(_("\'------------[STAGE CLEAR FUNCTIONS]-----------") + _("\n"));
+	pfile.Write(stage_clear_fn);
 	pfile.Write(_("\n"));
 
 	pfile.Close();

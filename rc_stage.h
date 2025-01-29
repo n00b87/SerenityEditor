@@ -15,6 +15,8 @@ struct rc_texture
 
 	std::string p_cmd;
 
+	std::string p_onClear_cmd;
+
 	bool load_flag = false;
 };
 
@@ -27,6 +29,8 @@ struct rc_material
 
 	std::string p_cmd;
 	std::string p_onLoad_cmd;
+
+	std::string p_onClear_cmd;
 
 	bool load_flag = false;
 };
@@ -93,10 +97,15 @@ struct rc_mesh
 
 	std::string p_cmd;
 	std::string p_onLoad_cmd;
+
+	std::string p_onClear_cmd;
+
 	int sn_id;
 
 	bool load_flag = false;
 	std::string mat_load_str;
+
+	std::string mat_clear_str;
 };
 
 
