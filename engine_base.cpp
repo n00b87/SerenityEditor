@@ -1033,7 +1033,7 @@ bool serenity_project::genRCBasicProject()
 			meshes[i].p_cmd = p_cmd.ToStdString();
 
 			//OnLoad
-			p_cmd = mesh_list_id + _(".ID = LoadMeshFromAN8(") + an8_id + _(", \"") + an8_scene + _("\")") + _("\n");
+			p_cmd = _("\t") + mesh_list_id + _(".ID = LoadMeshFromAN8(") + an8_id + _(", \"") + an8_scene + _("\")") + _("\n");
 			meshes[i].p_onLoad_cmd = p_cmd;
 
 			p_cmd = _("");
@@ -1050,7 +1050,7 @@ bool serenity_project::genRCBasicProject()
 			meshes[i].p_cmd = p_cmd.ToStdString();
 
 			p_cmd = _("");
-			p_cmd = mesh_list_id + _(".ID = LoadMeshFromArchive(") + mesh_path + _("\"") + wxString::FromUTF8(meshes[i].zip_file) + _("\", \"") + wxString::FromUTF8(meshes[i].file) + _("\")") + _("\n");
+			p_cmd = _("\t") + mesh_list_id + _(".ID = LoadMeshFromArchive(") + mesh_path + _("\"") + wxString::FromUTF8(meshes[i].zip_file) + _("\", \"") + wxString::FromUTF8(meshes[i].file) + _("\")") + _("\n");
 			meshes[i].p_onLoad_cmd = p_cmd.ToStdString();
 
 			p_cmd = _("");
@@ -1065,7 +1065,7 @@ bool serenity_project::genRCBasicProject()
 
 			meshes[i].p_cmd = p_cmd.ToStdString();
 
-			p_cmd = mesh_list_id + _(".ID = LoadMesh(") + mesh_path + _("\"") + wxString::FromUTF8(meshes[i].file) + _("\")") + _("\n");
+			p_cmd = _("\t") + mesh_list_id + _(".ID = LoadMesh(") + mesh_path + _("\"") + wxString::FromUTF8(meshes[i].file) + _("\")") + _("\n");
 			meshes[i].p_onLoad_cmd = p_cmd.ToStdString();
 
 			p_cmd = _("");
@@ -1740,9 +1740,17 @@ bool serenity_project::genRCBasicProject()
 									 wxString::FromDouble((double)stages[stage].actors[actor].rotation.Z);
 			actor_define += actor_id + _(".Rotation = Serenity_CreateVector3D(") + actor_rot_str + _(")") + _("\n");
 
-			actor_load_properties += _("\t") + _("SetActorRotation( [ACTOR], ") + actor_id + _(".Rotation.X, ") +
+			actor_load_properties += _("\t") + _("SetActorRotation( [ACTOR], ") + _("0, ") +
 																				  actor_id + _(".Rotation.Y, ") +
-																				  actor_id + _(".Rotation.Z ) ") + _("\n");
+																				  _("0 ) ") + _("\n");
+
+			actor_load_properties += _("\t") + _("RotateActor( [ACTOR], ") + actor_id + _(".Rotation.X, ") +
+																			 _("0, ") +
+																			 _("0 ) ") + _("\n");
+
+			actor_load_properties += _("\t") + _("RotateActor( [ACTOR], ") + _("0, ") +
+																			 _("0, ") +
+																			 actor_id + _(".Rotation.Z ) ") + _("\n");
 
 			wxString actor_scale_str = wxString::FromDouble((double)stages[stage].actors[actor].scale.X) + _(", ") +
 									   wxString::FromDouble((double)stages[stage].actors[actor].scale.Y) + _(", ") +
