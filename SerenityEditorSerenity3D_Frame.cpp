@@ -5787,6 +5787,10 @@ void SerenityEditorSerenity3D_Frame::OnS3DCubeClicked( wxCommandEvent& event )
 
 	int actor_project_index = project.stages[stageTab_active_stage_project_index].addActor(actor_id.ToStdString(), SN_ACTOR_TYPE_CUBE);
 
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.isSolid = true;
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.mass = 1;
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.shape = SN_PHYSICS_SHAPE_BOX;
+
 	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].cube_size = cube_size;
 
 	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].position = current_window->getNewActorPosition();
@@ -5864,6 +5868,10 @@ void SerenityEditorSerenity3D_Frame::OnS3DSphereClicked( wxCommandEvent& event )
 	}
 
 	int actor_project_index = project.stages[stageTab_active_stage_project_index].addActor(actor_id.ToStdString(), SN_ACTOR_TYPE_SPHERE);
+
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.isSolid = true;
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.mass = 1;
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.shape = SN_PHYSICS_SHAPE_SPHERE;
 
 	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].radius = radius;
 
@@ -5965,6 +5973,9 @@ void SerenityEditorSerenity3D_Frame::OnS3DDumpClicked( wxCommandEvent& event )
 	}
 
 	int actor_project_index = project.stages[stageTab_active_stage_project_index].addActor(actor_id.ToStdString(), SN_ACTOR_TYPE_OCTREE);
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.isSolid = true;
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.mass = 0;
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.shape = SN_PHYSICS_SHAPE_BOX;
 
 	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].mesh_index = mesh_index;
 
@@ -6061,6 +6072,10 @@ void SerenityEditorSerenity3D_Frame::OnS3DWizClicked( wxCommandEvent& event )
 
 	int actor_project_index = project.stages[stageTab_active_stage_project_index].addActor(actor_id.ToStdString(), SN_ACTOR_TYPE_ANIMATED);
 
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.isSolid = true;
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.mass = 1;
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.shape = SN_PHYSICS_SHAPE_BOX;
+
 	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].mesh_index = mesh_index;
 
 	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].position = current_window->getNewActorPosition();
@@ -6156,6 +6171,10 @@ void SerenityEditorSerenity3D_Frame::OnS3DBillboardClicked( wxCommandEvent& even
 
 	int actor_project_index = project.stages[stageTab_active_stage_project_index].addActor(actor_id.ToStdString(), SN_ACTOR_TYPE_BILLBOARD);
 
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.isSolid = false;
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.mass = 0;
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.shape = SN_PHYSICS_SHAPE_BOX;
+
 	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].override_material_index = material_index;
 
 	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].position = current_window->getNewActorPosition();
@@ -6240,6 +6259,10 @@ void SerenityEditorSerenity3D_Frame::OnS3DLightClicked( wxCommandEvent& event )
 	}
 
 	int actor_project_index = project.stages[stageTab_active_stage_project_index].addActor(actor_id.ToStdString(), SN_ACTOR_TYPE_LIGHT);
+
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.isSolid = false;
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.mass = 0;
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.shape = SN_PHYSICS_SHAPE_SPHERE;
 
 	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].light_type = light_type;
 
@@ -6343,6 +6366,10 @@ void SerenityEditorSerenity3D_Frame::OnS3DTerrainClicked( wxCommandEvent& event 
 
 	int actor_project_index = project.stages[stageTab_active_stage_project_index].addActor(actor_id.ToStdString(), SN_ACTOR_TYPE_TERRAIN);
 
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.isSolid = true;
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.mass = 0;
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.shape = SN_PHYSICS_SHAPE_TRIMESH;
+
 	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].terrain_hmap_file = project.textures[texture_index].file;
 
 	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].position = current_window->getNewActorPosition();
@@ -6441,6 +6468,10 @@ void SerenityEditorSerenity3D_Frame::OnS3DWaterClicked( wxCommandEvent& event )
 	}
 
 	int actor_project_index = project.stages[stageTab_active_stage_project_index].addActor(actor_id.ToStdString(), SN_ACTOR_TYPE_WATER);
+
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.isSolid = false;
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.mass = 0;
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.shape = SN_PHYSICS_SHAPE_BOX;
 
 	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].mesh_index = mesh_index;
 	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].wave_height = wave_height;
@@ -6543,6 +6574,10 @@ void SerenityEditorSerenity3D_Frame::OnS3DEffectClicked( wxCommandEvent& event )
 	}
 
 	int actor_project_index = project.stages[stageTab_active_stage_project_index].addActor(actor_id.ToStdString(), SN_ACTOR_TYPE_PARTICLE);
+
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.isSolid = false;
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.mass = 0;
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.shape = SN_PHYSICS_SHAPE_BOX;
 
 	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].particle_type = particle_type;
 

@@ -2231,7 +2231,10 @@ bool serenity_project::genRCBasicProject()
 
 	pfile.Write(_("\'------------[STAGE CLEAR FUNCTIONS]-----------") + _("\n"));
 	pfile.Write(stage_clear_fn);
-	pfile.Write(_("\n"));
+	pfile.Write(_("\n\n"));
+
+	pfile.Write(_("Include Once") + _("\n"));
+	pfile.Write(_("Include \"main.bas\"") + _("\n"));
 
 	pfile.Close();
 
