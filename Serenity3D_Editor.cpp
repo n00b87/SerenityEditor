@@ -1824,15 +1824,15 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	this->Layout();
 	m_statusBar1 = this->CreateStatusBar( 1, wxSTB_SIZEGRIP, wxID_ANY );
 	m_toolBar3 = this->CreateToolBar( wxTB_HORIZONTAL, wxID_ANY );
-	m_tool33 = m_toolBar3->AddTool( wxID_ANY, wxT("tool"), wxArtProvider::GetBitmap( wxASCII_STR(wxART_NEW), wxASCII_STR(wxART_TOOLBAR) ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+	m_tool33 = m_toolBar3->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/new-project.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
 
-	m_tool34 = m_toolBar3->AddTool( wxID_ANY, wxT("tool"), wxArtProvider::GetBitmap( wxASCII_STR(wxART_FILE_OPEN), wxASCII_STR(wxART_TOOLBAR) ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+	m_tool34 = m_toolBar3->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/folder.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
 
-	m_tool35 = m_toolBar3->AddTool( wxID_ANY, wxT("tool"), wxArtProvider::GetBitmap( wxASCII_STR(wxART_FILE_SAVE), wxASCII_STR(wxART_TOOLBAR) ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+	m_tool35 = m_toolBar3->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/save.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
 
 	m_toolBar3->AddSeparator();
 
-	m_tool36 = m_toolBar3->AddTool( wxID_ANY, wxT("tool"), wxArtProvider::GetBitmap( wxASCII_STR(wxART_EXECUTABLE_FILE), wxASCII_STR(wxART_TOOLBAR) ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+	m_tool36 = m_toolBar3->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/build.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
 
 	m_toolBar3->Realize();
 

@@ -15250,7 +15250,7 @@
         <property name="window_name"></property>
         <property name="window_style"></property>
         <object class="tool" expanded="false">
-          <property name="bitmap">Load From Art Provider; wxART_NEW; wxART_TOOLBAR</property>
+          <property name="bitmap">Load From File; icons/new-project.png</property>
           <property name="context_menu">0</property>
           <property name="id">wxID_ANY</property>
           <property name="kind">wxITEM_NORMAL</property>
@@ -15262,7 +15262,7 @@
           <event name="OnToolClicked">OnNewProjectMenuSelection</event>
         </object>
         <object class="tool" expanded="false">
-          <property name="bitmap">Load From Art Provider; wxART_FILE_OPEN; wxART_TOOLBAR</property>
+          <property name="bitmap">Load From File; icons/folder.png</property>
           <property name="context_menu">0</property>
           <property name="id">wxID_ANY</property>
           <property name="kind">wxITEM_NORMAL</property>
@@ -15274,7 +15274,7 @@
           <event name="OnToolClicked">OnLoadProjectMenuSelection</event>
         </object>
         <object class="tool" expanded="false">
-          <property name="bitmap">Load From Art Provider; wxART_FILE_SAVE; wxART_TOOLBAR</property>
+          <property name="bitmap">Load From File; icons/save.png</property>
           <property name="context_menu">0</property>
           <property name="id">wxID_ANY</property>
           <property name="kind">wxITEM_NORMAL</property>
@@ -15289,7 +15289,7 @@
           <property name="permission">protected</property>
         </object>
         <object class="tool" expanded="false">
-          <property name="bitmap">Load From Art Provider; wxART_EXECUTABLE_FILE; wxART_TOOLBAR</property>
+          <property name="bitmap">Load From File; icons/build.png</property>
           <property name="context_menu">0</property>
           <property name="id">wxID_ANY</property>
           <property name="kind">wxITEM_NORMAL</property>
