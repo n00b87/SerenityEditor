@@ -1284,14 +1284,6 @@ bool SerenityEditorSerenity3D_Frame::delete_actor(int stage_index, int actor_sta
 		}
 	}
 
-	for(int i = 0; i < stage_window->scene_actors.size(); i++)
-	{
-		if(stage_window->scene_actors[i].isLight)
-		{
-			wxMessageBox(_("BALLS"));
-		}
-	}
-
 	if(project.stages[stage_index].actors[actor_stage_index].node)
 		project.stages[stage_index].actors[actor_stage_index].node->remove();
 
