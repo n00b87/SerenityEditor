@@ -4037,7 +4037,7 @@ NewCubeActor_Dialog::NewCubeActor_Dialog( wxWindow* parent, wxWindowID id, const
 	m_staticText101->Wrap( -1 );
 	bSizer297->Add( m_staticText101, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_size_spinCtrlDouble = new wxSpinCtrlDouble( m_panel38, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0, 1 );
+	m_size_spinCtrlDouble = new wxSpinCtrlDouble( m_panel38, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 5, 100, 5, 1 );
 	m_size_spinCtrlDouble->SetDigits( 0 );
 	bSizer297->Add( m_size_spinCtrlDouble, 4, wxALL, 5 );
 

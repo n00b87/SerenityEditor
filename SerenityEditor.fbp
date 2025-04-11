@@ -53,7 +53,7 @@
       <property name="size">1368,758</property>
       <property name="style">wxDEFAULT_FRAME_STYLE</property>
       <property name="subclass">; ; forward_declare</property>
-      <property name="title">Serenity Engine</property>
+      <property name="title">Serenity3D</property>
       <property name="tooltip"></property>
       <property name="two_step_creation">0</property>
       <property name="window_extra_style"></property>

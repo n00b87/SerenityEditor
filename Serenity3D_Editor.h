@@ -693,7 +693,7 @@ class Serenity3D_Frame : public wxFrame
 
 	public:
 
-		Serenity3D_Frame( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Serenity Engine"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 1368,758 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
+		Serenity3D_Frame( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Serenity3D"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 1368,758 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
 
 		~Serenity3D_Frame();
 
