@@ -28876,12 +28876,12 @@
                       <property name="hidden">0</property>
                       <property name="id">wxID_ANY</property>
                       <property name="inc">1</property>
-                      <property name="initial">0</property>
+                      <property name="initial">5</property>
                       <property name="max">100</property>
                       <property name="max_size"></property>
                       <property name="maximize_button">0</property>
                       <property name="maximum_size"></property>
-                      <property name="min">0</property>
+                      <property name="min">5</property>
                       <property name="min_size"></property>
                       <property name="minimize_button">0</property>
                       <property name="minimum_size"></property>

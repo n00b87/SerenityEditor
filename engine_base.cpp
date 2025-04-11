@@ -1719,7 +1719,7 @@ bool serenity_project::genRCBasicProject()
 
 						wxString mat_sn_id = _("Materials.") + wxString::FromUTF8(materials[mat_index].id_name) + _(".SN_ID");
 						wxString mat_id = _("Serenity_Global_Material_List[") + mat_sn_id + _("].ID");
-						mesh_material_str += _("SetActorMaterial( [ACTOR], ") + wxString::Format(_("%d"), mat) + _(", ") + mat_id + _(" )") + _("\n");
+						mesh_material_str += _("\t") + _("SetActorMaterial( [ACTOR], ") + wxString::Format(_("%d"), mat) + _(", ") + mat_id + _(" )") + _("\n");
 					}
 
 					meshes[mesh_index].mat_load_str = mesh_material_str.ToStdString();
@@ -2178,6 +2178,9 @@ bool serenity_project::genRCBasicProject()
 
 			stage_load_fn += _("\n");
 			stage_load_fn += actor_load_properties + _("\n");
+			stage_load_fn += _("\n") + meshes[mesh_index].mat_load_str + _("\n");
+
+			//stage_load_fn += "";
 
 
 			pfile.Write(_("\n"));
