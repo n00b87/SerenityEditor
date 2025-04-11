@@ -2178,7 +2178,10 @@ bool serenity_project::genRCBasicProject()
 
 			stage_load_fn += _("\n");
 			stage_load_fn += actor_load_properties + _("\n");
-			stage_load_fn += _("\n") + meshes[mesh_index].mat_load_str + _("\n");
+
+			wxString mat_load_str(meshes[mesh_index].mat_load_str);
+			mat_load_str.Replace(_("[ACTOR]"), actor_id + _(".ID"));
+			stage_load_fn += _("\n") + mat_load_str + _("\n");
 
 			//stage_load_fn += "";
 
