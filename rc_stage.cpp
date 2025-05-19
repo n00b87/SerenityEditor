@@ -31,6 +31,11 @@ void rc_addAutoCullingType(std::string rc_ac_val, irr::scene::E_CULLING_TYPE irr
 	rc_auto_cull_types_list.push_back(ac_obj);
 }
 
+std::vector<rc_auto_cull_keyval_pair> rc_getAutoCullingList()
+{
+	return rc_auto_cull_types_list;
+}
+
 irr::scene::E_CULLING_TYPE rc_getAutoCullingValue(std::string rc_ac_val)
 {
 	irr::scene::E_CULLING_TYPE ac_val = irr::scene::EAC_OFF;

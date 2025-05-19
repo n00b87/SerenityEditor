@@ -189,6 +189,8 @@ Serenity3D_Frame( parent )
 	wxPGChoices auto_cull_choices;
 	auto_cull_choices.Clear();
 
+	rc_auto_cull_types_list = rc_getAutoCullingList();
+
 	for(int i = 0; i < rc_auto_cull_types_list.size(); i++)
 	{
 		auto_cull_choices.Add(wxString::FromUTF8(rc_auto_cull_types_list[i].key.c_str()));
@@ -306,7 +308,7 @@ Serenity3D_Frame( parent )
 	project.project_name = "";
 
 	stage_tree_imageList = new wxImageList(16,16,true);
-    stage_tree_rootImage = stage_tree_imageList->Add(wxArtProvider::GetBitmap( wxART_FOLDER, wxART_MENU ));;
+    stage_tree_rootImage = stage_tree_imageList->Add(wxArtProvider::GetBitmap( wxART_FOLDER, wxART_MENU ));
     stage_tree_stageImage  = stage_tree_imageList->Add(wxArtProvider::GetBitmap( wxART_FOLDER, wxART_MENU ));
     stage_tree_assetImage = stage_tree_imageList->Add(wxArtProvider::GetBitmap( wxART_NORMAL_FILE, wxART_MENU ));
 	stage_tree_lightImage = stage_tree_assetImage;
