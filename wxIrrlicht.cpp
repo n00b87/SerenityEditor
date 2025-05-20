@@ -401,6 +401,9 @@ void wxIrrlicht::Render() {
         return;
 	}//if
 
+	if(!enable_events)
+		return;
+
 
     if(this->GetScreenRect().Contains( wxGetMousePosition() ))
         m_windowIsActive = true;
@@ -464,6 +467,8 @@ void wxIrrlicht::OnRender() {
 				break;
 			}
 		}
+
+		//std::cout << "NUM_VIEWS = " << num_views << std::endl;
 
 		for(int i = 0; i < num_views; i++)
 		{
@@ -905,6 +910,9 @@ void wxIrrlicht::drawAllLightInfluences()
 
 void wxIrrlicht::OnTimer(wxTimerEvent& event) {
 	if(!m_init)
+		return;
+
+	if(!enable_events)
 		return;
 
     m_pDevice->getTimer()->tick();

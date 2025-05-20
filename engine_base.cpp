@@ -14,10 +14,13 @@ void serenity_project::clearProject()
 
 	for(int i = 0; i < textures.size(); i++)
 	{
-		if(textures[i].texture)
+		if(textures[i].texture[0])
 		{
 			//textures[i].texture->drop();
-			textures[i].texture = NULL;
+			textures[i].texture[0] = NULL;
+			textures[i].texture[1] = NULL;
+			textures[i].texture[2] = NULL;
+			textures[i].texture[3] = NULL;
 		}
 	}
 
@@ -59,8 +62,13 @@ void serenity_project::remove_texture(int t_index)
 		}
 	}
 
-	device->getVideoDriver()->removeTexture(textures[t_index].texture);
-	textures[t_index].texture = NULL;
+	wxIrrlicht* t_control[] = {stage_window, animation_window, material_window, texture_window};
+	for(int i = 0; i < 4; i++)
+	{
+		setControlContext(t_control[i]);
+		device->getVideoDriver()->removeTexture(textures[t_index].texture[i]);
+		textures[t_index].texture[i] = NULL;
+	}
 	textures[t_index].id_name = "";
 	textures[t_index].file = "";
 	textures[t_index].use_colorKey = false;
@@ -148,6 +156,7 @@ std::vector<serenity_project_file_obj> serenity_project::getParams(wxString p_da
 
 void serenity_project::reload_assets()
 {
+	setControlContext(stage_window);
 	clearProject();
 	std::vector<serenity_project_dict_obj> param;
 	serenity_project_dict_obj obj;
@@ -175,11 +184,19 @@ void serenity_project::reload_assets()
 	}
 }
 
-serenity_project::serenity_project(std::string project_file, std::string p_name, irr::IrrlichtDevice* scene_device)
+serenity_project::serenity_project(std::string project_file, std::string p_name, irr::IrrlichtDevice* scene_device, wxIrrlicht* st_win, wxIrrlicht* ani_win, wxIrrlicht* mat_win, wxIrrlicht* tx_win)
 {
 	project_path = wxFileName(project_file.c_str());
 	project_name = p_name;
-	device = scene_device;
+
+	stage_window = st_win;
+	animation_window = ani_win;
+	material_window = mat_win;
+	texture_window = tx_win;
+
+	device = stage_window->GetDevice();
+
+	setControlContext(stage_window);
 
 	setDefaults();
 
@@ -1033,7 +1050,7 @@ bool serenity_project::genRCBasicProject()
 			meshes[i].p_cmd = p_cmd.ToStdString();
 
 			//OnLoad
-			p_cmd = _("\t") + mesh_list_id + _(".ID = LoadMeshFromAN8(") + an8_id + _(", \"") + an8_scene + _("\")") + _("\n");
+			p_cmd = _("\t") + mesh_list_id + _(".ID = LoadMeshFromAN8(Anim8or_Projects.") + an8_id + _(", \"") + an8_scene + _("\")") + _("\n");
 			meshes[i].p_onLoad_cmd = p_cmd;
 
 			p_cmd = _("");
@@ -1560,7 +1577,7 @@ bool serenity_project::genRCBasicProject()
 															  _("Serenity_Global_Texture_List[ ") + box_id + _(".Image_Left ].ID, ") +
 															  _("Serenity_Global_Texture_List[ ") + box_id + _(".Image_Right ].ID, ") +
 															  _("Serenity_Global_Texture_List[ ") + box_id + _(".Image_Front ].ID, ") +
-															  _("Serenity_Global_Texture_List[ ") + box_id + _(".Image_Back ].ID )") + _("\n");
+															  _("Serenity_Global_Texture_List[ ") + box_id + _(".Image_Back ].ID )") + _("\n\n");
 
 					stage_clear_fn += _("\t") + _("RemoveSceneSky()") + _("\n");
 					stage_clear_fn += _("\t") + _("\'---------DELETE SKYBOX TEXTURES------------") + _("\n");
@@ -1626,7 +1643,7 @@ bool serenity_project::genRCBasicProject()
 																  dome_id + _(".vRes, ") +
 																  dome_id + _(".TexturePCT, ") +
 																  dome_id + _(".SpherePCT, ") +
-																  dome_id + _(".Radius ) ") + _("\n");
+																  dome_id + _(".Radius ) ") + _("\n\n");
 
 					stage_clear_fn += _("\t") + _("RemoveSceneSky()") + _("\n");
 					stage_clear_fn += _("\t") + _("DeleteImage(") +  _(" Serenity_Global_Texture_List[ ") + dome_id + _(".Image ].ID ") + _(")") + _("\n");
@@ -1726,6 +1743,61 @@ bool serenity_project::genRCBasicProject()
 				}
 			}
 
+			if(stages[stage].actors[actor].override_material_index >= 0 && stages[stage].actors[actor].override_material_index < materials.size())
+			{
+				int mat_index = stages[stage].actors[actor].override_material_index;
+
+				int current_mat_index = -1;
+				if(mesh_index >= 0 && mesh_index < meshes.size())
+				{
+					if(meshes[mesh_index].material_index.size() > 0)
+						current_mat_index = meshes[mesh_index].material_index[0];
+				}
+
+				// std::cout << "DEBIG: " << stages[stage].actors[actor].id_name << " --> " << mat_index << std::endl;
+
+				bool add_texture_flag = true;
+
+				if(materials[mat_index].id_name.compare("")==0)
+					add_texture_flag = false;
+
+				if(materials[mat_index].load_flag)
+					add_texture_flag = false;
+
+				if(add_texture_flag)
+				{
+					//Load Texture Levels for material
+					for(int tx = 0; tx < materials[mat_index].texture_id.size(); tx++)
+					{
+						int tx_index = materials[mat_index].texture_id[tx];
+
+						if(textures[tx_index].id_name.compare("")==0)
+							continue;
+
+						if(textures[tx_index].load_flag)
+							continue;
+
+						tx_load += wxString::FromUTF8(textures[tx_index].p_cmd);
+						tx_clear += wxString::FromUTF8(textures[tx_index].p_onClear_cmd);
+						textures[tx_index].load_flag = true;
+					}
+
+					mat_load += wxString::FromUTF8(materials[mat_index].p_onLoad_cmd);
+					mat_clear += wxString::FromUTF8(materials[mat_index].p_onClear_cmd);
+					materials[mat_index].load_flag = true;
+				}
+
+				if(mesh_index >= 0 && mesh_index < meshes.size() && current_mat_index != mat_index)
+				{
+					wxString mat_sn_id = _("Materials.") + wxString::FromUTF8(materials[mat_index].id_name) + _(".SN_ID");
+					wxString mat_id = _("Serenity_Global_Material_List[") + mat_sn_id + _("].ID");
+					mesh_material_str += _("\t") + _("SetActorMaterial( [ACTOR], ") + wxString::Format(_("%d"), 0) + _(", ") + mat_id + _(" )") + _("\n");
+
+					meshes[mesh_index].mat_load_str = mesh_material_str.ToStdString();
+				}
+			}
+
+
 			wxString actor_pos_str = wxString::FromDouble((double)stages[stage].actors[actor].position.X) + _(", ") +
 									 wxString::FromDouble((double)stages[stage].actors[actor].position.Y) + _(", ") +
 									 wxString::FromDouble((double)stages[stage].actors[actor].position.Z);
@@ -1804,6 +1876,7 @@ bool serenity_project::genRCBasicProject()
 
 					if(mesh_id.compare(_(""))!=0)
 					{
+
 						stage_load_fn += _("\t") + actor_id + _(".ID = ") + _(" CreateAnimatedActor( Serenity_Global_Mesh_List[") +  actor_id + _(".Mesh].ID ) ") + _("\n");
 
 						stage_clear_fn += _("\t") + _("DeleteActor( ") + actor_id + _(".ID )") + _("\n");
@@ -2167,7 +2240,7 @@ bool serenity_project::genRCBasicProject()
 			if(stages[stage].actors[actor].type != SN_ACTOR_TYPE_TERRAIN && stages[stage].actors[actor].type != SN_ACTOR_TYPE_WATER && stages[stage].actors[actor].type != SN_ACTOR_TYPE_LIGHT)
 				actor_load_properties += _("\t") + (stages[stage].actors[actor].hasShadow ? _("AddActorShadow( [ACTOR] ) ") : _("RemoveActorShadow( [ACTOR] ) ") )  + _("\n");
 
-			actor_load_properties += _("\t") + _("SetActorCollisionShape( [ACTOR], ") + actor_id + _(".Physics.Shape, ") + actor_id + _(".Physics.Mass ) ") + _("\n");
+			actor_load_properties += _("\t") + _("SetActorShape( [ACTOR], ") + actor_id + _(".Physics.Shape, ") + actor_id + _(".Physics.Mass ) ") + _("\n");
 			actor_load_properties += _("\t") + _("SetActorSolid( [ACTOR], ") + actor_id + _(".Physics.isSolid ) ") + _("\n");
 
 			actor_load_properties += _("\n");
@@ -2179,9 +2252,12 @@ bool serenity_project::genRCBasicProject()
 			stage_load_fn += _("\n");
 			stage_load_fn += actor_load_properties + _("\n");
 
-			wxString mat_load_str(meshes[mesh_index].mat_load_str);
-			mat_load_str.Replace(_("[ACTOR]"), actor_id + _(".ID"));
-			stage_load_fn += _("\n") + mat_load_str + _("\n");
+			if(mesh_index >= 0 && mesh_index < meshes.size())
+			{
+				wxString mat_load_str(meshes[mesh_index].mat_load_str.c_str());
+				mat_load_str.Replace(_("[ACTOR]"), actor_id + _(".ID"));
+				stage_load_fn += _("\n") + mat_load_str + _("\n");
+			}
 
 			//stage_load_fn += "";
 
@@ -2240,7 +2316,6 @@ bool serenity_project::genRCBasicProject()
 	pfile.Write(_("\n\n"));
 
 	pfile.Write(_("Include Once") + _("\n"));
-	pfile.Write(_("Include \"main.bas\"") + _("\n"));
 
 	pfile.Close();
 
@@ -3379,16 +3454,33 @@ int serenity_project::load_texture(std::vector<serenity_project_dict_obj> param,
 	rc_texture p_texture;
 	p_texture.file = file_name.ToStdString();
 	p_texture.id_name = id_name.ToStdString();
-	p_texture.texture = device->getVideoDriver()->getTexture(image_fname.GetAbsolutePath().ToStdString().c_str());
+
+	wxIrrlicht* current_control = getCurrentContextControl();
+
+	setControlContext(stage_window);
+	p_texture.texture[SN_IRR_WINDOW_STAGE] = stage_window->GetVideoDriver()->getTexture(image_fname.GetAbsolutePath().ToStdString().c_str());
+
+	setControlContext(animation_window);
+	p_texture.texture[SN_IRR_WINDOW_MESH] = animation_window->GetVideoDriver()->getTexture(image_fname.GetAbsolutePath().ToStdString().c_str());
+
+	setControlContext(material_window);
+	p_texture.texture[SN_IRR_WINDOW_MATERIAL] = material_window->GetVideoDriver()->getTexture(image_fname.GetAbsolutePath().ToStdString().c_str());
+
+	setControlContext(texture_window);
+	p_texture.texture[SN_IRR_WINDOW_TEXTURE] = texture_window->GetVideoDriver()->getTexture(image_fname.GetAbsolutePath().ToStdString().c_str());
+
 	p_texture.use_colorKey = has_colorKey;
 	p_texture.colorkey.set(0);
 
-    if(p_texture.texture == NULL)
+    if(p_texture.texture[0] == NULL)
 	{
 		if(reload_index >= 0)
 		{
 			wxMessageBox(_("TEXTURE COULD NOT LOAD: ") + p_texture.id_name + _(" -->[") + image_fname.GetAbsolutePath() + _("]"));
- 			textures[reload_index].texture = NULL;
+ 			textures[reload_index].texture[0] = NULL;
+ 			textures[reload_index].texture[1] = NULL;
+ 			textures[reload_index].texture[2] = NULL;
+ 			textures[reload_index].texture[3] = NULL;
 		}
 
 		return -1;
@@ -3398,15 +3490,27 @@ int serenity_project::load_texture(std::vector<serenity_project_dict_obj> param,
 	{
 		if(color_key == -1)
 		{
-			irr::u32* img_pixels = (irr::u32*)p_texture.texture->lock();
+			setControlContext(stage_window);
+			irr::u32* img_pixels = (irr::u32*)p_texture.texture[SN_IRR_WINDOW_STAGE]->lock();
 			color_key = img_pixels[0];
-			p_texture.texture->unlock();
+			p_texture.texture[SN_IRR_WINDOW_STAGE]->unlock();
 		}
 	}
 
     if(has_colorKey)
 	{
-		device->getVideoDriver()->makeColorKeyTexture(p_texture.texture, irr::video::SColor(color_key));
+		setControlContext(stage_window);
+		device->getVideoDriver()->makeColorKeyTexture(p_texture.texture[SN_IRR_WINDOW_STAGE], irr::video::SColor(color_key));
+
+		setControlContext(animation_window);
+		device->getVideoDriver()->makeColorKeyTexture(p_texture.texture[SN_IRR_WINDOW_MESH], irr::video::SColor(color_key));
+
+		setControlContext(material_window);
+		device->getVideoDriver()->makeColorKeyTexture(p_texture.texture[SN_IRR_WINDOW_MATERIAL], irr::video::SColor(color_key));
+
+		setControlContext(texture_window);
+		device->getVideoDriver()->makeColorKeyTexture(p_texture.texture[SN_IRR_WINDOW_TEXTURE], irr::video::SColor(color_key));
+
 		p_texture.colorkey = irr::video::SColor(color_key);
 	}
 
@@ -3419,6 +3523,8 @@ int serenity_project::load_texture(std::vector<serenity_project_dict_obj> param,
 	}
 	else
 		textures.push_back(p_texture);
+
+	setControlContext(current_control);
 
 	return t_index;
 }
@@ -3613,6 +3719,8 @@ int serenity_project::load_mesh(std::vector<serenity_project_dict_obj> param, in
 		device->getFileSystem()->addFileArchive(fname.GetAbsolutePath().ToStdString().c_str());
 		p_mesh.mesh = device->getSceneManager()->getMesh(file_name.ToStdString().c_str());
 		device->getFileSystem()->removeFileArchive((irr::u32) 0);
+
+		std::cout << "LOADED FROM PK: " << file_name.ToStdString() << ", " << (p_mesh.mesh != NULL ? "SUCCESS" : "FAIL") << std::endl;
 	}
 	else if(p_mesh.isAN8Scene)
 	{
@@ -3895,9 +4003,20 @@ int serenity_project::load_material(std::vector<serenity_project_dict_obj> param
 			if(materials[reload_index].texture_id[i] >= 0 && materials[reload_index].texture_id[i] < textures.size())
 			{
 				int t_index = materials[reload_index].texture_id[i];
-				if(textures[t_index].texture)
+				if(textures[t_index].texture[0])
 				{
-					mat.setTexture(i, textures[t_index].texture);
+					wxIrrlicht* current_control = getCurrentContextControl();
+
+					if(current_control == stage_window)
+						mat.setTexture(i, textures[t_index].texture[SN_IRR_WINDOW_STAGE]);
+					else if(current_control == animation_window)
+						mat.setTexture(i, textures[t_index].texture[SN_IRR_WINDOW_MESH]);
+					else if(current_control == material_window)
+						mat.setTexture(i, textures[t_index].texture[SN_IRR_WINDOW_MATERIAL]);
+					else if(current_control == texture_window)
+						mat.setTexture(i, textures[t_index].texture[SN_IRR_WINDOW_TEXTURE]);
+
+					//mat.setTexture(i, textures[t_index].texture);
 				}
 			}
 		}
@@ -4202,9 +4321,18 @@ rc_material serenity_project::loadMaterialFile(wxString mfile, wxString mID)
 						p_mat.texture_id[level] = project_texture_index;
 						texture_found = true;
 
-						if(textures[project_texture_index].texture)
+						if(textures[project_texture_index].texture[0])
 						{
-							p_mat.material.setTexture(level, textures[project_texture_index].texture);
+							wxIrrlicht* current_control = getCurrentContextControl();
+
+							if(current_control == stage_window)
+								p_mat.material.setTexture(level, textures[project_texture_index].texture[SN_IRR_WINDOW_STAGE]);
+							else if(current_control == animation_window)
+								p_mat.material.setTexture(level, textures[project_texture_index].texture[SN_IRR_WINDOW_MESH]);
+							else if(current_control == material_window)
+								p_mat.material.setTexture(level, textures[project_texture_index].texture[SN_IRR_WINDOW_MATERIAL]);
+							else if(current_control == texture_window)
+								p_mat.material.setTexture(level, textures[project_texture_index].texture[SN_IRR_WINDOW_TEXTURE]);
 						}
 
 						//wxMessageBox(_("SET TEXTURE"));
@@ -4240,9 +4368,18 @@ rc_material serenity_project::loadMaterialFile(wxString mfile, wxString mID)
 
 						p_mat.texture_id[level] = project_texture_index;
 
-						if(textures[project_texture_index].texture)
+						if(textures[project_texture_index].texture[0]) // I only need to check for the first one since all windows will load and unload textures at the same time
 						{
-							p_mat.material.setTexture(level, textures[project_texture_index].texture);
+							wxIrrlicht* current_control = getCurrentContextControl();
+
+							if(current_control == stage_window)
+								p_mat.material.setTexture(level, textures[project_texture_index].texture[SN_IRR_WINDOW_STAGE]);
+							else if(current_control == animation_window)
+								p_mat.material.setTexture(level, textures[project_texture_index].texture[SN_IRR_WINDOW_MESH]);
+							else if(current_control == material_window)
+								p_mat.material.setTexture(level, textures[project_texture_index].texture[SN_IRR_WINDOW_MATERIAL]);
+							else if(current_control == texture_window)
+								p_mat.material.setTexture(level, textures[project_texture_index].texture[SN_IRR_WINDOW_TEXTURE]);
 						}
 					}
 				}
@@ -4866,3 +5003,158 @@ bool serenity_project::save_material_list(rc_mesh p_mesh)
 	return true;
 }
 
+void serenity_project::setControlContext(wxIrrlicht* tgt_control)
+{
+	if(stage_window)
+	{
+		stage_window->GetDevice()->getContextManager()->activateContext(irr::video::SExposedVideoData());
+		stage_window->enable_events = false;
+		stage_window->has_context = false;
+	}
+
+	if(animation_window)
+	{
+		animation_window->GetDevice()->getContextManager()->activateContext(irr::video::SExposedVideoData());
+		animation_window->enable_events = false;
+		animation_window->has_context = false;
+	}
+
+	if(material_window)
+	{
+		material_window->GetDevice()->getContextManager()->activateContext(irr::video::SExposedVideoData());
+		material_window->enable_events = false;
+		material_window->has_context = false;
+	}
+
+	if(texture_window)
+	{
+		texture_window->GetDevice()->getContextManager()->activateContext(irr::video::SExposedVideoData());
+		texture_window->enable_events = false;
+		texture_window->has_context = false;
+	}
+
+	if(tgt_control == NULL)
+		return;
+
+	if(tgt_control == stage_window)
+	{
+		stage_window->GetDevice()->getContextManager()->activateContext(stage_window->GetDevice()->getVideoDriver()->getExposedVideoData());
+		stage_window->enable_events = true;
+		stage_window->has_context = true;
+	}
+	else if(tgt_control == animation_window)
+	{
+		animation_window->GetDevice()->getContextManager()->activateContext(animation_window->GetDevice()->getVideoDriver()->getExposedVideoData());
+		animation_window->enable_events = true;
+		animation_window->has_context = true;
+	}
+	else if(tgt_control == material_window)
+	{
+		material_window->GetDevice()->getContextManager()->activateContext(material_window->GetDevice()->getVideoDriver()->getExposedVideoData());
+		material_window->enable_events = true;
+		material_window->has_context = true;
+	}
+	else if(tgt_control == texture_window)
+	{
+		texture_window->GetDevice()->getContextManager()->activateContext(texture_window->GetDevice()->getVideoDriver()->getExposedVideoData());
+		texture_window->enable_events = true;
+		texture_window->has_context = true;
+	}
+}
+
+wxIrrlicht* serenity_project::getCurrentContextControl()
+{
+	if(stage_window)
+	{
+		if(stage_window->has_context)
+			return stage_window;
+	}
+
+	if(animation_window)
+	{
+		if(animation_window->has_context)
+			return animation_window;
+	}
+
+	if(material_window)
+	{
+		if(material_window->has_context)
+			return material_window;
+	}
+
+	if(texture_window)
+	{
+		if(texture_window->has_context)
+			return texture_window;
+	}
+
+	return NULL;
+}
+
+void serenity_project::swapMaterialTexture(wxIrrlicht* control_window)
+{
+	if(!control_window)
+		return;
+
+	setControlContext(control_window);
+
+	irr::IrrlichtDevice* p_device = control_window->GetDevice();
+
+	int texture_win_index = 0;
+
+	wxIrrlicht* current_control = getCurrentContextControl();
+
+	if(current_control == stage_window)
+		texture_win_index = SN_IRR_WINDOW_STAGE;
+	else if(current_control == animation_window)
+		texture_win_index = SN_IRR_WINDOW_MESH;
+	else if(current_control == material_window)
+		texture_win_index = SN_IRR_WINDOW_MATERIAL;
+	else if(current_control == texture_window)
+		texture_win_index = SN_IRR_WINDOW_TEXTURE;
+
+	for(int i = 0; i < materials.size(); i++)
+	{
+		for(int mt_index = 0; mt_index < materials[i].texture_id.size(); mt_index++)
+		{
+			int texture_index = materials[i].texture_id[mt_index];
+			if(texture_index < 0 || texture_index >= textures.size())
+				continue;
+
+			materials[i].material.setTexture(mt_index, textures[texture_index].texture[texture_win_index]);
+		}
+	}
+
+	for(int i = 0; i < stages.size(); i++)
+	{
+		for(int actor_index = 0; actor_index < stages[i].actors.size(); actor_index++)
+		{
+			if(!stages[i].actors[actor_index].node)
+				continue;
+
+			int mesh_index = stages[i].actors[actor_index].mesh_index;
+
+			if(mesh_index >= 0 && mesh_index < meshes.size())
+			{
+				for(int mesh_material_index = 0; mesh_material_index < meshes[mesh_index].material_index.size(); mesh_material_index++)
+				{
+					int mat_index = meshes[mesh_index].material_index[mesh_material_index];
+
+					if(mat_index < 0 || mat_index >= materials.size())
+						continue;
+
+					stages[i].actors[actor_index].node->getMaterial(mesh_material_index) = materials[mat_index].material;
+				}
+			}
+
+			if(current_control == stage_window)
+			{
+				if(stages[i].actors[actor_index].override_material_index >= 0 && stages[i].actors[actor_index].override_material_index < materials.size())
+				{
+					int ov_mat_index = stages[i].actors[actor_index].override_material_index;
+					stages[i].actors[actor_index].node->getMaterial(0) = materials[ov_mat_index].material;
+				}
+			}
+		}
+	}
+}

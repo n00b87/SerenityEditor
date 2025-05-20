@@ -111,6 +111,8 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
 		void createIrrlichtMaterialWindow();
 		void createIrrlichtTextureWindow();
 
+		void setControlContext(wxIrrlicht* tgt_control);
+
 		void reloadResources();
 		bool isValidID(wxString id_name, int id_type, int mesh_index=-1);
 

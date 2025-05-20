@@ -5,11 +5,16 @@
 #include <irrlicht.h>
 #include "an8parser.h"
 
+#define SN_IRR_WINDOW_STAGE 0
+#define SN_IRR_WINDOW_MESH 1
+#define SN_IRR_WINDOW_MATERIAL 2
+#define SN_IRR_WINDOW_TEXTURE 3
+
 struct rc_texture
 {
 	std::string id_name;
 	std::string file;
-	irr::video::ITexture* texture;
+	irr::video::ITexture* texture[4];
 	bool use_colorKey;
 	irr::video::SColor colorkey;
 
@@ -164,7 +169,7 @@ struct rc_actor
 	irr::core::vector3df position;
 	irr::core::vector3df rotation;
 	irr::core::vector3df scale;
-	int override_material_index; //if less than 0 then mesh material is used
+	int override_material_index = -1; //if less than 0 then mesh material is used
 	int animation_index; //if less than 0 then frame 0 is set
 	int num_loops;
 	bool visible;

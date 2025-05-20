@@ -7,6 +7,7 @@
 #include <irrlicht.h>
 #include <cinttypes>
 #include "rc_stage.h"
+#include "wxIrrlicht.h"
 
 struct serenity_project_dict_obj
 {
@@ -47,7 +48,7 @@ public:
 
 	int active_stage;
 
-	serenity_project(std::string project_file, std::string p_name, irr::IrrlichtDevice* scene_device);
+	serenity_project(std::string project_file, std::string p_name, irr::IrrlichtDevice* scene_device, wxIrrlicht* st_win, wxIrrlicht* ani_win, wxIrrlicht* mat_win, wxIrrlicht* tx_win);
 	serenity_project()
 	{
 		setDefaults();
@@ -135,6 +136,15 @@ public:
 		camera_speed = 5;
 		hud_color = irr::video::SColor(255,255,255,255);
 	}
+
+	wxIrrlicht* stage_window = NULL;
+	wxIrrlicht* animation_window = NULL;
+	wxIrrlicht* material_window = NULL;
+	wxIrrlicht* texture_window = NULL;
+	void setControlContext(wxIrrlicht* tgt_control);
+	wxIrrlicht* getCurrentContextControl();
+
+	void swapMaterialTexture(wxIrrlicht* control_window);
 };
 
 #endif // ENGINE_BASE_H_INCLUDED

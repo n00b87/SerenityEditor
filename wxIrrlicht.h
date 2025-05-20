@@ -158,6 +158,8 @@ class wxIrrlicht : public wxControl {
         bool manual_control = false;
         int num_views = 1; //will either be 1 or 4
 
+        bool has_context = false;
+
         font_obj font[MAX_FONTS];
         int active_font = -1;
 
@@ -199,11 +201,15 @@ class wxIrrlicht : public wxControl {
 
         irr::video::ITexture* back_buffer;
 
+        int control_id = -1;
+
 
         int window_type = 0;
         irr::video::ITexture* view2D_texture;
 
         bool stage_window_isActive = false;
+
+        bool enable_events = false;
 
 	//protected:
         void OnPaint(wxPaintEvent& event);
