@@ -938,9 +938,9 @@ void wxIrrlicht::OnTimer(wxTimerEvent& event) {
 	}
 
     #ifdef _WIN32
-	//m_forceWindowActive = true;
+	m_forceWindowActive = true;
 	//parent->Refresh();
-	//Refresh();
+	Refresh();
 	#endif // _WIN32
 }
 
