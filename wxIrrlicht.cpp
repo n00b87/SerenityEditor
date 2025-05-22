@@ -225,8 +225,18 @@ actual_params->WindowId = (HWND)this->GetHandle();
 	num_views = 4;
 	SetCameraViewParam();
 
-	ortho_matrix.buildProjectionMatrixOrthoLH(500.0f,300.0f,1.0f,-3000.0f);
+	ortho_near = -1.0f;
+	ortho_far = -5000.0f;
+	ortho_width = 2000.0f;
+	ortho_height = 1200.0f;
+	ortho_matrix.buildProjectionMatrixOrthoLH(ortho_width,ortho_height,ortho_near,ortho_far);
+
+	perspective_near = 1.0000000;
+	perspective_far = 5000.0000;
+	perspective_fov_radians = 1.2566371;
+	perspective_aspect = 1.3333334;
 	perspective_matrix = camera[0].camera.camera->getProjectionMatrix();
+	perspective_matrix.buildProjectionMatrixPerspectiveFovLH(perspective_fov_radians, perspective_aspect, perspective_near, perspective_far);
 
 	view2D_texture = NULL;
 
@@ -514,58 +524,63 @@ void wxIrrlicht::OnRender() {
 
 
 				if(window_type == RC_IRR_WINDOW_NAV3D)
-				switch(camera[i].pov)
 				{
-					case RC_CAMERA_VIEW_FRONT:
-							irr_SetFont(ui_font1);
-							irr_DrawText("Front", 10, 10, hud_color, i);
-							camera[i].camera.camera->setProjectionMatrix(ortho_matrix);
+					ortho_matrix.buildProjectionMatrixOrthoLH(ortho_width,ortho_height,ortho_near,ortho_far);
+					perspective_matrix.buildProjectionMatrixPerspectiveFovLH(perspective_fov_radians, perspective_aspect, perspective_near, perspective_far);
 
-							if(draw_axis_widget)
-							{
-								irr::u32 image_size = transform_tool_widget.image_size;
-								m_pDriver->draw2DImage(transform_tool_widget.x_texture, transform_tool_widget.view_box_x[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
-								m_pDriver->draw2DImage(transform_tool_widget.y_texture, transform_tool_widget.view_box_y[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
-							}
-							break;
-					case RC_CAMERA_VIEW_RIGHT:
-							irr_SetFont(ui_font1);
-							irr_DrawText("Right", 10, 10, hud_color, i);
-							camera[i].camera.camera->setProjectionMatrix(ortho_matrix);
+					switch(camera[i].pov)
+					{
+						case RC_CAMERA_VIEW_FRONT:
+								irr_SetFont(ui_font1);
+								irr_DrawText("Front", 10, 10, hud_color, i);
+								camera[i].camera.camera->setProjectionMatrix(ortho_matrix);
 
-							if(draw_axis_widget)
-							{
-								irr::u32 image_size = transform_tool_widget.image_size;
-								m_pDriver->draw2DImage(transform_tool_widget.z_texture, transform_tool_widget.view_box_z[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
-								m_pDriver->draw2DImage(transform_tool_widget.y_texture, transform_tool_widget.view_box_y[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
-							}
-							break;
-					case RC_CAMERA_VIEW_TOP:
-							irr_SetFont(ui_font1);
-							irr_DrawText("Top", 10, 10, hud_color, i);
-							camera[i].camera.camera->setProjectionMatrix(ortho_matrix);
+								if(draw_axis_widget)
+								{
+									irr::u32 image_size = transform_tool_widget.image_size;
+									m_pDriver->draw2DImage(transform_tool_widget.x_texture, transform_tool_widget.view_box_x[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
+									m_pDriver->draw2DImage(transform_tool_widget.y_texture, transform_tool_widget.view_box_y[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
+								}
+								break;
+						case RC_CAMERA_VIEW_RIGHT:
+								irr_SetFont(ui_font1);
+								irr_DrawText("Right", 10, 10, hud_color, i);
+								camera[i].camera.camera->setProjectionMatrix(ortho_matrix);
 
-							if(draw_axis_widget)
-							{
-								irr::u32 image_size = transform_tool_widget.image_size;
-								m_pDriver->draw2DImage(transform_tool_widget.x_texture, transform_tool_widget.view_box_x[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
-								m_pDriver->draw2DImage(transform_tool_widget.z_texture, transform_tool_widget.view_box_z[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
-							}
-							break;
-					case RC_CAMERA_VIEW_PERSPECTIVE:
-							irr_SetFont(ui_font1);
-							irr_DrawText("Perspective", 10, 10, hud_color, i);
-							camera[i].camera.camera->setProjectionMatrix(perspective_matrix);
+								if(draw_axis_widget)
+								{
+									irr::u32 image_size = transform_tool_widget.image_size;
+									m_pDriver->draw2DImage(transform_tool_widget.z_texture, transform_tool_widget.view_box_z[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
+									m_pDriver->draw2DImage(transform_tool_widget.y_texture, transform_tool_widget.view_box_y[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
+								}
+								break;
+						case RC_CAMERA_VIEW_TOP:
+								irr_SetFont(ui_font1);
+								irr_DrawText("Top", 10, 10, hud_color, i);
+								camera[i].camera.camera->setProjectionMatrix(ortho_matrix);
 
-							if(draw_axis_widget)
-							{
-								irr::u32 image_size = transform_tool_widget.image_size;
+								if(draw_axis_widget)
+								{
+									irr::u32 image_size = transform_tool_widget.image_size;
+									m_pDriver->draw2DImage(transform_tool_widget.x_texture, transform_tool_widget.view_box_x[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
+									m_pDriver->draw2DImage(transform_tool_widget.z_texture, transform_tool_widget.view_box_z[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
+								}
+								break;
+						case RC_CAMERA_VIEW_PERSPECTIVE:
+								irr_SetFont(ui_font1);
+								irr_DrawText("Perspective", 10, 10, hud_color, i);
+								camera[i].camera.camera->setProjectionMatrix(perspective_matrix);
 
-								m_pDriver->draw2DImage(transform_tool_widget.x_texture, transform_tool_widget.view_box_x[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
-								m_pDriver->draw2DImage(transform_tool_widget.y_texture, transform_tool_widget.view_box_y[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
-								m_pDriver->draw2DImage(transform_tool_widget.z_texture, transform_tool_widget.view_box_z[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
-							}
-							break;
+								if(draw_axis_widget)
+								{
+									irr::u32 image_size = transform_tool_widget.image_size;
+
+									m_pDriver->draw2DImage(transform_tool_widget.x_texture, transform_tool_widget.view_box_x[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
+									m_pDriver->draw2DImage(transform_tool_widget.y_texture, transform_tool_widget.view_box_y[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
+									m_pDriver->draw2DImage(transform_tool_widget.z_texture, transform_tool_widget.view_box_z[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
+								}
+								break;
+					}
 				}
 
 				if((show_camera_pos || show_camera_rot) && window_type == RC_IRR_WINDOW_NAV3D)
@@ -1101,6 +1116,20 @@ void wxIrrlicht::AnimationPreview_Update()
 			camera[0].camera.setPosition(cam_pos.X, cam_pos.Y, cam_pos.Z);
 			camera[0].camera.setRotation(camera[0].camera.rx, camera[0].camera.ry+delta_x, camera[0].camera.rz);
 
+			irr::f32 cam_angle = camera[0].camera.ry;
+			irr::core::vector3df base_pos(camera[0].camera.x, camera[0].camera.y, camera[0].camera.z);
+			base_pos.rotateXZBy(cam_angle, irr::core::vector3df(0, camera[0].camera.y, 0));
+
+			irr::core::vector3df obj_pos(0,0,0);
+			if(test_material_object)
+				obj_pos = test_material_object->getBoundingBox().getCenter();
+
+			irr::f32 heading = getHeading(irr::core::vector2df(base_pos.Z, base_pos.Y), irr::core::vector2df(obj_pos.Z, obj_pos.Y));
+
+			//std::cout << "Heading Info: ca=" << cam_angle << ",  bp=(" << base_pos.X << ", " << base_pos.Y << ", " << base_pos.Z << ")  op=(" << obj_pos.X << ", " << obj_pos.Y << ", " << obj_pos.Z << ")  heading=" << heading << std::endl;
+
+			camera[0].camera.setRotation(-heading, camera[0].camera.ry, camera[0].camera.rz);
+
 			drag_start.x = px;
 			drag_start.y = py;
 		}
@@ -1334,6 +1363,64 @@ void wxIrrlicht::setTransformToolBox()
 		}
 	}
 }
+
+irr::core::vector2df wxIrrlicht::GetLineIntersect(double p0_x, double p0_y, double p1_x, double p1_y, double p2_x, double p2_y, double p3_x, double p3_y, bool* has_intersection)
+{
+	double s1_x = p1_x - p0_x;
+	double s1_y = p1_y - p0_y;
+    double s2_x = p3_x - p2_x;
+	double s2_y = p3_y - p2_y;
+
+	double n = ( (-1 * s2_x) * s1_y + s1_x * s2_y);
+
+	if(n == 0)
+		return irr::core::vector2df(0,0);
+
+    double s = ( (-1 * s1_y) * (p0_x - p2_x) + s1_x * (p0_y - p2_y)) / n;
+    double t = ( s2_x * (p0_y - p2_y) - s2_y * (p0_x - p2_x)) / n;
+
+    double i_x = p0_x + (t * s1_x);
+    double i_y = p0_y + (t * s1_y);
+
+    irr::core::vector2df ivec(i_x, i_y);
+
+    if(s >= 0 && s <= 1 && t >= 0 && t <= 1)
+    {
+    	if(has_intersection)
+			*has_intersection = true;
+        //' Collision detected
+        return ivec;
+    }
+
+	//' No collision
+	if(has_intersection)
+		*has_intersection = false;
+
+    return irr::core::vector2df(0,0);
+}
+
+float wxIrrlicht::getHeading(irr::core::vector2df a, irr::core::vector2df b)
+{
+    float PI = 3.1415926535;
+    float x = b.X - a.X;
+    float y = b.Y - a.Y;
+    return std::atan2(y, x) * (180.0 / PI);
+}
+
+irr::core::vector2df wxIrrlicht::getRotatedPoint2D(irr::core::vector2df pt, irr::core::vector2df center, irr::f32 angleDeg)
+{
+	irr::f32 angleRad = irr::core::degToRad(-angleDeg);
+	irr::f32 cosAngle = std::cos(angleRad);
+	irr::f32 sinAngle = std::sin(angleRad);
+	irr::f32 dx = (pt.X-center.X);
+	irr::f32 dy = (pt.Y-center.Y);
+
+	irr::core::vector2df v;
+	v.X = center.X + (dx*cosAngle-dy*sinAngle);
+	v.Y = center.Y + (dx*sinAngle+dy*cosAngle);
+	return v;
+}
+
 
 void wxIrrlicht::OnUpdate()
 {
@@ -1569,6 +1656,11 @@ void wxIrrlicht::OnUpdate()
 			{
 				if(init_click)
 				{
+					move_tool_average_x = 0;
+					move_tool_average_y = 0;
+					move_tool_average_z = 0;
+
+					int num_actors = 0;
 					for(int i = 0; i < selected_actors.size(); i++)
 					{
 						if(!selected_actors[i].node)
@@ -1582,7 +1674,16 @@ void wxIrrlicht::OnUpdate()
 						{
 							selected_actors[i].t_start = selected_actors[i].node->getAbsolutePosition();
 						}
+
+						move_tool_average_x += selected_actors[i].t_start.X;
+						move_tool_average_y += selected_actors[i].t_start.Y;
+						move_tool_average_z += selected_actors[i].t_start.Z;
+						num_actors++;
 					}
+
+					move_tool_average_x = move_tool_average_x / num_actors;
+					move_tool_average_y = move_tool_average_y / num_actors;
+					move_tool_average_z = move_tool_average_z / num_actors;
 				}
 
 				if(!left_drag_init)
@@ -1591,8 +1692,8 @@ void wxIrrlicht::OnUpdate()
 
 				irr::core::vector3df translate_vector(0.0f, 0.0f, 0.0f);
 
-				double translate_factor_x = 500/((double)camera[box_select_view].w);
-				double translate_factor_y = 300/((double)camera[box_select_view].h);
+				double translate_factor_x = ortho_width/((double)camera[box_select_view].w);
+				double translate_factor_y = ortho_height/((double)camera[box_select_view].h);
 
 				double axis_lock_factor_x = ( (transform_tool_widget.lock_y || transform_tool_widget.lock_z) ? 0 : 1);
 				double axis_lock_factor_y = ( (transform_tool_widget.lock_x || transform_tool_widget.lock_z) ? 0 : 1);
@@ -1621,6 +1722,42 @@ void wxIrrlicht::OnUpdate()
 
 						//double zy = (((double)(drag_start.y - py))*translate_factor_y) * ( ( 180 - ((int)(camera[box_select_view].camera.ry-90)%180) )/180);
 						//double zx = (((double)(px - drag_start.x))*translate_factor_x) * ( ( 180 - ((int)(camera[box_select_view].camera.rx-90)%180) )/180);
+
+						irr::core::vector3df pos(camera[box_select_view].camera.x, camera[box_select_view].camera.y, camera[box_select_view].camera.z);
+						irr::core::vector3df rot(camera[box_select_view].camera.rx, camera[box_select_view].camera.ry, camera[box_select_view].camera.rz);
+						irr::core::vector3df obj_pos(move_tool_average_x, move_tool_average_y, move_tool_average_z);
+
+						irr::f32 angle_to_obj = getHeading( irr::core::vector2df(pos.Z, pos.X), irr::core::vector2df(obj_pos.Z, obj_pos.X) );
+
+						//std::cout << "Info[X]: angle_to_obj = " << angle_to_obj << std::endl;
+
+						irr::core::vector2df rotate_pos = getRotatedPoint2D(irr::core::vector2df(obj_pos.X, obj_pos.Z), irr::core::vector2df(pos.X, pos.Z), -angle_to_obj);
+
+						//std::cout << "Rotated: " << obj_pos.X << ", " << obj_pos.Y << ", " << obj_pos.Z << "\n" << angle_to_obj << " degrees Around "
+						//						 << pos.X << ", " << pos.Y << ", " << pos.Z << "\nTo "
+						//						 << rotate_pos.X << ", " << obj_pos.Y << ", " << rotate_pos.Y << std::endl << std::endl;
+
+						irr::f32 axis_dist = irr::core::abs_(rotate_pos.Y - pos.Z);
+
+						//std::cout << "axis_info: " << axis_dist << " (" << (int)(pw/2) << ", " << (int)(ph/2) << ") " << " t_factor: (" << translate_factor_x << ", " << translate_factor_y << ") " << std::endl;
+
+						int vp_w = pw/2;
+						int vp_h = ph/2;
+
+						if(num_views > 1)
+						{
+							vp_w = pw/4;
+							vp_h = ph/4;
+						}
+
+						//This probably isn't right but its a lot better than it was
+						translate_factor_x = axis_dist / vp_w;
+						translate_factor_y = axis_dist / vp_h;
+
+						translate_factor_x = (translate_factor_x < 1.0f) ? 1.0f : translate_factor_x;
+						translate_factor_y = (translate_factor_y < 1.0f) ? 1.0f : translate_factor_y;
+
+						//std::cout << "New t_factor: (" << translate_factor_x << ", " << translate_factor_y << ") " << std::endl << std::endl;
 
 						translate_vector.set(((double)px - drag_start.x)*translate_factor_x, ((double)(drag_start.y - py))*translate_factor_y, 0);
 						translate_vector.rotateXZBy(-camera[box_select_view].camera.ry);
@@ -2058,6 +2195,22 @@ void wxIrrlicht::OnUpdate()
 			int delta_x = px - drag_start.x;
 			int delta_y = py - drag_start.y;
 
+			if(camera[active_camera].pov != RC_CAMERA_VIEW_PERSPECTIVE)
+			{
+				if(num_views == 1)
+				{
+					delta_x *= 2; //(int)((double)(ortho_width/pw)*1.3);
+					delta_y *= 2; //(int)((double)(ortho_height/ph)*1.3);
+				}
+				else
+				{
+					delta_x *= 4; //(int)((double)(ortho_width/((double)pw/2.0f))*1.3);
+					delta_y *= 4; //(int)((double)(ortho_height/((double)ph/2.0f))*1.3);
+
+					//std::cout << "New delta: " << delta_x << ", " << delta_y << std::endl;
+				}
+			}
+
 			switch(camera[active_camera].pov)
 			{
 				case RC_CAMERA_VIEW_PERSPECTIVE:
@@ -2074,6 +2227,7 @@ void wxIrrlicht::OnUpdate()
 				case RC_CAMERA_VIEW_BACK:
 				case RC_CAMERA_VIEW_FRONT:
 				{
+
 					camera[active_camera].camera.translateW(-delta_x, delta_y, 0);
 
 					float ax = 0;
@@ -2200,17 +2354,55 @@ void wxIrrlicht::OnUpdate()
 				{
 					if(camera[i].pov == RC_CAMERA_VIEW_FRONT)
 					{
-						camera[i].camera.setPosition(ax, ay, az-300);
+						float ax_front = 0;
+						float ay_front = ay;
+						float az_front = az + (perspective_far/4);
+
+						irr::core::vector3df cam_pos(ax, ay, az);
+						irr::core::vector3df cam_tgt = cam_pos;
+						cam_tgt += irr::core::vector3df(0, 0, (perspective_far/4));
+						cam_tgt.rotateXZBy(-camera[active_camera].camera.ry, cam_pos);
+
+						ax_front = cam_tgt.X;
+						az_front = az - (perspective_far/2);
+
+						//camera[i].camera.setPosition(ax, ay, az-300);
+						camera[i].camera.setPosition(ax_front, ay, az_front);
 						camera[i].gridSceneNode->setPosition(irr::core::vector3df(0, 0, az+100));
 					}
 					else if(camera[i].pov == RC_CAMERA_VIEW_RIGHT)
 					{
-						camera[i].camera.setPosition(ax-300, ay, az);
+						float ax_right = ax - (perspective_far/2);
+						float az_right = az + (perspective_far/4);
+
+						irr::core::vector3df cam_pos(ax, ay, az);
+						irr::core::vector3df cam_tgt = cam_pos;
+						cam_tgt += irr::core::vector3df(0, 0, (perspective_far/4));
+						cam_tgt.rotateXZBy(camera[active_camera].camera.ry, cam_pos);
+
+						ax_right = cam_tgt.X - (perspective_far/4);
+						az_right = cam_tgt.Z;
+
+						camera[i].camera.setPosition(ax_right, ay, az_right);
+						//camera[i].camera.setPosition(ax-300, ay, az);
 						camera[i].gridSceneNode->setPosition(irr::core::vector3df(ax+100, 0, 0));
 					}
 					else if(camera[i].pov == RC_CAMERA_VIEW_TOP)
 					{
-						camera[i].camera.setPosition(ax, ay+300, az);
+						float ax_top = 0;
+						float ay_top = ay - (perspective_far/2);
+						float az_top = az + (perspective_far/4);
+
+						irr::core::vector3df cam_pos(ax, ay, az);
+						irr::core::vector3df cam_tgt = cam_pos;
+						cam_tgt += irr::core::vector3df(0, 0, (perspective_far/4));
+						cam_tgt.rotateXZBy(-camera[active_camera].camera.ry, cam_pos);
+
+						ax_top = cam_tgt.X;
+						az_top = cam_tgt.Z;
+
+						camera[i].camera.setPosition(ax_top, ay_top, az_top);
+						//camera[i].camera.setPosition(ax, ay+300, az);
 						camera[i].gridSceneNode->setPosition(irr::core::vector3df(0, ay-100, 0));
 					}
 				}

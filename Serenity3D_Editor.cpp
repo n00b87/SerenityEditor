@@ -13,30 +13,6 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
-	m_menubar1 = new wxMenuBar( 0 );
-	m_project_menu = new wxMenu();
-	wxMenuItem* m_newProject_menuItem;
-	m_newProject_menuItem = new wxMenuItem( m_project_menu, wxID_ANY, wxString( wxT("New Project") ) , wxEmptyString, wxITEM_NORMAL );
-	m_project_menu->Append( m_newProject_menuItem );
-
-	wxMenuItem* m_loadProject_menuItem;
-	m_loadProject_menuItem = new wxMenuItem( m_project_menu, wxID_ANY, wxString( wxT("Load Project") ) , wxEmptyString, wxITEM_NORMAL );
-	m_project_menu->Append( m_loadProject_menuItem );
-
-	wxMenuItem* m_saveProject_menuItem;
-	m_saveProject_menuItem = new wxMenuItem( m_project_menu, wxID_ANY, wxString( wxT("Save Project") ) , wxEmptyString, wxITEM_NORMAL );
-	m_project_menu->Append( m_saveProject_menuItem );
-
-	m_project_menu->AppendSeparator();
-
-	wxMenuItem* m_exit_menuItem;
-	m_exit_menuItem = new wxMenuItem( m_project_menu, wxID_ANY, wxString( wxT("Exit") ) , wxEmptyString, wxITEM_NORMAL );
-	m_project_menu->Append( m_exit_menuItem );
-
-	m_menubar1->Append( m_project_menu, wxT("Project") );
-
-	this->SetMenuBar( m_menubar1 );
-
 	wxBoxSizer* bSizer1;
 	bSizer1 = new wxBoxSizer( wxHORIZONTAL );
 
@@ -845,6 +821,186 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_panel412->Layout();
 	bSizer177->Fit( m_panel412 );
 	bSizer671->Add( m_panel412, 0, wxEXPAND | wxALL, 5 );
+
+	m_panel54 = new wxPanel( m_scrolledWindow2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SIMPLE|wxTAB_TRAVERSAL );
+	m_panel54->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_GRAYTEXT ) );
+
+	wxBoxSizer* bSizer269;
+	bSizer269 = new wxBoxSizer( wxVERTICAL );
+
+	m_staticText113 = new wxStaticText( m_panel54, wxID_ANY, wxT("Orthographic Viewport"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText113->Wrap( -1 );
+	m_staticText113->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
+	bSizer269->Add( m_staticText113, 0, wxALL, 5 );
+
+	wxBoxSizer* bSizer270;
+	bSizer270 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText114 = new wxStaticText( m_panel54, wxID_ANY, wxT("Near Plane:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText114->Wrap( -1 );
+	m_staticText114->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
+	bSizer270->Add( m_staticText114, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_orthoViewNearPlane_spinCtrlDouble = new wxSpinCtrlDouble( m_panel54, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, -100000, 100000, 0, 1 );
+	m_orthoViewNearPlane_spinCtrlDouble->SetDigits( 1 );
+	m_orthoViewNearPlane_spinCtrlDouble->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
+	bSizer270->Add( m_orthoViewNearPlane_spinCtrlDouble, 2, wxALL, 5 );
+
+
+	bSizer269->Add( bSizer270, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer2701;
+	bSizer2701 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText1141 = new wxStaticText( m_panel54, wxID_ANY, wxT("Far Plane:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText1141->Wrap( -1 );
+	m_staticText1141->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
+	bSizer2701->Add( m_staticText1141, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_orthoViewFarPlane_spinCtrlDouble = new wxSpinCtrlDouble( m_panel54, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, -100000, 100000, 0, 1 );
+	m_orthoViewFarPlane_spinCtrlDouble->SetDigits( 1 );
+	m_orthoViewFarPlane_spinCtrlDouble->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
+	bSizer2701->Add( m_orthoViewFarPlane_spinCtrlDouble, 2, wxALL, 5 );
+
+
+	bSizer269->Add( bSizer2701, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer2702;
+	bSizer2702 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText1142 = new wxStaticText( m_panel54, wxID_ANY, wxT("Width:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText1142->Wrap( -1 );
+	m_staticText1142->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
+	bSizer2702->Add( m_staticText1142, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_orthoViewWidth_spinCtrlDouble = new wxSpinCtrlDouble( m_panel54, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100000, 0, 1 );
+	m_orthoViewWidth_spinCtrlDouble->SetDigits( 1 );
+	m_orthoViewWidth_spinCtrlDouble->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
+	bSizer2702->Add( m_orthoViewWidth_spinCtrlDouble, 2, wxALL, 5 );
+
+
+	bSizer269->Add( bSizer2702, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer2703;
+	bSizer2703 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText1143 = new wxStaticText( m_panel54, wxID_ANY, wxT("Height:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText1143->Wrap( -1 );
+	m_staticText1143->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
+	bSizer2703->Add( m_staticText1143, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_orthoViewHeight_spinCtrlDouble = new wxSpinCtrlDouble( m_panel54, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100000, 0, 1 );
+	m_orthoViewHeight_spinCtrlDouble->SetDigits( 1 );
+	m_orthoViewHeight_spinCtrlDouble->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
+	bSizer2703->Add( m_orthoViewHeight_spinCtrlDouble, 2, wxALL, 5 );
+
+
+	bSizer269->Add( bSizer2703, 0, wxEXPAND, 5 );
+
+
+	m_panel54->SetSizer( bSizer269 );
+	m_panel54->Layout();
+	bSizer269->Fit( m_panel54 );
+	bSizer671->Add( m_panel54, 1, wxEXPAND | wxALL, 5 );
+
+	m_panel541 = new wxPanel( m_scrolledWindow2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SIMPLE|wxTAB_TRAVERSAL );
+	m_panel541->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_GRAYTEXT ) );
+
+	wxBoxSizer* bSizer2691;
+	bSizer2691 = new wxBoxSizer( wxVERTICAL );
+
+	m_staticText1131 = new wxStaticText( m_panel541, wxID_ANY, wxT("Perspective Viewport"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText1131->Wrap( -1 );
+	m_staticText1131->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
+	bSizer2691->Add( m_staticText1131, 0, wxALL, 5 );
+
+	wxBoxSizer* bSizer2704;
+	bSizer2704 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText1144 = new wxStaticText( m_panel541, wxID_ANY, wxT("Near Plane:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText1144->Wrap( -1 );
+	m_staticText1144->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
+	bSizer2704->Add( m_staticText1144, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_perspectiveViewNearPlane_spinCtrlDouble = new wxSpinCtrlDouble( m_panel541, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, -100000, 100000, 0, 1 );
+	m_perspectiveViewNearPlane_spinCtrlDouble->SetDigits( 1 );
+	m_perspectiveViewNearPlane_spinCtrlDouble->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
+	bSizer2704->Add( m_perspectiveViewNearPlane_spinCtrlDouble, 2, wxALL, 5 );
+
+
+	bSizer2691->Add( bSizer2704, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer27011;
+	bSizer27011 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText11411 = new wxStaticText( m_panel541, wxID_ANY, wxT("Far Plane:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText11411->Wrap( -1 );
+	m_staticText11411->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
+	bSizer27011->Add( m_staticText11411, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_perspectiveViewFarPlane_spinCtrlDouble = new wxSpinCtrlDouble( m_panel541, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, -100000, 100000, 0, 1 );
+	m_perspectiveViewFarPlane_spinCtrlDouble->SetDigits( 1 );
+	m_perspectiveViewFarPlane_spinCtrlDouble->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
+	bSizer27011->Add( m_perspectiveViewFarPlane_spinCtrlDouble, 2, wxALL, 5 );
+
+
+	bSizer2691->Add( bSizer27011, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer27021;
+	bSizer27021 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText11421 = new wxStaticText( m_panel541, wxID_ANY, wxT("FOV:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText11421->Wrap( -1 );
+	m_staticText11421->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
+	bSizer27021->Add( m_staticText11421, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_perspectiveViewFOV_spinCtrlDouble = new wxSpinCtrlDouble( m_panel541, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 360, 0, 1 );
+	m_perspectiveViewFOV_spinCtrlDouble->SetDigits( 1 );
+	m_perspectiveViewFOV_spinCtrlDouble->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
+	bSizer27021->Add( m_perspectiveViewFOV_spinCtrlDouble, 2, wxALL, 5 );
+
+
+	bSizer2691->Add( bSizer27021, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer27031;
+	bSizer27031 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText11431 = new wxStaticText( m_panel541, wxID_ANY, wxT("Aspect Ratio:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText11431->Wrap( -1 );
+	m_staticText11431->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
+	bSizer27031->Add( m_staticText11431, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_perspectiveViewAspect_spinCtrlDouble = new wxSpinCtrlDouble( m_panel541, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100000, 0, 1 );
+	m_perspectiveViewAspect_spinCtrlDouble->SetDigits( 1 );
+	m_perspectiveViewAspect_spinCtrlDouble->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
+	bSizer27031->Add( m_perspectiveViewAspect_spinCtrlDouble, 2, wxALL, 5 );
+
+
+	bSizer2691->Add( bSizer27031, 0, wxEXPAND, 5 );
+
+
+	m_panel541->SetSizer( bSizer2691 );
+	m_panel541->Layout();
+	bSizer2691->Fit( m_panel541 );
+	bSizer671->Add( m_panel541, 1, wxEXPAND | wxALL, 5 );
 
 
 	m_scrolledWindow2->SetSizer( bSizer671 );
@@ -1840,10 +1996,6 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	this->Centre( wxBOTH );
 
 	// Connect Events
-	m_project_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( Serenity3D_Frame::OnNewProjectMenuSelection ), this, m_newProject_menuItem->GetId());
-	m_project_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( Serenity3D_Frame::OnLoadProjectMenuSelection ), this, m_loadProject_menuItem->GetId());
-	m_project_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( Serenity3D_Frame::OnSaveProjectMenuSelection ), this, m_saveProject_menuItem->GetId());
-	m_project_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( Serenity3D_Frame::OnExitMenuSelection ), this, m_exit_menuItem->GetId());
 	m_editorMain_auinotebook->Connect( wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGED, wxAuiNotebookEventHandler( Serenity3D_Frame::OnMainEditorNotebookPageChanged ), NULL, this );
 	this->Connect( m_s3d_select_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DSelectClicked ) );
 	this->Connect( m_s3d_boxSelect_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DBoxClicked ) );
@@ -1886,6 +2038,14 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_cameraSettings_showRotation_checkBox->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_StageSettings_ShowViewCameraRotation ), NULL, this );
 	m_cameraSettings_moveSpeed_spinCtrlDouble->Connect( wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, wxSpinDoubleEventHandler( Serenity3D_Frame::On_StageSettings_ViewCameraSpeed ), NULL, this );
 	m_viewHUD_color_colourPicker->Connect( wxEVT_COMMAND_COLOURPICKER_CHANGED, wxColourPickerEventHandler( Serenity3D_Frame::On_StageSettings_ViewHUDColor ), NULL, this );
+	m_orthoViewNearPlane_spinCtrlDouble->Connect( wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, wxSpinDoubleEventHandler( Serenity3D_Frame::OnOrthoNearPlaneChange ), NULL, this );
+	m_orthoViewFarPlane_spinCtrlDouble->Connect( wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, wxSpinDoubleEventHandler( Serenity3D_Frame::OnOrthoFarPlaneChange ), NULL, this );
+	m_orthoViewWidth_spinCtrlDouble->Connect( wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, wxSpinDoubleEventHandler( Serenity3D_Frame::OnOrthoWidthChange ), NULL, this );
+	m_orthoViewHeight_spinCtrlDouble->Connect( wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, wxSpinDoubleEventHandler( Serenity3D_Frame::OnOrthoHeightChange ), NULL, this );
+	m_perspectiveViewNearPlane_spinCtrlDouble->Connect( wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, wxSpinDoubleEventHandler( Serenity3D_Frame::OnPerspectiveNearPlaneChange ), NULL, this );
+	m_perspectiveViewFarPlane_spinCtrlDouble->Connect( wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, wxSpinDoubleEventHandler( Serenity3D_Frame::OnPerspectiveFarPlaneChange ), NULL, this );
+	m_perspectiveViewFOV_spinCtrlDouble->Connect( wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, wxSpinDoubleEventHandler( Serenity3D_Frame::OnPerspectiveFOVChange ), NULL, this );
+	m_perspectiveViewAspect_spinCtrlDouble->Connect( wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, wxSpinDoubleEventHandler( Serenity3D_Frame::OnPerspectiveAspectChange ), NULL, this );
 	m_mesh_createMesh_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_Create_ButtonClick ), NULL, this );
 	m_mesh_importMesh_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_Load_ButtonClick ), NULL, this );
 	m_mesh_saveMesh_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_Save_ButtonClick ), NULL, this );
@@ -1996,6 +2156,14 @@ Serenity3D_Frame::~Serenity3D_Frame()
 	m_cameraSettings_showRotation_checkBox->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_StageSettings_ShowViewCameraRotation ), NULL, this );
 	m_cameraSettings_moveSpeed_spinCtrlDouble->Disconnect( wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, wxSpinDoubleEventHandler( Serenity3D_Frame::On_StageSettings_ViewCameraSpeed ), NULL, this );
 	m_viewHUD_color_colourPicker->Disconnect( wxEVT_COMMAND_COLOURPICKER_CHANGED, wxColourPickerEventHandler( Serenity3D_Frame::On_StageSettings_ViewHUDColor ), NULL, this );
+	m_orthoViewNearPlane_spinCtrlDouble->Disconnect( wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, wxSpinDoubleEventHandler( Serenity3D_Frame::OnOrthoNearPlaneChange ), NULL, this );
+	m_orthoViewFarPlane_spinCtrlDouble->Disconnect( wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, wxSpinDoubleEventHandler( Serenity3D_Frame::OnOrthoFarPlaneChange ), NULL, this );
+	m_orthoViewWidth_spinCtrlDouble->Disconnect( wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, wxSpinDoubleEventHandler( Serenity3D_Frame::OnOrthoWidthChange ), NULL, this );
+	m_orthoViewHeight_spinCtrlDouble->Disconnect( wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, wxSpinDoubleEventHandler( Serenity3D_Frame::OnOrthoHeightChange ), NULL, this );
+	m_perspectiveViewNearPlane_spinCtrlDouble->Disconnect( wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, wxSpinDoubleEventHandler( Serenity3D_Frame::OnPerspectiveNearPlaneChange ), NULL, this );
+	m_perspectiveViewFarPlane_spinCtrlDouble->Disconnect( wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, wxSpinDoubleEventHandler( Serenity3D_Frame::OnPerspectiveFarPlaneChange ), NULL, this );
+	m_perspectiveViewFOV_spinCtrlDouble->Disconnect( wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, wxSpinDoubleEventHandler( Serenity3D_Frame::OnPerspectiveFOVChange ), NULL, this );
+	m_perspectiveViewAspect_spinCtrlDouble->Disconnect( wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, wxSpinDoubleEventHandler( Serenity3D_Frame::OnPerspectiveAspectChange ), NULL, this );
 	m_mesh_createMesh_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_Create_ButtonClick ), NULL, this );
 	m_mesh_importMesh_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_Load_ButtonClick ), NULL, this );
 	m_mesh_saveMesh_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_Save_ButtonClick ), NULL, this );

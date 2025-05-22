@@ -120,7 +120,21 @@ Serenity3D_Frame( parent )
 
 	stage_window->SetCameraViewParam();
 
+
+	m_orthoViewNearPlane_spinCtrlDouble->SetValue(stage_window->ortho_near);
+	m_orthoViewFarPlane_spinCtrlDouble->SetValue(stage_window->ortho_far);
+	m_orthoViewWidth_spinCtrlDouble->SetValue(stage_window->ortho_width);
+	m_orthoViewHeight_spinCtrlDouble->SetValue(stage_window->ortho_height);
+
+	m_perspectiveViewNearPlane_spinCtrlDouble->SetValue(stage_window->perspective_near);
+	m_perspectiveViewFarPlane_spinCtrlDouble->SetValue(stage_window->perspective_far);
+	m_perspectiveViewFOV_spinCtrlDouble->SetValue(irr::core::radToDeg(stage_window->perspective_fov_radians));
+	m_perspectiveViewAspect_spinCtrlDouble->SetValue(stage_window->perspective_aspect);
+
+
 	current_window = stage_window;
+
+
 
 
 	for(int i = 0; i < m_stage_propertyGridManager->GetPageCount(); i++)
@@ -824,6 +838,8 @@ void SerenityEditorSerenity3D_Frame::createIrrlichtMaterialWindow()
         irr::gui::IGUIEnvironment* guienv = device->getGUIEnvironment();
 
         test_material_mesh = smgr->addCubeSceneNode();
+
+        material_window->test_material_object = test_material_mesh;
 
         test_material_light = smgr->addLightSceneNode();
         test_material_light->setPosition(irr::core::vector3df(0, 30, 30));
@@ -5700,6 +5716,72 @@ void SerenityEditorSerenity3D_Frame::On_StageSettings_ViewHUDColor( wxColourPick
 											event.GetColour().GetBlue() );
 }
 
+void SerenityEditorSerenity3D_Frame::OnOrthoNearPlaneChange( wxSpinDoubleEvent& event )
+{
+	if(stage_window)
+	{
+		stage_window->ortho_near = event.GetValue();
+	}
+}
+
+void SerenityEditorSerenity3D_Frame::OnOrthoFarPlaneChange( wxSpinDoubleEvent& event )
+{
+	if(stage_window)
+	{
+		stage_window->ortho_far = event.GetValue();
+	}
+}
+
+void SerenityEditorSerenity3D_Frame::OnOrthoWidthChange( wxSpinDoubleEvent& event )
+{
+	if(stage_window)
+	{
+		stage_window->ortho_width = event.GetValue();
+	}
+}
+
+void SerenityEditorSerenity3D_Frame::OnOrthoHeightChange( wxSpinDoubleEvent& event )
+{
+	if(stage_window)
+	{
+		stage_window->ortho_height = event.GetValue();
+	}
+}
+
+void SerenityEditorSerenity3D_Frame::OnPerspectiveNearPlaneChange( wxSpinDoubleEvent& event )
+{
+	if(stage_window)
+	{
+		stage_window->perspective_near = event.GetValue();
+	}
+}
+
+void SerenityEditorSerenity3D_Frame::OnPerspectiveFarPlaneChange( wxSpinDoubleEvent& event )
+{
+	if(stage_window)
+	{
+		stage_window->perspective_far = event.GetValue();
+	}
+}
+
+void SerenityEditorSerenity3D_Frame::OnPerspectiveFOVChange( wxSpinDoubleEvent& event )
+{
+	if(stage_window)
+	{
+		stage_window->perspective_fov_radians = irr::core::degToRad(event.GetValue());
+	}
+}
+
+void SerenityEditorSerenity3D_Frame::OnPerspectiveAspectChange( wxSpinDoubleEvent& event )
+{
+	if(stage_window)
+	{
+		stage_window->perspective_aspect = event.GetValue();
+	}
+}
+
+
+
 
 
 void SerenityEditorSerenity3D_Frame::updateToolSelection()
@@ -6923,6 +7005,18 @@ void SerenityEditorSerenity3D_Frame::OnLoadProjectMenuSelection( wxCommandEvent&
 		m_cameraSettings_moveSpeed_spinCtrlDouble->SetValue(project.camera_speed);
 		stage_window->cam_move_speed = project.camera_speed;
 
+		//Ortho Viewport Settings
+		m_orthoViewNearPlane_spinCtrlDouble->SetValue(stage_window->ortho_near);
+		m_orthoViewFarPlane_spinCtrlDouble->SetValue(stage_window->ortho_far);
+		m_orthoViewWidth_spinCtrlDouble->SetValue(stage_window->ortho_width);
+		m_orthoViewHeight_spinCtrlDouble->SetValue(stage_window->ortho_height);
+
+		//Perspective Viewport Settings
+		m_perspectiveViewNearPlane_spinCtrlDouble->SetValue(stage_window->perspective_near);
+		m_perspectiveViewFarPlane_spinCtrlDouble->SetValue(stage_window->perspective_far);
+		m_perspectiveViewFOV_spinCtrlDouble->SetValue(irr::core::radToDeg(stage_window->perspective_fov_radians));
+		m_perspectiveViewAspect_spinCtrlDouble->SetValue(stage_window->perspective_aspect);
+
 		//HUD Settings
 		irr::video::SColor p_hud_color(project.hud_color);
 		w_color = wxColour(p_hud_color.getRed(), p_hud_color.getGreen(), p_hud_color.getBlue(), p_hud_color.getAlpha());
@@ -6969,6 +7063,18 @@ bool SerenityEditorSerenity3D_Frame::save_project()
 				_("show_position=") + (project.show_camera_pos ? _("true") : _("false")) + _(" ") +
 				_("show_rotation=") + (project.show_camera_rot ? _("true") : _("false")) + _(" ") +
 				_("speed=") + wxString::FromDouble(project.camera_speed) + _(";\n") );
+
+	pfile.Write(_("OrthoView ") +
+				_("near=") + wxString::FromDouble((double)stage_window->ortho_near) + _(" ") +
+				_("far=") + wxString::FromDouble((double)stage_window->ortho_far) + _(" ") +
+				_("width=") + wxString::FromDouble((double)stage_window->ortho_width) + _(" ") +
+				_("height=") + wxString::FromDouble((double)stage_window->ortho_height) + _(";\n") );
+
+	pfile.Write(_("PerspectiveView ") +
+				_("near=") + wxString::FromDouble((double)stage_window->perspective_near) + _(" ") +
+				_("far=") + wxString::FromDouble((double)stage_window->perspective_far) + _(" ") +
+				_("fov=") + wxString::FromDouble((double)stage_window->perspective_fov_radians) + _(" ") +
+				_("aspect=") + wxString::FromDouble((double)stage_window->perspective_aspect) + _(";\n") );
 
 	pfile.Write(_("HUD color=") + wxString::Format(_("%u"), project.hud_color.color) + _(";\n") );
 
@@ -8321,6 +8427,8 @@ void SerenityEditorSerenity3D_Frame::updateTestMesh()
 {
 	int n = materialTab_selected_material_project_index;
 
+	material_window->test_material_object = test_material_mesh;
+
 	if(n < 0 || n >= project.materials.size())
 		return;
 
@@ -8754,6 +8862,8 @@ void SerenityEditorSerenity3D_Frame::On_Material_previewSettings_Selected( wxCom
 		material_window->camera[0].camera.setRotation(26, 0, 0);
 		material_window->material_view_camera_speed = material_preview_camera_speed;
 		material_window->manual_control = (material_preview_control != 0);
+
+		updateTestMesh();
 	}
 
 	if(test_material_light)

@@ -244,6 +244,10 @@ serenity_project::serenity_project(std::string project_file, std::string p_name,
 				init_camera(dict);
 			else if(dict[0].key.compare(_("HUD"))==0)
 				init_hud(dict);
+			else if(dict[0].key.compare(_("OrthoView"))==0)
+				init_ortho(dict);
+			else if(dict[0].key.compare(_("PerspectiveView"))==0)
+				init_perspective(dict);
 
 
 			//clear parameters
@@ -498,7 +502,7 @@ bool serenity_project::genRCBasicProject()
 	//Create Texture Reference Structure
 	pfile.Write(_("Type Serenity_Material") + _("\n"));
 	pfile.Write(_("Dim ID") + _("\n"));
-	pfile.Write(_("Dim Textures[30] \'Index in Serenity_Global_Texture_List") + _("\n"));
+	pfile.Write(_("Dim Texture_Matrix \'Index in Serenity_Global_Texture_List") + _("\n"));
 	pfile.Write(_("End Type") + _("\n"));
 	pfile.Write(_("\n"));
 
@@ -907,6 +911,8 @@ bool serenity_project::genRCBasicProject()
 
 			wxString p_onClear_cmd = _("");
 
+			mat_str += _("Serenity_Global_Material_List[") + mat_ref_id + _("].Texture_Matrix = DimMatrix(1, ") + wxString::Format(_("%i"), (int)materials[i].texture_id.size()) + _(")\n\n");
+
 			for(int m_texture_level = 0; m_texture_level < materials[i].texture_id.size(); m_texture_level++)
 			{
 				int mt_index = materials[i].texture_id[m_texture_level];
@@ -923,7 +929,7 @@ bool serenity_project::genRCBasicProject()
 
 				wxString mat_struct = _("Serenity_Global_Material_List[") + mat_ref_id + _("]");
 
-				mat_str += mat_struct + _(".Textures[") + wxString::Format(_("%d"), m_texture_level) + _("] = ") + tx_id + _("\n");
+				mat_str += _("SetMatrixValue(") + mat_struct + _(".Texture_Matrix, 0, ") + wxString::Format(_("%d"), m_texture_level) + _(", ") + tx_id + _(")\n");
 
 				p_onLoad_cmd += _("\t") + _("SetMaterialTexture(") + mat_id + _(", ") + wxString::Format(_("%d"), m_texture_level) + _(", Serenity_Global_Texture_List[") + tx_id + _("].ID )") + _(" \n");
 
@@ -975,6 +981,14 @@ bool serenity_project::genRCBasicProject()
 
 
 	//Create Mesh Structures
+	int total_actor_animations = 0;
+	for(int i = 0; i < meshes.size(); i++)
+	{
+		total_actor_animations += meshes[i].animation.size();
+	}
+
+	pfile.Write(_("Dim Serenity_Global_Mesh_Animation_List[") + wxString::Format(_("%i"), total_actor_animations) + _("] As Serenity_Mesh_Animation\n\n"));
+
 	pfile.Write(_("Type Serenity_Mesh") + _("\n"));
 
 	pfile.Write(_("Dim ID ") + _("\n"));
@@ -984,9 +998,9 @@ bool serenity_project::genRCBasicProject()
 	pfile.Write(_("Dim AN8_Scene$ ") + _("\n"));
 	pfile.Write(_("Dim Zip$ ") + _("\n"));
 	pfile.Write(_("Dim File$ ") + _("\n"));
-	pfile.Write(_("Dim Materials[30] ") + _("\n"));
+	pfile.Write(_("Dim Material_Matrix ") + _("\n"));
 	pfile.Write(_("Dim MaterialCount ") + _("\n"));
-	pfile.Write(_("Dim Animations[20] As Serenity_Mesh_Animation") + _("\n"));
+	pfile.Write(_("Dim Animation_Matrix") + _("\n"));
 	pfile.Write(_("Dim AnimationCount ") + _("\n"));
 
 	pfile.Write(_("End Type") + _("\n"));
@@ -1010,6 +1024,7 @@ bool serenity_project::genRCBasicProject()
 	std::vector<wxString> p_mesh_struct_field_define;
 	int mesh_sn_id = 0;
 
+	int mesh_animation_list_index = 0;
 	for(int i = 0; i < meshes.size(); i++)
 	{
 		wxString mesh_id = wxString::FromUTF8(meshes[i].id_name).Trim();
@@ -1093,16 +1108,20 @@ bool serenity_project::genRCBasicProject()
 
 		p_cmd = _("\n");
 		p_cmd += mesh_list_id + _(".AnimationCount = ") + wxString::Format(_("%d"), (int)meshes[i].animation.size()) + _("\n");
+		p_cmd += mesh_list_id + _(".Animation_Matrix = DimMatrix(1, ") + mesh_list_id + _(".AnimationCount)\n");
 
 		if(!meshes[i].isMD2)
 		{
-			for(uint32_t ani = 0; ani < meshes[i].animation.size(); ani++)
+			for(int ani = 0; ani < meshes[i].animation.size(); ani++)
 			{
-				p_cmd += mesh_list_id + _(".Animations[") + wxString::Format(_("%u"), ani) + _("].Name$ = \"") + wxString::FromUTF8(meshes[i].animation[ani].id_name) + _("\"\n");
-				p_cmd += mesh_list_id + _(".Animations[") + wxString::Format(_("%u"), ani) + _("].Start_Frame = ") + wxString::Format(_("%d"), meshes[i].animation[ani].start_frame) + _("\n");
-				p_cmd += mesh_list_id + _(".Animations[") + wxString::Format(_("%u"), ani) + _("].End_Frame = ") + wxString::Format(_("%d"), meshes[i].animation[ani].end_frame) + _("\n");
-				p_cmd += mesh_list_id + _(".Animations[") + wxString::Format(_("%u"), ani) + _("].Speed = ") + wxString::FromDouble(meshes[i].animation[ani].speed) + _("\n");
+				p_cmd += _("Serenity_Global_Mesh_Animation_List[") + wxString::Format(_("%i"), mesh_animation_list_index) + _("].Name$ = \"") + wxString::FromUTF8(meshes[i].animation[ani].id_name) + _("\"\n");
+				p_cmd += _("Serenity_Global_Mesh_Animation_List[") + wxString::Format(_("%i"), mesh_animation_list_index) + _("].Start_Frame = ") + wxString::Format(_("%i"), meshes[i].animation[ani].start_frame) + _("\n");
+				p_cmd += _("Serenity_Global_Mesh_Animation_List[") + wxString::Format(_("%i"), mesh_animation_list_index) + _("].End_Frame = ") +  wxString::Format(_("%i"), meshes[i].animation[ani].end_frame) + _("\n");
+				p_cmd += _("Serenity_Global_Mesh_Animation_List[") + wxString::Format(_("%i"), mesh_animation_list_index) + _("].Speed = ") + wxString::FromDouble(meshes[i].animation[ani].speed) + _("\n");
+				p_cmd += _("SetMatrixValue(") + mesh_list_id + _(".Animation_Matrix, 0, ") + wxString::Format(_("%i"), ani) + _(", ") + wxString::Format(_("%i"), mesh_animation_list_index) + _(")\n");
 				p_cmd += _("\n");
+
+				mesh_animation_list_index++;
 			}
 
 			meshes[i].p_cmd += p_cmd.ToStdString();
@@ -1110,11 +1129,9 @@ bool serenity_project::genRCBasicProject()
 
 		p_cmd = _("");
 
-		if(meshes[i].material_index.size() > 30)
-		{
-			//Resizing TYPE fields does not currently work in RCBasic. I will come back to this once I add this feature to RCBasic
-			//p_cmd += _("ReDim ") + mesh_list_id + _(".Materials[") wxString::Format(_("%d"), meshes[i].material_index.size()) + _("]") + _("\n");
-		}
+		p_cmd = _("\n");
+		p_cmd += mesh_list_id + _(".MaterialCount = ") + wxString::Format(_("%d"), (int)meshes[i].material_index.size()) + _("\n");
+		p_cmd += mesh_list_id + _(".Material_Matrix = DimMatrix(1, ") + mesh_list_id + _(".MaterialCount)\n");
 
 		for(int mat = 0; mat < meshes[i].material_index.size(); mat++)
 		{
@@ -1126,7 +1143,7 @@ bool serenity_project::genRCBasicProject()
 					continue;
 
 				wxString mat_ref_id = _("Materials") + _(".") + wxString::FromUTF8(materials[mat_index].id_name) + _(".SN_ID");
-				p_cmd += mesh_list_id + _(".Materials[") + wxString::Format(_("%d"), mat) + _("] = ") + mat_ref_id + _("\n");
+				p_cmd += _("SetMatrixValue(") + mesh_list_id + _(".Material_Matrix, 0, ") + wxString::Format(_("%d"), mat) + _(", ") + mat_ref_id + _(")\n");
 			}
 		}
 
@@ -1891,9 +1908,13 @@ bool serenity_project::genRCBasicProject()
 							wxString ani_sn_id_str = wxString::Format(_("%u"), ani_sn_id);
 							ani_sn_id++;
 
-							wxString start_frame_str = _("Serenity_Global_Mesh_List[") +  actor_id + _(".Mesh].Animations[") + ani_sn_id_str + _("].Start_Frame");
-							wxString end_frame_str = _("Serenity_Global_Mesh_List[") +  actor_id + _(".Mesh].Animations[") + ani_sn_id_str + _("].End_Frame");
-							wxString speed_str = _("Serenity_Global_Mesh_List[") +  actor_id + _(".Mesh].Animations[") + ani_sn_id_str + _("].Speed");
+							wxString get_global_animation_id = _("Global_Animation_Index = MatrixValue(") + _("Serenity_Global_Mesh_List[") +  actor_id + _(".Mesh].Animation_Matrix, 0, ") + ani_sn_id_str + _(")");
+							actor_load_properties += _("\t") + get_global_animation_id + _("\n");
+
+							wxString global_animation_id = _("Serenity_Global_Mesh_Animation_List[Global_Animation_Index]");
+							wxString start_frame_str = global_animation_id + _(".Start_Frame");
+							wxString end_frame_str = global_animation_id + _(".End_Frame");
+							wxString speed_str = global_animation_id + _(".Speed");
 
 							actor_load_properties += _("\t") + _("CreateActorAnimation( [ACTOR], ") + start_frame_str + _(", ") + end_frame_str + _(", ") + speed_str + _(" )") + _("\n");
 						}
@@ -2407,6 +2428,71 @@ void serenity_project::init_hud(std::vector<serenity_project_dict_obj> param)
 			irr::u32 c_val = 0;
 			param[i].val.ToUInt(&c_val);
 			hud_color = irr::video::SColor(c_val);
+		}
+	}
+}
+
+void serenity_project::init_ortho(std::vector<serenity_project_dict_obj> param)
+{
+	for(int i = 0; i < param.size(); i++)
+	{
+		if(param[i].key.compare(_("near"))==0)
+		{
+			double n = 0;
+			param[i].val.ToDouble(&n);
+			stage_window->ortho_near = n;
+		}
+		else if(param[i].key.compare(_("far"))==0)
+		{
+			double n = 0;
+			param[i].val.ToDouble(&n);
+			stage_window->ortho_far = n;
+		}
+		else if(param[i].key.compare(_("width"))==0)
+		{
+			double n = 0;
+			param[i].val.ToDouble(&n);
+			stage_window->ortho_width = n;
+		}
+		else if(param[i].key.compare(_("height"))==0)
+		{
+			double n = 0;
+			param[i].val.ToDouble(&n);
+			stage_window->ortho_height = n;
+		}
+	}
+}
+
+void serenity_project::init_perspective(std::vector<serenity_project_dict_obj> param)
+{
+	if(!stage_window)
+		return;
+
+	for(int i = 0; i < param.size(); i++)
+	{
+		if(param[i].key.compare(_("near"))==0)
+		{
+			double n = 0;
+			param[i].val.ToDouble(&n);
+			stage_window->perspective_near = n;
+		}
+		else if(param[i].key.compare(_("far"))==0)
+		{
+			double n = 0;
+			param[i].val.ToDouble(&n);
+			stage_window->perspective_far = n;
+		}
+		else if(param[i].key.compare(_("fov"))==0)
+		{
+			double n = 0;
+			param[i].val.ToDouble(&n);
+			stage_window->perspective_fov_radians = n;
+		}
+		else if(param[i].key.compare(_("aspect"))==0)
+		{
+			double n = 0;
+			param[i].val.ToDouble(&n);
+			stage_window->perspective_aspect = n;
 		}
 	}
 }
