@@ -289,6 +289,65 @@ void wxIrrlicht::setDefaultMaterial(irr::scene::ISceneNode* node, irr::video::IT
 	node->getMaterial(0).MaterialTypeParam = irr::video::pack_textureBlendFunc(irr::video::EBF_SRC_ALPHA, irr::video::EBF_ONE_MINUS_SRC_ALPHA, irr::video::EMFN_MODULATE_1X, irr::video::EAS_TEXTURE | irr::video::EAS_VERTEX_COLOR);
 }
 
+void wxIrrlicht::init_stage_camera()
+{
+	float ax = 0;
+	float ay = 0;
+	float az = 0;
+	camera[3].camera.getPosition(ax, ay, az);
+
+	for(int i = 0; i < 4; i++)
+	{
+		if(camera[i].pov == RC_CAMERA_VIEW_FRONT)
+		{
+			float ax_front = 0;
+			float ay_front = ay;
+			float az_front = az + (perspective_far/4);
+
+			irr::core::vector3df cam_pos(ax, ay, az);
+			irr::core::vector3df cam_tgt = cam_pos;
+			cam_tgt += irr::core::vector3df(0, 0, (perspective_far/4));
+			cam_tgt.rotateXZBy(-camera[3].camera.ry, cam_pos);
+
+			ax_front = cam_tgt.X;
+			az_front = az - (perspective_far/2);
+
+			camera[i].camera.setPosition(ax_front, ay, az_front);
+		}
+		else if(camera[i].pov == RC_CAMERA_VIEW_RIGHT)
+		{
+			float ax_right = ax - (perspective_far/2);
+			float az_right = az + (perspective_far/4);
+
+			irr::core::vector3df cam_pos(ax, ay, az);
+			irr::core::vector3df cam_tgt = cam_pos;
+			cam_tgt += irr::core::vector3df(0, 0, (perspective_far/4));
+			cam_tgt.rotateXZBy(camera[3].camera.ry, cam_pos);
+
+			ax_right = cam_tgt.X - (perspective_far/4);
+			az_right = cam_tgt.Z;
+
+			camera[i].camera.setPosition(ax_right, ay, az_right);
+		}
+		else if(camera[i].pov == RC_CAMERA_VIEW_TOP)
+		{
+			float ax_top = 0;
+			float ay_top = ay - (perspective_far/2);
+			float az_top = az + (perspective_far/4);
+
+			irr::core::vector3df cam_pos(ax, ay, az);
+			irr::core::vector3df cam_tgt = cam_pos;
+			cam_tgt += irr::core::vector3df(0, 0, (perspective_far/4));
+			cam_tgt.rotateXZBy(-camera[3].camera.ry, cam_pos);
+
+			ax_top = cam_tgt.X;
+			az_top = cam_tgt.Z;
+
+			camera[i].camera.setPosition(ax_top, ay_top, az_top);
+		}
+	}
+}
+
 void wxIrrlicht::setGridSize(irr::f32 g_size)
 {
 	grid_size = g_size;
@@ -2366,6 +2425,9 @@ void wxIrrlicht::OnUpdate()
 						ax_front = cam_tgt.X;
 						az_front = az - (perspective_far/2);
 
+						//std::cout << "AX~ " << ax << ", " << ax_front << std::endl;
+						//std::cout << "AZ~ " << az << ", " << az_front << std::endl << std::endl;
+
 						//camera[i].camera.setPosition(ax, ay, az-300);
 						camera[i].camera.setPosition(ax_front, ay, az_front);
 						camera[i].gridSceneNode->setPosition(irr::core::vector3df(0, 0, az+100));
@@ -2382,6 +2444,9 @@ void wxIrrlicht::OnUpdate()
 
 						ax_right = cam_tgt.X - (perspective_far/4);
 						az_right = cam_tgt.Z;
+
+						//std::cout << "AX~ " << ax << ", " << ax_right << std::endl;
+						//std::cout << "AZ~ " << az << ", " << az_right << std::endl << std::endl;
 
 						camera[i].camera.setPosition(ax_right, ay, az_right);
 						//camera[i].camera.setPosition(ax-300, ay, az);
@@ -2401,6 +2466,9 @@ void wxIrrlicht::OnUpdate()
 						ax_top = cam_tgt.X;
 						az_top = cam_tgt.Z;
 
+						//std::cout << "AX~ " << ax << ", " << ax_top << std::endl;
+						//std::cout << "AZ~ " << az << ", " << az_top << std::endl << std::endl;
+
 						camera[i].camera.setPosition(ax_top, ay_top, az_top);
 						//camera[i].camera.setPosition(ax, ay+300, az);
 						camera[i].gridSceneNode->setPosition(irr::core::vector3df(0, ay-100, 0));
@@ -2412,24 +2480,121 @@ void wxIrrlicht::OnUpdate()
 				float ax = 0;
 				float ay = 0;
 				float az = 0;
+				camera[active_camera].camera.getPosition(ax, ay, az);
+
+				if(camera[active_camera].pov == RC_CAMERA_VIEW_FRONT)
+				{
+					float ax_front = 0;
+					float ay_front = ay;
+					float az_front = az - (perspective_far/4);
+
+					irr::core::vector3df cam_pos(ax, ay, az);
+					irr::core::vector3df cam_tgt = cam_pos;
+					cam_tgt += irr::core::vector3df(0, 0, -(perspective_far/4));
+					cam_tgt.rotateXZBy(-camera[3].camera.ry, cam_pos);
+
+					ax_front = cam_tgt.X;
+					az_front = az + (perspective_far/2);
+
+					camera[3].camera.setPosition(ax_front, ay, az_front);
+				}
+				else if(camera[active_camera].pov == RC_CAMERA_VIEW_RIGHT)
+				{
+					float ax_right = ax - (perspective_far/2);
+					float az_right = az + (perspective_far/4);
+
+					irr::core::vector3df cam_pos(ax, ay, az);
+					irr::core::vector3df cam_tgt = cam_pos;
+					cam_tgt += irr::core::vector3df(0, 0, -(perspective_far/4));
+					cam_tgt.rotateXZBy(camera[3].camera.ry, cam_pos);
+
+					ax_right = cam_tgt.X + (perspective_far/4);
+					az_right = cam_tgt.Z;
+
+					//std::cout << "AX~ " << ax << ", " << ax_right << std::endl;
+					//std::cout << "AZ~ " << az << ", " << az_right << std::endl << std::endl;
+
+					camera[3].camera.setPosition(ax_right, ay, az_right);
+				}
+				else if(camera[active_camera].pov == RC_CAMERA_VIEW_TOP)
+				{
+					float ax_top = 0;
+					float ay_top = ay - irr::core::abs_(perspective_far/2);
+					float az_top = az + (perspective_far/4);
+
+					irr::core::vector3df cam_pos(ax, ay, az);
+					irr::core::vector3df cam_tgt = cam_pos;
+					cam_tgt += irr::core::vector3df(0, 0, -(perspective_far/4));
+					cam_tgt.rotateXZBy(-camera[3].camera.ry, cam_pos);
+
+					ax_top = cam_tgt.X;
+					az_top = cam_tgt.Z;
+
+					//std::cout << "AX~ " << ax << ", " << ax_top << std::endl;
+					//std::cout << "AZ~ " << az << ", " << az_top << std::endl << std::endl;
+
+					camera[3].camera.setPosition(ax_top, camera[3].camera.y, az_top);
+				}
+
+				camera[3].camera.update();
 				camera[3].camera.getPosition(ax, ay, az);
 
 				for(int i = 0; i < num_views; i++)
 				{
+					if(i == active_camera)
+						continue;
+
 					if(camera[i].pov == RC_CAMERA_VIEW_FRONT)
 					{
-						camera[i].camera.setPosition(ax, ay, az-300);
+						float ax_front = 0;
+						float ay_front = ay;
+						float az_front = az + (perspective_far/4);
+
+						irr::core::vector3df cam_pos(ax, ay, az);
+						irr::core::vector3df cam_tgt = cam_pos;
+						cam_tgt += irr::core::vector3df(0, 0, (perspective_far/4));
+						cam_tgt.rotateXZBy(-camera[3].camera.ry, cam_pos);
+
+						ax_front = cam_tgt.X;
+						az_front = az - (perspective_far/2);
+
+						//std::cout << "AX~ " << ax << ", " << ax_front << std::endl;
+						//std::cout << "AZ~ " << az << ", " << az_front << std::endl << std::endl;
+
+						//camera[i].camera.setPosition(ax, ay, az-300);
+						camera[i].camera.setPosition(ax_front, ay, az_front);
 						camera[i].gridSceneNode->setPosition(irr::core::vector3df(0, 0, az+100));
 					}
 					else if(camera[i].pov == RC_CAMERA_VIEW_RIGHT)
 					{
-						camera[i].camera.setPosition(ax-300, ay, az);
-						camera[i].gridSceneNode->setPosition(irr::core::vector3df(ax+100, 0, 0));
+						float ax_right = ax - (perspective_far/2);
+						float az_right = az + (perspective_far/4);
+
+						irr::core::vector3df cam_pos(ax, ay, az);
+						irr::core::vector3df cam_tgt = cam_pos;
+						cam_tgt += irr::core::vector3df(0, 0, (perspective_far/4));
+						cam_tgt.rotateXZBy(camera[3].camera.ry, cam_pos);
+
+						ax_right = cam_tgt.X - (perspective_far/4);
+						az_right = cam_tgt.Z;
+
+						camera[i].camera.setPosition(ax_right, ay, az_right);
 					}
 					else if(camera[i].pov == RC_CAMERA_VIEW_TOP)
 					{
-						camera[i].camera.setPosition(ax, ay+300, az);
-						camera[i].gridSceneNode->setPosition(irr::core::vector3df(0, ay-100, 0));
+						float ax_top = 0;
+						float ay_top = ay + (perspective_far/2);
+						float az_top = az + (perspective_far/4);
+
+						irr::core::vector3df cam_pos(ax, ay, az);
+						irr::core::vector3df cam_tgt = cam_pos;
+						cam_tgt += irr::core::vector3df(0, 0, (perspective_far/4));
+						cam_tgt.rotateXZBy(-camera[3].camera.ry, cam_pos);
+
+						ax_top = cam_tgt.X;
+						az_top = cam_tgt.Z;
+
+						camera[i].camera.setPosition(ax_top, ay_top, az_top);
 					}
 				}
 			}

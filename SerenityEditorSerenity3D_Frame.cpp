@@ -100,6 +100,7 @@ Serenity3D_Frame( parent )
 
 	stage_window->window_type = RC_IRR_WINDOW_NAV3D;
 	stage_window->SetViews(RC_CAMERA_VIEW_FRONT);
+	stage_window->init_stage_camera();
 
 	irr::IrrlichtDevice* device = stage_window->GetDevice();
 	irr::video::IVideoDriver* driver = device->getVideoDriver();
@@ -950,6 +951,7 @@ void SerenityEditorSerenity3D_Frame::OnMainEditorNotebookPageChanged( wxAuiNoteb
 	{
 		setControlContext(stage_window);
 		current_window = stage_window;
+		stage_window->init_stage_camera();
 	}
 	else if(new_panel == m_meshDB_panel)
 	{
@@ -7280,6 +7282,7 @@ void SerenityEditorSerenity3D_Frame::select_pov()
 void SerenityEditorSerenity3D_Frame::OnViewComboSelect( wxCommandEvent& event )
 {
 	select_pov();
+	stage_window->init_stage_camera();
 }
 
 void SerenityEditorSerenity3D_Frame::OnStageViewComboOpen( wxCommandEvent& event )

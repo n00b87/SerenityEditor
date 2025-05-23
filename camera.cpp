@@ -183,9 +183,9 @@ void translateNodeW(ISceneNode *node, vector3df vel)
     front->updateAbsolutePosition();
 	top->updateAbsolutePosition();
 
-    rx=x;
-    ry=y;
-    rz=z;
+    this->rx=x;
+    this->ry=y;
+    this->rz=z;
   }
 
   // sets the global position of the camera
@@ -193,6 +193,10 @@ void translateNodeW(ISceneNode *node, vector3df vel)
   {
     camera->setPosition(vector3df(x,y,z));
     camera->updateAbsolutePosition();
+
+    this->x = x;
+    this->y = y;
+    this->z = z;
 
 	front->updateAbsolutePosition();
 	top->updateAbsolutePosition();

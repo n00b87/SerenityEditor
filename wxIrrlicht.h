@@ -144,6 +144,8 @@ class wxIrrlicht : public wxControl {
         void force_refresh();
         void setDefaultMaterial(irr::scene::ISceneNode* node, irr::video::ITexture* texture);
 
+        void init_stage_camera();
+
         irr::IrrlichtDevice* GetDevice() const { return m_pDevice; }
         irr::video::IVideoDriver* GetVideoDriver() const { return m_pDriver; }
         irr::scene::ISceneManager* GetSceneManager() const { return m_pSceneManager; }
