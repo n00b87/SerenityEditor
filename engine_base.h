@@ -46,11 +46,13 @@ public:
 	wxFileName project_path;
 	std::string project_name;
 
+	bool project_initialized = false;
 	int active_stage;
 
 	serenity_project(std::string project_file, std::string p_name, irr::IrrlichtDevice* scene_device, wxIrrlicht* st_win, wxIrrlicht* ani_win, wxIrrlicht* mat_win, wxIrrlicht* tx_win);
 	serenity_project()
 	{
+		project_initialized = false;
 		setDefaults();
 	}
 	~serenity_project();

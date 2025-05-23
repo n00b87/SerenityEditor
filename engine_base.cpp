@@ -189,6 +189,8 @@ serenity_project::serenity_project(std::string project_file, std::string p_name,
 	project_path = wxFileName(project_file.c_str());
 	project_name = p_name;
 
+	project_initialized = false;
+
 	stage_window = st_win;
 	animation_window = ani_win;
 	material_window = mat_win;
