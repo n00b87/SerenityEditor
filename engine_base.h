@@ -115,6 +115,8 @@ public:
 	void init_tools(std::vector<serenity_project_dict_obj> param);
 	void init_camera(std::vector<serenity_project_dict_obj> param);
 	void init_hud(std::vector<serenity_project_dict_obj> param);
+	void init_ortho(std::vector<serenity_project_dict_obj> param);
+	void init_perspective(std::vector<serenity_project_dict_obj> param);
 
 	void setGridVisible(bool flag);
 	void setGridSize(float g_size);

@@ -60,6 +60,7 @@ struct viewport_camera
 	int y;
 	int w;
 	int h;
+
 	CGridSceneNode * gridSceneNode;
 };
 
@@ -143,6 +144,8 @@ class wxIrrlicht : public wxControl {
         void force_refresh();
         void setDefaultMaterial(irr::scene::ISceneNode* node, irr::video::ITexture* texture);
 
+        void init_stage_camera();
+
         irr::IrrlichtDevice* GetDevice() const { return m_pDevice; }
         irr::video::IVideoDriver* GetVideoDriver() const { return m_pDriver; }
         irr::scene::ISceneManager* GetSceneManager() const { return m_pSceneManager; }
@@ -176,6 +179,8 @@ class wxIrrlicht : public wxControl {
         irr::core::array<actor_object> scene_actors;
         axis_obj transform_tool_widget;
 
+        irr::scene::ISceneNode* test_material_object = NULL;
+
         void drawAllLightInfluences();
         void setTransformToolBox();
         irr::core::vector3df getNewActorPosition();
@@ -198,6 +203,20 @@ class wxIrrlicht : public wxControl {
 
         irr::core::matrix4 ortho_matrix;
         irr::core::matrix4 perspective_matrix;
+
+        irr::f32 ortho_near = 0;
+        irr::f32 ortho_far = 0;
+        irr::f32 ortho_width = 0;
+        irr::f32 ortho_height = 0;
+
+        irr::f32 perspective_near = 0;
+        irr::f32 perspective_far = 0;
+        irr::f32 perspective_fov_radians = 0;
+        irr::f32 perspective_aspect = 0;
+
+        double move_tool_average_x = 0;
+        double move_tool_average_y = 0;
+        double move_tool_average_z = 0;
 
         irr::video::ITexture* back_buffer;
 
@@ -272,6 +291,10 @@ class wxIrrlicht : public wxControl {
 		enum {
 			ID_IRR_TIMER=1000
 		};
+
+		irr::core::vector2df GetLineIntersect(double p0_x, double p0_y, double p1_x, double p1_y, double p2_x, double p2_y, double p3_x, double p3_y, bool* has_intersection=NULL);
+		float getHeading(irr::core::vector2df a, irr::core::vector2df b);
+		irr::core::vector2df getRotatedPoint2D(irr::core::vector2df pt, irr::core::vector2df center, irr::f32 angleDeg);
 
     private:
 		//DECLARE_EVENT_TABLE();

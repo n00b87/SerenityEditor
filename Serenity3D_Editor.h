@@ -13,13 +13,12 @@
 #include <wx/bitmap.h>
 #include <wx/image.h>
 #include <wx/icon.h>
-#include <wx/menu.h>
 #include <wx/gdicmn.h>
+#include <wx/aui/aui.h>
+#include <wx/aui/auibar.h>
 #include <wx/font.h>
 #include <wx/colour.h>
 #include <wx/settings.h>
-#include <wx/aui/aui.h>
-#include <wx/aui/auibar.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/combobox.h>
@@ -59,8 +58,6 @@ class Serenity3D_Frame : public wxFrame
 	private:
 
 	protected:
-		wxMenuBar* m_menubar1;
-		wxMenu* m_project_menu;
 		wxAuiNotebook* m_editorMain_auinotebook;
 		wxPanel* m_stage_panel;
 		wxAuiToolBar* m_auiToolBar52;
@@ -449,6 +446,26 @@ class Serenity3D_Frame : public wxFrame
 		wxStaticText* m_staticText61;
 		wxStaticText* m_staticText62;
 		wxColourPickerCtrl* m_viewHUD_color_colourPicker;
+		wxPanel* m_panel54;
+		wxStaticText* m_staticText113;
+		wxStaticText* m_staticText114;
+		wxSpinCtrlDouble* m_orthoViewNearPlane_spinCtrlDouble;
+		wxStaticText* m_staticText1141;
+		wxSpinCtrlDouble* m_orthoViewFarPlane_spinCtrlDouble;
+		wxStaticText* m_staticText1142;
+		wxSpinCtrlDouble* m_orthoViewWidth_spinCtrlDouble;
+		wxStaticText* m_staticText1143;
+		wxSpinCtrlDouble* m_orthoViewHeight_spinCtrlDouble;
+		wxPanel* m_panel541;
+		wxStaticText* m_staticText1131;
+		wxStaticText* m_staticText1144;
+		wxSpinCtrlDouble* m_perspectiveViewNearPlane_spinCtrlDouble;
+		wxStaticText* m_staticText11411;
+		wxSpinCtrlDouble* m_perspectiveViewFarPlane_spinCtrlDouble;
+		wxStaticText* m_staticText11421;
+		wxSpinCtrlDouble* m_perspectiveViewFOV_spinCtrlDouble;
+		wxStaticText* m_staticText11431;
+		wxSpinCtrlDouble* m_perspectiveViewAspect_spinCtrlDouble;
 		wxPanel* m_meshDB_panel;
 		wxSplitterWindow* m_splitter51;
 		wxPanel* m_panel28;
@@ -583,10 +600,6 @@ class Serenity3D_Frame : public wxFrame
 		wxToolBarToolBase* m_tool36;
 
 		// Virtual event handlers, override them in your derived class
-		virtual void OnNewProjectMenuSelection( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnLoadProjectMenuSelection( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnSaveProjectMenuSelection( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnExitMenuSelection( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMainEditorNotebookPageChanged( wxAuiNotebookEvent& event ) { event.Skip(); }
 		virtual void OnS3DSelectClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnS3DBoxClicked( wxCommandEvent& event ) { event.Skip(); }
@@ -629,6 +642,14 @@ class Serenity3D_Frame : public wxFrame
 		virtual void On_StageSettings_ShowViewCameraRotation( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_StageSettings_ViewCameraSpeed( wxSpinDoubleEvent& event ) { event.Skip(); }
 		virtual void On_StageSettings_ViewHUDColor( wxColourPickerEvent& event ) { event.Skip(); }
+		virtual void OnOrthoNearPlaneChange( wxSpinDoubleEvent& event ) { event.Skip(); }
+		virtual void OnOrthoFarPlaneChange( wxSpinDoubleEvent& event ) { event.Skip(); }
+		virtual void OnOrthoWidthChange( wxSpinDoubleEvent& event ) { event.Skip(); }
+		virtual void OnOrthoHeightChange( wxSpinDoubleEvent& event ) { event.Skip(); }
+		virtual void OnPerspectiveNearPlaneChange( wxSpinDoubleEvent& event ) { event.Skip(); }
+		virtual void OnPerspectiveFarPlaneChange( wxSpinDoubleEvent& event ) { event.Skip(); }
+		virtual void OnPerspectiveFOVChange( wxSpinDoubleEvent& event ) { event.Skip(); }
+		virtual void OnPerspectiveAspectChange( wxSpinDoubleEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_Create_ButtonClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_Load_ButtonClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_Save_ButtonClick( wxCommandEvent& event ) { event.Skip(); }
@@ -688,6 +709,9 @@ class Serenity3D_Frame : public wxFrame
 		virtual void On_Texture_TextureID_Update( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Texture_UseColorkey_Update( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Texture_Colorkey_Update( wxColourPickerEvent& event ) { event.Skip(); }
+		virtual void OnNewProjectMenuSelection( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnLoadProjectMenuSelection( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnSaveProjectMenuSelection( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnCodeGen( wxCommandEvent& event ) { event.Skip(); }
 
 

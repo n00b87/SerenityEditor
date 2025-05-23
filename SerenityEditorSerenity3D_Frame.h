@@ -270,6 +270,14 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
 		void On_StageSettings_ShowViewCameraRotation( wxCommandEvent& event );
 		void On_StageSettings_ViewCameraSpeed( wxSpinDoubleEvent& event );
 		void On_StageSettings_ViewHUDColor( wxColourPickerEvent& event );
+		void OnOrthoNearPlaneChange( wxSpinDoubleEvent& event );
+		void OnOrthoFarPlaneChange( wxSpinDoubleEvent& event );
+		void OnOrthoWidthChange( wxSpinDoubleEvent& event );
+		void OnOrthoHeightChange( wxSpinDoubleEvent& event );
+		void OnPerspectiveNearPlaneChange( wxSpinDoubleEvent& event );
+		void OnPerspectiveFarPlaneChange( wxSpinDoubleEvent& event );
+		void OnPerspectiveFOVChange( wxSpinDoubleEvent& event );
+		void OnPerspectiveAspectChange( wxSpinDoubleEvent& event );
 
 		void OnPlayClicked( wxCommandEvent& event );
 		void OnStopClicked( wxCommandEvent& event );
