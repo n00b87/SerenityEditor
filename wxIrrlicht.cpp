@@ -590,55 +590,88 @@ void wxIrrlicht::OnRender() {
 					switch(camera[i].pov)
 					{
 						case RC_CAMERA_VIEW_FRONT:
-								irr_SetFont(ui_font1);
-								irr_DrawText("Front", 10, 10, hud_color, i);
-								camera[i].camera.camera->setProjectionMatrix(ortho_matrix);
+						{
+							irr_SetFont(ui_font1);
+							irr_DrawText("Front", 10, 10, hud_color, i);
+							camera[i].camera.camera->setProjectionMatrix(ortho_matrix);
 
-								if(draw_axis_widget)
-								{
-									irr::u32 image_size = transform_tool_widget.image_size;
-									m_pDriver->draw2DImage(transform_tool_widget.x_texture, transform_tool_widget.view_box_x[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
-									m_pDriver->draw2DImage(transform_tool_widget.y_texture, transform_tool_widget.view_box_y[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
-								}
-								break;
+							camera[i].gridSceneNode->setGridsSize(irr::core::dimension2df((float)(ortho_width*2), (float)(ortho_height*2)));
+
+							float gcx = (float)((int)(camera[i].camera.x / grid_spacing)*grid_spacing);
+							float gcy = (float)((int)(camera[i].camera.y / grid_spacing)*grid_spacing);
+							float gcz = (float)camera[i].camera.z;
+							//std::cout << "Camera: " << camera[i].camera.x << ", " << camera[i].camera.y << " -> " << gcx << ", " << gcy << "  ortho: " << ortho_width << ", " << ortho_height << "  g_spacing: " << grid_spacing << std::endl;
+							camera[i].gridSceneNode->setPosition(irr::core::vector3df(gcx, gcy, gcz));
+
+							if(draw_axis_widget)
+							{
+								irr::u32 image_size = transform_tool_widget.image_size;
+								m_pDriver->draw2DImage(transform_tool_widget.x_texture, transform_tool_widget.view_box_x[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
+								m_pDriver->draw2DImage(transform_tool_widget.y_texture, transform_tool_widget.view_box_y[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
+							}
+						}
+						break;
+
 						case RC_CAMERA_VIEW_RIGHT:
-								irr_SetFont(ui_font1);
-								irr_DrawText("Right", 10, 10, hud_color, i);
-								camera[i].camera.camera->setProjectionMatrix(ortho_matrix);
+						{
+							irr_SetFont(ui_font1);
+							irr_DrawText("Right", 10, 10, hud_color, i);
+							camera[i].camera.camera->setProjectionMatrix(ortho_matrix);
 
-								if(draw_axis_widget)
-								{
-									irr::u32 image_size = transform_tool_widget.image_size;
-									m_pDriver->draw2DImage(transform_tool_widget.z_texture, transform_tool_widget.view_box_z[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
-									m_pDriver->draw2DImage(transform_tool_widget.y_texture, transform_tool_widget.view_box_y[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
-								}
-								break;
+							camera[i].gridSceneNode->setGridsSize(irr::core::dimension2df((float)(ortho_width*2), (float)(ortho_height*2)));
+
+							float gcx = (float)camera[i].camera.x;
+							float gcy = (float)((int)(camera[i].camera.y / grid_spacing)*grid_spacing);
+							float gcz = (float)((int)(camera[i].camera.z / grid_spacing)*grid_spacing);
+							//std::cout << "Camera: " << camera[i].camera.x << ", " << camera[i].camera.y << " -> " << gcx << ", " << gcy << "  ortho: " << ortho_width << ", " << ortho_height << "  g_spacing: " << grid_spacing << std::endl;
+							camera[i].gridSceneNode->setPosition(irr::core::vector3df(gcx, gcy, gcz));
+
+							if(draw_axis_widget)
+							{
+								irr::u32 image_size = transform_tool_widget.image_size;
+								m_pDriver->draw2DImage(transform_tool_widget.z_texture, transform_tool_widget.view_box_z[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
+								m_pDriver->draw2DImage(transform_tool_widget.y_texture, transform_tool_widget.view_box_y[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
+							}
+						}
+						break;
+
 						case RC_CAMERA_VIEW_TOP:
-								irr_SetFont(ui_font1);
-								irr_DrawText("Top", 10, 10, hud_color, i);
-								camera[i].camera.camera->setProjectionMatrix(ortho_matrix);
+						{
+							irr_SetFont(ui_font1);
+							irr_DrawText("Top", 10, 10, hud_color, i);
+							camera[i].camera.camera->setProjectionMatrix(ortho_matrix);
 
-								if(draw_axis_widget)
-								{
-									irr::u32 image_size = transform_tool_widget.image_size;
-									m_pDriver->draw2DImage(transform_tool_widget.x_texture, transform_tool_widget.view_box_x[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
-									m_pDriver->draw2DImage(transform_tool_widget.z_texture, transform_tool_widget.view_box_z[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
-								}
-								break;
+							float gcx = (float)((int)(camera[i].camera.x / grid_spacing)*grid_spacing);
+							float gcy = (float)camera[i].camera.y;
+							float gcz = (float)((int)(camera[i].camera.z / grid_spacing)*grid_spacing);
+
+							camera[i].gridSceneNode->setPosition(irr::core::vector3df(gcx, gcy, gcz));
+
+							if(draw_axis_widget)
+							{
+								irr::u32 image_size = transform_tool_widget.image_size;
+								m_pDriver->draw2DImage(transform_tool_widget.x_texture, transform_tool_widget.view_box_x[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
+								m_pDriver->draw2DImage(transform_tool_widget.z_texture, transform_tool_widget.view_box_z[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
+							}
+						}
+						break;
+
 						case RC_CAMERA_VIEW_PERSPECTIVE:
-								irr_SetFont(ui_font1);
-								irr_DrawText("Perspective", 10, 10, hud_color, i);
-								camera[i].camera.camera->setProjectionMatrix(perspective_matrix);
+						{
+							irr_SetFont(ui_font1);
+							irr_DrawText("Perspective", 10, 10, hud_color, i);
+							camera[i].camera.camera->setProjectionMatrix(perspective_matrix);
 
-								if(draw_axis_widget)
-								{
-									irr::u32 image_size = transform_tool_widget.image_size;
+							if(draw_axis_widget)
+							{
+								irr::u32 image_size = transform_tool_widget.image_size;
 
-									m_pDriver->draw2DImage(transform_tool_widget.x_texture, transform_tool_widget.view_box_x[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
-									m_pDriver->draw2DImage(transform_tool_widget.y_texture, transform_tool_widget.view_box_y[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
-									m_pDriver->draw2DImage(transform_tool_widget.z_texture, transform_tool_widget.view_box_z[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
-								}
-								break;
+								m_pDriver->draw2DImage(transform_tool_widget.x_texture, transform_tool_widget.view_box_x[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
+								m_pDriver->draw2DImage(transform_tool_widget.y_texture, transform_tool_widget.view_box_y[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
+								m_pDriver->draw2DImage(transform_tool_widget.z_texture, transform_tool_widget.view_box_z[i], irr::core::recti(irr::core::vector2di(0,0), irr::core::dimension2du(image_size, image_size)));
+							}
+						}
+						break;
 					}
 				}
 
