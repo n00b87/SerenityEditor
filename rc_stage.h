@@ -59,6 +59,7 @@ struct rc_an8
 	an8::an8_project project;
 
 	std::string p_cmd;
+	bool load_flag = false;
 };
 
 #define SN_MESH_SOURCE_TYPE_FILE	0
