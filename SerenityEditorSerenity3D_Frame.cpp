@@ -1269,6 +1269,7 @@ void SerenityEditorSerenity3D_Frame::On_Stage_NewGroup( wxCommandEvent& event )
 
 		rc_group new_group;
 		new_group.label = group_name.Trim().ToStdString();
+		new_group.visible = true;
 
 		int stage_project_index = stage_tree_nodes[selected_stage_node_index].project_index;
 
@@ -4097,6 +4098,47 @@ void SerenityEditorSerenity3D_Frame::OnStagePropertyGridChanged( wxPropertyGridE
 
 		project.stages[stage_index].actors[actor_index].physics.shape = project.getPhysicsShape(property->GetValueAsString());
 	}
+	else if(property_name.compare(_("group_visible"))==0)
+	{
+		//std::cout << "TEST 1" << std::endl;
+		if(stageTabGrid_current_stage < 0 || stageTabGrid_current_stage >= project.stages.size())
+			return;
+
+		//std::cout << "TEST 2: " << stageTabGrid_current_group << " ~ " << ((int)project.stages[stageTabGrid_current_stage].groups.size()) << std::endl;
+
+		if(stageTabGrid_current_group < 0 || stageTabGrid_current_group >= project.stages[stageTabGrid_current_stage].groups.size())
+			return;
+
+		int stage_index = stageTabGrid_current_stage;
+
+		bool group_visible = page->GetPropertyByName(_("group_visible"))->GetValue().GetBool();
+		project.stages[stageTabGrid_current_stage].groups[stageTabGrid_current_group].visible = group_visible;
+
+		//std::cout << "TEST 3" << std::endl;
+		for(int actor_index = 0; actor_index < project.stages[stage_index].actors.size(); actor_index++)
+		{
+			if(project.stages[stage_index].actors[actor_index].group_name.compare(project.stages[stage_index].groups[stageTabGrid_current_group].label)!=0)
+				continue;
+
+			if(group_visible)
+			{
+				project.stages[stage_index].actors[actor_index].visible = project.stages[stage_index].actors[actor_index].store_visible;
+				if(stage_index == stageTab_active_stage_project_index)
+				{
+					refresh_actor(actor_index);
+				}
+			}
+			else
+			{
+				project.stages[stage_index].actors[actor_index].store_visible = project.stages[stage_index].actors[actor_index].visible;
+				project.stages[stage_index].actors[actor_index].visible = group_visible;
+				if(stage_index == stageTab_active_stage_project_index)
+				{
+					refresh_actor(actor_index);
+				}
+			}
+		}
+	}
 
 }
 
@@ -4189,10 +4231,11 @@ void SerenityEditorSerenity3D_Frame::setAnimatedActorGrid(int stage_project_inde
 
 	//------------Render Settings------------------------------
 	bool visible_flag = project.stages[stage_project_index].actors[actor_project_index].visible;
-	m_animatedActorProperties_propertyGridPage->GetPropertyByName(_("visible"))->SetValue(visible_flag);
+	//std::cout << "VISIBLE: " << (visible_flag ? "TRUE" : "FALSE") << " ~ " << m_animatedActorProperties_propertyGridPage->GetPropertyByName(_("visible"))->GetChoices().GetCount() << std::endl;
+	m_animatedActorProperties_propertyGridPage->GetPropertyByName(_("visible"))->SetValue( (visible_flag ? 1 : 0) );
 
 	bool shadow_flag = project.stages[stage_project_index].actors[actor_project_index].hasShadow;
-	m_animatedActorProperties_propertyGridPage->GetPropertyByName(_("shadow"))->SetValue(shadow_flag);
+	m_animatedActorProperties_propertyGridPage->GetPropertyByName(_("shadow"))->SetValue( (shadow_flag ? 1 : 0) );
 
 	int auto_culling_index = rc_getAutoCullingIndex(project.stages[stage_project_index].actors[actor_project_index].auto_culling);
 	m_animatedActorProperties_propertyGridPage->GetPropertyByName(_("auto_culling"))->SetChoiceSelection(auto_culling_index);
@@ -4244,7 +4287,7 @@ void SerenityEditorSerenity3D_Frame::setAnimatedActorGrid(int stage_project_inde
 	else
 		m_animatedActorProperties_propertyGridPage->GetPropertyByName(_("physics_shape"))->SetChoiceSelection(0);
 
-	m_animatedActorProperties_propertyGridPage->GetPropertyByName(_("physics_solid"))->SetValue(physics_solid);
+	m_animatedActorProperties_propertyGridPage->GetPropertyByName(_("physics_solid"))->SetValue( (physics_solid ? 1 : 0) );
 	m_animatedActorProperties_propertyGridPage->GetPropertyByName(_("physics_mass"))->SetValue(physics_mass);
 }
 
@@ -4313,10 +4356,10 @@ void SerenityEditorSerenity3D_Frame::setOctreeActorGrid(int stage_project_index,
 
 	//------------Render Settings------------------------------
 	bool visible_flag = project.stages[stage_project_index].actors[actor_project_index].visible;
-	m_octreeActorProperties_propertyGridPage->GetPropertyByName(_("visible"))->SetValue(visible_flag);
+	m_octreeActorProperties_propertyGridPage->GetPropertyByName(_("visible"))->SetValue( visible_flag ? 1 : 0 );
 
 	bool shadow_flag = project.stages[stage_project_index].actors[actor_project_index].hasShadow;
-	m_octreeActorProperties_propertyGridPage->GetPropertyByName(_("shadow"))->SetValue(shadow_flag);
+	m_octreeActorProperties_propertyGridPage->GetPropertyByName(_("shadow"))->SetValue( shadow_flag ? 1 : 0);
 
 	int auto_culling_index = rc_getAutoCullingIndex(project.stages[stage_project_index].actors[actor_project_index].auto_culling);
 	m_octreeActorProperties_propertyGridPage->GetPropertyByName(_("auto_culling"))->SetChoiceSelection(auto_culling_index);
@@ -4366,7 +4409,7 @@ void SerenityEditorSerenity3D_Frame::setOctreeActorGrid(int stage_project_index,
 	else
 		m_octreeActorProperties_propertyGridPage->GetPropertyByName(_("physics_shape"))->SetChoiceSelection(0);
 
-	m_octreeActorProperties_propertyGridPage->GetPropertyByName(_("physics_solid"))->SetValue(physics_solid);
+	m_octreeActorProperties_propertyGridPage->GetPropertyByName(_("physics_solid"))->SetValue( physics_solid ? 1 : 0 );
 	m_octreeActorProperties_propertyGridPage->GetPropertyByName(_("physics_mass"))->SetValue(physics_mass);
 }
 
@@ -4442,10 +4485,10 @@ void SerenityEditorSerenity3D_Frame::setBillboardActorGrid(int stage_project_ind
 
 	//------------Render Settings------------------------------
 	bool visible_flag = project.stages[stage_project_index].actors[actor_project_index].visible;
-	m_billboardActorProperties_propertyGridPage->GetPropertyByName(_("visible"))->SetValue(visible_flag);
+	m_billboardActorProperties_propertyGridPage->GetPropertyByName(_("visible"))->SetValue( visible_flag ? 1 : 0 );
 
 	bool shadow_flag = project.stages[stage_project_index].actors[actor_project_index].hasShadow;
-	m_billboardActorProperties_propertyGridPage->GetPropertyByName(_("shadow"))->SetValue(shadow_flag);
+	m_billboardActorProperties_propertyGridPage->GetPropertyByName(_("shadow"))->SetValue( shadow_flag ? 1 : 0 );
 
 	int auto_culling_index = rc_getAutoCullingIndex(project.stages[stage_project_index].actors[actor_project_index].auto_culling);
 	m_billboardActorProperties_propertyGridPage->GetPropertyByName(_("auto_culling"))->SetChoiceSelection(auto_culling_index);
@@ -4460,7 +4503,7 @@ void SerenityEditorSerenity3D_Frame::setBillboardActorGrid(int stage_project_ind
 	else
 		m_billboardActorProperties_propertyGridPage->GetPropertyByName(_("physics_shape"))->SetChoiceSelection(0);
 
-	m_billboardActorProperties_propertyGridPage->GetPropertyByName(_("physics_solid"))->SetValue(physics_solid);
+	m_billboardActorProperties_propertyGridPage->GetPropertyByName(_("physics_solid"))->SetValue( physics_solid ? 1 : 0 );
 	m_billboardActorProperties_propertyGridPage->GetPropertyByName(_("physics_mass"))->SetValue(physics_mass);
 }
 
@@ -4514,13 +4557,13 @@ void SerenityEditorSerenity3D_Frame::setLightActorGrid(int stage_project_index, 
 
 	//------------Render Settings------------------------------
 	bool visible_flag = project.stages[stage_project_index].actors[actor_project_index].visible;
-	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("visible"))->SetValue(visible_flag);
+	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("visible"))->SetValue( visible_flag ? 1 : 0);
 
 	bool shadow_flag = project.stages[stage_project_index].actors[actor_project_index].hasShadow;
-	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("shadow"))->SetValue(shadow_flag);
+	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("shadow"))->SetValue( shadow_flag ? 1 : 0 );
 
 	bool use_attenuation_flag = project.stages[stage_project_index].actors[actor_project_index].use_light_attenuation;
-	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("use_attenuation"))->SetValue(use_attenuation_flag);
+	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("use_attenuation"))->SetValue( use_attenuation_flag ? 1 : 0 );
 
 	int auto_culling_index = rc_getAutoCullingIndex(project.stages[stage_project_index].actors[actor_project_index].auto_culling);
 	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("auto_culling"))->SetChoiceSelection(auto_culling_index);
@@ -4564,7 +4607,7 @@ void SerenityEditorSerenity3D_Frame::setLightActorGrid(int stage_project_index, 
 
 	//------------FLAGS------------------------------
 	bool cast_shadow = project.stages[stage_project_index].actors[actor_project_index].isCastingShadow;
-	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("cast_shadow"))->SetValue(cast_shadow);
+	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("cast_shadow"))->SetValue( cast_shadow ? 1 : 0 );
 
 	//-------------Materials----------------------------------
 	int material_selection = 0;
@@ -4611,7 +4654,7 @@ void SerenityEditorSerenity3D_Frame::setLightActorGrid(int stage_project_index, 
 	else
 		m_lightActorProperties_propertyGridPage->GetPropertyByName(_("physics_shape"))->SetChoiceSelection(0);
 
-	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("physics_solid"))->SetValue(physics_solid);
+	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("physics_solid"))->SetValue( physics_solid ? 1 : 0 );
 	m_lightActorProperties_propertyGridPage->GetPropertyByName(_("physics_mass"))->SetValue(physics_mass);
 }
 
@@ -4701,10 +4744,10 @@ void SerenityEditorSerenity3D_Frame::setTerrainActorGrid(int stage_project_index
 
 	//------------Render Settings------------------------------
 	bool visible_flag = project.stages[stage_project_index].actors[actor_project_index].visible;
-	m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("visible"))->SetValue(visible_flag);
+	m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("visible"))->SetValue( visible_flag ? 1 : 0 );
 
 	bool shadow_flag = project.stages[stage_project_index].actors[actor_project_index].hasShadow;
-	m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("shadow"))->SetValue(shadow_flag);
+	m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("shadow"))->SetValue( shadow_flag ? 1 : 0 );
 
 	int auto_culling_index = rc_getAutoCullingIndex(project.stages[stage_project_index].actors[actor_project_index].auto_culling);
 	m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("auto_culling"))->SetChoiceSelection(auto_culling_index);
@@ -4754,7 +4797,7 @@ void SerenityEditorSerenity3D_Frame::setTerrainActorGrid(int stage_project_index
 	else
 		m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("physics_shape"))->SetChoiceSelection(0);
 
-	m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("physics_solid"))->SetValue(physics_solid);
+	m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("physics_solid"))->SetValue( physics_solid ? 1 : 0 );
 	m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("physics_mass"))->SetValue(physics_mass);
 }
 
@@ -4823,10 +4866,10 @@ void SerenityEditorSerenity3D_Frame::setWaterActorGrid(int stage_project_index, 
 
 	//------------Render Settings------------------------------
 	bool visible_flag = project.stages[stage_project_index].actors[actor_project_index].visible;
-	m_waterActorProperties_propertyGridPage->GetPropertyByName(_("visible"))->SetValue(visible_flag);
+	m_waterActorProperties_propertyGridPage->GetPropertyByName(_("visible"))->SetValue( visible_flag ? 1 : 0 );
 
 	bool shadow_flag = project.stages[stage_project_index].actors[actor_project_index].hasShadow;
-	m_waterActorProperties_propertyGridPage->GetPropertyByName(_("shadow"))->SetValue(shadow_flag);
+	m_waterActorProperties_propertyGridPage->GetPropertyByName(_("shadow"))->SetValue( shadow_flag ? 1 : 0 );
 
 	int auto_culling_index = rc_getAutoCullingIndex(project.stages[stage_project_index].actors[actor_project_index].auto_culling);
 	m_waterActorProperties_propertyGridPage->GetPropertyByName(_("auto_culling"))->SetChoiceSelection(auto_culling_index);
@@ -4888,7 +4931,7 @@ void SerenityEditorSerenity3D_Frame::setWaterActorGrid(int stage_project_index, 
 	else
 		m_waterActorProperties_propertyGridPage->GetPropertyByName(_("physics_shape"))->SetChoiceSelection(0);
 
-	m_waterActorProperties_propertyGridPage->GetPropertyByName(_("physics_solid"))->SetValue(physics_solid);
+	m_waterActorProperties_propertyGridPage->GetPropertyByName(_("physics_solid"))->SetValue( physics_solid ? 1 : 0 );
 	m_waterActorProperties_propertyGridPage->GetPropertyByName(_("physics_mass"))->SetValue(physics_mass);
 }
 
@@ -4977,10 +5020,10 @@ void SerenityEditorSerenity3D_Frame::setParticleActorGrid(int stage_project_inde
 
 	//------------Render Settings------------------------------
 	bool visible_flag = project.stages[stage_project_index].actors[actor_project_index].visible;
-	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("visible"))->SetValue(visible_flag);
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("visible"))->SetValue( visible_flag ? 1 : 0 );
 
 	bool shadow_flag = project.stages[stage_project_index].actors[actor_project_index].hasShadow;
-	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("shadow"))->SetValue(shadow_flag);
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("shadow"))->SetValue( shadow_flag ? 1 : 0 );
 
 	int auto_culling_index = rc_getAutoCullingIndex(project.stages[stage_project_index].actors[actor_project_index].auto_culling);
 	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("auto_culling"))->SetChoiceSelection(auto_culling_index);
@@ -5060,16 +5103,16 @@ void SerenityEditorSerenity3D_Frame::setParticleActorGrid(int stage_project_inde
 
 	//--------------CYLINDER FLAGS---------------------
 	bool use_every_vertex = project.stages[stage_project_index].actors[actor_project_index].use_every_vertex;
-	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("use_every_vertex"))->SetValue(use_every_vertex);
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("use_every_vertex"))->SetValue( use_every_vertex ? 1 : 0 );
 
 	bool use_normal_direction = project.stages[stage_project_index].actors[actor_project_index].use_normal_direction;
-	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("use_normal_direction"))->SetValue(use_normal_direction);
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("use_normal_direction"))->SetValue( use_normal_direction ? 1 : 0 );
 
 	double normal_dir_mod = project.stages[stage_project_index].actors[actor_project_index].normal_direction_modifier;
 	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("normal_dir_mod"))->SetValue(normal_dir_mod);
 
 	bool use_outline_only = project.stages[stage_project_index].actors[actor_project_index].use_outline_only;
-	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("use_outline_only"))->SetValue(use_outline_only);
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("use_outline_only"))->SetValue( use_outline_only ? 1 : 0 );
 
 
 	double cylinder_length = project.stages[stage_project_index].actors[actor_project_index].cylinder_length;
@@ -5137,7 +5180,7 @@ void SerenityEditorSerenity3D_Frame::setParticleActorGrid(int stage_project_inde
 	else
 		m_particleActorProperties_propertyGridPage->GetPropertyByName(_("physics_shape"))->SetChoiceSelection(0);
 
-	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("physics_solid"))->SetValue(physics_solid);
+	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("physics_solid"))->SetValue( physics_solid ? 1 : 0 );
 	m_particleActorProperties_propertyGridPage->GetPropertyByName(_("physics_mass"))->SetValue(physics_mass);
 }
 
@@ -5184,10 +5227,10 @@ void SerenityEditorSerenity3D_Frame::setCubeActorGrid(int stage_project_index, i
 
 	//------------Render Settings------------------------------
 	bool visible_flag = project.stages[stage_project_index].actors[actor_project_index].visible;
-	m_cubeActorProperties_propertyGridPage->GetPropertyByName(_("visible"))-> wxPGProperty::SetValue(visible_flag);
+	m_cubeActorProperties_propertyGridPage->GetPropertyByName(_("visible"))-> wxPGProperty::SetValue( visible_flag ? 1 : 0 );
 
 	bool shadow_flag = project.stages[stage_project_index].actors[actor_project_index].hasShadow;
-	m_cubeActorProperties_propertyGridPage->GetPropertyByName(_("shadow"))-> wxPGProperty::SetValue(shadow_flag);
+	m_cubeActorProperties_propertyGridPage->GetPropertyByName(_("shadow"))-> wxPGProperty::SetValue( shadow_flag ? 1 : 0 );
 
 	int auto_culling_index = rc_getAutoCullingIndex(project.stages[stage_project_index].actors[actor_project_index].auto_culling);
 	m_cubeActorProperties_propertyGridPage->GetPropertyByName(_("auto_culling"))->SetChoiceSelection(auto_culling_index);
@@ -5237,7 +5280,7 @@ void SerenityEditorSerenity3D_Frame::setCubeActorGrid(int stage_project_index, i
 	else
 		m_cubeActorProperties_propertyGridPage->GetPropertyByName(_("physics_shape"))->SetChoiceSelection(0);
 
-	m_cubeActorProperties_propertyGridPage->GetPropertyByName(_("physics_solid"))->SetValue(physics_solid);
+	m_cubeActorProperties_propertyGridPage->GetPropertyByName(_("physics_solid"))->SetValue( physics_solid ? 1 : 0 );
 	m_cubeActorProperties_propertyGridPage->GetPropertyByName(_("physics_mass"))->SetValue(physics_mass);
 
 }
@@ -5285,10 +5328,10 @@ void SerenityEditorSerenity3D_Frame::setSphereActorGrid(int stage_project_index,
 
 	//------------Render Settings------------------------------
 	bool visible_flag = project.stages[stage_project_index].actors[actor_project_index].visible;
-	m_sphereActorProperties_propertyGridPage->GetPropertyByName(_("visible"))->SetValue(visible_flag);
+	m_sphereActorProperties_propertyGridPage->GetPropertyByName(_("visible"))->SetValue( visible_flag ? 1 : 0 );
 
 	bool shadow_flag = project.stages[stage_project_index].actors[actor_project_index].hasShadow;
-	m_sphereActorProperties_propertyGridPage->GetPropertyByName(_("shadow"))->SetValue(shadow_flag);
+	m_sphereActorProperties_propertyGridPage->GetPropertyByName(_("shadow"))->SetValue( shadow_flag ? 1 : 0 );
 
 	int auto_culling_index = rc_getAutoCullingIndex(project.stages[stage_project_index].actors[actor_project_index].auto_culling);
 	m_sphereActorProperties_propertyGridPage->GetPropertyByName(_("auto_culling"))->SetChoiceSelection(auto_culling_index);
@@ -5338,7 +5381,7 @@ void SerenityEditorSerenity3D_Frame::setSphereActorGrid(int stage_project_index,
 	else
 		m_sphereActorProperties_propertyGridPage->GetPropertyByName(_("physics_shape"))->SetChoiceSelection(0);
 
-	m_sphereActorProperties_propertyGridPage->GetPropertyByName(_("physics_solid"))->SetValue(physics_solid);
+	m_sphereActorProperties_propertyGridPage->GetPropertyByName(_("physics_solid"))->SetValue( physics_solid ? 1 : 0 );
 	m_sphereActorProperties_propertyGridPage->GetPropertyByName(_("physics_mass"))->SetValue(physics_mass);
 }
 
@@ -5613,12 +5656,26 @@ void SerenityEditorSerenity3D_Frame::On_Stage_StageNodeSelected( wxTreeEvent& ev
 		case RC_STAGE_NODE_GROUP:
 		{
 			int stage_project_index = stage_tree_nodes[stage_node_index].project_index;
-			int group_stage_index = stage_tree_nodes[stage_node_index].groups[group_node_index].project_index;
+			//int group_stage_index = stage_tree_nodes[stage_node_index].groups[group_node_index].project_index;
 
 			stageTabGrid_current_stage = stage_project_index;
-			stageTabGrid_current_group = group_stage_index;
+			stageTabGrid_current_group = -1;
+
+
+			for(int group_index = 0; group_index < project.stages[stage_project_index].groups.size(); group_index++)
+			{
+				if(stage_tree_nodes[stage_node_index].groups[group_node_index].group_label.Trim().compare(wxString(project.stages[stage_project_index].groups[group_index].label).Trim())==0)
+				{
+					stageTabGrid_current_group = group_index;
+					break;
+				}
+			}
 
 			m_stage_propertyGridManager->SelectPage(m_group_propertyGridPage);
+
+			if(stageTabGrid_current_stage >= 0 && stageTabGrid_current_stage < project.stages.size())
+				if(stageTabGrid_current_group >= 0 && stageTabGrid_current_group < project.stages[stageTabGrid_current_stage].groups.size())
+					m_group_propertyGridPage->GetProperty(_("group_visible"))->SetValue( project.stages[stageTabGrid_current_stage].groups[stageTabGrid_current_group].visible ? 1 : 0 );
 		}
 		break;
 

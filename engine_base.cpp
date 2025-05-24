@@ -3020,7 +3020,10 @@ int serenity_project::load_stage(std::vector<serenity_project_dict_obj> stage_pa
 				if(st_obj[i].dict[n_item].key.compare(_("label"))==0)
 				{
 					p_group.label = st_obj[i].dict[n_item].val.ToStdString();
-					break;
+				}
+				else if(st_obj[i].dict[n_item].key.compare(_("visible"))==0)
+				{
+					p_group.visible = ( (st_obj[i].dict[n_item].val.Lower().Trim().compare(_("true")) == 0) ? true : false );
 				}
 			}
 
@@ -3198,7 +3201,7 @@ void serenity_project::save_stage(int stage_id)
 		if(stages[stage_id].groups[i].label.compare("")==0)
 			continue;
 
-		stage_file.Write(_("Group label=\"") + wxString::FromUTF8(stages[stage_id].groups[i].label) + ("\";\n"));
+		stage_file.Write(_("Group label=\"") + wxString::FromUTF8(stages[stage_id].groups[i].label) + ("\" visible=") + (stages[stage_id].groups[i].visible ? _("true") : _("false")) + _(";\n"));
 	}
 
 	stage_file.Write(_("\n---------------[Scene]----------------;\n\n"));
@@ -3280,6 +3283,7 @@ void serenity_project::save_stage(int stage_id)
 							_("scale_y=") + wxString::FromDouble((double)stages[stage_id].actors[i].scale.Y) + _(" ") +
 							_("scale_z=") + wxString::FromDouble((double)stages[stage_id].actors[i].scale.Z) + _(" ") +
 							_("visible=") + (stages[stage_id].actors[i].visible ? _("true") : _("false")) + _(" ") +
+							_("store_visible=") + (stages[stage_id].actors[i].store_visible ? _("true") : _("false")) + _(" ") +
 							_("shadow=") + (stages[stage_id].actors[i].hasShadow ? _("true") : _("false")) + _(" ") +
 							_("auto_culling=") + wxString::FromUTF8(rc_getAutoCullingName(stages[stage_id].actors[i].auto_culling)) + _(" ") +
 							_("physics_shape=") + getPhysicsShapeString(stages[stage_id].actors[i].physics.shape) + _(" ") +
@@ -3565,6 +3569,7 @@ rc_actor serenity_project::load_actor(std::vector<serenity_project_dict_obj> par
 	p_actor.animation_index = -1; //if less than 0 then frame 0 is set
 	p_actor.num_loops = -1;
 	p_actor.visible = true;
+	p_actor.store_visible = true;
 	p_actor.hasShadow = true;
 	p_actor.isCastingShadow = true; //LIGHTS ONLY
 	p_actor.auto_culling = irr::scene::EAC_BOX;;
@@ -3663,6 +3668,8 @@ rc_actor serenity_project::load_actor(std::vector<serenity_project_dict_obj> par
 			param[i].val.ToInt(&p_actor.num_loops);
 		else if(param[i].key.compare(_("visible"))==0)
 			p_actor.visible = (param[i].val.compare(_("true"))==0 ? true : false);
+		else if(param[i].key.compare(_("store_visible"))==0)
+			p_actor.store_visible = (param[i].val.compare(_("true"))==0 ? true : false);
 		else if(param[i].key.compare(_("shadow"))==0)
 			p_actor.hasShadow = (param[i].val.compare(_("true"))==0 ? true : false);
 		else if(param[i].key.compare(_("cast_shadow"))==0)

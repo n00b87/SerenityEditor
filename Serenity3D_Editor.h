@@ -220,6 +220,7 @@ class Serenity3D_Frame : public wxFrame
 		wxPGProperty* m_propertyGridItem279;
 		wxPropertyGridPage* m_propertyGridPage13;
 		wxPropertyGridPage* m_group_propertyGridPage;
+		wxPGProperty* m_propertyGridItem305;
 		wxPropertyGridPage* m_animatedActorProperties_propertyGridPage;
 		wxPGProperty* m_animatedActorPropertiesCat_propertyGridItem;
 		wxPGProperty* m_aniActorID_propertyGridItem;

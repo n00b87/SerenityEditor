@@ -174,6 +174,7 @@ struct rc_actor
 	int animation_index; //if less than 0 then frame 0 is set
 	int num_loops;
 	bool visible;
+	bool store_visible; //used to store visible value when group is hidden
 	bool hasShadow;
 	bool isCastingShadow; //LIGHTS ONLY
 	irr::u32 auto_culling;
@@ -241,6 +242,7 @@ struct rc_waypoint
 struct rc_group
 {
 	std::string label;
+	bool visible = true;
 };
 
 struct rc_path
