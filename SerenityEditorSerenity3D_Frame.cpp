@@ -6777,6 +6777,7 @@ void SerenityEditorSerenity3D_Frame::OnNewProjectMenuSelection( wxCommandEvent& 
 	//project = serenity_project(create_project_win->project_file.GetAbsolutePath().ToStdString(), create_project_win->project_name.ToStdString(), current_window->GetDevice());
 	load_project(create_project_win->project_file);
 
+	project.project_initialized = true;
 	//wxDir p_dir(create_project_win->project_file.GetPath());
 	//wxMessageBox(_("DIR: ") + create_project_win->project_file.GetPath(true));
 }
@@ -7026,6 +7027,8 @@ void SerenityEditorSerenity3D_Frame::OnLoadProjectMenuSelection( wxCommandEvent&
 		m_viewHUD_color_colourPicker->SetColour(w_color);
 		stage_window->hud_color = project.hud_color;
 	}
+
+	project.project_initialized = true;
 
 	return;
 }
@@ -7338,7 +7341,8 @@ void SerenityEditorSerenity3D_Frame::On_Mesh_AnimationList_Select( wxCommandEven
 
 	if(meshTab_selected_mesh_project_index < 0 || meshTab_selected_mesh_project_index >= project.meshes.size())
 	{
-		wxMessageBox(_("ERROR: Could not find mesh id"));
+		if(project.project_initialized)
+			wxMessageBox(_("ERROR: Could not find mesh id"));
 		return;
 	}
 
@@ -7387,7 +7391,8 @@ void SerenityEditorSerenity3D_Frame::On_Mesh_Animation_AnimationID( wxCommandEve
 {
 	if(meshTab_selected_mesh_project_index < 0 || meshTab_selected_mesh_project_index >= project.meshes.size())
 	{
-		wxMessageBox(_("ERROR: Could not find mesh id"));
+		if(project.project_initialized)
+			wxMessageBox(_("ERROR: Could not find mesh id"));
 		return;
 	}
 
@@ -7419,7 +7424,8 @@ void SerenityEditorSerenity3D_Frame::On_Mesh_Animation_StartFrame( wxCommandEven
 {
 	if(meshTab_selected_mesh_project_index < 0 || meshTab_selected_mesh_project_index >= project.meshes.size())
 	{
-		wxMessageBox(_("ERROR: Could not find mesh id"));
+		if(project.project_initialized)
+			wxMessageBox(_("ERROR: Could not find mesh id"));
 		return;
 	}
 
@@ -7444,7 +7450,8 @@ void SerenityEditorSerenity3D_Frame::On_Mesh_Animation_EndFrame( wxCommandEvent&
 {
 	if(meshTab_selected_mesh_project_index < 0 || meshTab_selected_mesh_project_index >= project.meshes.size())
 	{
-		wxMessageBox(_("ERROR: Could not find mesh id"));
+		if(project.project_initialized)
+			wxMessageBox(_("ERROR: Could not find mesh id"));
 		return;
 	}
 
@@ -7469,7 +7476,8 @@ void SerenityEditorSerenity3D_Frame::On_Mesh_Animation_Speed( wxCommandEvent& ev
 {
 	if(meshTab_selected_mesh_project_index < 0 || meshTab_selected_mesh_project_index >= project.meshes.size())
 	{
-		wxMessageBox(_("ERROR: Could not find mesh id"));
+		if(project.project_initialized)
+			wxMessageBox(_("ERROR: Could not find mesh id"));
 		return;
 	}
 

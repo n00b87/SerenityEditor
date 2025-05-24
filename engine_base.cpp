@@ -189,6 +189,8 @@ serenity_project::serenity_project(std::string project_file, std::string p_name,
 	project_path = wxFileName(project_file.c_str());
 	project_name = p_name;
 
+	project_initialized = false;
+
 	stage_window = st_win;
 	animation_window = ani_win;
 	material_window = mat_win;
@@ -339,6 +341,8 @@ bool serenity_project::genRCBasicProject()
 		return false;
 	}
 
+	wxString sn_api = _("");
+
 	pfile.Write(_("path_separator$ = \"/\" : "));
 
 	pfile.Write(_("If OS$ = \"WINDOWS\" : path_separator$ = \"\\\\\" : End If") + _("\n"));
@@ -439,6 +443,7 @@ bool serenity_project::genRCBasicProject()
 	//Create Texture Structure
 	pfile.Write(_("Type Serenity_Texture") + _("\n"));
 	pfile.Write(_("Dim ID") + _("\n"));
+	pfile.Write(_("Dim Name$") + _("\n"));
 	pfile.Write(_("Dim File$ ") + _("\n"));
 	pfile.Write(_("Dim UseColorKey") + _("\n"));
 	pfile.Write(_("Dim TextureColorKey ") + _("\n"));
@@ -453,6 +458,49 @@ bool serenity_project::genRCBasicProject()
 
 	pfile.Write(_("Dim Serenity_Global_Texture_List[") + wxString::Format(_("%d"),(int)(textures.size() == 0 ? 1 : textures.size())) + _("] As Serenity_Texture") + _("\n"));
 	pfile.Write(_("\n"));
+
+	sn_api += _("\'-------TEXTURES-------\n");
+
+	sn_api += _("Function Serenity_GetTextureIndex(texture_name$)\n");
+	sn_api += _("\t") + _("For i = 0 To ") + wxString::Format(_("%d"),(int)(textures.size() == 0 ? 1 : textures.size())-1) + _("\n");
+	sn_api += _("\t\t") + _("If Serenity_Global_Texture_List[i].Name$ = texture_name$ Then\n");
+	sn_api += _("\t\t\t") + _("Return i\n");
+	sn_api += _("\t\t") + _("End If\n");
+	sn_api += _("\t") + _("Next\n");
+	sn_api += _("\tReturn -1\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Function Serenity_GetTextureCount()\n");
+	sn_api += _("\t") + _("Return ") + wxString::Format(_("%d"),(int)(textures.size())) + _("\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Function Serenity_GetTextureID(texture_index)\n");
+	sn_api += _("\t") + _("If texture_index < 0 Or texture_index >= ") + wxString::Format(_("%d"),(int)(textures.size() == 0 ? 1 : textures.size())) + _(" Then\n");
+	sn_api += _("\t\t") + _("Return -1\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("Return Serenity_Global_Texture_List[texture_index].ID\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Function Serenity_GetTextureFile$(texture_index)\n");
+	sn_api += _("\t") + _("If texture_index < 0 Or texture_index >= ") + wxString::Format(_("%d"),(int)(textures.size() == 0 ? 1 : textures.size())) + _(" Then\n");
+	sn_api += _("\t\t") + _("Return \"\"\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("Return Serenity_Global_Texture_List[texture_index].File$\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Function Serenity_GetTextureColorKey(texture_index)\n");
+	sn_api += _("\t") + _("If texture_index < 0 Or texture_index >= ") + wxString::Format(_("%d"),(int)(textures.size() == 0 ? 1 : textures.size())) + _(" Then\n");
+	sn_api += _("\t\t") + _("Return 0\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("Return Serenity_Global_Texture_List[texture_index].TextureColorKey\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Function Serenity_GetTextureIsColorKey(texture_index)\n");
+	sn_api += _("\t") + _("If texture_index < 0 Or texture_index >= ") + wxString::Format(_("%d"),(int)(textures.size() == 0 ? 1 : textures.size())) + _(" Then\n");
+	sn_api += _("\t\t") + _("Return FALSE\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("Return Serenity_Global_Texture_List[texture_index].UseColorKey\n");
+	sn_api += _("End Function\n\n");
 
 
 	//Create Textures List Structure
@@ -486,6 +534,7 @@ bool serenity_project::genRCBasicProject()
 
 			p_texture_define += _("Textures.") + wxString::FromUTF8(textures[i].id_name) + _(".SN_ID = ") + wxString::Format(_("%u"),tx_sn_id) + _("\n");
 			p_texture_define += tx_id + _(".ID = -1") + _("\n");
+			p_texture_define += tx_id + _(".Name$ = \"") + wxString::FromUTF8(textures[i].id_name) + _("\"") + _("\n");
 			p_texture_define += tx_id + _(".File$ = \"") + wxString::FromUTF8(textures[i].file) + _("\"") + _("\n");
 			p_texture_define += tx_id + _(".TextureColorKey = ") + wxString::Format(_("%u"), textures[i].colorkey.color) + _("\n");
 			p_texture_define += _("\n");
@@ -499,14 +548,15 @@ bool serenity_project::genRCBasicProject()
 	pfile.Write(_("\n\n"));
 
 
-	//Create Texture Reference Structure
+	//Create Material Structure
 	pfile.Write(_("Type Serenity_Material") + _("\n"));
 	pfile.Write(_("Dim ID") + _("\n"));
+	pfile.Write(_("Dim Name$") + _("\n"));
 	pfile.Write(_("Dim Texture_Matrix \'Index in Serenity_Global_Texture_List") + _("\n"));
 	pfile.Write(_("End Type") + _("\n"));
 	pfile.Write(_("\n"));
 
-	//Create Texture Reference Structure
+	//Create Material Reference Structure
 	pfile.Write(_("Type Serenity_Material_Reference") + _("\n"));
 	pfile.Write(_("Dim SN_ID") + _("\n"));
 	pfile.Write(_("End Type") + _("\n"));
@@ -515,6 +565,40 @@ bool serenity_project::genRCBasicProject()
 	pfile.Write(_("Dim Serenity_Global_Material_List[") + wxString::Format(_("%d"), (int)(materials.size() == 0 ? 1 : materials.size())) + _("] As Serenity_Material") + _("\n"));
 	pfile.Write(_("\n"));
 
+
+	sn_api += _("\'-------MATERIALS-------\n");
+
+	sn_api += _("Function Serenity_GetMaterialIndex(material_name$)\n");
+	sn_api += _("\t") + _("For i = 0 To ") + wxString::Format(_("%d"), (int)(materials.size() == 0 ? 1 : materials.size())-1) + _("\n");
+	sn_api += _("\t\t") + _("If Serenity_Global_Material_List[i].Name$ = material_name$ Then\n");
+	sn_api += _("\t\t\t") + _("Return i\n");
+	sn_api += _("\t\t") + _("End If\n");
+	sn_api += _("\t") + _("Next\n");
+	sn_api += _("\tReturn -1\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Function Serenity_GetMaterialCount()\n");
+	sn_api += _("\t") + _("Return ") + wxString::Format(_("%d"), (int)(materials.size())) + _("\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Function Serenity_GetMaterialID(material_index)\n");
+	sn_api += _("\t") + _("If material_index < 0 Or material_index >= ") + wxString::Format(_("%d"), (int)(materials.size() == 0 ? 1 : materials.size())) + _(" Then\n");
+	sn_api += _("\t\t") + _("Return -1\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("Return Serenity_Global_Material_List[material_index].ID\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Function Serenity_GetMaterialTextureIndex(material_index, texture_level)\n");
+	sn_api += _("\t") + _("If material_index < 0 Or material_index >= ") + wxString::Format(_("%d"), (int)(materials.size() == 0 ? 1 : materials.size())) + _(" Then\n");
+	sn_api += _("\t\t") + _("Return -1\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("Dim r, c\n");
+	sn_api += _("\t") + _("GetMatrixSize(Serenity_Global_Material_List[material_index].Texture_Matrix, r, c)\n");
+	sn_api += _("\t") + _("If texture_level < 0 Or texture_level >= c Then\n");
+	sn_api += _("\t\t") + _("Return -1\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("Return MatrixValue(Serenity_Global_Material_List[material_index].Texture_Matrix, 0, texture_level)\n");
+	sn_api += _("End Function\n\n");
 
 
 	//Create Materials List Structure
@@ -534,8 +618,9 @@ bool serenity_project::genRCBasicProject()
 
 			wxString mat_id = _("Serenity_Global_Material_List[") + mat_ref_id + _("].ID");
 			wxString mat_str = _("\'------------MATERIAL[ ") + wxString::FromUTF8(materials[i].id_name) + _(" ]---------------") + _("\n");
-			mat_str += mat_ref_id + _(" = ") + wxString::Format(_("%u"), mat_sn_id) + _("\n\n");
+			mat_str += mat_ref_id + _(" = ") + wxString::Format(_("%u"), mat_sn_id) + _("\n");
 
+			mat_str += _("Serenity_Global_Material_List[") + mat_ref_id + _("].Name$ = \"") + wxString::FromUTF8(materials[i].id_name) + _("\"\n\n");
 			mat_str += mat_id + _(" = CreateMaterial()") + _(" \n");
 
 			mat_str += _("SetMaterialAmbientColor(") + mat_id + _(", ") + wxString::Format(_("%u"), materials[i].material.AmbientColor.color) + _(")") + _(" \n");
@@ -950,8 +1035,8 @@ bool serenity_project::genRCBasicProject()
 	pfile.Write(_("\n"));
 
 	//Create Anim8or project structures
-	wxString p_an8_structure_name = _("Serenity_AN8_Projects_Structure");
-	pfile.Write(_("Type ") + p_an8_structure_name + _("\n"));
+	//wxString p_an8_structure_name = _("Serenity_AN8_Projects_Structure");
+	//pfile.Write(_("Type ") + p_an8_structure_name + _("\n"));
 
 	for(int i = 0; i < anim8or_projects.size(); i++)
 	{
@@ -959,14 +1044,15 @@ bool serenity_project::genRCBasicProject()
 		if(an8_id.compare("")==0)
 			continue;
 
-		pfile.Write(_("Dim ") + an8_id + _("\n"));
+		//pfile.Write(_("Dim ") + an8_id + _("\n"));
 
 		wxString mesh_path = _("\"models\" + path_separator$ + ");
-		wxString p_cmd = _("Anim8or_Projects.") + an8_id + _(" = LoadAN8(") + mesh_path + _("\"") + wxString::FromUTF8(anim8or_projects[i].file) + _("\")");
+		//wxString p_cmd = _("Anim8or_Projects.") + an8_id + _(" = LoadAN8(") + mesh_path + _("\"") + wxString::FromUTF8(anim8or_projects[i].file) + _("\")");
+		wxString p_cmd = _("\tSerenity_Global_AN8ID_List[") + wxString::Format(_("%i"), i) + _("] = LoadAN8(") + mesh_path + _("\"") + wxString::FromUTF8(anim8or_projects[i].file) + _("\")");
 		anim8or_projects[i].p_cmd = p_cmd.ToStdString();
 	}
 
-	pfile.Write(_("End Type") + _(" \n"));
+	//pfile.Write(_("End Type") + _(" \n"));
 
 	pfile.Write(_("\n"));
 
@@ -993,8 +1079,9 @@ bool serenity_project::genRCBasicProject()
 
 	pfile.Write(_("Dim ID ") + _("\n"));
 	pfile.Write(_("Dim SN_ID") + _("\n"));
+	pfile.Write(_("Dim Name$") + _("\n"));
 	pfile.Write(_("Dim MeshType ") + _("\n"));
-	pfile.Write(_("Dim AN8 ") + _("\n"));
+	pfile.Write(_("Dim AN8_Index ") + _("\n"));
 	pfile.Write(_("Dim AN8_Scene$ ") + _("\n"));
 	pfile.Write(_("Dim Zip$ ") + _("\n"));
 	pfile.Write(_("Dim File$ ") + _("\n"));
@@ -1015,9 +1102,121 @@ bool serenity_project::genRCBasicProject()
 
 	pfile.Write(_("\n"));
 
+	pfile.Write(_("Dim Serenity_Global_AN8ID_List[") + wxString::Format(_("%i"), (int)(anim8or_projects.size()==0 ? 1 : anim8or_projects.size())) + _("]\n"));
 	pfile.Write(_("Dim Serenity_Global_Mesh_List[") + wxString::Format(_("%u"), (int)(meshes.size()==0 ? 1 : meshes.size())) + _("] As Serenity_Mesh") + _("\n"));
 
 	pfile.Write(_("\n"));
+
+	sn_api += _("\'-------AN8-------\n");
+	sn_api += _("Function Serenity_GetAN8Count()\n");
+	sn_api += _("\tReturn ") + wxString::Format(_("%i"), (int)anim8or_projects.size()) + _("\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Function Serenity_GetAN8ID(an8_index)\n");
+	sn_api += _("\t") + _("If an8_index < 0 Or an8_index >= ") + wxString::Format(_("%i"), (int)anim8or_projects.size()) + _(" Then\n");
+	sn_api += _("\t\t") + _("Return -1\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("Return Serenity_Global_AN8ID_List[an8_index]\n");
+	sn_api += _("End Function\n\n");
+
+
+	sn_api += _("\'-------MESHES-------\n");
+
+	sn_api += _("Function Serenity_GetMeshIndex(mesh_name$)\n");
+	sn_api += _("\t") + _("For i = 0 To ") + wxString::Format(_("%u"), (int)(meshes.size()==0 ? 1 : meshes.size())-1) + _("\n");
+	sn_api += _("\t\t") + _("If Serenity_Global_Mesh_List[i].Name$ = mesh_name$ Then\n");
+	sn_api += _("\t\t\t") + _("Return i\n");
+	sn_api += _("\t\t") + _("End If\n");
+	sn_api += _("\t") + _("Next\n");
+	sn_api += _("\tReturn -1\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Function Serenity_GetMeshCount()\n");
+	sn_api += _("\t") + _("Return ") + wxString::Format(_("%u"), (int)(meshes.size())) + _("\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Function Serenity_GetMeshID(mesh_index)\n");
+	sn_api += _("\t") + _("If mesh_index < 0 Or mesh_index >= ") + wxString::Format(_("%u"), (int)(meshes.size()==0 ? 1 : meshes.size())) + _(" Then\n");
+	sn_api += _("\t\t") + _("Return -1\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("Return Serenity_Global_Mesh_List[mesh_index].ID\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Function Serenity_GetMeshName$(mesh_index)\n");
+	sn_api += _("\t") + _("If mesh_index < 0 Or mesh_index >= ") + wxString::Format(_("%u"), (int)(meshes.size()==0 ? 1 : meshes.size())) + _(" Then\n");
+	sn_api += _("\t\t") + _("Return \"\"\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("Return Serenity_Global_Mesh_List[mesh_index].Name$\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Function Serenity_GetMeshType(mesh_index)\n");
+	sn_api += _("\t") + _("If mesh_index < 0 Or mesh_index >= ") + wxString::Format(_("%u"), (int)(meshes.size()==0 ? 1 : meshes.size())) + _(" Then\n");
+	sn_api += _("\t\t") + _("Return -1\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("Return Serenity_Global_Mesh_List[mesh_index].MeshType\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Function Serenity_GetMeshAN8Index(mesh_index)\n");
+	sn_api += _("\t") + _("If mesh_index < 0 Or mesh_index >= ") + wxString::Format(_("%u"), (int)(meshes.size()==0 ? 1 : meshes.size())) + _(" Then\n");
+	sn_api += _("\t\t") + _("Return -1\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("Return Serenity_Global_Mesh_List[mesh_index].AN8_Index\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Function Serenity_GetMeshAN8Scene$(mesh_index)\n");
+	sn_api += _("\t") + _("If mesh_index < 0 Or mesh_index >= ") + wxString::Format(_("%u"), (int)(meshes.size()==0 ? 1 : meshes.size())) + _(" Then\n");
+	sn_api += _("\t\t") + _("Return \"\"\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("Return Serenity_Global_Mesh_List[mesh_index].AN8_Scene$\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Function Serenity_GetMeshArchiveName$(mesh_index)\n");
+	sn_api += _("\t") + _("If mesh_index < 0 Or mesh_index >= ") + wxString::Format(_("%u"), (int)(meshes.size()==0 ? 1 : meshes.size())) + _(" Then\n");
+	sn_api += _("\t\t") + _("Return \"\"\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("Return Serenity_Global_Mesh_List[mesh_index].Zip$\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Function Serenity_GetMeshFile$(mesh_index)\n");
+	sn_api += _("\t") + _("If mesh_index < 0 Or mesh_index >= ") + wxString::Format(_("%u"), (int)(meshes.size()==0 ? 1 : meshes.size())) + _(" Then\n");
+	sn_api += _("\t\t") + _("Return \"\"\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("Return Serenity_Global_Mesh_List[mesh_index].File$\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Function Serenity_GetMeshMaterialCount(mesh_index)\n");
+	sn_api += _("\t") + _("If mesh_index < 0 Or mesh_index >= ") + wxString::Format(_("%u"), (int)(meshes.size()==0 ? 1 : meshes.size())) + _(" Then\n");
+	sn_api += _("\t\t") + _("Return 0\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("Return Serenity_Global_Mesh_List[mesh_index].MaterialCount\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Function Serenity_GetMeshMaterialIndex(mesh_index, material_num)\n");
+	sn_api += _("\t") + _("If mesh_index < 0 Or mesh_index >= ") + wxString::Format(_("%u"), (int)(meshes.size()==0 ? 1 : meshes.size())) + _(" Then\n");
+	sn_api += _("\t\t") + _("Return -1\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("If material_num < 0 Or material_num >= Serenity_Global_Mesh_List[mesh_index].MaterialCount Then\n");
+	sn_api += _("\t\t") + _("Return -1\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("Return MatrixValue(Serenity_Global_Mesh_List[mesh_index].Material_Matrix, 0, material_num)\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Function Serenity_GetMeshAnimationCount(mesh_index)\n");
+	sn_api += _("\t") + _("If mesh_index < 0 Or mesh_index >= ") + wxString::Format(_("%u"), (int)(meshes.size()==0 ? 1 : meshes.size())) + _(" Then\n");
+	sn_api += _("\t\t") + _("Return 0\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("Return Serenity_Global_Mesh_List[mesh_index].AnimationCount\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Function Serenity_GetMeshAnimationID(mesh_index, animation_num)\n");
+	sn_api += _("\t") + _("If mesh_index < 0 Or mesh_index >= ") + wxString::Format(_("%u"), (int)(meshes.size()==0 ? 1 : meshes.size())) + _(" Then\n");
+	sn_api += _("\t\t") + _("Return -1\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("If animation_num < 0 Or animation_num >= Serenity_Global_Mesh_List[mesh_index].AnimationCount Then\n");
+	sn_api += _("\t\t") + _("Return -1\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("Return MatrixValue(Serenity_Global_Mesh_List[mesh_index].Animation_Matrix, 0, animation_num)\n");
+	sn_api += _("End Function\n\n");
 
 
 	//Create Mesh and Animation List Structures (A different animation structure will be made for every mesh)
@@ -1055,9 +1254,9 @@ bool serenity_project::genRCBasicProject()
 			wxString an8_id = _("-1");
 			if(an8_index >= 0 && an8_index < anim8or_projects.size())
 			{
-				an8_id = wxString::FromUTF8(anim8or_projects[an8_index].id_name);
+				an8_id = wxString::Format(_("%i"), an8_index);
 			}
-			p_cmd += mesh_list_id + _(".AN8 = Anim8or_Projects.") + an8_id + _("\n");
+			p_cmd += mesh_list_id + _(".AN8_Index = ") + an8_id + _("\n");
 
 			wxString an8_scene = wxString::FromUTF8(meshes[i].an8_scene);
 			p_cmd += mesh_list_id + _(".AN8_Scene$ = \"") + an8_scene + _("\" \n");
@@ -1065,7 +1264,7 @@ bool serenity_project::genRCBasicProject()
 			meshes[i].p_cmd = p_cmd.ToStdString();
 
 			//OnLoad
-			p_cmd = _("\t") + mesh_list_id + _(".ID = LoadMeshFromAN8(Anim8or_Projects.") + an8_id + _(", \"") + an8_scene + _("\")") + _("\n");
+			p_cmd = _("\t") + mesh_list_id + _(".ID = LoadMeshFromAN8(Serenity_Global_AN8ID_List[") + an8_id + _("], \"") + an8_scene + _("\")") + _("\n");
 			meshes[i].p_onLoad_cmd = p_cmd;
 
 			p_cmd = _("");
@@ -1282,6 +1481,7 @@ bool serenity_project::genRCBasicProject()
 	pfile.Write(_("Type Serenity_Actor") + _("\n"));
 	pfile.Write(_("Dim ID ") + _("\n"));
 	pfile.Write(_("Dim SN_ID ") + _("\n"));
+	pfile.Write(_("Dim Name$") + _("\n"));
 	pfile.Write(_("Dim ActorType ") + _("\n"));
 	pfile.Write(_("Dim Mesh  \'Index in Global Mesh list") + _("\n"));
 	pfile.Write(_("Dim Position As Serenity_Vector3D") + _("\n"));
@@ -1303,74 +1503,6 @@ bool serenity_project::genRCBasicProject()
 
 	pfile.Write(_("\n"));
 
-	//Actor Structure
-	pfile.Write(_("Type Serenity_Actor_Reference") + _("\n"));
-	pfile.Write(_("Dim SN_ID ") + _("\n"));
-	pfile.Write(_("End Type ") + _("\n"));
-	pfile.Write(_("\n"));
-
-
-	wxString p_stage_struct_name_template = _("Serenity_Stage_[STAGE_ID]_Structure");
-	wxString p_stage_actors_struct_name_template = _("Serenity_Stage_Actors_[STAGE_ID]_Structure");
-
-	wxString p_stage_define = _("");
-	wxString p_stage_actor_define;
-
-	for(int stage_index = 0; stage_index < stages.size(); stage_index++)
-	{
-		if(stages[stage_index].id_name.compare("")==0)
-			continue;
-
-		pfile.Write(_("\'----------------STAGE[") + wxString::FromUTF8(stages[stage_index].id_name) + _("]----------------------\n"));
-
-		p_stage_actor_define = _("");
-
-		//Create Actor Structures
-		for(int actor_index = 0; actor_index < stages[stage_index].actors.size(); actor_index++)
-		{
-			wxString actor_id = wxString::FromUTF8(stages[stage_index].actors[actor_index].id_name).Trim();
-
-			if(actor_id.compare(_(""))==0)
-				continue;
-
-			p_stage_actor_define += _("Dim ") + actor_id + _(" As Serenity_Actor_Reference") + _("\n");
-		}
-
-		pfile.Write(_("\n"));
-
-		wxString stage_actors_struct = p_stage_actors_struct_name_template;
-		stage_actors_struct.Replace(_("[STAGE_ID]"), wxString::FromUTF8(stages[stage_index].id_name));
-
-		pfile.Write(_("Type ") + stage_actors_struct + _("\n"));
-
-		pfile.Write(p_stage_actor_define);
-
-		pfile.Write(_("End Type ") + _("\n"));
-
-		pfile.Write(_("\n"));
-
-		wxString stage_struct = p_stage_struct_name_template;
-		stage_struct.Replace(_("[STAGE_ID]"), wxString::FromUTF8(stages[stage_index].id_name));
-
-		uint32_t num_actors = (int)stages[stage_index].actors.size();
-
-		pfile.Write(_("Type ") + stage_struct + _("\n"));
-		pfile.Write(_("Dim ID ") + _("\n"));
-		pfile.Write(_("Dim ActorList[") + wxString::Format(_("%u"), (num_actors == 0 ? 1 : num_actors)) + _("] As Serenity_Actor") + _("\n"));
-		pfile.Write(_("Dim Actors As ") + stage_actors_struct + _("\n"));
-		pfile.Write(_("Dim Sky As ") + p_sky_struct_name + _("\n"));
-		pfile.Write(_("End Type ") + _("\n"));
-
-		p_stage_define += _("Dim ") + wxString::FromUTF8(stages[stage_index].id_name) + _(" As ") + stage_struct + _("\n");
-
-		pfile.Write(_("\n"));
-	}
-
-	pfile.Write(_("\n"));
-
-	pfile.Write(_("Type Serenity_Stages_Structure") + _("\n"));
-	pfile.Write(p_stage_define);
-	pfile.Write(_("End Type") + _("\n"));
 
 	pfile.Write(_("\n"));
 
@@ -1393,21 +1525,6 @@ bool serenity_project::genRCBasicProject()
 	}
 	pfile.Write(_("\n"));
 
-
-	pfile.Write(_("Dim Anim8or_Projects As ") + p_an8_structure_name + _("\n"));
-	pfile.Write(_("\'-----------------LOAD AN8 PROJECTS---------------") + _("\n"));
-
-	for(int i = 0; i < anim8or_projects.size(); i++)
-	{
-		if(anim8or_projects[i].id_name.compare("")==0)
-			continue;
-
-		pfile.Write(wxString::FromUTF8(anim8or_projects[i].p_cmd) + _("\n"));
-		//pfile.Write(wxString::FromUTF8(anim8or_projects[i]) _("LoadAN8(") + mesh_path + _("\"") + wxString::FromUTF8(anim8or_projects[i].file) + _("\")") + _("\n"));
-	}
-
-	pfile.Write(_("\n"));
-
 	pfile.Write(_("Dim Meshes As Serenity_Meshes_List_Structure") + _("\n"));
 	pfile.Write(_("\'-----------------DEFINE MESHES---------------") + _("\n"));
 	for(int i = 0; i < meshes.size(); i++)
@@ -1420,8 +1537,255 @@ bool serenity_project::genRCBasicProject()
 
 	pfile.Write(_("\n\n"));
 
+	int max_stage_groups = 1;
+	int total_actors = 0;
+	for(int stage_index = 0; stage_index < stages.size(); stage_index++)
+	{
+		max_stage_groups = (stages[stage_index].groups.size() > max_stage_groups ? stages[stage_index].groups.size() : max_stage_groups);
+		total_actors += stages[stage_index].actors.size();
+	}
 
-	pfile.Write(_("Dim Stages As Serenity_Stages_Structure") + _("\n"));
+	pfile.Write(_("Dim Serenity_Global_Actor_List[") + wxString::Format(_("%i"), total_actors) + _("] As Serenity_Actor\n\n"));
+
+	pfile.Write(_("Type Serenity_Stage\n"));
+	pfile.Write(_("Dim ID\n"));
+	pfile.Write(_("Dim Name$\n"));
+	pfile.Write(_("Dim ActorCount\n"));
+	pfile.Write(_("Dim Actor_Matrix\n"));
+	pfile.Write(_("Dim Sky As Serenity_Sky_Structure\n"));
+	pfile.Write(_("Dim GroupName$[") + wxString::Format(_("%i"), max_stage_groups) + _("]\n"));
+	pfile.Write(_("Dim GroupCount\n"));
+	pfile.Write(_("End Type\n"));
+
+	pfile.Write(_("Dim Serenity_Global_Stage_List[") + wxString::Format(_("%i"), (int)stages.size()) + _("] As Serenity_Stage\n\n"));
+
+	//pfile.Write(_("Dim Stages As Serenity_Stages_Structure") + _("\n\n"));
+
+	pfile.Write(_("Type Serenity_Current_Stage_Structure\n"));
+	pfile.Write(_("Dim StageID\n"));
+	pfile.Write(_("Dim HasSky\n"));
+	pfile.Write(_("End Type\n\n"));
+
+	pfile.Write(_("Dim Serenity_Current_Stage As Serenity_Current_Stage_Structure\n\n"));
+
+	sn_api += _("\'-------SKY-------\n");
+	sn_api += _("Function Serenity_GetSkyShape()\n");
+	sn_api += _("\t") + _("If Serenity_Current_Stage.StageID < 0 Then\n");
+	sn_api += _("\t\t") + _("Return -1\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("Return Serenity_Global_Stage_List[Serenity_Current_Stage.StageID].Sky.Shape\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Function Serenity_GetSkyBox() As Serenity_Sky_Box\n");
+	sn_api += _("\t") + _("If Serenity_Current_Stage.StageID < 0 Then\n");
+	sn_api += _("\t\t") + _("Dim tmp_sky As Serenity_Sky_Box\n");
+	sn_api += _("\t\t") + _("Return tmp_sky\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("Return Serenity_Global_Stage_List[Serenity_Current_Stage.StageID].Sky.Box\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Function Serenity_GetSkyDome() As Serenity_Sky_Dome\n");
+	sn_api += _("\t") + _("If Serenity_Current_Stage.StageID < 0 Then\n");
+	sn_api += _("\t\t") + _("Dim tmp_sky As Serenity_Sky_Dome\n");
+	sn_api += _("\t\t") + _("Return tmp_sky\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("Return Serenity_Global_Stage_List[Serenity_Current_Stage.StageID].Sky.Dome\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Function Serenity_StageHasSky()\n");
+	sn_api += _("\t") + _("If Serenity_Current_Stage.StageID < 0 Then\n");
+	sn_api += _("\t\t") + _("Return FALSE\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("Return Serenity_Current_Stage.HasSky\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("\'-------ACTORS-------\n");
+	sn_api += _("Function Serenity_GetActorIndex(actor_name$)\n");
+	sn_api += _("\t") + _("If Serenity_Current_Stage.StageID < 0 Or Serenity_Current_Stage.StageID >= ") + wxString::Format(_("%i"), (int)stages.size()) + _(" Then\n");
+	sn_api += _("\t\t") + _("Return -1\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("For i = 0 To Serenity_Global_Stage_List[Serenity_Current_Stage.StageID].ActorCount-1\n");
+	sn_api += _("\t\t") + _("If Serenity_Global_Actor_List[i].Name$ = actor_name$ Then\n");
+	sn_api += _("\t\t\t") + _("Return i\n");
+	sn_api += _("\t\t") + _("End If\n");
+	sn_api += _("\t") + _("Next\n");
+	sn_api += _("\t") + _("Return -1\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Function Serenity_GetActorCount()\n");
+	sn_api += _("\t") + _("If Serenity_Current_Stage.StageID < 0 Or Serenity_Current_Stage.StageID >= ") + wxString::Format(_("%i"), (int)stages.size()) + _(" Then\n");
+	sn_api += _("\t\t") + _("Return 0\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("Return Serenity_Global_Stage_List[Serenity_Current_Stage.StageID].ActorCount\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Function Serenity_GetActorID(actor_index)\n");
+	sn_api += _("\t") + _("If Serenity_Current_Stage.StageID < 0 Or Serenity_Current_Stage.StageID >= ") + wxString::Format(_("%i"), (int)stages.size()) + _(" Then\n");
+	sn_api += _("\t\t") + _("Return -1\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("If actor_index < 0 Or actor_index >= Serenity_Global_Stage_List[Serenity_Current_Stage.StageID].ActorCount Then\n");
+	sn_api += _("\t\t") + _("Return -1\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("Return Serenity_Global_Actor_List[actor_index].ID\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Function Serenity_GetActorName$(actor_index)\n");
+	sn_api += _("\t") + _("If Serenity_Current_Stage.StageID < 0 Or Serenity_Current_Stage.StageID >= ") + wxString::Format(_("%i"), (int)stages.size()) + _(" Then\n");
+	sn_api += _("\t\t") + _("Return \"\"\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("If actor_index < 0 Or actor_index >= Serenity_Global_Stage_List[Serenity_Current_Stage.StageID].ActorCount Then\n");
+	sn_api += _("\t\t") + _("Return \"\"\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("Return Serenity_Global_Actor_List[actor_index].Name$\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Function Serenity_GetActorType(actor_index)\n");
+	sn_api += _("\t") + _("If Serenity_Current_Stage.StageID < 0 Or Serenity_Current_Stage.StageID >= ") + wxString::Format(_("%i"), (int)stages.size()) + _(" Then\n");
+	sn_api += _("\t\t") + _("Return -1\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("If actor_index < 0 Or actor_index >= Serenity_Global_Stage_List[Serenity_Current_Stage.StageID].ActorCount Then\n");
+	sn_api += _("\t\t") + _("Return -1\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("Return Serenity_Global_Actor_List[actor_index].ActorType\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Function Serenity_GetActorMeshIndex(actor_index)\n");
+	sn_api += _("\t") + _("If Serenity_Current_Stage.StageID < 0 Or Serenity_Current_Stage.StageID >= ") + wxString::Format(_("%i"), (int)stages.size()) + _(" Then\n");
+	sn_api += _("\t\t") + _("Return -1\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("If actor_index < 0 Or actor_index >= Serenity_Global_Stage_List[Serenity_Current_Stage.StageID].ActorCount Then\n");
+	sn_api += _("\t\t") + _("Return -1\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("Return Serenity_Global_Actor_List[actor_index].Mesh\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Function Serenity_GetActorOverrideMaterialIndex(actor_index)\n");
+	sn_api += _("\t") + _("If Serenity_Current_Stage.StageID < 0 Or Serenity_Current_Stage.StageID >= ") + wxString::Format(_("%i"), (int)stages.size()) + _(" Then\n");
+	sn_api += _("\t\t") + _("Return -1\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("If actor_index < 0 Or actor_index >= Serenity_Global_Stage_List[Serenity_Current_Stage.StageID].ActorCount Then\n");
+	sn_api += _("\t\t") + _("Return -1\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("Return Serenity_Global_Actor_List[actor_index].Material\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Function Serenity_GetActorTerrainHeightMap$(actor_index)\n");
+	sn_api += _("\t") + _("If Serenity_Current_Stage.StageID < 0 Or Serenity_Current_Stage.StageID >= ") + wxString::Format(_("%i"), (int)stages.size()) + _(" Then\n");
+	sn_api += _("\t\t") + _("Return \"\"\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("If actor_index < 0 Or actor_index >= Serenity_Global_Stage_List[Serenity_Current_Stage.StageID].ActorCount Then\n");
+	sn_api += _("\t\t") + _("Return \"\"\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("Return Serenity_Global_Actor_List[actor_index].Terrain.HeightMap$\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Function Serenity_GetActorCubeSize(actor_index)\n");
+	sn_api += _("\t") + _("If Serenity_Current_Stage.StageID < 0 Or Serenity_Current_Stage.StageID >= ") + wxString::Format(_("%i"), (int)stages.size()) + _(" Then\n");
+	sn_api += _("\t\t") + _("Return -1\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("If actor_index < 0 Or actor_index >= Serenity_Global_Stage_List[Serenity_Current_Stage.StageID].ActorCount Then\n");
+	sn_api += _("\t\t") + _("Return -1\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("Return Serenity_Global_Actor_List[actor_index].CubeSize\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Function Serenity_GetActorSphereRadius(actor_index)\n");
+	sn_api += _("\t") + _("If Serenity_Current_Stage.StageID < 0 Or Serenity_Current_Stage.StageID >= ") + wxString::Format(_("%i"), (int)stages.size()) + _(" Then\n");
+	sn_api += _("\t\t") + _("Return -1\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("If actor_index < 0 Or actor_index >= Serenity_Global_Stage_List[Serenity_Current_Stage.StageID].ActorCount Then\n");
+	sn_api += _("\t\t") + _("Return -1\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("Return Serenity_Global_Actor_List[actor_index].SphereRadius\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Function Serenity_GetActorGroupIndex(actor_index)\n");
+	sn_api += _("\t") + _("If Serenity_Current_Stage.StageID < 0 Or Serenity_Current_Stage.StageID >= ") + wxString::Format(_("%i"), (int)stages.size()) + _(" Then\n");
+	sn_api += _("\t\t") + _("Return -1\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("If actor_index < 0 Or actor_index >= Serenity_Global_Stage_List[Serenity_Current_Stage.StageID].ActorCount Then\n");
+	sn_api += _("\t\t") + _("Return -1\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("Return MatrixValue(Serenity_Global_Stage_List[Serenity_Current_Stage.StageID].Actor_Matrix, 1, actor_index)\n");
+	sn_api += _("End Function\n\n");
+
+
+	sn_api += _("\'-------STAGES-------\n");
+	sn_api += _("Function Serenity_GetStageIndex(stage_name$)\n");
+	sn_api += _("\t") + _("For i = 0 To ") + wxString::Format(_("%i"), (int)stages.size()-1) + _("\n");
+	sn_api += _("\t\t") + _("If Serenity_Global_Stage_List[i].Name$ = stage_name$ Then\n");
+	sn_api += _("\t\t\t") + _("Return i\n");
+	sn_api += _("\t\t") + _("End If\n");
+	sn_api += _("\t") + _("Next\n");
+	sn_api += _("\t") + _("Return -1\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Function Serenity_GetStageName$(stage_index)\n");
+	sn_api += _("\t") + _("If stage_index < 0 Or stage_index >= ") + wxString::Format(_("%i"), (int)stages.size()) + _(" Then\n");
+	sn_api += _("\t\t") + _("Return \"\"\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("Return Serenity_Global_Stage_List[stage_index].Name$\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Function Serenity_GetStageCount()\n");
+	sn_api += _("\t") + _("Return ") + wxString::Format(_("%i"), (int)stages.size()) + _("\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Sub Serenity_ClearStage()\n");
+	sn_api += _("\t") + _("Select Case Serenity_Current_Stage.StageID\n");
+	for(int i = 0; i < stages.size(); i++)
+	{
+		sn_api += _("\t") + _("Case ") + wxString::Format(_("%i"), i) + _(" : Clear_") + wxString(stages[i].id_name) + _("()\n");
+	}
+	sn_api += _("\t") + _("End Select\n");
+	sn_api += _("End Sub\n\n");
+
+	sn_api += _("Sub Serenity_LoadStage(stage_name$)\n");
+	sn_api += _("\t") + _("Serenity_ClearStage()\n");
+	sn_api += _("\t") + _("Select Case stage_name$\n");
+	for(int i = 0; i < stages.size(); i++)
+	{
+		sn_api += _("\t") + _("Case \"") + wxString(stages[i].id_name) + _("\" : Load_") + wxString(stages[i].id_name) + _("()\n");
+	}
+	sn_api += _("\t") + _("End Select\n");
+	sn_api += _("End Sub\n\n");
+
+	sn_api += _("Function Serenity_GetCurrentStageIndex()\n");
+	sn_api += _("\t") + _("Return Serenity_Current_Stage.StageID\n");
+	sn_api += _("End Function\n\n");
+
+
+	sn_api += _("\'-------GROUPS-------\n");
+	sn_api += _("Function Serenity_GetGroupCount()\n");
+	sn_api += _("\t") + _("If Serenity_Current_Stage.StageID < 0 Or Serenity_Current_Stage.StageID >= ") + wxString::Format(_("%i"), (int)stages.size()) + _(" Then\n");
+	sn_api += _("\t\t") + _("Return 0\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("Return Serenity_Global_Stage_List[Serenity_Current_Stage.StageID].GroupCount\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Function Serenity_GetGroupIndex(group_name$)\n");
+	sn_api += _("\t") + _("If Serenity_Current_Stage.StageID < 0 Or Serenity_Current_Stage.StageID >= ") + wxString::Format(_("%i"), (int)stages.size()) + _(" Then\n");
+	sn_api += _("\t\t") + _("Return 0\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("For i = 0 To Serenity_Global_Stage_List[Serenity_Current_Stage.StageID].GroupCount-1\n");
+	sn_api += _("\t\t") + _("If UCase$(Serenity_Global_Stage_List[Serenity_Current_Stage.StageID].GroupName$[i]) = UCase$(group_name) Then\n");
+	sn_api += _("\t\t\t") + _("Return i\n");
+	sn_api += _("\t\t") + _("End If\n");
+	sn_api += _("\t") + _("Next\n");
+	sn_api += _("\t") + _("Return -1\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Function Serenity_GetGroupName$(group_index)\n");
+	sn_api += _("\t") + _("If Serenity_Current_Stage.StageID < 0 Or Serenity_Current_Stage.StageID >= ") + wxString::Format(_("%i"), (int)stages.size()) + _(" Then\n");
+	sn_api += _("\t\t") + _("Return \"\"\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("If group_index < 0 Or group_index >= Serenity_Global_Stage_List[Serenity_Current_Stage.StageID].GroupCount Then\n");
+	sn_api += _("\t\t") + _("Return \"\"\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("Return Serenity_Global_Stage_List[Serenity_Current_Stage.StageID].GroupName$[group_index]\n");
+	sn_api += _("End Function\n\n");
+
+
 	pfile.Write(_("\'-----------------DEFINE STAGES---------------") + _("\n"));
 
 	int num_actor_types = 10;
@@ -1452,6 +1816,8 @@ bool serenity_project::genRCBasicProject()
 
 	wxString actor_load_properties = _("");
 
+	int global_actor_index = 0;
+
 	for(int stage = 0; stage < stages.size(); stage++)
 	{
 		if(stages[stage].id_name.compare("")==0)
@@ -1466,20 +1832,27 @@ bool serenity_project::genRCBasicProject()
 		for(int n = 0; n < textures.size(); n++)
 			textures[n].load_flag = false;
 
+		for(int n = 0; n < anim8or_projects.size(); n++)
+			anim8or_projects[n].load_flag = false;
+
 		wxString tx_load = _("");
 		wxString mat_load = _("");
 		wxString mesh_load = _("");
+		wxString an8_load = _("");
 
 		wxString tx_clear = _("");
 		wxString mat_clear = _("");
 		wxString mesh_clear = _("");
+		wxString an8_clear = _("");
 
 
-		wxString stage_id = _("Stages.") + wxString::FromUTF8(stages[stage].id_name);
+		wxString stage_id = _("Serenity_Global_Stage_List[") + wxString::Format(_("%i"), stage) + _("]");
 
 		stage_load_fn += _("Sub Load_") + wxString::FromUTF8(stages[stage].id_name) + _("( )") + _("\n");
+		stage_load_fn += _("\t") + _("Serenity_Current_Stage.StageID = ") + wxString::Format(_("%i"), stage) + _("\n\n");
 
 		stage_clear_fn += _("Sub Clear_") + wxString::FromUTF8(stages[stage].id_name) + _("( )") + _("\n");
+		stage_clear_fn += _("\t") + _("Serenity_Current_Stage.StageID = -1\n");
 
 		stage_load_fn += _("[PREPEND_MATERIAL_TEXTURE_BLOCK]") + _("\n");
 
@@ -1570,6 +1943,15 @@ bool serenity_project::genRCBasicProject()
 					pfile.Write(stage_id + _(".Sky.Box.Image_Bottom = Textures.") + img_id + _(".SN_ID") + _("\n"));
 				else
 					hasSkyBoxComplete = false;
+
+				if(hasSkyBoxComplete)
+				{
+					stage_load_fn += _("\t") + _("Serenity_Current_Stage.HasSky = TRUE\n\n");
+				}
+				else
+				{
+					stage_load_fn += _("\t") + _("Serenity_Current_Stage.HasSky = FALSE\n\n");
+				}
 
 				if(hasSkyBoxComplete)
 				{
@@ -1677,6 +2059,7 @@ bool serenity_project::genRCBasicProject()
 
 		stage_clear_fn += _("\t") + _("\'---------STAGE ACTORS-------------") + _("\n");
 
+		pfile.Write(stage_id + _(".Actor_Matrix = DimMatrix(") + _("2, ") + wxString::Format(_("%i"), (int)(stages[stage].actors.size() == 0 ? 1 : stages[stage].actors.size())) + _(")\n"));
 		for(int actor = 0; actor < stages[stage].actors.size(); actor++)
 		{
 			if(stages[stage].actors[actor].id_name.compare("")==0)
@@ -1688,9 +2071,21 @@ bool serenity_project::genRCBasicProject()
 			actor_sn_id++;
 
 			wxString actor_define = _("\'-----------ACTOR [ ") + stage_id + _(".Actors.") + wxString::FromUTF8(stages[stage].actors[actor].id_name) + _(" ]----------------\n");
-			actor_define += stage_id + _(".Actors.") + wxString::FromUTF8(stages[stage].actors[actor].id_name) + _(".SN_ID = ") + wxString::Format(_("%d"), stages[stage].actors[actor].sn_id) + _("\n\n");
+			actor_define += _("Serenity_Global_Actor_List[") + wxString::Format(_("%i"), global_actor_index) + _("].SN_ID = ") + wxString::Format(_("%d"), stages[stage].actors[actor].sn_id) + _("\n\n");
 
-			wxString actor_id = stage_id + _(".ActorList[") + wxString::Format(_("%d"), stages[stage].actors[actor].sn_id) + _("]");
+			wxString actor_id = _("Serenity_Global_Actor_List[") + wxString::Format(_("%i"), global_actor_index) + _("]");
+			actor_define += _("SetMatrixValue(") + stage_id + _(".Actor_Matrix") + _(", 0, ") + wxString::Format(_("%i"), actor) + _(", ") + wxString::Format(_("%i"), global_actor_index) + _(")\n");
+			int group_index = -1;
+			for(int stage_group = 0; stage_group <  stages[stage].groups.size(); stage_group++)
+			{
+				if(stages[stage].actors[actor].group_name.compare(stages[stage].groups[stage_group].label)==0)
+				{
+					group_index = stage_group;
+					break;
+				}
+			}
+			actor_define += _("SetMatrixValue(") + stage_id + _(".Actor_Matrix, 1, ") + wxString::Format(_("%i"), actor) + _(", ") + wxString::Format(_("%i"), group_index) + _(")\n");
+			global_actor_index++;
 
 			int actor_type = stages[stage].actors[actor].type;
 			actor_type = ((actor_type < 0 || actor_type >= num_actor_types) ? 0 : actor_type);
@@ -1708,6 +2103,21 @@ bool serenity_project::genRCBasicProject()
 
 			if(mesh_id.compare("")!=0)
 			{
+
+				if(meshes[mesh_index].isAN8Scene)
+				{
+					int an8_index = meshes[mesh_index].an8_index;
+					if(an8_index >= 0 && an8_index < anim8or_projects.size())
+					{
+						if(!anim8or_projects[an8_index].load_flag)
+						{
+							an8_load += wxString::FromUTF8(anim8or_projects[an8_index].p_cmd) + _("\n");
+							an8_clear += _("DeleteAN8(Serenity_Global_AN8ID_List[") + wxString::Format(_("%i"), an8_index) + _("])\n");
+							anim8or_projects[an8_index].load_flag = true;
+						}
+					}
+				}
+
 				actor_define += actor_id + _(".Mesh = Meshes.") + mesh_id + _(".SN_ID") + _("\n");
 
 				if(!meshes[mesh_index].load_flag)
@@ -2295,6 +2705,10 @@ bool serenity_project::genRCBasicProject()
 		prepend_block += mat_load + _("\n");
 		prepend_block += _("\n");
 
+		prepend_block += _("\t") + _("\'---------STAGE AN8-------------") + _("\n");
+		prepend_block += an8_load + _("\n");
+		prepend_block += _("\n");
+
 		prepend_block += _("\t") + _("\'---------STAGE MESHES-------------") + _("\n");
 		prepend_block += mesh_load + _("\n");
 		prepend_block += _("\n");
@@ -2309,6 +2723,10 @@ bool serenity_project::genRCBasicProject()
 
 		post_block += _("\t") + _("\'---------STAGE MESHES-------------") + _("\n");
 		post_block += mesh_clear + _("\n");
+		post_block += _("\n");
+
+		post_block += _("\t") + _("\'---------STAGE AN8-------------") + _("\n");
+		post_block += an8_clear + _("\n");
 		post_block += _("\n");
 
 		post_block += _("\t") + _("\'---------STAGE MATERIALS-------------") + _("\n");
@@ -2334,6 +2752,10 @@ bool serenity_project::genRCBasicProject()
 
 	pfile.Write(_("\'------------[STAGE CLEAR FUNCTIONS]-----------") + _("\n"));
 	pfile.Write(stage_clear_fn);
+	pfile.Write(_("\n\n\n\n"));
+
+	pfile.Write(_("\'------------[API FUNCTIONS]-------------------") + _("\n"));
+	pfile.Write(sn_api);
 	pfile.Write(_("\n\n"));
 
 	pfile.Write(_("Include Once") + _("\n"));
