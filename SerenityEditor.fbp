@@ -3198,6 +3198,14 @@
                                                           <property name="label">Group</property>
                                                           <property name="name">m_group_propertyGridPage</property>
                                                           <property name="permission">protected</property>
+                                                          <object class="propGridItem" expanded="true">
+                                                            <property name="help"></property>
+                                                            <property name="label">Visible</property>
+                                                            <property name="name">m_propertyGridItem305</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="prop_name">group_visible</property>
+                                                            <property name="type">Bool</property>
+                                                          </object>
                                                         </object>
                                                         <object class="propGridPage" expanded="true">
                                                           <property name="bitmap"></property>

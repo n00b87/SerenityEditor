@@ -358,6 +358,7 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_propertyGridPage13 = m_stage_propertyGridManager->AddPage( wxT("Page"), wxNullBitmap );
 
 	m_group_propertyGridPage = m_stage_propertyGridManager->AddPage( wxT("Group"), wxNullBitmap );
+	m_propertyGridItem305 = m_group_propertyGridPage->Append( new wxBoolProperty( wxT("Visible"), wxT("group_visible") ) );
 
 	m_animatedActorProperties_propertyGridPage = m_stage_propertyGridManager->AddPage( wxT("Animated Actor Properties"), wxNullBitmap );
 	m_animatedActorPropertiesCat_propertyGridItem = m_animatedActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Animated Actor Properties") ) );
