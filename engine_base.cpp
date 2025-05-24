@@ -470,6 +470,10 @@ bool serenity_project::genRCBasicProject()
 	sn_api += _("\tReturn -1\n");
 	sn_api += _("End Function\n\n");
 
+	sn_api += _("Function Serenity_GetTextureCount()\n");
+	sn_api += _("\t") + _("Return ") + wxString::Format(_("%d"),(int)(textures.size())) + _("\n");
+	sn_api += _("End Function\n\n");
+
 	sn_api += _("Function Serenity_GetTextureID(texture_index)\n");
 	sn_api += _("\t") + _("If texture_index < 0 Or texture_index >= ") + wxString::Format(_("%d"),(int)(textures.size() == 0 ? 1 : textures.size())) + _(" Then\n");
 	sn_api += _("\t\t") + _("Return -1\n");
@@ -571,6 +575,10 @@ bool serenity_project::genRCBasicProject()
 	sn_api += _("\t\t") + _("End If\n");
 	sn_api += _("\t") + _("Next\n");
 	sn_api += _("\tReturn -1\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Function Serenity_GetMaterialCount()\n");
+	sn_api += _("\t") + _("Return ") + wxString::Format(_("%d"), (int)(materials.size())) + _("\n");
 	sn_api += _("End Function\n\n");
 
 	sn_api += _("Function Serenity_GetMaterialID(material_index)\n");
@@ -1121,6 +1129,10 @@ bool serenity_project::genRCBasicProject()
 	sn_api += _("\t\t") + _("End If\n");
 	sn_api += _("\t") + _("Next\n");
 	sn_api += _("\tReturn -1\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Function Serenity_GetMeshCount()\n");
+	sn_api += _("\t") + _("Return ") + wxString::Format(_("%u"), (int)(meshes.size())) + _("\n");
 	sn_api += _("End Function\n\n");
 
 	sn_api += _("Function Serenity_GetMeshID(mesh_index)\n");
