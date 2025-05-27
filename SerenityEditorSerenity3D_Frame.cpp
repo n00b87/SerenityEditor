@@ -357,11 +357,6 @@ Serenity3D_Frame( parent )
 
 	stage_tree_root = m_project_stage_treeCtrl->AddRoot(wxString::FromUTF8(_("NO PROJECT")), stage_tree_rootImage);
 
-	wxFileName app_icon = image_fname;
-	app_icon.SetFullName(_("serenity.ico"));
-	this->SetIcon(wxIcon(app_icon.GetAbsolutePath()));
-
-
 	//Start with an empty property grid page
 	m_stage_propertyGridManager->SelectPage(m_propertyGridPage13);
 
