@@ -229,6 +229,7 @@ class wxIrrlicht : public wxControl {
         bool stage_window_isActive = false;
 
         bool enable_events = false;
+        bool store_enable_events = false;
 
 	//protected:
         void OnPaint(wxPaintEvent& event);

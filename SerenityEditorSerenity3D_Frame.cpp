@@ -137,7 +137,6 @@ Serenity3D_Frame( parent )
 
 
 
-
 	for(int i = 0; i < m_stage_propertyGridManager->GetPageCount(); i++)
 	{
 		wxPropertyGridPage* page = m_stage_propertyGridManager->GetPage(i);
@@ -363,6 +362,50 @@ Serenity3D_Frame( parent )
 	m_stage_propertyGridManager->SelectPage(m_propertyGridPage13);
 
 	m_editorMain_auinotebook->SetSelection(0);
+}
+
+void SerenityEditorSerenity3D_Frame::preDialog()
+{
+	if(stage_window)
+		stage_window->store_enable_events = stage_window->enable_events;
+
+	if(animation_window)
+		animation_window->store_enable_events = animation_window->enable_events;
+
+	if(material_window)
+		material_window->store_enable_events = material_window->enable_events;
+
+	if(texture_window)
+		texture_window->store_enable_events = texture_window->enable_events;
+
+	stage_window->enable_events = false;
+	animation_window->enable_events = false;
+	material_window->enable_events = false;
+	texture_window->enable_events = false;
+}
+
+void SerenityEditorSerenity3D_Frame::postDialog()
+{
+	if(stage_window)
+		stage_window->enable_events = stage_window->store_enable_events;
+
+	if(animation_window)
+		animation_window->enable_events = animation_window->store_enable_events;
+
+	if(material_window)
+		material_window->enable_events = material_window->store_enable_events;
+
+	if(texture_window)
+		texture_window->enable_events = texture_window->store_enable_events;
+
+	if(current_window == stage_window)
+		stage_window->force_refresh();
+	else if(current_window == animation_window)
+		animation_window->force_refresh();
+	else if(current_window == material_window)
+		material_window->force_refresh();
+	else if(current_window == texture_window)
+		texture_window->force_refresh();
 }
 
 bool SerenityEditorSerenity3D_Frame::isValidID(wxString id_name, int id_type, int mesh_index)
@@ -1054,7 +1097,9 @@ void SerenityEditorSerenity3D_Frame::On_Stage_NewStage( wxCommandEvent& event )
 
 	SerenityEditor_NewStage_Dialog* dialog = new SerenityEditor_NewStage_Dialog(this);
 
+	preDialog();
 	dialog->ShowModal();
+	postDialog();
 
 	if(!dialog->create_flag)
 		return;
@@ -1126,7 +1171,9 @@ void SerenityEditorSerenity3D_Frame::On_Stage_DeleteStage( wxCommandEvent& event
 
 	dialog->setStageID(stage_id);
 
+	preDialog();
 	dialog->ShowModal();
+	postDialog();
 
 	if(dialog->delete_flag)
 	{
@@ -1226,7 +1273,9 @@ void SerenityEditorSerenity3D_Frame::On_Stage_NewGroup( wxCommandEvent& event )
 
 	dialog->refresh_list();
 
+	preDialog();
 	dialog->ShowModal();
+	postDialog();
 
 
 
@@ -1390,7 +1439,9 @@ void SerenityEditorSerenity3D_Frame::On_Stage_DeleteGroup( wxCommandEvent& event
 
 	dialog->setGroupName(stage_tree_nodes[stage_node_index].groups[group_node_index].group_label);
 
+	preDialog();
 	dialog->ShowModal();
+	postDialog();
 
 	if(!dialog->deleteFlag)
 		return;
@@ -1521,7 +1572,9 @@ void SerenityEditorSerenity3D_Frame::On_Stage_EditGroup( wxCommandEvent& event )
 	dialog->refresh_groupName();
 	dialog->refresh_list();
 
+	preDialog();
 	dialog->ShowModal();
+	postDialog();
 
 	if(!dialog->applyFlag)
 		return;
@@ -1628,7 +1681,9 @@ void SerenityEditorSerenity3D_Frame::On_Stage_DeleteActor( wxCommandEvent& event
 	SerenityEditor_DeleteActorAlert_Dialog* dialog = new SerenityEditor_DeleteActorAlert_Dialog(this);
 	dialog->setActorID(wxString::FromUTF8(project.stages[stage_project_index].actors[actor_project_index].id_name));
 
+	preDialog();
 	dialog->ShowModal();
+	postDialog();
 
 	if(!dialog->delete_flag)
 		return;
@@ -1873,7 +1928,9 @@ void SerenityEditorSerenity3D_Frame::OnStageCameraNavigate( wxCommandEvent& even
 
 	dialog->refresh_values();
 
+	preDialog();
 	dialog->ShowModal();
+	postDialog();
 
 
 	if(!dialog->set_flag)
@@ -5948,7 +6005,9 @@ void SerenityEditorSerenity3D_Frame::OnS3DCubeClicked( wxCommandEvent& event )
 
 	SerenityEditor_NewCubeActor_Dialog* dialog = new SerenityEditor_NewCubeActor_Dialog(this);
 
+	preDialog();
 	dialog->ShowModal();
+	postDialog();
 
 	if(!dialog->create_flag)
 		return;
@@ -6030,7 +6089,9 @@ void SerenityEditorSerenity3D_Frame::OnS3DSphereClicked( wxCommandEvent& event )
 
 	SerenityEditor_NewSphereActor_Dialog* dialog = new SerenityEditor_NewSphereActor_Dialog(this);
 
+	preDialog();
 	dialog->ShowModal();
+	postDialog();
 
 	if(!dialog->create_flag)
 		return;
@@ -6125,7 +6186,9 @@ void SerenityEditorSerenity3D_Frame::OnS3DDumpClicked( wxCommandEvent& event )
 
 	dialog->refresh_list();
 
+	preDialog();
 	dialog->ShowModal();
+	postDialog();
 
 	if(!dialog->create_flag)
 		return;
@@ -6223,7 +6286,9 @@ void SerenityEditorSerenity3D_Frame::OnS3DWizClicked( wxCommandEvent& event )
 
 	dialog->refresh_list();
 
+	preDialog();
 	dialog->ShowModal();
+	postDialog();
 
 	if(!dialog->create_flag)
 		return;
@@ -6322,7 +6387,9 @@ void SerenityEditorSerenity3D_Frame::OnS3DBillboardClicked( wxCommandEvent& even
 
 	dialog->refresh_list();
 
+	preDialog();
 	dialog->ShowModal();
+	postDialog();
 
 	if(!dialog->create_flag)
 		return;
@@ -6421,7 +6488,9 @@ void SerenityEditorSerenity3D_Frame::OnS3DLightClicked( wxCommandEvent& event )
 
 	dialog->refresh_list();
 
+	preDialog();
 	dialog->ShowModal();
+	postDialog();
 
 	if(!dialog->create_flag)
 		return;
@@ -6510,7 +6579,9 @@ void SerenityEditorSerenity3D_Frame::OnS3DTerrainClicked( wxCommandEvent& event 
 
 	dialog->refresh_list();
 
+	preDialog();
 	dialog->ShowModal();
+	postDialog();
 
 
 	if(!dialog->create_flag)
@@ -6616,7 +6687,9 @@ void SerenityEditorSerenity3D_Frame::OnS3DWaterClicked( wxCommandEvent& event )
 
 	dialog->refresh_list();
 
+	preDialog();
 	dialog->ShowModal();
+	postDialog();
 
 	if(!dialog->create_flag)
 		return;
@@ -6736,7 +6809,9 @@ void SerenityEditorSerenity3D_Frame::OnS3DEffectClicked( wxCommandEvent& event )
 
 	dialog->refresh_list();
 
+	preDialog();
 	dialog->ShowModal();
+	postDialog();
 
 	if(!dialog->create_flag)
 		return;
@@ -6825,7 +6900,9 @@ void SerenityEditorSerenity3D_Frame::clearScene()
 void SerenityEditorSerenity3D_Frame::OnNewProjectMenuSelection( wxCommandEvent& event )
 {
 	SerenityEditor_NewProject_Dialog* create_project_win = new SerenityEditor_NewProject_Dialog(this);
+	preDialog();
 	create_project_win->ShowModal();
+	postDialog();
 
 	if(!create_project_win->createFlag)
 		return;
@@ -7016,7 +7093,9 @@ wxFileName SerenityEditorSerenity3D_Frame::openFileDialog(wxString title, wxStri
 
 void SerenityEditorSerenity3D_Frame::OnLoadProjectMenuSelection( wxCommandEvent& event )
 {
+	preDialog();
 	wxFileName project_fname = openFileDialog(_("Open Project"), _("Serenity3D Project (*.snprj)|*.snprj"), wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	postDialog();
 
 	if(project_fname.GetFullPath().compare("")==0)
 		return;
@@ -7181,7 +7260,9 @@ void SerenityEditorSerenity3D_Frame::OnSaveProjectMenuSelection( wxCommandEvent&
 void SerenityEditorSerenity3D_Frame::OnExitMenuSelection( wxCommandEvent& event )
 {
 	SerenityEditor_ExitEditorAlert_Dialog* dialog = new SerenityEditor_ExitEditorAlert_Dialog(this);
+	preDialog();
 	dialog->ShowModal();
+	postDialog();
 
 	if(dialog->save_flag)
 	{
@@ -7649,7 +7730,9 @@ void SerenityEditorSerenity3D_Frame::On_Mesh_Create_ButtonClick( wxCommandEvent&
 
 	SerenityEditor_CreateMesh_Dialog* dialog = new SerenityEditor_CreateMesh_Dialog(this);
 
+	preDialog();
 	dialog->ShowModal();
+	postDialog();
 
 	if(!dialog->create_flag)
 		return;
@@ -7761,7 +7844,9 @@ void SerenityEditorSerenity3D_Frame::On_Mesh_Load_ButtonClick( wxCommandEvent& e
 
 	dialog->refresh_list();
 
+	preDialog();
 	dialog->ShowModal();
+	postDialog();
 
 	wxFileName fname = project.project_path;
 	fname.AppendDir(_("data"));
@@ -8065,7 +8150,9 @@ void SerenityEditorSerenity3D_Frame::On_Mesh_SetMaterial( wxCommandEvent& event 
 	}
 
 	dialog->refresh_list();
+	preDialog();
 	dialog->ShowModal();
+	postDialog();
 
 	if(dialog->selected_material_id.compare(_("")) != 0)
 	{
@@ -8254,7 +8341,9 @@ void SerenityEditorSerenity3D_Frame::On_Material_LoadMaterial_ButtonClicked( wxC
 	dialog->material_path.SetFullName(_(""));
 	dialog->refresh_list();
 
+	preDialog();
 	dialog->ShowModal();
+	postDialog();
 
 
 	std::vector<serenity_project_dict_obj> param;
@@ -8864,7 +8953,9 @@ void SerenityEditorSerenity3D_Frame::OnSetMaterialPreviewMesh( wxCommandEvent& e
 
 	dialog->refresh_list();
 
+	preDialog();
 	dialog->ShowModal();
+	postDialog();
 
 	wxString id_name = dialog->selected_mesh_id;
 
@@ -8914,7 +9005,9 @@ void SerenityEditorSerenity3D_Frame::On_Material_previewSettings_Selected( wxCom
 
 	dialog->setFields(material_preview_camera_speed, material_preview_camera_distance, material_preview_light_radius, material_preview_control);
 
+	preDialog();
 	dialog->ShowModal();
+	postDialog();
 
 	if(!dialog->apply_changes)
 		return;
@@ -8995,7 +9088,9 @@ void SerenityEditorSerenity3D_Frame::On_Material_SetTextureLevel_ButtonClicked( 
 	}
 
 	dialog->refresh_list();
+	preDialog();
 	dialog->ShowModal();
+	postDialog();
 
 	wxString selected_texture = dialog->selected_texture_id;
 
@@ -9059,7 +9154,9 @@ void SerenityEditorSerenity3D_Frame::On_Texture_AddTexture_ButtonClicked( wxComm
 	}
 
 	dialog->refresh_list();
+	preDialog();
 	dialog->ShowModal();
+	postDialog();
 
 	std::vector<serenity_project_dict_obj> param;
 	serenity_project_dict_obj param_obj;
