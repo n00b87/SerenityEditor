@@ -29,7 +29,7 @@ bool SerenityEngineApp::OnInit()
     SerenityEditorSerenity3D_Frame* frame = new SerenityEditorSerenity3D_Frame(NULL);
 
     #ifdef _WIN32
-    frame->SetIcon(wxIcon(aaaa));
+    frame->SetIcon(wxICON(aaaa));
     #else
     wxString editor_path = wxStandardPaths::Get().GetExecutablePath();
 
