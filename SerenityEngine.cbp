@@ -102,8 +102,6 @@
 		<Unit filename="SerenityEditor_SetMeshMaterialLevel_Dialog.h" />
 		<Unit filename="SerenityEngineApp.cpp" />
 		<Unit filename="SerenityEngineApp.h" />
-		<Unit filename="SerenityEngineMain.cpp" />
-		<Unit filename="SerenityEngineMain.h" />
 		<Unit filename="camera.cpp" />
 		<Unit filename="camera.h" />
 		<Unit filename="engine_base.cpp" />

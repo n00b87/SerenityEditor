@@ -1,5 +1,6 @@
 #include <wx/wx.h>
 #include <wx/filename.h>
+#include <wx/stdpaths.h>
 #include <vector>
 #include "rc_stage.h"
 #include "engine_base.h"
@@ -318,21 +319,34 @@ bool serenity_project::genRCBasicProject()
 		//SOURCE_REL:main.bas
 		//SOURCE_REL:util.bas
 
-		rcbasic_main_bas = _("serenity_main.bas");
+		rcbasic_main_bas = _("main.bas");
 
-		rc_project_file.Write(_("RCBASIC_STUDIO:1.0") + _("\n"));
+		rc_project_file.Write(_("RCBASIC_STUDIO:2.0") + _("\n"));
 		rc_project_file.Write(_("PROJECT_NAME:") + wxString::FromUTF8(project_name) + _("\n"));
 		rc_project_file.Write(_("PROJECT_MAIN:") + rcbasic_main_bas + _("\n"));
 		rc_project_file.Write(_("SOURCE_REL:") + rcbasic_main_bas + _("\n"));
-		rc_project_file.Write(_("SOURCE_REL:main.bas") + _("\n"));
+		rc_project_file.Write(_("SOURCE_REL:serenity.bas") + _("\n"));
 
 
 		rc_project_file.Close();
+
+		wxFileName template_path(wxStandardPaths::Get().GetExecutablePath());
+		template_path.AppendDir(_("export"));
+		template_path.SetFullName(_("template.bas"));
+
+		wxFileName main_bas_path = project_path;
+		main_bas_path.SetFullName(rcbasic_main_bas);
+
+		if(!main_bas_path.Exists())
+		{
+			wxCopyFile(template_path.GetAbsolutePath(), main_bas_path.GetAbsolutePath());
+		}
+
 	}
 
 	//Write project structures to rcbasic_main_bas
 	wxFileName main_file_path = project_path;
-	main_file_path.SetFullName(_("serenity_main.bas"));
+	main_file_path.SetFullName(_("serenity.bas"));
 	wxFile pfile(main_file_path.GetAbsolutePath(), wxFile::write);
 
 	if(!pfile.IsOpened())

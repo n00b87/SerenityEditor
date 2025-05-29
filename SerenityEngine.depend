@@ -1484,8 +1484,9 @@
 	"engine_base.h"
 	"rc_stage.h"
 
-1737765682 source:/home/n00b/Projects/SerenityEngine/SerenityEngineApp.cpp
+1748385598 source:/home/n00b/Projects/SerenityEngine/SerenityEngineApp.cpp
 	<wx/wx.h>
+	<wx/stdpaths.h>
 	"wx_pch.h"
 	"SerenityEngineApp.h"
 	"SerenityEditorSerenity3D_Frame.h"
