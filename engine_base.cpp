@@ -1310,7 +1310,56 @@ bool serenity_project::genRCBasicProject()
 
 			meshes[i].p_cmd = p_cmd.ToStdString();
 
-			p_cmd = _("\t") + mesh_list_id + _(".ID = LoadMesh(") + mesh_path + _("\"") + wxString::FromUTF8(meshes[i].file) + _("\")") + _("\n");
+			if(wxString::FromUTF8(meshes[i].file + "_").Trim().substr(0,1).compare(_("!"))==0)
+			{
+				wxString special_mesh_type = wxString::FromUTF8(meshes[i].file);
+
+				if(special_mesh_type.Trim().compare(_("!cone"))==0)
+				{
+					wxString cone_radius = wxString::FromDouble(meshes[i].radius);
+					wxString cone_length = wxString::FromDouble(meshes[i].length);
+					wxString tesselation = wxString::Format(_("%i"), meshes[i].tesselation);
+					wxString top_color = wxString::Format(_("%u"), meshes[i].cone_top_color.color);
+					wxString bottom_color = wxString::Format(_("%u"), meshes[i].cone_bottom_color.color);
+					p_cmd = _("\t") + mesh_list_id + _(".ID = CreateConeMesh(") + cone_radius + _(", ") +
+																				  cone_length + _(", ") +
+																				  tesselation + _(", ") +
+																				  top_color + _(", ") +
+																				  bottom_color + _(")") + _("\n");
+				}
+				else if(special_mesh_type.Trim().compare(_("!cylinder"))==0)
+				{
+					wxString cylinder_radius = wxString::FromDouble(meshes[i].radius);
+					wxString cylinder_length = wxString::FromDouble(meshes[i].length);
+					wxString tesselation = wxString::Format(_("%i"), meshes[i].tesselation);
+					wxString cylinder_color = wxString::Format(_("%u"), meshes[i].cylinder_color.color);
+					wxString close_top = (meshes[i].cylinder_top_close ? _("TRUE") : _("FALSE"));
+					p_cmd = _("\t") + mesh_list_id + _(".ID = CreateCylinderMesh(") + cylinder_radius + _(", ") +
+																				  cylinder_length + _(", ") +
+																				  tesselation + _(", ") +
+																				  cylinder_color + _(", ") +
+																				  close_top + _(")") + _("\n");
+				}
+				else if(special_mesh_type.Trim().compare(_("!plane"))==0)
+				{
+					wxString tile_width = wxString::Format(_("%i"), meshes[i].tile_width);
+					wxString tile_height = wxString::Format(_("%i"), meshes[i].tile_height);
+					wxString tcount_x = wxString::Format(_("%i"), meshes[i].tile_count_x);
+					wxString tcount_y = wxString::Format(_("%i"), meshes[i].tile_count_y);
+					wxString repeat_x = wxString::Format(_("%i"), meshes[i].tile_txRepeat_x);
+					wxString repeat_y = wxString::Format(_("%i"), meshes[i].tile_txRepeat_y);
+					p_cmd = _("\t") + mesh_list_id + _(".ID = CreatePlaneMesh(") + tile_width + _(", ") +
+																				  tile_height + _(", ") +
+																				  tcount_x + _(", ") +
+																				  tcount_y + _(", ") +
+																				  repeat_x + _(", ") +
+																				  repeat_y + _(")") + _("\n");
+				}
+			}
+			else
+			{
+				p_cmd = _("\t") + mesh_list_id + _(".ID = LoadMesh(") + mesh_path + _("\"") + wxString::FromUTF8(meshes[i].file) + _("\")") + _("\n");
+			}
 			meshes[i].p_onLoad_cmd = p_cmd.ToStdString();
 
 			p_cmd = _("");
