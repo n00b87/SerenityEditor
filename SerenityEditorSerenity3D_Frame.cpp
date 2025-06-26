@@ -186,6 +186,8 @@ Serenity3D_Frame( parent )
 	rc_addMaterialType("MATERIAL_TYPE_TRANSPARENT_REFLECTION_2_LAYER", irr::video::EMT_TRANSPARENT_REFLECTION_2_LAYER);
 	rc_addMaterialType("MATERIAL_TYPE_TRANSPARENT_VERTEX_ALPHA", irr::video::EMT_TRANSPARENT_VERTEX_ALPHA);
 
+	rc_material_types_list = rc_getMaterialTypesList();
+
 	m_material_type_comboBox->Clear();
 	for(int i = 0; i < rc_material_types_list.size(); i++)
 	{
@@ -201,6 +203,8 @@ Serenity3D_Frame( parent )
 	rc_addAntiAliasType("ANTI_ALIAS_POINT_SMOOTH", irr::video::EAAM_POINT_SMOOTH);
 	rc_addAntiAliasType("ANTI_ALIAS_QUALITY", irr::video::EAAM_QUALITY);
 	rc_addAntiAliasType("ANTI_ALIAS_SIMPLE", irr::video::EAAM_SIMPLE);
+
+	rc_anti_alias_types_list = rc_getAntiAliasTypesList();
 
 	m_material_antiAlias_comboBox->Clear();
 	for(int i = 0; i < rc_anti_alias_types_list.size(); i++)
@@ -250,6 +254,8 @@ Serenity3D_Frame( parent )
 	rc_addBlendModeType("BLENDMODE_REVSUBTRACT", irr::video::EBO_REVSUBTRACT);
 	rc_addBlendModeType("BLENDMODE_SUBTRACT", irr::video::EBO_SUBTRACT);
 
+	rc_blendmode_types_list = rc_getBlendModeTypesList();
+
 	m_material_blendMode_comboBox->Clear();
 	for(int i = 0; i < rc_blendmode_types_list.size(); i++)
 	{
@@ -266,6 +272,8 @@ Serenity3D_Frame( parent )
 	rc_addColorMaskType("COLORMASK_RED", irr::video::ECP_RED);
 	rc_addColorMaskType("COLORMASK_RGB", irr::video::ECP_RGB);
 
+	rc_colormask_types_list = rc_getColorMaskTypesList();
+
 	m_material_colorMask_comboBox->Clear();
 	for(int i = 0; i < rc_colormask_types_list.size(); i++)
 	{
@@ -279,6 +287,8 @@ Serenity3D_Frame( parent )
 	rc_addColorModeType("COLOR_MODE_EMISSIVE", irr::video::ECM_EMISSIVE);
 	rc_addColorModeType("COLOR_MODE_NONE", irr::video::ECM_NONE);
 	rc_addColorModeType("COLOR_MODE_SPECULAR", irr::video::ECM_SPECULAR);
+
+	rc_colormode_types_list = rc_getColorModeTypesList();
 
 	m_material_colorMode_comboBox->Clear();
 	for(int i = 0; i < rc_colormode_types_list.size(); i++)
@@ -2185,6 +2195,20 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 						else
 							node->getMaterial(i) = irr::video::SMaterial();
 					}
+				}
+
+				//OVERRIDE MATERIAL FOR MESH PRIMITIVES
+				if(mesh_index >= 0 && mesh_index < project.meshes.size())
+				{
+				    if(project.meshes[mesh_index].file.substr(0,1).compare("!")==0)
+				    {
+				        int mat_index = project.stages[stage_project_index].actors[i].override_material_index;
+                        if(mat_index >= 0 && mat_index < project.materials.size())
+                        {
+                            if(project.materials[mat_index].id_name.compare("")!=0)
+                                node->getMaterial(0) = project.materials[mat_index].material;
+                        }
+				    }
 				}
 
 			}
@@ -6023,8 +6047,8 @@ void SerenityEditorSerenity3D_Frame::OnS3DCubeClicked( wxCommandEvent& event )
 
 	int actor_project_index = project.stages[stageTab_active_stage_project_index].addActor(actor_id.ToStdString(), SN_ACTOR_TYPE_CUBE);
 
-	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.isSolid = true;
-	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.mass = 1;
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.isSolid = false;
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.mass = 0;
 	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.shape = SN_PHYSICS_SHAPE_BOX;
 
 	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].cube_size = cube_size;
@@ -6107,8 +6131,8 @@ void SerenityEditorSerenity3D_Frame::OnS3DSphereClicked( wxCommandEvent& event )
 
 	int actor_project_index = project.stages[stageTab_active_stage_project_index].addActor(actor_id.ToStdString(), SN_ACTOR_TYPE_SPHERE);
 
-	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.isSolid = true;
-	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.mass = 1;
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.isSolid = false;
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.mass = 0;
 	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.shape = SN_PHYSICS_SHAPE_SPHERE;
 
 	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].radius = radius;
@@ -6213,7 +6237,7 @@ void SerenityEditorSerenity3D_Frame::OnS3DDumpClicked( wxCommandEvent& event )
 	}
 
 	int actor_project_index = project.stages[stageTab_active_stage_project_index].addActor(actor_id.ToStdString(), SN_ACTOR_TYPE_OCTREE);
-	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.isSolid = true;
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.isSolid = false;
 	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.mass = 0;
 	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.shape = SN_PHYSICS_SHAPE_BOX;
 
@@ -6314,8 +6338,8 @@ void SerenityEditorSerenity3D_Frame::OnS3DWizClicked( wxCommandEvent& event )
 
 	int actor_project_index = project.stages[stageTab_active_stage_project_index].addActor(actor_id.ToStdString(), SN_ACTOR_TYPE_ANIMATED);
 
-	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.isSolid = true;
-	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.mass = 1;
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.isSolid = false;
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.mass = 0;
 	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.shape = SN_PHYSICS_SHAPE_BOX;
 
 	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].mesh_index = mesh_index;
@@ -6614,7 +6638,7 @@ void SerenityEditorSerenity3D_Frame::OnS3DTerrainClicked( wxCommandEvent& event 
 
 	int actor_project_index = project.stages[stageTab_active_stage_project_index].addActor(actor_id.ToStdString(), SN_ACTOR_TYPE_TERRAIN);
 
-	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.isSolid = true;
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.isSolid = false;
 	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.mass = 0;
 	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.shape = SN_PHYSICS_SHAPE_TRIMESH;
 

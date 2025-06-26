@@ -324,15 +324,20 @@ std::vector<rc_colormask_keyval_pair> rc_colormask_types_list;
 std::vector<rc_colormode_keyval_pair> rc_colormode_types_list;
 
 void rc_addMaterialType(std::string rc_mat_val, irr::video::E_MATERIAL_TYPE irr_mat_val);
+std::vector<rc_material_keyval_pair> rc_getMaterialTypesList();
 void rc_addAntiAliasType(std::string rc_aa_val, irr::video::E_ANTI_ALIASING_MODE irr_aa_val);
+std::vector<rc_anti_alias_keyval_pair> rc_getAntiAliasTypesList();
 void rc_addAutoCullingType(std::string rc_ac_val, irr::scene::E_CULLING_TYPE irr_ac_val);
 std::vector<rc_auto_cull_keyval_pair> rc_getAutoCullingList(); //This function is just to fix some weird issue with accessing this list on windows
 irr::scene::E_CULLING_TYPE rc_getAutoCullingValue(std::string rc_ac_val);
 int rc_getAutoCullingIndex(irr::u32 rc_ac_val);
 std::string rc_getAutoCullingName(irr::u32 rc_ac_val);
 void rc_addBlendModeType(std::string rc_bmode_val, irr::video::E_BLEND_OPERATION irr_bmode_val);
+std::vector<rc_blendmode_keyval_pair> rc_getBlendModeTypesList();
 void rc_addColorMaskType(std::string rc_cmask_val, irr::video::E_COLOR_PLANE irr_cmask_val);
+std::vector<rc_colormask_keyval_pair> rc_getColorMaskTypesList();
 void rc_addColorModeType(std::string rc_cmode_val, irr::video::E_COLOR_MATERIAL irr_cmode_val);
+std::vector<rc_colormode_keyval_pair> rc_getColorModeTypesList();
 
 class rc_stage
 {

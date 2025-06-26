@@ -2196,6 +2196,10 @@ bool serenity_project::genRCBasicProject()
 					{
 						int mat_index = meshes[mesh_index].material_index[mat];
 
+						wxString mat_sn_id = _("Materials.") + wxString::FromUTF8(materials[mat_index].id_name) + _(".SN_ID");
+						wxString mat_id = _("Serenity_Global_Material_List[") + mat_sn_id + _("].ID");
+						mesh_material_str += _("\t") + _("SetActorMaterial( [ACTOR], ") + wxString::Format(_("%d"), mat) + _(", ") + mat_id + _(" ) ") + _("\n");
+
 						if(materials[mat_index].id_name.compare("")==0)
 							continue;
 
@@ -2225,10 +2229,6 @@ bool serenity_project::genRCBasicProject()
 						mat_load += wxString::FromUTF8(materials[mat_index].p_onLoad_cmd);
 						mat_clear += wxString::FromUTF8(materials[mat_index].p_onClear_cmd);
 						materials[mat_index].load_flag = true;
-
-						wxString mat_sn_id = _("Materials.") + wxString::FromUTF8(materials[mat_index].id_name) + _(".SN_ID");
-						wxString mat_id = _("Serenity_Global_Material_List[") + mat_sn_id + _("].ID");
-						mesh_material_str += _("\t") + _("SetActorMaterial( [ACTOR], ") + wxString::Format(_("%d"), mat) + _(", ") + mat_id + _(" )") + _("\n");
 					}
 
 					meshes[mesh_index].mat_load_str = mesh_material_str.ToStdString();
@@ -2285,7 +2285,7 @@ bool serenity_project::genRCBasicProject()
 					wxString mat_id = _("Serenity_Global_Material_List[") + mat_sn_id + _("].ID");
 					mesh_material_str += _("\t") + _("SetActorMaterial( [ACTOR], ") + wxString::Format(_("%d"), 0) + _(", ") + mat_id + _(" )") + _("\n");
 
-					meshes[mesh_index].mat_load_str = mesh_material_str.ToStdString();
+					meshes[mesh_index].mat_load_str += mesh_material_str.ToStdString();
 				}
 			}
 

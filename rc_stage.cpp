@@ -13,6 +13,11 @@ void rc_addMaterialType(std::string rc_mat_val, irr::video::E_MATERIAL_TYPE irr_
 	rc_material_types_list.push_back(mat_obj);
 }
 
+std::vector<rc_material_keyval_pair> rc_getMaterialTypesList()
+{
+    return rc_material_types_list;
+}
+
 void rc_addAntiAliasType(std::string rc_aa_val, irr::video::E_ANTI_ALIASING_MODE irr_aa_val)
 {
 	rc_anti_alias_keyval_pair aa_obj;
@@ -20,6 +25,11 @@ void rc_addAntiAliasType(std::string rc_aa_val, irr::video::E_ANTI_ALIASING_MODE
 	aa_obj.val = irr_aa_val;
 
 	rc_anti_alias_types_list.push_back(aa_obj);
+}
+
+std::vector<rc_anti_alias_keyval_pair> rc_getAntiAliasTypesList()
+{
+    return rc_anti_alias_types_list;
 }
 
 void rc_addAutoCullingType(std::string rc_ac_val, irr::scene::E_CULLING_TYPE irr_ac_val)
@@ -90,6 +100,11 @@ void rc_addBlendModeType(std::string rc_bmode_val, irr::video::E_BLEND_OPERATION
 	rc_blendmode_types_list.push_back(bm_obj);
 }
 
+std::vector<rc_blendmode_keyval_pair> rc_getBlendModeTypesList()
+{
+    return rc_blendmode_types_list;
+}
+
 void rc_addColorMaskType(std::string rc_cmask_val, irr::video::E_COLOR_PLANE irr_cmask_val)
 {
 	rc_colormask_keyval_pair cmask_obj;
@@ -99,6 +114,11 @@ void rc_addColorMaskType(std::string rc_cmask_val, irr::video::E_COLOR_PLANE irr
 	rc_colormask_types_list.push_back(cmask_obj);
 }
 
+std::vector<rc_colormask_keyval_pair> rc_getColorMaskTypesList()
+{
+    return rc_colormask_types_list;
+}
+
 void rc_addColorModeType(std::string rc_cmode_val, irr::video::E_COLOR_MATERIAL irr_cmode_val)
 {
 	rc_colormode_keyval_pair cmode_obj;
@@ -106,6 +126,11 @@ void rc_addColorModeType(std::string rc_cmode_val, irr::video::E_COLOR_MATERIAL 
 	cmode_obj.val = irr_cmode_val;
 
 	rc_colormode_types_list.push_back(cmode_obj);
+}
+
+std::vector<rc_colormode_keyval_pair> rc_getColorModeTypesList()
+{
+    return rc_colormode_types_list;
 }
 
 rc_stage::rc_stage()
