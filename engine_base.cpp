@@ -1922,6 +1922,7 @@ bool serenity_project::genRCBasicProject()
 		pfile.Write(_("\'----------------INIT STAGE: [ ") + wxString::FromUTF8(stages[stage].id_name) + _(" ]-----------------------\n"));
 
 		pfile.Write(stage_id + _(".ID = ") + wxString::Format(_("%d"), stage_sn_id) + _("\n"));
+		pfile.Write(stage_id + _(".ActorCount = ") + wxString::Format(_("%i"), (int)stages[stage].actors.size()) +_("\n"));
 		stage_sn_id++;
 
 		switch(stages[stage].sky.type)
@@ -2134,6 +2135,7 @@ bool serenity_project::genRCBasicProject()
 			actor_sn_id++;
 
 			wxString actor_define = _("\'-----------ACTOR [ ") + stage_id + _(".Actors.") + wxString::FromUTF8(stages[stage].actors[actor].id_name) + _(" ]----------------\n");
+			actor_define += _("Serenity_Global_Actor_List[") + wxString::Format(_("%i"), global_actor_index) + _("].Name$ = \"") + wxString(stages[stage].actors[actor].id_name) + _("\"\n");
 			actor_define += _("Serenity_Global_Actor_List[") + wxString::Format(_("%i"), global_actor_index) + _("].SN_ID = ") + wxString::Format(_("%d"), stages[stage].actors[actor].sn_id) + _("\n\n");
 
 			wxString actor_id = _("Serenity_Global_Actor_List[") + wxString::Format(_("%i"), global_actor_index) + _("]");
