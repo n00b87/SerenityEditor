@@ -276,7 +276,7 @@
                             <property name="name">m_s3d_select_tool</property>
                             <property name="permission">protected</property>
                             <property name="statusbar"></property>
-                            <property name="tooltip"></property>
+                            <property name="tooltip">Select</property>
                             <event name="OnToolClicked">OnS3DSelectClicked</event>
                           </object>
                           <object class="tool" expanded="false">
@@ -288,7 +288,7 @@
                             <property name="name">m_s3d_boxSelect_tool</property>
                             <property name="permission">protected</property>
                             <property name="statusbar"></property>
-                            <property name="tooltip"></property>
+                            <property name="tooltip">Box Select</property>
                             <event name="OnToolClicked">OnS3DBoxClicked</event>
                           </object>
                           <object class="tool" expanded="false">
@@ -300,7 +300,7 @@
                             <property name="name">m_s3d_move_tool</property>
                             <property name="permission">protected</property>
                             <property name="statusbar"></property>
-                            <property name="tooltip"></property>
+                            <property name="tooltip">Move Selected Objects</property>
                             <event name="OnToolClicked">OnS3DMoveClicked</event>
                           </object>
                           <object class="tool" expanded="false">
@@ -312,7 +312,7 @@
                             <property name="name">m_s3d_rotate_tool</property>
                             <property name="permission">protected</property>
                             <property name="statusbar"></property>
-                            <property name="tooltip"></property>
+                            <property name="tooltip">Rotate Selected Objects</property>
                             <event name="OnToolClicked">OnS3DRotateClicked</event>
                           </object>
                           <object class="tool" expanded="false">
@@ -324,7 +324,7 @@
                             <property name="name">m_s3d_scale_tool</property>
                             <property name="permission">protected</property>
                             <property name="statusbar"></property>
-                            <property name="tooltip"></property>
+                            <property name="tooltip">Scale Selected Objects</property>
                             <event name="OnToolClicked">OnS3DScaleClicked</event>
                           </object>
                           <object class="toolSeparator" expanded="false">
@@ -339,7 +339,7 @@
                             <property name="name">m_s3d_animatedActor_tool</property>
                             <property name="permission">protected</property>
                             <property name="statusbar"></property>
-                            <property name="tooltip"></property>
+                            <property name="tooltip">Add Animated Actor to Stage</property>
                             <event name="OnToolClicked">OnS3DWizClicked</event>
                           </object>
                           <object class="tool" expanded="false">
@@ -351,7 +351,7 @@
                             <property name="name">m_s3d_octreeActor_tool</property>
                             <property name="permission">protected</property>
                             <property name="statusbar"></property>
-                            <property name="tooltip"></property>
+                            <property name="tooltip">Add Octree Actor to Stage</property>
                             <event name="OnToolClicked">OnS3DDumpClicked</event>
                           </object>
                           <object class="tool" expanded="false">
@@ -363,7 +363,7 @@
                             <property name="name">m_s3d_billboardActor_tool</property>
                             <property name="permission">protected</property>
                             <property name="statusbar"></property>
-                            <property name="tooltip">Add a billboard to the stage</property>
+                            <property name="tooltip">Add a Billboard to Stage</property>
                             <event name="OnToolClicked">OnS3DBillboardClicked</event>
                           </object>
                           <object class="tool" expanded="false">
@@ -375,7 +375,7 @@
                             <property name="name">m_s3d_lightActor_tool</property>
                             <property name="permission">protected</property>
                             <property name="statusbar"></property>
-                            <property name="tooltip">Add a light to the stage</property>
+                            <property name="tooltip">Add a Light to Stage</property>
                             <event name="OnToolClicked">OnS3DLightClicked</event>
                           </object>
                           <object class="tool" expanded="false">
@@ -387,7 +387,7 @@
                             <property name="name">m_s3d_terrainActor_tool</property>
                             <property name="permission">protected</property>
                             <property name="statusbar"></property>
-                            <property name="tooltip"></property>
+                            <property name="tooltip">Add Terrain to Stage</property>
                             <event name="OnToolClicked">OnS3DTerrainClicked</event>
                           </object>
                           <object class="tool" expanded="false">
@@ -399,7 +399,7 @@
                             <property name="name">m_s3d_waterActor_tool</property>
                             <property name="permission">protected</property>
                             <property name="statusbar"></property>
-                            <property name="tooltip"></property>
+                            <property name="tooltip">Add Water to Stage</property>
                             <event name="OnToolClicked">OnS3DWaterClicked</event>
                           </object>
                           <object class="tool" expanded="false">
@@ -411,7 +411,7 @@
                             <property name="name">m_s3d_particleActor_tool</property>
                             <property name="permission">protected</property>
                             <property name="statusbar"></property>
-                            <property name="tooltip"></property>
+                            <property name="tooltip">Add Particle Emitter to Stage</property>
                             <event name="OnToolClicked">OnS3DEffectClicked</event>
                           </object>
                           <object class="tool" expanded="false">
@@ -423,7 +423,7 @@
                             <property name="name">m_s3d_cube_tool</property>
                             <property name="permission">protected</property>
                             <property name="statusbar"></property>
-                            <property name="tooltip"></property>
+                            <property name="tooltip">Add Cube to Stage</property>
                             <event name="OnToolClicked">OnS3DCubeClicked</event>
                           </object>
                           <object class="tool" expanded="false">
@@ -435,7 +435,7 @@
                             <property name="name">m_s3d_sphere_tool</property>
                             <property name="permission">protected</property>
                             <property name="statusbar"></property>
-                            <property name="tooltip"></property>
+                            <property name="tooltip">Add Sphere to Stage</property>
                             <event name="OnToolClicked">OnS3DSphereClicked</event>
                           </object>
                         </object>
@@ -16465,7 +16465,7 @@
         <property name="id">wxID_ANY</property>
         <property name="maximum_size"></property>
         <property name="minimum_size"></property>
-        <property name="name">m_statusBar1</property>
+        <property name="name">m_main_statusBar</property>
         <property name="permission">protected</property>
         <property name="pos"></property>
         <property name="size"></property>

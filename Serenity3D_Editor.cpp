@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version 4.2.1-0-g80c4cb6-dirty)
+// C++ code generated with wxFormBuilder (version 4.2.1-0-g80c4cb6)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO *NOT* EDIT THIS FILE!
@@ -28,35 +28,35 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer99->Add( 0, 0, 1, wxEXPAND, 5 );
 
 	m_auiToolBar52 = new wxAuiToolBar( m_stage_panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_TB_VERTICAL );
-	m_s3d_select_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/cursor.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_CHECK, wxEmptyString, wxEmptyString, NULL );
+	m_s3d_select_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/cursor.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_CHECK, wxT("Select"), wxEmptyString, NULL );
 
-	m_s3d_boxSelect_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/selection-box.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_CHECK, wxEmptyString, wxEmptyString, NULL );
+	m_s3d_boxSelect_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/selection-box.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_CHECK, wxT("Box Select"), wxEmptyString, NULL );
 
-	m_s3d_move_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/move.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_CHECK, wxEmptyString, wxEmptyString, NULL );
+	m_s3d_move_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/move.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_CHECK, wxT("Move Selected Objects"), wxEmptyString, NULL );
 
-	m_s3d_rotate_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/360.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_CHECK, wxEmptyString, wxEmptyString, NULL );
+	m_s3d_rotate_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/360.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_CHECK, wxT("Rotate Selected Objects"), wxEmptyString, NULL );
 
-	m_s3d_scale_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/scale.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_CHECK, wxEmptyString, wxEmptyString, NULL );
+	m_s3d_scale_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/scale.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_CHECK, wxT("Scale Selected Objects"), wxEmptyString, NULL );
 
 	m_auiToolBar52->AddSeparator();
 
-	m_s3d_animatedActor_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("Add Animated Actor"), wxBitmap( wxT("icons/animated_mesh.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+	m_s3d_animatedActor_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("Add Animated Actor"), wxBitmap( wxT("icons/animated_mesh.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxT("Add Animated Actor to Stage"), wxEmptyString, NULL );
 
-	m_s3d_octreeActor_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("Add Octree Actor"), wxBitmap( wxT("icons/mesh.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+	m_s3d_octreeActor_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("Add Octree Actor"), wxBitmap( wxT("icons/mesh.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxT("Add Octree Actor to Stage"), wxEmptyString, NULL );
 
-	m_s3d_billboardActor_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("Add Billboard"), wxBitmap( wxT("icons/billboard.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxT("Add a billboard to the stage"), wxEmptyString, NULL );
+	m_s3d_billboardActor_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("Add Billboard"), wxBitmap( wxT("icons/billboard.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxT("Add a Billboard to Stage"), wxEmptyString, NULL );
 
-	m_s3d_lightActor_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("Add Light"), wxBitmap( wxT("icons/light-bulb.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxT("Add a light to the stage"), wxEmptyString, NULL );
+	m_s3d_lightActor_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("Add Light"), wxBitmap( wxT("icons/light-bulb.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxT("Add a Light to Stage"), wxEmptyString, NULL );
 
-	m_s3d_terrainActor_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("Add/Edit Terrain"), wxBitmap( wxT("icons/terrain.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+	m_s3d_terrainActor_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("Add/Edit Terrain"), wxBitmap( wxT("icons/terrain.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxT("Add Terrain to Stage"), wxEmptyString, NULL );
 
-	m_s3d_waterActor_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("Add Water"), wxBitmap( wxT("icons/sea.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+	m_s3d_waterActor_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("Add Water"), wxBitmap( wxT("icons/sea.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxT("Add Water to Stage"), wxEmptyString, NULL );
 
-	m_s3d_particleActor_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("Add Particle Effect"), wxBitmap( wxT("icons/effect.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+	m_s3d_particleActor_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("Add Particle Effect"), wxBitmap( wxT("icons/effect.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxT("Add Particle Emitter to Stage"), wxEmptyString, NULL );
 
-	m_s3d_cube_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("Add Cube"), wxBitmap( wxT("icons/3d-cube.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+	m_s3d_cube_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("Add Cube"), wxBitmap( wxT("icons/3d-cube.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxT("Add Cube to Stage"), wxEmptyString, NULL );
 
-	m_s3d_sphere_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("Add Sphere"), wxBitmap( wxT("icons/sphere.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+	m_s3d_sphere_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("Add Sphere"), wxBitmap( wxT("icons/sphere.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxT("Add Sphere to Stage"), wxEmptyString, NULL );
 
 	m_auiToolBar52->Realize();
 
@@ -1979,7 +1979,7 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 
 	this->SetSizer( bSizer1 );
 	this->Layout();
-	m_statusBar1 = this->CreateStatusBar( 1, wxSTB_SIZEGRIP, wxID_ANY );
+	m_main_statusBar = this->CreateStatusBar( 1, wxSTB_SIZEGRIP, wxID_ANY );
 	m_toolBar3 = this->CreateToolBar( wxTB_HORIZONTAL, wxID_ANY );
 	m_tool33 = m_toolBar3->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/new-project.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
 

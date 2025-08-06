@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version 4.2.1-0-g80c4cb6-dirty)
+// C++ code generated with wxFormBuilder (version 4.2.1-0-g80c4cb6)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO *NOT* EDIT THIS FILE!
@@ -593,7 +593,7 @@ class Serenity3D_Frame : public wxFrame
 		wxStaticText* m_staticText41;
 		wxColourPickerCtrl* m_texture_colorKey_colourPicker;
 		wxPanel* m_texture_texturePreview_panel;
-		wxStatusBar* m_statusBar1;
+		wxStatusBar* m_main_statusBar;
 		wxToolBar* m_toolBar3;
 		wxToolBarToolBase* m_tool33;
 		wxToolBarToolBase* m_tool34;

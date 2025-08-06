@@ -800,7 +800,7 @@ void SerenityEditorSerenity3D_Frame::updatePreviewMesh()
 		int bb_height = meshTab_preview_obj.node->getBoundingBox().MaxEdge.Y - meshTab_preview_obj.node->getBoundingBox().MinEdge.Y;
 		int distance = meshTab_preview_obj.node->getAbsolutePosition().Z - bb_height;
 		int cy = meshTab_preview_obj.node->getBoundingBox().MaxEdge.Y + (distance/2);
-		current_window->camera[0].camera.setPosition(0, cy, distance);
+		current_window->camera[0].camera.setPosition(0, cy, distance*1.5);
 	}
 
 	//Set Materials
@@ -6937,6 +6937,8 @@ void SerenityEditorSerenity3D_Frame::OnNewProjectMenuSelection( wxCommandEvent& 
 	project.project_initialized = true;
 	//wxDir p_dir(create_project_win->project_file.GetPath());
 	//wxMessageBox(_("DIR: ") + create_project_win->project_file.GetPath(true));
+
+	m_main_statusBar->SetStatusText(_("Current Project:") + project.project_path.GetAbsolutePath());
 }
 
 bool SerenityEditorSerenity3D_Frame::load_project(wxFileName pfile)
@@ -7189,6 +7191,8 @@ void SerenityEditorSerenity3D_Frame::OnLoadProjectMenuSelection( wxCommandEvent&
 
 	project.project_initialized = true;
 
+	m_main_statusBar->SetStatusText(_("Current Project:") + project.project_path.GetAbsolutePath());
+
 	return;
 }
 
@@ -7278,6 +7282,8 @@ bool SerenityEditorSerenity3D_Frame::save_project()
 void SerenityEditorSerenity3D_Frame::OnSaveProjectMenuSelection( wxCommandEvent& event )
 {
 	save_project();
+
+	m_main_statusBar->SetStatusText(_("Current Project:") + project.project_path.GetAbsolutePath());
 }
 
 void SerenityEditorSerenity3D_Frame::OnExitMenuSelection( wxCommandEvent& event )

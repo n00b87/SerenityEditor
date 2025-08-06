@@ -640,6 +640,7 @@ void wxIrrlicht::OnRender() {
 							irr_SetFont(ui_font1);
 							irr_DrawText("Top", 10, 10, hud_color, i);
 							camera[i].camera.camera->setProjectionMatrix(ortho_matrix);
+							camera[i].camera.camera->setRotation(irr::core::vector3df(-90, 0, 0));
 
 							float gcx = (float)((int)(camera[i].camera.x / grid_spacing)*grid_spacing);
 							float gcy = (float)camera[i].camera.y;

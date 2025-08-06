@@ -35,7 +35,7 @@
 			<Add directory="/home/n00b/Projects/an8-parser" />
 		</Compiler>
 		<Linker>
-			<Add option="`wx-config --libs std,stc,aui,propgrid,ribbon,richtext` `pkg-config --libs gtk+-3.0` -lfreetype -Wl,--allow-multiple-definition" />
+			<Add option="`wx-config --libs std,stc,aui,propgrid,ribbon,richtext` `pkg-config --libs gtk+-3.0` -lfreetype -Wl,--allow-multiple-definition -lSDL2" />
 			<Add library="EGL" />
 			<Add library="GL" />
 			<Add library="Xxf86vm" />
