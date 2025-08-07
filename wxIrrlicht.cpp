@@ -225,8 +225,8 @@ actual_params->WindowId = (HWND)this->GetHandle();
 	num_views = 4;
 	SetCameraViewParam();
 
-	ortho_near = -1.0f;
-	ortho_far = -5000.0f;
+	ortho_near = 1.0f;
+	ortho_far = 5000.0f;
 	ortho_width = 2000.0f;
 	ortho_height = 1200.0f;
 	ortho_matrix.buildProjectionMatrixOrthoLH(ortho_width,ortho_height,ortho_near,ortho_far);

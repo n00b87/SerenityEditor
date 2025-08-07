@@ -7439,7 +7439,7 @@ void SerenityEditorSerenity3D_Frame::select_pov()
         stage_window->camera[0].camera.setRotation(0, 0, 0);
 
         //stage_window->camera[1].camera.setPosition(-100, 0, 0);
-        stage_window->camera[1].camera.setRotation(0, 90, 0);
+        stage_window->camera[1].camera.setRotation(0, -90, 0);
 
         //stage_window->camera[2].camera.setPosition(0, 100, 0);
         stage_window->camera[2].camera.setRotation(90, 0, 0);
