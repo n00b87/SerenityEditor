@@ -332,7 +332,7 @@ void wxIrrlicht::init_stage_camera()
 		else if(camera[i].pov == RC_CAMERA_VIEW_TOP)
 		{
 			float ax_top = 0;
-			float ay_top = ay - (perspective_far/2);
+			float ay_top = ay + (perspective_far/2);
 			float az_top = az + (perspective_far/4);
 
 			irr::core::vector3df cam_pos(ax, ay, az);
@@ -640,7 +640,6 @@ void wxIrrlicht::OnRender() {
 							irr_SetFont(ui_font1);
 							irr_DrawText("Top", 10, 10, hud_color, i);
 							camera[i].camera.camera->setProjectionMatrix(ortho_matrix);
-							camera[i].camera.camera->setRotation(irr::core::vector3df(-90, 0, 0));
 
 							float gcx = (float)((int)(camera[i].camera.x / grid_spacing)*grid_spacing);
 							float gcy = (float)camera[i].camera.y;
