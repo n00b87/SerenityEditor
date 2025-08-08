@@ -1,8 +1,8 @@
 # depslib dependency file v1.0
-1754448166 source:/home/n00b/Projects/SerenityEngine/Serenity3D_Editor.cpp
+1754680261 source:/home/n00b/Projects/SerenityEngine/Serenity3D_Editor.cpp
 	"Serenity3D_Editor.h"
 
-1754447248 /home/n00b/Projects/SerenityEngine/Serenity3D_Editor.h
+1754680261 /home/n00b/Projects/SerenityEngine/Serenity3D_Editor.h
 	<wx/artprov.h>
 	<wx/xrc/xmlres.h>
 	<wx/string.h>
@@ -2215,7 +2215,7 @@
 
 1752079328 /usr/include/x86_64-linux-gnu/bits/types/struct_statx.h
 
-1754542844 source:/home/n00b/Projects/SerenityEngine/wxIrrlicht.cpp
+1754543696 source:/home/n00b/Projects/SerenityEngine/wxIrrlicht.cpp
 	<wx/wx.h>
 	<wx/stdpaths.h>
 	<wx/filename.h>

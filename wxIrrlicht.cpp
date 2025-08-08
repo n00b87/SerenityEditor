@@ -2287,6 +2287,8 @@ void wxIrrlicht::OnUpdate()
 			int delta_x = px - drag_start.x;
 			int delta_y = py - drag_start.y;
 
+			float cam_far = ortho_far;
+
 			if(camera[active_camera].pov != RC_CAMERA_VIEW_PERSPECTIVE)
 			{
 				if(num_views == 1)
@@ -2448,15 +2450,15 @@ void wxIrrlicht::OnUpdate()
 					{
 						float ax_front = 0;
 						float ay_front = ay;
-						float az_front = az + (perspective_far/4);
+						float az_front = az + (cam_far/4);
 
 						irr::core::vector3df cam_pos(ax, ay, az);
 						irr::core::vector3df cam_tgt = cam_pos;
-						cam_tgt += irr::core::vector3df(0, 0, (perspective_far/4));
+						cam_tgt += irr::core::vector3df(0, 0, (cam_far/4));
 						cam_tgt.rotateXZBy(-camera[active_camera].camera.ry, cam_pos);
 
 						ax_front = cam_tgt.X;
-						az_front = az - (perspective_far/2);
+						az_front = az - (cam_far/2);
 
 						//std::cout << "AX~ " << ax << ", " << ax_front << std::endl;
 						//std::cout << "AZ~ " << az << ", " << az_front << std::endl << std::endl;
@@ -2467,15 +2469,15 @@ void wxIrrlicht::OnUpdate()
 					}
 					else if(camera[i].pov == RC_CAMERA_VIEW_RIGHT)
 					{
-						float ax_right = ax - (perspective_far/2);
-						float az_right = az + (perspective_far/4);
+						float ax_right = ax - (cam_far/2);
+						float az_right = az + (cam_far/4);
 
 						irr::core::vector3df cam_pos(ax, ay, az);
 						irr::core::vector3df cam_tgt = cam_pos;
-						cam_tgt += irr::core::vector3df(0, 0, (perspective_far/4));
+						cam_tgt += irr::core::vector3df(0, 0, (cam_far/4));
 						cam_tgt.rotateXZBy(camera[active_camera].camera.ry, cam_pos);
 
-						ax_right = cam_tgt.X - (perspective_far/4);
+						ax_right = cam_tgt.X - (cam_far/4);
 						az_right = cam_tgt.Z;
 
 						//std::cout << "AX~ " << ax << ", " << ax_right << std::endl;
@@ -2488,12 +2490,12 @@ void wxIrrlicht::OnUpdate()
 					else if(camera[i].pov == RC_CAMERA_VIEW_TOP)
 					{
 						float ax_top = 0;
-						float ay_top = ay - (perspective_far/2);
-						float az_top = az + (perspective_far/4);
+						float ay_top = ay - (cam_far/2);
+						float az_top = az + (cam_far/4);
 
 						irr::core::vector3df cam_pos(ax, ay, az);
 						irr::core::vector3df cam_tgt = cam_pos;
-						cam_tgt += irr::core::vector3df(0, 0, (perspective_far/4));
+						cam_tgt += irr::core::vector3df(0, 0, (cam_far/4));
 						cam_tgt.rotateXZBy(-camera[active_camera].camera.ry, cam_pos);
 
 						ax_top = cam_tgt.X;
@@ -2519,29 +2521,29 @@ void wxIrrlicht::OnUpdate()
 				{
 					float ax_front = 0;
 					float ay_front = ay;
-					float az_front = az - (perspective_far/4);
+					float az_front = az - (cam_far/4);
 
 					irr::core::vector3df cam_pos(ax, ay, az);
 					irr::core::vector3df cam_tgt = cam_pos;
-					cam_tgt += irr::core::vector3df(0, 0, -(perspective_far/4));
+					cam_tgt += irr::core::vector3df(0, 0, -(cam_far/4));
 					cam_tgt.rotateXZBy(-camera[3].camera.ry, cam_pos);
 
 					ax_front = cam_tgt.X;
-					az_front = az + (perspective_far/2);
+					az_front = az + (cam_far/2);
 
 					camera[3].camera.setPosition(ax_front, ay, az_front);
 				}
 				else if(camera[active_camera].pov == RC_CAMERA_VIEW_RIGHT)
 				{
-					float ax_right = ax - (perspective_far/2);
-					float az_right = az + (perspective_far/4);
+					float ax_right = ax - (cam_far/2);
+					float az_right = az + (cam_far/4);
 
 					irr::core::vector3df cam_pos(ax, ay, az);
 					irr::core::vector3df cam_tgt = cam_pos;
-					cam_tgt += irr::core::vector3df(0, 0, -(perspective_far/4));
+					cam_tgt += irr::core::vector3df(0, 0, -(cam_far/4));
 					cam_tgt.rotateXZBy(camera[3].camera.ry, cam_pos);
 
-					ax_right = cam_tgt.X + (perspective_far/4);
+					ax_right = cam_tgt.X + (cam_far/4);
 					az_right = cam_tgt.Z;
 
 					//std::cout << "AX~ " << ax << ", " << ax_right << std::endl;
@@ -2552,12 +2554,12 @@ void wxIrrlicht::OnUpdate()
 				else if(camera[active_camera].pov == RC_CAMERA_VIEW_TOP)
 				{
 					float ax_top = 0;
-					float ay_top = ay - irr::core::abs_(perspective_far/2);
-					float az_top = az + (perspective_far/4);
+					float ay_top = ay - irr::core::abs_(cam_far/2);
+					float az_top = az + (cam_far/4);
 
 					irr::core::vector3df cam_pos(ax, ay, az);
 					irr::core::vector3df cam_tgt = cam_pos;
-					cam_tgt += irr::core::vector3df(0, 0, -(perspective_far/4));
+					cam_tgt += irr::core::vector3df(0, 0, -(cam_far/4));
 					cam_tgt.rotateXZBy(-camera[3].camera.ry, cam_pos);
 
 					ax_top = cam_tgt.X;
@@ -2581,15 +2583,15 @@ void wxIrrlicht::OnUpdate()
 					{
 						float ax_front = 0;
 						float ay_front = ay;
-						float az_front = az + (perspective_far/4);
+						float az_front = az + (cam_far/4);
 
 						irr::core::vector3df cam_pos(ax, ay, az);
 						irr::core::vector3df cam_tgt = cam_pos;
-						cam_tgt += irr::core::vector3df(0, 0, (perspective_far/4));
+						cam_tgt += irr::core::vector3df(0, 0, (cam_far/4));
 						cam_tgt.rotateXZBy(-camera[3].camera.ry, cam_pos);
 
 						ax_front = cam_tgt.X;
-						az_front = az - (perspective_far/2);
+						az_front = az - (cam_far/2);
 
 						//std::cout << "AX~ " << ax << ", " << ax_front << std::endl;
 						//std::cout << "AZ~ " << az << ", " << az_front << std::endl << std::endl;
@@ -2600,15 +2602,15 @@ void wxIrrlicht::OnUpdate()
 					}
 					else if(camera[i].pov == RC_CAMERA_VIEW_RIGHT)
 					{
-						float ax_right = ax - (perspective_far/2);
-						float az_right = az + (perspective_far/4);
+						float ax_right = ax - (cam_far/2);
+						float az_right = az + (cam_far/4);
 
 						irr::core::vector3df cam_pos(ax, ay, az);
 						irr::core::vector3df cam_tgt = cam_pos;
-						cam_tgt += irr::core::vector3df(0, 0, (perspective_far/4));
+						cam_tgt += irr::core::vector3df(0, 0, (cam_far/4));
 						cam_tgt.rotateXZBy(camera[3].camera.ry, cam_pos);
 
-						ax_right = cam_tgt.X - (perspective_far/4);
+						ax_right = cam_tgt.X - (cam_far/4);
 						az_right = cam_tgt.Z;
 
 						camera[i].camera.setPosition(ax_right, ay, az_right);
@@ -2616,12 +2618,12 @@ void wxIrrlicht::OnUpdate()
 					else if(camera[i].pov == RC_CAMERA_VIEW_TOP)
 					{
 						float ax_top = 0;
-						float ay_top = ay + (perspective_far/2);
-						float az_top = az + (perspective_far/4);
+						float ay_top = ay + (cam_far/2);
+						float az_top = az + (cam_far/4);
 
 						irr::core::vector3df cam_pos(ax, ay, az);
 						irr::core::vector3df cam_tgt = cam_pos;
-						cam_tgt += irr::core::vector3df(0, 0, (perspective_far/4));
+						cam_tgt += irr::core::vector3df(0, 0, (cam_far/4));
 						cam_tgt.rotateXZBy(-camera[3].camera.ry, cam_pos);
 
 						ax_top = cam_tgt.X;
