@@ -7452,7 +7452,11 @@ void SerenityEditorSerenity3D_Frame::select_pov()
 void SerenityEditorSerenity3D_Frame::OnViewComboSelect( wxCommandEvent& event )
 {
 	select_pov();
-	stage_window->init_stage_camera();
+	if(stage_window)
+	{
+	    stage_window->init_stage_camera();
+        stage_window->setGridSize(project.grid_size);
+	}
 }
 
 void SerenityEditorSerenity3D_Frame::OnStageViewComboOpen( wxCommandEvent& event )
@@ -7709,6 +7713,26 @@ void SerenityEditorSerenity3D_Frame::On_Mesh_MeshList_Select( wxCommandEvent& ev
 	m_mesh_meshID_textCtrl->SetValue(wxString::FromUTF8(project.meshes[n].id_name));
 	m_mesh_meshFile_textCtrl->SetValue(wxString::FromUTF8(project.meshes[n].file));
 
+    //Add all meshes to collider mesh list
+    m_mesh_meshCollider_comboBox->Clear();
+    m_mesh_meshCollider_comboBox->Insert(_("NONE"), 0);
+    int collider_index = 0;
+    wxString collider_id_name = wxString(project.meshes[n].collider_id_name).Trim();
+
+    for(int i = 0; i < project.meshes.size(); i++)
+    {
+        if(project.meshes[i].id_name.compare("") == 0)
+            continue;
+
+        int n_items = m_mesh_meshCollider_comboBox->GetCount();
+
+        m_mesh_meshCollider_comboBox->Insert(project.meshes[i].id_name, n_items);
+        if(collider_id_name.compare( wxString(project.meshes[i].id_name).Trim() ) == 0)
+            collider_index = n_items;
+    }
+
+    m_mesh_meshCollider_comboBox->SetSelection(collider_index);
+
 
 	m_mesh_materialList_listBox->Clear();
 
@@ -7780,6 +7804,8 @@ void SerenityEditorSerenity3D_Frame::On_Mesh_Create_ButtonClick( wxCommandEvent&
 	p_mesh.isAN8Scene = false;
 	p_mesh.isMD2 = false;
 	p_mesh.isZipped = false;
+	p_mesh.collider_id_name = "NONE";
+	p_mesh.tmp_has_collider = false;
 
 	p_mesh.cone_bottom_color = irr::video::SColor(dialog->cone_bottom_color.Alpha(),
 												dialog->cone_bottom_color.Red(),
@@ -7990,6 +8016,9 @@ void SerenityEditorSerenity3D_Frame::On_Mesh_Load_ButtonClick( wxCommandEvent& e
 
 				if(mesh_index >= 0)
 				{
+				    project.meshes[mesh_index].collider_id_name = "NONE";
+                    project.meshes[mesh_index].tmp_has_collider = false;
+
 					if(project.meshes[mesh_index].id_name.compare("")!=0)
 						m_mesh_mesh_listBox->AppendAndEnsureVisible(wxString::FromUTF8(project.meshes[mesh_index].id_name));
 				}
@@ -8001,6 +8030,9 @@ void SerenityEditorSerenity3D_Frame::On_Mesh_Load_ButtonClick( wxCommandEvent& e
 
 			if(mesh_index >= 0)
 			{
+			    project.meshes[mesh_index].collider_id_name = "NONE";
+                project.meshes[mesh_index].tmp_has_collider = false;
+
 				if(project.meshes[mesh_index].id_name.compare("")!=0)
 					m_mesh_mesh_listBox->AppendAndEnsureVisible(wxString::FromUTF8(project.meshes[mesh_index].id_name));
 			}
@@ -8021,6 +8053,8 @@ void SerenityEditorSerenity3D_Frame::On_Mesh_Remove_ButtonClick( wxCommandEvent&
 	{
 		//project.meshes[n].mesh->drop();
 	}
+
+	wxString mesh_id_name = wxString(project.meshes[n].id_name).Trim();
 
 	project.meshes[n].mesh = NULL;
 
@@ -8058,6 +8092,16 @@ void SerenityEditorSerenity3D_Frame::On_Mesh_Remove_ButtonClick( wxCommandEvent&
 
 	updatePreviewMesh();
 
+
+	//set any mesh using this as a collider to NONE
+	for(int i = 0; i < project.meshes.size(); i++)
+    {
+        if(wxString(project.meshes[i].collider_id_name).Trim().compare(mesh_id_name)==0)
+        {
+            project.meshes[i].collider_id_name = "NONE";
+            project.meshes[i].tmp_has_collider = false;
+        }
+    }
 
 	//set mesh for any actor using this mesh to -1
 	for(int i = 0; i < project.stages.size(); i++)
@@ -8108,6 +8152,18 @@ void SerenityEditorSerenity3D_Frame::On_Mesh_MeshID( wxCommandEvent& event )
 	m_mesh_mesh_listBox->SetString(current_list_item, wxString::FromUTF8(project.meshes[n].id_name.c_str()));
 
 	m_mesh_mesh_listBox->Update();
+}
+
+
+void SerenityEditorSerenity3D_Frame::On_Mesh_MeshCollider_Select( wxCommandEvent& event )
+{
+    if(meshTab_selected_mesh_project_index < 0 || meshTab_selected_mesh_project_index >= project.meshes.size())
+		return;
+
+	int n = meshTab_selected_mesh_project_index;
+
+	wxString mesh_collider_id = event.GetString();
+	project.meshes[n].collider_id_name = mesh_collider_id.Trim().ToStdString();
 }
 
 void SerenityEditorSerenity3D_Frame::On_Mesh_AddMaterial( wxCommandEvent& event )

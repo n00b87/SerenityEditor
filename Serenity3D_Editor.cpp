@@ -1129,6 +1129,21 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 
 	bSizer881->Add( bSizer70, 0, wxEXPAND, 5 );
 
+	wxBoxSizer* bSizer279;
+	bSizer279 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText123 = new wxStaticText( m_panel33, wxID_ANY, wxT("Collider\t"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText123->Wrap( -1 );
+	m_staticText123->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
+	bSizer279->Add( m_staticText123, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_mesh_meshCollider_comboBox = new wxComboBox( m_panel33, wxID_ANY, wxT("Combo!"), wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	bSizer279->Add( m_mesh_meshCollider_comboBox, 1, wxALL, 5 );
+
+
+	bSizer881->Add( bSizer279, 0, wxEXPAND, 5 );
+
 
 	m_panel33->SetSizer( bSizer881 );
 	m_panel33->Layout();
@@ -2053,6 +2068,7 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_mesh_removeMesh_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_Remove_ButtonClick ), NULL, this );
 	m_mesh_mesh_listBox->Connect( wxEVT_COMMAND_LISTBOX_SELECTED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_MeshList_Select ), NULL, this );
 	m_mesh_meshID_textCtrl->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_MeshID ), NULL, this );
+	m_mesh_meshCollider_comboBox->Connect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_MeshCollider_Select ), NULL, this );
 	m_button51->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_AddMaterial ), NULL, this );
 	m_button52->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_RemoveMaterial ), NULL, this );
 	m_button53->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_SetMaterial ), NULL, this );
@@ -2171,6 +2187,7 @@ Serenity3D_Frame::~Serenity3D_Frame()
 	m_mesh_removeMesh_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_Remove_ButtonClick ), NULL, this );
 	m_mesh_mesh_listBox->Disconnect( wxEVT_COMMAND_LISTBOX_SELECTED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_MeshList_Select ), NULL, this );
 	m_mesh_meshID_textCtrl->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_MeshID ), NULL, this );
+	m_mesh_meshCollider_comboBox->Disconnect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_MeshCollider_Select ), NULL, this );
 	m_button51->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_AddMaterial ), NULL, this );
 	m_button52->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_RemoveMaterial ), NULL, this );
 	m_button53->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_SetMaterial ), NULL, this );

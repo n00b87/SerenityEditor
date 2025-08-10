@@ -1103,6 +1103,7 @@ bool serenity_project::genRCBasicProject()
 	pfile.Write(_("Dim MaterialCount ") + _("\n"));
 	pfile.Write(_("Dim Animation_Matrix") + _("\n"));
 	pfile.Write(_("Dim AnimationCount ") + _("\n"));
+	pfile.Write(_("Dim ColliderMesh_SN_ID ") + _("\n"));
 
 	pfile.Write(_("End Type") + _("\n"));
 
@@ -1232,6 +1233,20 @@ bool serenity_project::genRCBasicProject()
 	sn_api += _("\t") + _("Return MatrixValue(Serenity_Global_Mesh_List[mesh_index].Animation_Matrix, 0, animation_num)\n");
 	sn_api += _("End Function\n\n");
 
+	sn_api += _("Function Serenity_GetMeshColliderIndex(mesh_index)\n");
+	sn_api += _("\t") + _("If mesh_index < 0 Or mesh_index >= ") + wxString::Format(_("%u"), (int)(meshes.size()==0 ? 1 : meshes.size())) + _(" Then\n");
+	sn_api += _("\t\t") + _("Return -1\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("Return Serenity_Global_Mesh_List[mesh_index].ColliderMesh_SN_ID\n");
+	sn_api += _("End Function\n\n");
+
+	sn_api += _("Sub Serenity_SetMeshColliderIndex(mesh_index, collider_index)\n");
+	sn_api += _("\t") + _("If mesh_index < 0 Or mesh_index >= ") + wxString::Format(_("%u"), (int)(meshes.size()==0 ? 1 : meshes.size())) + _(" Then\n");
+	sn_api += _("\t\t") + _("Return\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("Serenity_Global_Mesh_List[mesh_index].ColliderMesh_SN_ID = collider_index\n");
+	sn_api += _("End Sub\n\n");
+
 
 	//Create Mesh and Animation List Structures (A different animation structure will be made for every mesh)
 	std::vector<wxString> p_mesh_struct_field_define;
@@ -1258,6 +1273,23 @@ bool serenity_project::genRCBasicProject()
 
 		wxString mesh_list_id = _("Serenity_Global_Mesh_List[") + mesh_sn_str + _("]");
 		mesh_sn_id++;
+
+		//Get Collider ID
+		std::string collider_id = meshes[i].collider_id_name;
+		int collider_index = -1;
+		if(collider_id.compare(_("NONE"))!=0)
+        {
+            for(int c_index = 0; c_index < meshes.size(); c_index++)
+            {
+                if(meshes[c_index].id_name.compare(collider_id)==0)
+                {
+                    collider_index = c_index;
+                    break;
+                }
+            }
+        }
+
+        p_cmd += mesh_list_id + _(".ColliderMesh_SN_ID = ") + wxString::Format(_("%i"), collider_index) + _("\n");
 
 
 		if(meshes[i].isAN8Scene)
@@ -1547,6 +1579,7 @@ bool serenity_project::genRCBasicProject()
 	pfile.Write(_("Dim Name$") + _("\n"));
 	pfile.Write(_("Dim ActorType ") + _("\n"));
 	pfile.Write(_("Dim Mesh  \'Index in Global Mesh list") + _("\n"));
+	pfile.Write(_("Dim Collider_ID \'Collision Actor (NOTE: Will be -1 by default") + _("\n"));
 	pfile.Write(_("Dim Position As Serenity_Vector3D") + _("\n"));
 	pfile.Write(_("Dim Rotation As Serenity_Vector3D") + _("\n"));
 	pfile.Write(_("Dim Scale As Serenity_Vector3D") + _("\n"));
@@ -2189,8 +2222,45 @@ bool serenity_project::genRCBasicProject()
 				{
 					mesh_load += wxString::FromUTF8(meshes[mesh_index].p_onLoad_cmd) + _("\n");
 					mesh_clear += wxString::FromUTF8(meshes[mesh_index].p_onClear_cmd) + _("\n");
-
 					meshes[mesh_index].load_flag = true;
+
+					//Load collider mesh if needed
+					//wxMessageBox(_("SET TO FALSE: ") + wxString(meshes[mesh_index].id_name));
+					int n_mesh_index = mesh_index;
+					while(n_mesh_index >= 0)
+					{
+					    meshes[n_mesh_index].tmp_has_collider = false;
+                        if(meshes[n_mesh_index].collider_id_name.compare("NONE")!=0 && wxString(meshes[n_mesh_index].collider_id_name).Trim().compare(_(""))!=0)
+                        {
+                            for(int c_mesh_index = 0; c_mesh_index < meshes.size(); c_mesh_index++)
+                            {
+                                if(meshes[c_mesh_index].id_name.compare(meshes[n_mesh_index].collider_id_name)==0)
+                                {
+                                    meshes[n_mesh_index].tmp_has_collider = true;
+
+                                    //wxMessageBox(_("COLLIDER: ") + wxString(meshes[mesh_index].id_name) + _(" --> ") + wxString(meshes[c_mesh_index].id_name));
+
+                                    meshes[n_mesh_index].tmp_collider_create_cmd = "CreateAnimatedActor( Serenity_Global_Mesh_List[Meshes." + wxString(meshes[c_mesh_index].id_name).Trim() + ".SN_ID].ID )";
+                                    meshes[n_mesh_index].tmp_collider_mesh_id = "Serenity_Global_Mesh_List[Meshes." + wxString(meshes[c_mesh_index].id_name).Trim() + ".SN_ID].ID";
+
+                                    if(!meshes[c_mesh_index].load_flag)
+                                    {
+                                        //wxMessageBox(_("NOT YET: ") + wxString(meshes[c_mesh_index].id_name));
+                                        mesh_load += wxString::FromUTF8(meshes[c_mesh_index].p_onLoad_cmd) + _("\n");
+                                        mesh_clear += wxString::FromUTF8(meshes[c_mesh_index].p_onClear_cmd) + _("\n");
+                                        meshes[c_mesh_index].load_flag = true;
+                                        n_mesh_index = c_mesh_index;
+                                    }
+                                    else
+                                        n_mesh_index = -1;
+                                    break;
+                                }
+                            }
+                        }
+                        else
+                            n_mesh_index = -1;
+					}
+
 					//Load Materials For mesh if flag is not set
 					for(int mat = 0; mat < meshes[mesh_index].material_index.size(); mat++)
 					{
@@ -2737,7 +2807,49 @@ bool serenity_project::genRCBasicProject()
 				actor_load_properties += _("\t") + (stages[stage].actors[actor].hasShadow ? _("AddActorShadow( [ACTOR] ) ") : _("RemoveActorShadow( [ACTOR] ) ") )  + _("\n");
 
 			actor_load_properties += _("\t") + _("SetActorShape( [ACTOR], ") + actor_id + _(".Physics.Shape, ") + actor_id + _(".Physics.Mass ) ") + _("\n");
-			actor_load_properties += _("\t") + _("SetActorSolid( [ACTOR], ") + actor_id + _(".Physics.isSolid ) ") + _("\n");
+
+			if(mesh_index >= 0 && mesh_index < meshes.size())
+            {
+                if(meshes[mesh_index].tmp_has_collider)
+                {
+                    //wxMessageBox(_("MESH C_SET: ") + wxString(meshes[mesh_index].id_name));
+                    actor_load_properties += _("\n");
+                    actor_load_properties += _("\t") + actor_id + _(".Collider_ID = ") + meshes[mesh_index].tmp_collider_create_cmd + _("\n");
+                    actor_load_properties += _("\t") + _("SetActorVisible(") + actor_id + _(".Collider_ID, FALSE) ") + _("\n");
+                    actor_load_properties += _("\t") + _("SetActorShape(") + actor_id + _(".Collider_ID, ACTOR_SHAPE_TRIMESH, ") + actor_id + _(".Physics.Mass)") + _("\n");
+                    actor_load_properties += _("\t") + _("SetActorSolid(") + actor_id + _(".Collider_ID, ") + actor_id + _(".Physics.isSolid)") + _("\n");
+                    actor_load_properties += _("\t") + _("SetActorSolid(") + actor_id + _(".ID, FALSE) ") + _("\n");
+
+                    actor_load_properties += _("\t") + _("SetActorPosition( ") + actor_id + _(".Collider_ID, ") +
+                                                                                 actor_id + _(".Position.X, ") +
+                                                                                 actor_id + _(".Position.Y, ") +
+                                                                                 actor_id + _(".Position.Z ) ") + _("\n");
+
+                    actor_load_properties += _("\t") + _("SetActorRotation( ") + actor_id + _(".Collider_ID, ") +
+                                                                                _("0, ") +
+                                                                                actor_id + _(".Rotation.Y, ") +
+                                                                                _("0 ) ") + _("\n");
+
+                    actor_load_properties += _("\t") + _("RotateActor( ") + actor_id + _(".Collider_ID, ") +
+                                                                            actor_id + _(".Rotation.X, ") +
+                                                                            _("0, ") +
+                                                                            _("0 ) ") + _("\n");
+
+                    actor_load_properties += _("\t") + _("RotateActor( ") + actor_id + _(".Collider_ID, ") +
+                                                                            _("0, ") +
+                                                                            _("0, ") +
+                                                                            actor_id + _(".Rotation.Z ) ") + _("\n");
+
+                    actor_load_properties += _("\t") + _("SetActorScale( ") + actor_id + _(".Collider_ID, ") +
+                                                                              actor_id + _(".Scale.X, ") +
+                                                                              actor_id + _(".Scale.Y, ") +
+                                                                              actor_id + _(".Scale.Z ) ") + _("\n");
+                }
+                else
+                    actor_load_properties += _("\t") + _("SetActorSolid( [ACTOR], ") + actor_id + _(".Physics.isSolid ) ") + _("\n");
+            }
+            else
+                actor_load_properties += _("\t") + _("SetActorSolid( [ACTOR], ") + actor_id + _(".Physics.isSolid ) ") + _("\n");
 
 			actor_load_properties += _("\n");
 
@@ -3244,6 +3356,9 @@ void serenity_project::save_stage(int stage_id)
 		{
 			stage_file.Write(_("Mesh ") + id_name + _(" ") + mesh_file);
 		}
+
+		if(wxString(meshes[i].collider_id_name).Trim().compare(_(""))!=0)
+            stage_file.Write(_(" collision_mesh=") + wxString(meshes[i].collider_id_name).Trim());
 
 		for(int m_index = 0; m_index < meshes[i].material_index.size(); m_index++)
 		{
@@ -4168,6 +4283,8 @@ int serenity_project::load_mesh(std::vector<serenity_project_dict_obj> param, in
 	wxString id_name = _("");
 	wxString file_name = _("");
 
+	wxString collision_mesh = _("");
+
 	rc_mesh p_mesh;
 	p_mesh.ref_an8_id = "";
 	p_mesh.isAN8Scene = false;
@@ -4187,6 +4304,8 @@ int serenity_project::load_mesh(std::vector<serenity_project_dict_obj> param, in
 				id_name = param[i].val;
 			else if(param[i].key.compare(_("file"))==0)
 				file_name = param[i].val;
+            else if(param[i].key.compare(_("collision_mesh"))==0)
+				collision_mesh = param[i].val;
 			else if(param[i].key.compare(_("an8"))==0)
 			{
 				p_mesh.isAN8Scene = true;
@@ -4291,6 +4410,8 @@ int serenity_project::load_mesh(std::vector<serenity_project_dict_obj> param, in
 
 	p_mesh.id_name = id_name.ToStdString();
 	p_mesh.file = file_name.ToStdString();
+
+	p_mesh.collider_id_name = collision_mesh;
 
 	//wxMessageBox(_("MESH R: ") + p_mesh.id_name + _(" -- ") + (p_mesh.isAN8Scene ? _("true") : _("false")) + _(" -- ") + (in_zip ? _("true") : _("false")));
 

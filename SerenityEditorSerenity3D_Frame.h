@@ -303,6 +303,7 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
 		void On_Mesh_Remove_ButtonClick( wxCommandEvent& event );
 		void On_Mesh_Save_ButtonClick( wxCommandEvent& event );
 		void On_Mesh_MeshID( wxCommandEvent& event );
+		void On_Mesh_MeshCollider_Select( wxCommandEvent& event );
 		void On_Mesh_AddMaterial( wxCommandEvent& event );
 		void On_Mesh_RemoveMaterial( wxCommandEvent& event );
 		void On_Mesh_SetMaterial( wxCommandEvent& event );

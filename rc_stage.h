@@ -69,6 +69,7 @@ struct rc_mesh
 {
 	std::string id_name;
 	std::string file;
+	std::string collider_id_name;
 	irr::scene::IAnimatedMesh* mesh;
 	std::vector<int> material_index; //in project
 	int an8_index; //in project
@@ -105,6 +106,11 @@ struct rc_mesh
 	std::string p_onLoad_cmd;
 
 	std::string p_onClear_cmd;
+
+	std::string tmp_collider_create_cmd;
+	std::string tmp_collider_mesh_id;
+
+	bool tmp_has_collider;
 
 	int sn_id;
 
