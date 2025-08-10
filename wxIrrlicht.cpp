@@ -2346,7 +2346,10 @@ void wxIrrlicht::OnUpdate()
 				case RC_CAMERA_VIEW_LEFT:
 				case RC_CAMERA_VIEW_RIGHT:
 				{
-					camera[active_camera].camera.translateW(0, delta_y, delta_x);
+				    int adj_delta_x = (num_views == 1) ? 1: -1;
+
+					//This fixes the scrolling being in different directions when in single view or multiview
+					camera[active_camera].camera.translateW(0, delta_y, delta_x * adj_delta_x);
 
 					float ax = 0;
 					float ay = 0;

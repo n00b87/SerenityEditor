@@ -482,6 +482,8 @@ class Serenity3D_Frame : public wxFrame
 		wxTextCtrl* m_mesh_meshID_textCtrl;
 		wxStaticText* m_staticText32;
 		wxTextCtrl* m_mesh_meshFile_textCtrl;
+		wxStaticText* m_staticText123;
+		wxComboBox* m_mesh_meshCollider_comboBox;
 		wxPanel* m_panel34;
 		wxStaticText* m_staticText323;
 		wxPanel* m_panel35;
@@ -657,6 +659,7 @@ class Serenity3D_Frame : public wxFrame
 		virtual void On_Mesh_Remove_ButtonClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_MeshList_Select( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_MeshID( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Mesh_MeshCollider_Select( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_AddMaterial( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_RemoveMaterial( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_SetMaterial( wxCommandEvent& event ) { event.Skip(); }
