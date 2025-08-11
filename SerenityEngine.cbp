@@ -43,6 +43,7 @@
 			<Add library="/home/n00b/Projects/irrlicht-svn/lib/Linux/libIrrlicht.so" />
 			<Add directory="/home/n00b/Projects/irrlicht-svn/lib/Linux" />
 		</Linker>
+		<Unit filename="../an8-parser/an8parser.h" />
 		<Unit filename="CGridSceneNode.cpp" />
 		<Unit filename="CGridSceneNode.h" />
 		<Unit filename="Serenity3D_Editor.cpp" />
