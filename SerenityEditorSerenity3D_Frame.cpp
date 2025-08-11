@@ -2808,9 +2808,14 @@ void SerenityEditorSerenity3D_Frame::On_Stage_StageNodeActivated( wxTreeEvent& e
 				open_stage(stage_tree_nodes[i].project_index);
 
 				for(int n = 0; n < stage_tree_nodes.size(); n++)
-					stage_tree_nodes[n].active = false;
+                {
+                    stage_tree_nodes[n].active = false;
+                    if(stage_tree_nodes[n].tree_item.IsOk())
+                        m_project_stage_treeCtrl->SetItemBold(stage_tree_nodes[n].tree_item, false);
+                }
 
 				stage_tree_nodes[i].active = true;
+				m_project_stage_treeCtrl->SetItemBold(stage_tree_nodes[i].tree_item, true);
 				break;
 			}
 		}
