@@ -9712,11 +9712,10 @@
 	"rc_stage.h"
 	"wxIrrlicht.h"
 
-1755134213 /home/n00b/Projects/SerenityEngine/rc_stage.h
+1755324283 /home/n00b/Projects/SerenityEngine/rc_stage.h
 	<vector>
 	<irrlicht.h>
 	"an8parser.h"
-	"CShader.h"
 
 1731957962 /usr/include/wx-3.2/wx/stdpaths.h
 	"wx/defs.h"

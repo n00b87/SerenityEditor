@@ -186,7 +186,7 @@ Serenity3D_Frame( parent )
 	rc_addMaterialType("MATERIAL_TYPE_TRANSPARENT_REFLECTION_2_LAYER", irr::video::EMT_TRANSPARENT_REFLECTION_2_LAYER);
 	rc_addMaterialType("MATERIAL_TYPE_TRANSPARENT_VERTEX_ALPHA", irr::video::EMT_TRANSPARENT_VERTEX_ALPHA);
 
-	rc_addMaterialType("FX_MATERIAL_TYPE_NORMAL_BLEND", irr::video::EMT_TRANSPARENT_VERTEX_ALPHA);
+	/*rc_addMaterialType("FX_MATERIAL_TYPE_NORMAL_BLEND", irr::video::EMT_TRANSPARENT_VERTEX_ALPHA);
 	rc_addMaterialType("FX_MATERIAL_TYPE_REFRACTION", irr::video::EMT_TRANSPARENT_VERTEX_ALPHA);
 	rc_addMaterialType("FX_MATERIAL_TYPE_REFRACTION2", irr::video::EMT_TRANSPARENT_VERTEX_ALPHA);
 	rc_addMaterialType("FX_MATERIAL_TYPE_GOOCH", irr::video::EMT_TRANSPARENT_VERTEX_ALPHA);
@@ -198,6 +198,7 @@ Serenity3D_Frame( parent )
 	rc_addMaterialType("FX_MATERIAL_TYPE_STYLE2", irr::video::EMT_TRANSPARENT_VERTEX_ALPHA);
 	rc_addMaterialType("FX_MATERIAL_TYPE_STYLE3", irr::video::EMT_TRANSPARENT_VERTEX_ALPHA);
 	rc_addMaterialType("FX_MATERIAL_TYPE_STYLE4", irr::video::EMT_TRANSPARENT_VERTEX_ALPHA);
+	*/
 
 	rc_material_types_list = rc_getMaterialTypesList();
 

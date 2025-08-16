@@ -4,7 +4,7 @@
 #include <vector>
 #include <irrlicht.h>
 #include "an8parser.h"
-#include "CShader.h"
+//#include "CShader.h"
 
 #define SN_IRR_WINDOW_STAGE 0
 #define SN_IRR_WINDOW_MESH 1
@@ -38,7 +38,7 @@ struct rc_material
 	//FX_Material properties
 	bool isFX = false;
     int fxMatType = -1;
-    CShader* shader = NULL;
+    //CShader* shader = NULL;
 
 	std::string p_cmd;
 	std::string p_onLoad_cmd;
