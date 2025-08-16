@@ -1230,8 +1230,21 @@ bool serenity_project::genRCBasicProject()
 	sn_api += _("\t") + _("If animation_num < 0 Or animation_num >= Serenity_Global_Mesh_List[mesh_index].AnimationCount Then\n");
 	sn_api += _("\t\t") + _("Return -1\n");
 	sn_api += _("\t") + _("End If\n");
-	sn_api += _("\t") + _("Return MatrixValue(Serenity_Global_Mesh_List[mesh_index].Animation_Matrix, 0, animation_num)\n");
+	sn_api += _("\t") + _("Return MatrixValue(Serenity_Global_Mesh_List[mesh_index].Animation_Matrix, 0, animation_num)+1\n");
 	sn_api += _("End Function\n\n");
+
+	sn_api += _("Function Serenity_GetMeshAnimationIDByName(mesh_index, animation_name$)\n");
+	sn_api += _("\t") + _("If mesh_index < 0 Or mesh_index >= ArraySize(Serenity_Global_Mesh_List, 1) Then\n");
+	sn_api += _("\t\t") + _("Return -1\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("ani_name$ = Trim$(UCase$(animation_name$))\n");
+	sn_api += _("\t") + _("For i = 0 To ArraySize(Serenity_Global_Mesh_Animation_List, 1) - 1\n");
+    sn_api += _("\t\t") + _("If Trim$(UCase$(Serenity_Global_Mesh_Animation_List[i].Name$)) = ani_name$ Then\n");
+    sn_api += _("\t\t\t") + _("Return MatrixValue(Serenity_Global_Mesh_List[mesh_index].Animation_Matrix, 0, i)+1\n");
+    sn_api += _("\t\t") + _("End If\n");
+	sn_api += _("\t") + _("Next\n");
+	sn_api += _("\t") + _("Return -1\n");
+    sn_api += _("End Function\n\n");
 
 	sn_api += _("Function Serenity_GetMeshColliderIndex(mesh_index)\n");
 	sn_api += _("\t") + _("If mesh_index < 0 Or mesh_index >= ") + wxString::Format(_("%u"), (int)(meshes.size()==0 ? 1 : meshes.size())) + _(" Then\n");
@@ -1289,6 +1302,7 @@ bool serenity_project::genRCBasicProject()
             }
         }
 
+        p_cmd += mesh_list_id + _(".Name$ = ") + _("\"") + meshes[i].id_name + _("\"") + _("\n");
         p_cmd += mesh_list_id + _(".ColliderMesh_SN_ID = ") + wxString::Format(_("%i"), collider_index) + _("\n");
 
 

@@ -186,6 +186,19 @@ Serenity3D_Frame( parent )
 	rc_addMaterialType("MATERIAL_TYPE_TRANSPARENT_REFLECTION_2_LAYER", irr::video::EMT_TRANSPARENT_REFLECTION_2_LAYER);
 	rc_addMaterialType("MATERIAL_TYPE_TRANSPARENT_VERTEX_ALPHA", irr::video::EMT_TRANSPARENT_VERTEX_ALPHA);
 
+	rc_addMaterialType("FX_MATERIAL_TYPE_NORMAL_BLEND", irr::video::EMT_TRANSPARENT_VERTEX_ALPHA);
+	rc_addMaterialType("FX_MATERIAL_TYPE_REFRACTION", irr::video::EMT_TRANSPARENT_VERTEX_ALPHA);
+	rc_addMaterialType("FX_MATERIAL_TYPE_REFRACTION2", irr::video::EMT_TRANSPARENT_VERTEX_ALPHA);
+	rc_addMaterialType("FX_MATERIAL_TYPE_GOOCH", irr::video::EMT_TRANSPARENT_VERTEX_ALPHA);
+	rc_addMaterialType("FX_MATERIAL_TYPE_PLASTIC", irr::video::EMT_TRANSPARENT_VERTEX_ALPHA);
+	rc_addMaterialType("FX_MATERIAL_TYPE_TANGENT", irr::video::EMT_TRANSPARENT_VERTEX_ALPHA);
+	rc_addMaterialType("FX_MATERIAL_TYPE_SPEAKER", irr::video::EMT_TRANSPARENT_VERTEX_ALPHA);
+	rc_addMaterialType("FX_MATERIAL_TYPE_PHONG_TEXTURE", irr::video::EMT_TRANSPARENT_VERTEX_ALPHA);
+	rc_addMaterialType("FX_MATERIAL_TYPE_STYLE", irr::video::EMT_TRANSPARENT_VERTEX_ALPHA);
+	rc_addMaterialType("FX_MATERIAL_TYPE_STYLE2", irr::video::EMT_TRANSPARENT_VERTEX_ALPHA);
+	rc_addMaterialType("FX_MATERIAL_TYPE_STYLE3", irr::video::EMT_TRANSPARENT_VERTEX_ALPHA);
+	rc_addMaterialType("FX_MATERIAL_TYPE_STYLE4", irr::video::EMT_TRANSPARENT_VERTEX_ALPHA);
+
 	rc_material_types_list = rc_getMaterialTypesList();
 
 	m_material_type_comboBox->Clear();
@@ -2191,7 +2204,16 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 					{
 						int mat_index = project.meshes[mesh_index].material_index[i];
 						if(project.materials[mat_index].id_name.compare("") != 0)
-							node->getMaterial(i) = project.materials[mat_index].material;
+                        {
+                            if(project.materials[mat_index].isFX)
+                            {
+
+                            }
+                            else
+                            {
+                                node->getMaterial(i) = project.materials[mat_index].material;
+                            }
+                        }
 						else
 							node->getMaterial(i) = irr::video::SMaterial();
 					}

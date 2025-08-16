@@ -1433,7 +1433,7 @@
 	"wx/icon.h"
 	"wx/aui/auibook.h"
 
-1754790881 source:/home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.cpp
+1755233031 source:/home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.cpp
 	<wx/stdpaths.h>
 	<wx/propgrid/manager.h>
 	<wx/propgrid/propgridpagestate.h>
@@ -9712,10 +9712,11 @@
 	"rc_stage.h"
 	"wxIrrlicht.h"
 
-1754790881 /home/n00b/Projects/SerenityEngine/rc_stage.h
+1755134213 /home/n00b/Projects/SerenityEngine/rc_stage.h
 	<vector>
 	<irrlicht.h>
 	"an8parser.h"
+	"CShader.h"
 
 1731957962 /usr/include/wx-3.2/wx/stdpaths.h
 	"wx/defs.h"
@@ -9727,7 +9728,7 @@
 
 1731957962 /usr/include/wx-3.2/wx/unix/stdpaths.h
 
-1754790881 source:/home/n00b/Projects/SerenityEngine/engine_base.cpp
+1755323575 source:/home/n00b/Projects/SerenityEngine/engine_base.cpp
 	<wx/wx.h>
 	<wx/filename.h>
 	<wx/stdpaths.h>
@@ -10142,4 +10143,13 @@
 1731957962 /usr/lib/x86_64-linux-gnu/wx/include/gtk3-unicode-3.2/wx/setup.h
 
 1752079328 /usr/include/x86_64-linux-gnu/bits/select-decl.h
+
+1748042868 /home/n00b/Projects/SerenityEngine/CShader.h
+	<irrlicht.h>
+	<string>
+
+1748042868 source:/home/n00b/Projects/SerenityEngine/CShader.cpp
+	<irrlicht.h>
+	<iostream>
+	"CShader.h"
 

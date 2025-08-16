@@ -46,6 +46,8 @@
 		<Unit filename="../an8-parser/an8parser.h" />
 		<Unit filename="CGridSceneNode.cpp" />
 		<Unit filename="CGridSceneNode.h" />
+		<Unit filename="CShader.cpp" />
+		<Unit filename="CShader.h" />
 		<Unit filename="Serenity3D_Editor.cpp" />
 		<Unit filename="Serenity3D_Editor.h" />
 		<Unit filename="SerenityEditorSerenity3D_Frame.cpp" />
@@ -115,6 +117,8 @@
 		<Unit filename="rc_camera.h" />
 		<Unit filename="rc_defines.h" />
 		<Unit filename="rc_font.h" />
+		<Unit filename="rc_fx_materials.h" />
+		<Unit filename="rc_fx_shaders.h" />
 		<Unit filename="rc_gfx.h" />
 		<Unit filename="rc_gfx_core.h" />
 		<Unit filename="rc_stage.cpp" />
