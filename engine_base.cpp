@@ -5,12 +5,18 @@
 #include "rc_stage.h"
 #include "engine_base.h"
 #include "an8parser.h"
+#include "rc_fx_materials.h"
 
 void serenity_project::clearProject()
 {
+    if(!clear_flag)
+        return;
+
 	for(int i = 0; i < stages.size(); i++)
 	{
+	    stages[i].clear_flag = true;
 		stages[i].clearStage();
+		stages[i].clear_flag = false;
 	}
 
 	for(int i = 0; i < textures.size(); i++)
@@ -191,6 +197,7 @@ serenity_project::serenity_project(std::string project_file, std::string p_name,
 	project_name = p_name;
 
 	project_initialized = false;
+	clear_flag = true;
 
 	stage_window = st_win;
 	animation_window = ani_win;
@@ -3820,6 +3827,8 @@ rc_actor serenity_project::load_actor(std::vector<serenity_project_dict_obj> par
 	p_actor.physics.shape = SN_PHYSICS_SHAPE_BOX;
 	p_actor.physics.mass = 1;
 
+	p_actor.fx_material_needs_update = true;
+
 	double constant_n = 0;
 	double linear_n = 0;
 	double quadratic_n = 0;
@@ -5859,6 +5868,24 @@ void serenity_project::swapMaterialTexture(wxIrrlicht* control_window)
 						continue;
 
 					stages[i].actors[actor_index].node->getMaterial(mesh_material_index) = materials[mat_index].material;
+
+					if(materials[mat_index].isFX && control_window == stage_window)
+                    {
+                        int fx_shader_index = -1;
+
+                        if(mesh_material_index >= 0 && mesh_material_index < stages[i].actors[actor_index].fx_material_shader_index.size())
+                            fx_shader_index = stages[i].actors[actor_index].fx_material_shader_index[mesh_material_index];
+
+                        if(fx_shader_index >= 0 && fx_shader_index < materials[mat_index].shader.size())
+                        {
+                            if(materials[mat_index].shader[fx_shader_index])
+                            {
+                                stages[i].actors[actor_index].node->getMaterial(mesh_material_index).MaterialType = (video::E_MATERIAL_TYPE)materials[mat_index].shader[fx_shader_index]->getMaterial();
+                                materials[mat_index].shader[fx_shader_index]->setObjectNode(stages[i].actors[actor_index].node);
+                                registerSceneNodeForRTT(stage_window->GetVideoDriver(), stages[i].actors[actor_index].node, materials[mat_index].shader[fx_shader_index]->getRTTInfo(ERT_VIEW));
+                            }
+                        }
+                    }
 				}
 			}
 
@@ -5868,6 +5895,21 @@ void serenity_project::swapMaterialTexture(wxIrrlicht* control_window)
 				{
 					int ov_mat_index = stages[i].actors[actor_index].override_material_index;
 					stages[i].actors[actor_index].node->getMaterial(0) = materials[ov_mat_index].material;
+
+					int fx_shader_index = -1;
+
+                    if(stages[i].actors[actor_index].fx_material_shader_index.size() > 0)
+                        fx_shader_index = stages[i].actors[actor_index].fx_material_shader_index[0];
+
+                    if(fx_shader_index >= 0 && fx_shader_index < materials[ov_mat_index].shader.size())
+                    {
+                        if(materials[ov_mat_index].shader[fx_shader_index])
+                        {
+                            stages[i].actors[actor_index].node->getMaterial(0).MaterialType = (video::E_MATERIAL_TYPE)materials[ov_mat_index].shader[fx_shader_index]->getMaterial();
+                            materials[ov_mat_index].shader[fx_shader_index]->setObjectNode(stages[i].actors[actor_index].node);
+                            registerSceneNodeForRTT(stage_window->GetVideoDriver(), stages[i].actors[actor_index].node, materials[ov_mat_index].shader[fx_shader_index]->getRTTInfo(ERT_VIEW));
+                        }
+                    }
 				}
 			}
 		}

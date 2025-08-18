@@ -37,6 +37,7 @@
 #include "SerenityEditor_CreateMesh_Dialog.h"
 #include "SerenityEditor_ExitEditorAlert_Dialog.h"
 #include "SerenityEditor_SetCamera_Dialog.h"
+#include "rc_fx_materials.h"
 
 SerenityEditorSerenity3D_Frame::SerenityEditorSerenity3D_Frame( wxWindow* parent )
 :
@@ -186,19 +187,20 @@ Serenity3D_Frame( parent )
 	rc_addMaterialType("MATERIAL_TYPE_TRANSPARENT_REFLECTION_2_LAYER", irr::video::EMT_TRANSPARENT_REFLECTION_2_LAYER);
 	rc_addMaterialType("MATERIAL_TYPE_TRANSPARENT_VERTEX_ALPHA", irr::video::EMT_TRANSPARENT_VERTEX_ALPHA);
 
-	/*rc_addMaterialType("FX_MATERIAL_TYPE_NORMAL_BLEND", irr::video::EMT_TRANSPARENT_VERTEX_ALPHA);
-	rc_addMaterialType("FX_MATERIAL_TYPE_REFRACTION", irr::video::EMT_TRANSPARENT_VERTEX_ALPHA);
-	rc_addMaterialType("FX_MATERIAL_TYPE_REFRACTION2", irr::video::EMT_TRANSPARENT_VERTEX_ALPHA);
-	rc_addMaterialType("FX_MATERIAL_TYPE_GOOCH", irr::video::EMT_TRANSPARENT_VERTEX_ALPHA);
-	rc_addMaterialType("FX_MATERIAL_TYPE_PLASTIC", irr::video::EMT_TRANSPARENT_VERTEX_ALPHA);
-	rc_addMaterialType("FX_MATERIAL_TYPE_TANGENT", irr::video::EMT_TRANSPARENT_VERTEX_ALPHA);
-	rc_addMaterialType("FX_MATERIAL_TYPE_SPEAKER", irr::video::EMT_TRANSPARENT_VERTEX_ALPHA);
-	rc_addMaterialType("FX_MATERIAL_TYPE_PHONG_TEXTURE", irr::video::EMT_TRANSPARENT_VERTEX_ALPHA);
-	rc_addMaterialType("FX_MATERIAL_TYPE_STYLE", irr::video::EMT_TRANSPARENT_VERTEX_ALPHA);
-	rc_addMaterialType("FX_MATERIAL_TYPE_STYLE2", irr::video::EMT_TRANSPARENT_VERTEX_ALPHA);
-	rc_addMaterialType("FX_MATERIAL_TYPE_STYLE3", irr::video::EMT_TRANSPARENT_VERTEX_ALPHA);
-	rc_addMaterialType("FX_MATERIAL_TYPE_STYLE4", irr::video::EMT_TRANSPARENT_VERTEX_ALPHA);
-	*/
+	rc_addMaterialType("FX_MATERIAL_TYPE_NORMAL_BLEND", (irr::video::E_MATERIAL_TYPE) FX_MATERIAL_TYPE_NORMAL_BLEND );
+	rc_addMaterialType("FX_MATERIAL_TYPE_REFRACTION", (irr::video::E_MATERIAL_TYPE) FX_MATERIAL_TYPE_REFRACTION);
+	rc_addMaterialType("FX_MATERIAL_TYPE_REFRACTION2", (irr::video::E_MATERIAL_TYPE) FX_MATERIAL_TYPE_REFRACTION2);
+	rc_addMaterialType("FX_MATERIAL_TYPE_GOOCH", (irr::video::E_MATERIAL_TYPE) FX_MATERIAL_TYPE_GOOCH);
+	rc_addMaterialType("FX_MATERIAL_TYPE_PLASTIC", (irr::video::E_MATERIAL_TYPE) FX_MATERIAL_TYPE_PLASTIC);
+	rc_addMaterialType("FX_MATERIAL_TYPE_TANGENT", (irr::video::E_MATERIAL_TYPE) FX_MATERIAL_TYPE_TANGENT);
+	rc_addMaterialType("FX_MATERIAL_TYPE_SPEAKER", (irr::video::E_MATERIAL_TYPE) FX_MATERIAL_TYPE_SPEAKER);
+	rc_addMaterialType("FX_MATERIAL_TYPE_PHONG_TEXTURE", (irr::video::E_MATERIAL_TYPE) FX_MATERIAL_TYPE_PHONG_TEXTURE);
+	rc_addMaterialType("FX_MATERIAL_TYPE_STYLE", (irr::video::E_MATERIAL_TYPE) FX_MATERIAL_TYPE_STYLE);
+	rc_addMaterialType("FX_MATERIAL_TYPE_STYLE2", (irr::video::E_MATERIAL_TYPE) FX_MATERIAL_TYPE_STYLE2);
+	rc_addMaterialType("FX_MATERIAL_TYPE_STYLE3", (irr::video::E_MATERIAL_TYPE) FX_MATERIAL_TYPE_STYLE3);
+	rc_addMaterialType("FX_MATERIAL_TYPE_STYLE4", (irr::video::E_MATERIAL_TYPE) FX_MATERIAL_TYPE_STYLE4);
+
+	initFXMaterials();
 
 	rc_material_types_list = rc_getMaterialTypesList();
 
@@ -316,6 +318,7 @@ Serenity3D_Frame( parent )
 	m_render_solid_tool->SetState(wxAUI_BUTTON_STATE_CHECKED);
 
 	meshTab_preview_obj.node = NULL;
+	meshTab_preview_obj.fx_material_shader_index = -1;
 
 	project.setGridColor( irr::video::SColor(255, 70, 70, 70).color );
 	project.setGridSize(5000);
@@ -825,7 +828,34 @@ void SerenityEditorSerenity3D_Frame::updatePreviewMesh()
 			int mat_index = project.meshes[n].material_index[i];
 			if(project.materials[mat_index].id_name.compare("")!=0)
 			{
-				meshTab_preview_obj.node->getMaterial(i) = project.materials[mat_index].material;
+			    if(project.materials[mat_index].isFX)
+                {
+                    if(meshTab_preview_obj.fx_material_shader_index >= 0 && meshTab_preview_obj.fx_material_shader_index < project.materials[mat_index].shader.size())
+                    {
+                        if(project.materials[mat_index].shader[meshTab_preview_obj.fx_material_shader_index] != NULL)
+                        {
+                            delete project.materials[mat_index].shader[meshTab_preview_obj.fx_material_shader_index];
+                            project.materials[mat_index].shader[meshTab_preview_obj.fx_material_shader_index] = NULL;
+                        }
+                        meshTab_preview_obj.fx_material_shader_index = -1;
+                    }
+
+                    //Create new shader material
+                    int fx_shader_index = createShaderMaterial(animation_window->GetDevice(), &project.materials[mat_index], project.materials[mat_index].fxMatType);
+                    meshTab_preview_obj.fx_material_shader_index = fx_shader_index;
+
+                    meshTab_preview_obj.node->getMaterial(i) = project.materials[mat_index].material;
+
+                    if(fx_shader_index >= 0)
+                    {
+                        meshTab_preview_obj.node->getMaterial(i).MaterialType = (video::E_MATERIAL_TYPE)project.materials[mat_index].shader[fx_shader_index]->getMaterial();
+                        project.materials[mat_index].shader[fx_shader_index]->setObjectNode(meshTab_preview_obj.node);
+
+                        registerSceneNodeForRTT(animation_window->GetVideoDriver(), meshTab_preview_obj.node, project.materials[mat_index].shader[fx_shader_index]->getRTTInfo(ERT_VIEW));
+                    }
+                }
+                else
+                    meshTab_preview_obj.node->getMaterial(i) = project.materials[mat_index].material;
 			}
 			else
 			{
@@ -1134,12 +1164,23 @@ void SerenityEditorSerenity3D_Frame::On_Stage_NewStage( wxCommandEvent& event )
 		stage_id = project.genStageID();
 	}
 
+	wxMessageBox(_("DB0"));
 	rc_stage new_stage;
+	wxMessageBox(_("DB1"));
 	new_stage.id_name = stage_id.ToStdString();
 	new_stage.idIsActive = true;
 	new_stage.file = stage_id.ToStdString() + ".snst";
 	int project_index = project.stages.size();
+	wxMessageBox(_("DB1.5"));
+	project.clear_flag = false;
+	new_stage.clear_flag = false;
 	project.stages.push_back(new_stage);
+	project.clear_flag = true;
+	project.stages[project.stages.size()-1].clear_flag = true;
+	wxMessageBox(_("DB2"));
+
+	stage_open_flag = false;
+	project.clear_flag = false;
 
 	Serenity_StageNode tree_node;
 	tree_node.active = false;
@@ -1148,10 +1189,13 @@ void SerenityEditorSerenity3D_Frame::On_Stage_NewStage( wxCommandEvent& event )
 	tree_node.stage_group = 0;
 	tree_node.group_label = stage_id;
 	tree_node.parent_item = stage_tree_root;
+	wxMessageBox(_("DB3"));
 	tree_node.tree_item = m_project_stage_treeCtrl->AppendItem(stage_tree_root, stage_id, stage_tree_stageImage);
 
 	int stage_index = stage_tree_nodes.size();
 	stage_tree_nodes.push_back(tree_node);
+
+	wxMessageBox(_("YOLO"));
 
 }
 
@@ -2014,6 +2058,11 @@ void SerenityEditorSerenity3D_Frame::On_Stage_RenderMode_Solid( wxCommandEvent& 
 
 void SerenityEditorSerenity3D_Frame::open_stage(int stage_project_index)
 {
+    if(!stage_open_flag)
+        return;
+
+    stage_open_flag = false;
+
 	if(stage_project_index < 0 || stage_project_index >= project.stages.size())
 		return;
 
@@ -2029,7 +2078,27 @@ void SerenityEditorSerenity3D_Frame::open_stage(int stage_project_index)
 
 
 	for(int i = 0; i < project.stages.size(); i++)
-		project.stages[i].clearStage();
+    {
+        project.stages[i].clear_flag = true;
+        project.stages[i].clearStage();
+        project.stages[i].clear_flag = false;
+    }
+
+    for(int i = 0; i < project.materials.size(); i++)
+    {
+        if(project.materials[i].isFX)
+        {
+            for(int shader_index = 0; shader_index < project.materials[i].shader.size(); shader_index++)
+            {
+                if(project.materials[i].shader[shader_index] != NULL)
+                {
+                    //delete project.materials[i].shader[shader_index];
+                    //project.materials[i].shader[shader_index] = NULL;
+                }
+            }
+            //project.materials[i].shader.clear();
+        }
+    }
 
 	irr::scene::ISceneManager* smgr = current_window->GetDevice()->getSceneManager();
 
@@ -2055,6 +2124,8 @@ void SerenityEditorSerenity3D_Frame::open_stage(int stage_project_index)
 	{
 		project.stages[stage_project_index].actors[i].node = NULL;
 		project.stages[stage_project_index].actors[i].icon_node = NULL;
+		project.stages[stage_project_index].actors[i].fx_material_needs_update = true;
+
 		refresh_actor(i);
 	}
 
@@ -2142,6 +2213,60 @@ void SerenityEditorSerenity3D_Frame::refresh_environmentSettings()
 	}
 }
 
+void SerenityEditorSerenity3D_Frame::refresh_actor_fx_material(int stage_project_index, int actor_project_index, int actor_material_num, int material_index)
+{
+    std::cout << "STRT" << std::endl;
+    if(!project.stages[stage_project_index].actors[actor_project_index].fx_material_needs_update)
+        return;
+
+    int stage_index = stage_project_index;
+    int actor_index = actor_project_index;
+    int mat_index = material_index;
+    int mat_num = actor_material_num;
+
+    //The loop at the start of refresh_actor() ensures thatthis vector will have the correct size
+    int current_fx_shader_index = -1;
+    if(actor_material_num >= 0 && actor_material_num < project.stages[stage_index].actors[actor_index].fx_material_shader_index.size())
+        current_fx_shader_index = project.stages[stage_index].actors[actor_index].fx_material_shader_index[actor_material_num];
+    else
+    {
+        //If the material number does not correspond to an existing material slot then we don't need to do anything else here
+        return;
+    }
+
+    if(project.materials[mat_index].isFX)
+    {
+        if(current_fx_shader_index >= 0 && current_fx_shader_index < project.materials[mat_index].shader.size() && project.stages[stage_index].actors[actor_index].fx_material_needs_update)
+        {
+            if(project.materials[mat_index].shader[current_fx_shader_index] != NULL)
+            {
+                std::cout << "TEST UP" << std::endl;
+                delete project.materials[mat_index].shader[current_fx_shader_index];
+                project.materials[mat_index].shader[current_fx_shader_index] = NULL;
+            }
+            project.stages[stage_index].actors[actor_index].fx_material_shader_index[actor_material_num] = -1;
+        }
+
+        //Create new shader material
+        int fx_shader_index = current_fx_shader_index;
+
+        if(project.stages[stage_index].actors[actor_index].fx_material_needs_update)
+            fx_shader_index = createShaderMaterial(stage_window->GetDevice(), &project.materials[mat_index], project.materials[mat_index].fxMatType);
+
+        project.stages[stage_index].actors[actor_index].fx_material_shader_index[actor_material_num] = fx_shader_index;
+
+        project.stages[stage_index].actors[actor_index].node->getMaterial(actor_material_num) = project.materials[mat_index].material;
+
+        if(fx_shader_index >= 0)
+        {
+            project.stages[stage_index].actors[actor_index].node->getMaterial(actor_material_num).MaterialType = (video::E_MATERIAL_TYPE)project.materials[mat_index].shader[fx_shader_index]->getMaterial();
+            project.materials[mat_index].shader[fx_shader_index]->setObjectNode(project.stages[stage_index].actors[actor_index].node);
+
+            registerSceneNodeForRTT(stage_window->GetVideoDriver(), project.stages[stage_index].actors[actor_index].node, project.materials[mat_index].shader[fx_shader_index]->getRTTInfo(ERT_VIEW));
+        }
+    }
+}
+
 void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 {
 	if(!stage_window)
@@ -2151,6 +2276,16 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 	int i = actor_project_index;
 
 	irr::scene::ISceneManager* smgr = stage_window->GetDevice()->getSceneManager();
+
+	//Make sure that fx_material_shader_index vector is atleast as big as the material_index vector for the mesh
+	if(project.stages[stage_project_index].actors[actor_project_index].mesh_index >= 0 && project.stages[stage_project_index].actors[actor_project_index].mesh_index < project.meshes.size())
+	{
+	    int actor_mesh_index = project.stages[stage_project_index].actors[actor_project_index].mesh_index;
+        for(int i = project.stages[stage_project_index].actors[actor_project_index].fx_material_shader_index.size(); i < project.meshes[actor_mesh_index].material_index.size(); i++)
+        {
+            project.stages[stage_project_index].actors[actor_project_index].fx_material_shader_index.push_back(-1);
+        }
+	}
 
 	switch(project.stages[stage_project_index].actors[i].type)
 	{
@@ -2208,7 +2343,7 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
                         {
                             if(project.materials[mat_index].isFX)
                             {
-
+                                refresh_actor_fx_material(stage_project_index, actor_project_index, i, mat_index);
                             }
                             else
                             {
@@ -2680,6 +2815,8 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 
 
 
+	project.stages[stage_project_index].actors[actor_project_index].fx_material_needs_update = false;
+
 	if(project.stages[stage_project_index].actors[i].node)
 	{
 		bool isWireFrame = (stage_render_mode == 0);
@@ -2828,6 +2965,9 @@ void SerenityEditorSerenity3D_Frame::On_Stage_StageNodeActivated( wxTreeEvent& e
 		{
 			if(stage_tree_nodes[i].project_index != stageTab_active_stage_project_index)
 			{
+			    //wxMessageBox(_("Open Stage: ") + wxString(project.stages[stage_tree_nodes[i].project_index].id_name));
+			    stage_open_flag = true;
+			    project.clear_flag = true;
 				open_stage(stage_tree_nodes[i].project_index);
 
 				for(int n = 0; n < stage_tree_nodes.size(); n++)
@@ -6958,6 +7098,7 @@ void SerenityEditorSerenity3D_Frame::OnNewProjectMenuSelection( wxCommandEvent& 
 	if(!create_project_win->createFlag)
 		return;
 
+	project.clear_flag = true;
 	project.clearProject();
 	//project = serenity_project(create_project_win->project_file.GetAbsolutePath().ToStdString(), create_project_win->project_name.ToStdString(), current_window->GetDevice());
 	load_project(create_project_win->project_file);
@@ -8704,7 +8845,40 @@ void SerenityEditorSerenity3D_Frame::updateTestMesh()
 
 	if(test_material_mesh && current_window)
 	{
-		test_material_mesh->getMaterial(0) = project.materials[n].material;
+	    if(test_material_shader_index >= 0 && test_material_shader_index < project.materials[n].shader.size())
+        {
+            if(project.materials[n].shader[test_material_shader_index] != NULL)
+            {
+                delete project.materials[n].shader[test_material_shader_index];
+                project.materials[n].shader[test_material_shader_index] = NULL;
+            }
+            test_material_shader_index = -1;
+        }
+
+	    //std::cout << "JIST TEST" << std::endl;
+	    if(project.materials[n].isFX)
+        {
+
+            //Create new shader material
+            int fx_shader_index = createShaderMaterial(material_window->GetDevice(), &project.materials[n], project.materials[n].fxMatType);
+            test_material_shader_index = fx_shader_index;
+
+            //wxMessageBox( _("DEBUG[fx_shader_index]: ") + wxString::Format(_("%i"), fx_shader_index) );
+
+            if(fx_shader_index >= 0)
+            {
+                //std::cout << "Set Material TEST" << std::endl;
+                test_material_mesh->getMaterial(0) = project.materials[n].material;
+                test_material_mesh->getMaterial(0).MaterialType = (video::E_MATERIAL_TYPE)project.materials[n].shader[fx_shader_index]->getMaterial();
+                project.materials[n].shader[fx_shader_index]->setObjectNode(test_material_mesh);
+
+                registerSceneNodeForRTT(material_window->GetVideoDriver(), test_material_mesh, project.materials[n].shader[fx_shader_index]->getRTTInfo(ERT_VIEW));
+            }
+
+
+        }
+        else
+            test_material_mesh->getMaterial(0) = project.materials[n].material;
 	}
 }
 
@@ -8778,6 +8952,13 @@ void SerenityEditorSerenity3D_Frame::On_Material_MaterialType_Update( wxCommandE
 		if(rc_material_types_list[i].key.compare(m_material_type_comboBox->GetValue().ToStdString())==0)
 		{
 			project.materials[n].material.MaterialType = rc_material_types_list[i].val;
+
+			if(project.materials[n].material.MaterialType >= RC_FX_MATERIAL_BASE_INDEX)
+            {
+                project.materials[n].isFX = true;
+                project.materials[n].fxMatType = rc_material_types_list[i].val;
+            }
+
 			break;
 		}
 	}
