@@ -6,6 +6,7 @@
 #include "engine_base.h"
 #include "an8parser.h"
 #include "rc_fx_materials.h"
+#include "rc_defines.h"
 
 void serenity_project::clearProject()
 {
@@ -4870,6 +4871,79 @@ rc_material serenity_project::loadMaterialFile(wxString mfile, wxString mID)
 					p_mat.material.MaterialType = irr::video::EMT_TRANSPARENT_REFLECTION_2_LAYER;
 				else if(st_obj[line_num].dict[0].val.compare(_("MATERIAL_TYPE_TRANSPARENT_VERTEX_ALPHA"))==0)
 					p_mat.material.MaterialType = irr::video::EMT_TRANSPARENT_VERTEX_ALPHA;
+                else if(st_obj[line_num].dict[0].val.compare(_("FX_MATERIAL_TYPE_NORMAL_BLEND"))==0)
+                {
+                    p_mat.material.MaterialType = (irr::video::E_MATERIAL_TYPE) FX_MATERIAL_TYPE_NORMAL_BLEND;
+                    p_mat.isFX = true;
+                    p_mat.fxMatType = FX_MATERIAL_TYPE_NORMAL_BLEND;
+                }
+                else if(st_obj[line_num].dict[0].val.compare(_("FX_MATERIAL_TYPE_REFRACTION"))==0)
+                {
+                    p_mat.material.MaterialType = (irr::video::E_MATERIAL_TYPE) FX_MATERIAL_TYPE_REFRACTION;
+                    p_mat.isFX = true;
+                    p_mat.fxMatType = FX_MATERIAL_TYPE_REFRACTION;
+                }
+                else if(st_obj[line_num].dict[0].val.compare(_("FX_MATERIAL_TYPE_REFRACTION2"))==0)
+                {
+                    p_mat.material.MaterialType = (irr::video::E_MATERIAL_TYPE) FX_MATERIAL_TYPE_REFRACTION2;
+                    p_mat.isFX = true;
+                    p_mat.fxMatType = FX_MATERIAL_TYPE_REFRACTION2;
+                }
+                else if(st_obj[line_num].dict[0].val.compare(_("FX_MATERIAL_TYPE_GOOCH"))==0)
+                {
+                    p_mat.material.MaterialType = (irr::video::E_MATERIAL_TYPE) FX_MATERIAL_TYPE_GOOCH;
+                    p_mat.isFX = true;
+                    p_mat.fxMatType = FX_MATERIAL_TYPE_GOOCH;
+                }
+                else if(st_obj[line_num].dict[0].val.compare(_("FX_MATERIAL_TYPE_PLASTIC"))==0)
+                {
+                    p_mat.material.MaterialType = (irr::video::E_MATERIAL_TYPE) FX_MATERIAL_TYPE_PLASTIC;
+                    p_mat.isFX = true;
+                    p_mat.fxMatType = FX_MATERIAL_TYPE_PLASTIC;
+                }
+                else if(st_obj[line_num].dict[0].val.compare(_("FX_MATERIAL_TYPE_TANGENT"))==0)
+                {
+                    p_mat.material.MaterialType = (irr::video::E_MATERIAL_TYPE) FX_MATERIAL_TYPE_TANGENT;
+                    p_mat.isFX = true;
+                    p_mat.fxMatType = FX_MATERIAL_TYPE_TANGENT;
+                }
+                else if(st_obj[line_num].dict[0].val.compare(_("FX_MATERIAL_TYPE_SPEAKER"))==0)
+                {
+                    p_mat.material.MaterialType = (irr::video::E_MATERIAL_TYPE) FX_MATERIAL_TYPE_SPEAKER;
+                    p_mat.isFX = true;
+                    p_mat.fxMatType = FX_MATERIAL_TYPE_SPEAKER;
+                }
+                else if(st_obj[line_num].dict[0].val.compare(_("FX_MATERIAL_TYPE_PHONG_TEXTURE"))==0)
+                {
+                    p_mat.material.MaterialType = (irr::video::E_MATERIAL_TYPE) FX_MATERIAL_TYPE_PHONG_TEXTURE;
+                    p_mat.isFX = true;
+                    p_mat.fxMatType = FX_MATERIAL_TYPE_PHONG_TEXTURE;
+                }
+                else if(st_obj[line_num].dict[0].val.compare(_("FX_MATERIAL_TYPE_STYLE"))==0)
+                {
+                    p_mat.material.MaterialType = (irr::video::E_MATERIAL_TYPE) FX_MATERIAL_TYPE_STYLE;
+                    p_mat.isFX = true;
+                    p_mat.fxMatType = FX_MATERIAL_TYPE_STYLE;
+                }
+                else if(st_obj[line_num].dict[0].val.compare(_("FX_MATERIAL_TYPE_STYLE2"))==0)
+                {
+                    p_mat.material.MaterialType = (irr::video::E_MATERIAL_TYPE) FX_MATERIAL_TYPE_STYLE2;
+                    p_mat.isFX = true;
+                    p_mat.fxMatType = FX_MATERIAL_TYPE_STYLE2;
+                }
+                else if(st_obj[line_num].dict[0].val.compare(_("FX_MATERIAL_TYPE_STYLE3"))==0)
+                {
+                    p_mat.material.MaterialType = (irr::video::E_MATERIAL_TYPE) FX_MATERIAL_TYPE_STYLE3;
+                    p_mat.isFX = true;
+                    p_mat.fxMatType = FX_MATERIAL_TYPE_STYLE3;
+                }
+                else if(st_obj[line_num].dict[0].val.compare(_("FX_MATERIAL_TYPE_STYLE4"))==0)
+                {
+                    p_mat.material.MaterialType = (irr::video::E_MATERIAL_TYPE) FX_MATERIAL_TYPE_STYLE4;
+                    p_mat.isFX = true;
+                    p_mat.fxMatType = FX_MATERIAL_TYPE_STYLE4;
+                }
+
 			}
 			else if(st_obj[line_num].dict[0].key.compare(_("ambient_color"))==0)
 			{
@@ -5444,6 +5518,22 @@ bool serenity_project::save_material(int material_index)
 		case irr::video::EMT_TRANSPARENT_REFLECTION_2_LAYER:	mat_file.Write(_("type=MATERIAL_TYPE_TRANSPARENT_REFLECTION_2_LAYER;")); break;
 
 		case irr::video::EMT_TRANSPARENT_VERTEX_ALPHA:		mat_file.Write(_("type=MATERIAL_TYPE_TRANSPARENT_VERTEX_ALPHA;")); break;
+
+
+
+		case FX_MATERIAL_TYPE_NORMAL_BLEND:		mat_file.Write(_("type=FX_MATERIAL_TYPE_NORMAL_BLEND;")); break;
+		case FX_MATERIAL_TYPE_REFRACTION:		mat_file.Write(_("type=FX_MATERIAL_TYPE_REFRACTION;")); break;
+		case FX_MATERIAL_TYPE_REFRACTION2:		mat_file.Write(_("type=FX_MATERIAL_TYPE_REFRACTION2;")); break;
+		case FX_MATERIAL_TYPE_GOOCH:		    mat_file.Write(_("type=FX_MATERIAL_TYPE_GOOCH;")); break;
+		case FX_MATERIAL_TYPE_PLASTIC:		    mat_file.Write(_("type=FX_MATERIAL_TYPE_PLASTIC;")); break;
+		case FX_MATERIAL_TYPE_TANGENT:		    mat_file.Write(_("type=FX_MATERIAL_TYPE_TANGENT;")); break;
+		case FX_MATERIAL_TYPE_SPEAKER:		    mat_file.Write(_("type=FX_MATERIAL_TYPE_SPEAKER;")); break;
+		case FX_MATERIAL_TYPE_PHONG_TEXTURE:	mat_file.Write(_("type=FX_MATERIAL_TYPE_PHONG_TEXTURE;")); break;
+		case FX_MATERIAL_TYPE_STYLE:		    mat_file.Write(_("type=FX_MATERIAL_TYPE_STYLE;")); break;
+		case FX_MATERIAL_TYPE_STYLE2:		    mat_file.Write(_("type=FX_MATERIAL_TYPE_STYLE2;")); break;
+		case FX_MATERIAL_TYPE_STYLE3:		    mat_file.Write(_("type=FX_MATERIAL_TYPE_STYLE3;")); break;
+		case FX_MATERIAL_TYPE_STYLE4:		    mat_file.Write(_("type=FX_MATERIAL_TYPE_STYLE4;")); break;
+
 	}
 
 	mat_file.Write(_("\n"));

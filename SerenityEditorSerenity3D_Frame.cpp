@@ -2131,6 +2131,8 @@ void SerenityEditorSerenity3D_Frame::open_stage(int stage_project_index)
 
 	project.stages[stageTab_active_stage_project_index].sky.node = NULL;
 
+    project.swapMaterialTexture(stage_window);
+
 	refresh_environmentSettings();
 }
 
