@@ -361,6 +361,10 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
 		void On_Material_SetTextureLevel_ButtonClicked( wxCommandEvent& event );
 		void On_Material_ClearTextureLevel_ButtonClicked( wxCommandEvent& event );
 
+		void On_Material_AddVariable_ButtonClicked( wxCommandEvent& event );
+		void On_Material_RemoveVariable_ButtonClicked( wxCommandEvent& event );
+		void On_Material_EditVariable_ButtonClicked( wxCommandEvent& event );
+
 		//Textures Tab
 		void On_Texture_AddTexture_ButtonClicked( wxCommandEvent& event );
 		void On_Texture_RemoveTexture_ButtonClicked( wxCommandEvent& event );

@@ -6005,3 +6005,129 @@ void serenity_project::swapMaterialTexture(wxIrrlicht* control_window)
 		}
 	}
 }
+
+
+
+void serenity_project::setMaterialConstant(int material_id, std::string m_constant, double n1, double n2, double n3, double n4)
+{
+    if(material_id < 0 || material_id >= materials.size())
+		return;
+
+    if(!materials[material_id].isFX)
+        return;
+
+    int fv_index = -1;
+    for(int i = 0; i < materials[material_id].fx_var.size(); i++)
+    {
+        if(materials[material_id].fx_var[i].var_name.compare(m_constant)==0)
+        {
+            fv_index = i;
+            break;
+        }
+    }
+
+    if(fv_index < 0)
+        return;
+
+    float m_constant_value[4];
+
+    m_constant_value[0] = n1;
+    m_constant_value[1] = n2;
+    m_constant_value[2] = n3;
+    m_constant_value[3] = n4;
+
+    for(int shader_index = 0; shader_index < materials[material_id].shader.size(); shader_index++)
+    {
+        if(!materials[material_id].shader[shader_index])
+            continue;
+
+        for(int i = 0; i < materials[material_id].shader[shader_index]->getUniformVariableCount(); i++)
+        {
+            std::string u_var(materials[material_id].shader[shader_index]->getUniformVariable(i)->name.c_str());
+            if(u_var.compare(m_constant)==0)
+            {
+                materials[material_id].fx_var[fv_index].var_value[0] = n1;
+                materials[material_id].fx_var[fv_index].var_value[1] = n2;
+                materials[material_id].fx_var[fv_index].var_value[2] = n3;
+                materials[material_id].fx_var[fv_index].var_value[3] = n4;
+
+                //std::cout << "mat_type: " << materials[material_id].fxMatType << std::endl;
+
+                //std::cout << "Value before = " << materials[material_id].shader[shader_index]->getUniformVariable(i)->value[0] << ", "
+                //                               << materials[material_id].shader[shader_index]->getUniformVariable(i)->value[1] << ", "
+                //                               << materials[material_id].shader[shader_index]->getUniformVariable(i)->value[2] << ", "
+                //                               << materials[material_id].shader[shader_index]->getUniformVariable(i)->value[3] << ", "
+                //                               << std::endl;
+
+                switch(materials[material_id].fx_var[fv_index].var_type)
+                {
+                    case RC_FX_CONSTANT_TYPE_FLOAT:
+                    {
+                        materials[material_id].shader[shader_index]->getUniformVariable(i)->value[0] = n1;
+                    }
+                    break;
+
+                    case RC_FX_CONSTANT_TYPE_VEC2:
+                    {
+                        materials[material_id].shader[shader_index]->getUniformVariable(i)->value[0] = n1;
+                        materials[material_id].shader[shader_index]->getUniformVariable(i)->value[1] = n2;
+                    }
+                    break;
+
+                    case RC_FX_CONSTANT_TYPE_VEC3:
+                    {
+                        materials[material_id].shader[shader_index]->getUniformVariable(i)->value[0] = n1;
+                        materials[material_id].shader[shader_index]->getUniformVariable(i)->value[1] = n2;
+                        materials[material_id].shader[shader_index]->getUniformVariable(i)->value[2] = n3;
+                    }
+                    break;
+
+                    case RC_FX_CONSTANT_TYPE_VEC4:
+                    {
+                        materials[material_id].shader[shader_index]->getUniformVariable(i)->value[0] = n1;
+                        materials[material_id].shader[shader_index]->getUniformVariable(i)->value[1] = n2;
+                        materials[material_id].shader[shader_index]->getUniformVariable(i)->value[2] = n3;
+                        materials[material_id].shader[shader_index]->getUniformVariable(i)->value[3] = n4;
+                    }
+                    break;
+                }
+
+
+                //std::cout << "Value after = " << materials[material_id].shader[shader_index]->getUniformVariable(i)->value[0] << ", "
+                //                               << materials[material_id].shader[shader_index]->getUniformVariable(i)->value[1] << ", "
+                //                               << materials[material_id].shader[shader_index]->getUniformVariable(i)->value[2] << ", "
+                //                               << materials[material_id].shader[shader_index]->getUniformVariable(i)->value[3] << ", "
+                //                               << std::endl;
+                //break;
+            }
+        }
+    }
+
+}
+
+void serenity_project::getMaterialConstant(int material_id, std::string m_constant, double* n1, double* n2, double* n3, double* n4)
+{
+    if(material_id < 0 || material_id >= materials.size())
+		return;
+
+    if(!materials[material_id].isFX)
+        return;
+
+    *n1 = 0;
+    *n2 = 0;
+    *n3 = 0;
+    *n4 = 0;
+
+    for(int i = 0; i < materials[material_id].fx_var.size(); i++)
+    {
+        std::string u_var = materials[material_id].fx_var[i].var_name;
+        if(u_var.compare(m_constant)==0)
+        {
+            *n1 = materials[material_id].fx_var[i].var_value[0];
+            *n2 = materials[material_id].fx_var[i].var_value[1];
+            *n3 = materials[material_id].fx_var[i].var_value[2];
+            *n4 = materials[material_id].fx_var[i].var_value[3];
+            break;
+        }
+    }
+}

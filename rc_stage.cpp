@@ -161,7 +161,7 @@ rc_stage::~rc_stage()
 {
     if(!clear_flag)
         return;
-    wxMessageBox(_("Destructor"));
+    //wxMessageBox(_("Destructor"));
 	idIsActive=false;
 	clearStage();
 }

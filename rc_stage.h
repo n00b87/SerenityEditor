@@ -26,7 +26,18 @@ struct rc_texture
 	bool load_flag = false;
 };
 
+#define RC_FX_CONSTANT_TYPE_NONE    0
+#define RC_FX_CONSTANT_TYPE_FLOAT   1
+#define RC_FX_CONSTANT_TYPE_VEC2    2
+#define RC_FX_CONSTANT_TYPE_VEC3    3
+#define RC_FX_CONSTANT_TYPE_VEC4    4
 
+struct rc_fx_constant
+{
+    std::string var_name;
+    int var_type;
+    double var_value[4];
+};
 
 struct rc_material
 {
@@ -39,6 +50,7 @@ struct rc_material
 	bool isFX = false;
     int fxMatType = -1;
     std::vector<CShader*> shader;
+    std::vector<rc_fx_constant> fx_var;
 
 	std::string p_cmd;
 	std::string p_onLoad_cmd;

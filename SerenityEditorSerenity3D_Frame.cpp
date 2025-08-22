@@ -37,6 +37,7 @@
 #include "SerenityEditor_CreateMesh_Dialog.h"
 #include "SerenityEditor_ExitEditorAlert_Dialog.h"
 #include "SerenityEditor_SetCamera_Dialog.h"
+#include "SerenityEditor_FXVariable_Dialog.h"
 #include "rc_fx_materials.h"
 
 SerenityEditorSerenity3D_Frame::SerenityEditorSerenity3D_Frame( wxWindow* parent )
@@ -851,6 +852,56 @@ void SerenityEditorSerenity3D_Frame::updatePreviewMesh()
                         meshTab_preview_obj.node->getMaterial(i).MaterialType = (video::E_MATERIAL_TYPE)project.materials[mat_index].shader[fx_shader_index]->getMaterial();
                         project.materials[mat_index].shader[fx_shader_index]->setObjectNode(meshTab_preview_obj.node);
 
+                        for(int constant_index = 0; constant_index < project.materials[mat_index].shader[fx_shader_index]->getUniformVariableCount(); constant_index++)
+                        {
+                            std::string constant_name(project.materials[mat_index].shader[fx_shader_index]->getUniformVariable(constant_index)->name.c_str());
+                            for(int fx_var_index = 0; fx_var_index < project.materials[mat_index].fx_var.size(); fx_var_index++)
+                            {
+                                if(project.materials[mat_index].fx_var[fx_var_index].var_name.compare(constant_name)==0)
+                                {
+                                    double n1 = project.materials[mat_index].fx_var[fx_var_index].var_value[0];
+                                    double n2 = project.materials[mat_index].fx_var[fx_var_index].var_value[1];
+                                    double n3 = project.materials[mat_index].fx_var[fx_var_index].var_value[2];
+                                    double n4 = project.materials[mat_index].fx_var[fx_var_index].var_value[3];
+
+                                    switch(project.materials[mat_index].fx_var[fx_var_index].var_type)
+                                    {
+                                        case RC_FX_CONSTANT_TYPE_FLOAT:
+                                        {
+                                            project.materials[mat_index].shader[fx_shader_index]->getUniformVariable(constant_index)->value[0] = n1;
+                                        }
+                                        break;
+
+                                        case RC_FX_CONSTANT_TYPE_VEC2:
+                                        {
+                                            project.materials[mat_index].shader[fx_shader_index]->getUniformVariable(constant_index)->value[0] = n1;
+                                            project.materials[mat_index].shader[fx_shader_index]->getUniformVariable(constant_index)->value[1] = n2;
+                                        }
+                                        break;
+
+                                        case RC_FX_CONSTANT_TYPE_VEC3:
+                                        {
+                                            project.materials[mat_index].shader[fx_shader_index]->getUniformVariable(constant_index)->value[0] = n1;
+                                            project.materials[mat_index].shader[fx_shader_index]->getUniformVariable(constant_index)->value[1] = n2;
+                                            project.materials[mat_index].shader[fx_shader_index]->getUniformVariable(constant_index)->value[2] = n3;
+                                        }
+                                        break;
+
+                                        case RC_FX_CONSTANT_TYPE_VEC4:
+                                        {
+                                            project.materials[mat_index].shader[fx_shader_index]->getUniformVariable(constant_index)->value[0] = n1;
+                                            project.materials[mat_index].shader[fx_shader_index]->getUniformVariable(constant_index)->value[1] = n2;
+                                            project.materials[mat_index].shader[fx_shader_index]->getUniformVariable(constant_index)->value[2] = n3;
+                                            project.materials[mat_index].shader[fx_shader_index]->getUniformVariable(constant_index)->value[3] = n4;
+                                        }
+                                        break;
+                                    }
+
+                                    break;
+                                }
+                            }
+                        }
+
                         registerSceneNodeForRTT(animation_window->GetVideoDriver(), meshTab_preview_obj.node, project.materials[mat_index].shader[fx_shader_index]->getRTTInfo(ERT_VIEW));
                     }
                 }
@@ -1048,11 +1099,19 @@ void SerenityEditorSerenity3D_Frame::OnMainEditorNotebookPageChanged( wxAuiNoteb
 		setControlContext(stage_window);
 		current_window = stage_window;
 		stage_window->init_stage_camera();
+
+		if(stageTab_active_stage_project_index >= 0 && stageTab_active_stage_project_index < project.stages.size())
+        {
+            for(int i = 0; i < project.stages[stageTab_active_stage_project_index].actors.size(); i++)
+                refresh_actor(i);
+        }
 	}
 	else if(new_panel == m_meshDB_panel)
 	{
 		setControlContext(animation_window);
 		current_window = animation_window;
+
+		updatePreviewMesh();
 
 		int list_count = m_mesh_mesh_listBox->GetCount();
 		int list_item = m_mesh_mesh_listBox->GetSelection();
@@ -1164,20 +1223,16 @@ void SerenityEditorSerenity3D_Frame::On_Stage_NewStage( wxCommandEvent& event )
 		stage_id = project.genStageID();
 	}
 
-	wxMessageBox(_("DB0"));
 	rc_stage new_stage;
-	wxMessageBox(_("DB1"));
 	new_stage.id_name = stage_id.ToStdString();
 	new_stage.idIsActive = true;
 	new_stage.file = stage_id.ToStdString() + ".snst";
 	int project_index = project.stages.size();
-	wxMessageBox(_("DB1.5"));
 	project.clear_flag = false;
 	new_stage.clear_flag = false;
 	project.stages.push_back(new_stage);
 	project.clear_flag = true;
 	project.stages[project.stages.size()-1].clear_flag = true;
-	wxMessageBox(_("DB2"));
 
 	stage_open_flag = false;
 	project.clear_flag = false;
@@ -1189,13 +1244,10 @@ void SerenityEditorSerenity3D_Frame::On_Stage_NewStage( wxCommandEvent& event )
 	tree_node.stage_group = 0;
 	tree_node.group_label = stage_id;
 	tree_node.parent_item = stage_tree_root;
-	wxMessageBox(_("DB3"));
 	tree_node.tree_item = m_project_stage_treeCtrl->AppendItem(stage_tree_root, stage_id, stage_tree_stageImage);
 
 	int stage_index = stage_tree_nodes.size();
 	stage_tree_nodes.push_back(tree_node);
-
-	wxMessageBox(_("YOLO"));
 
 }
 
@@ -2218,6 +2270,7 @@ void SerenityEditorSerenity3D_Frame::refresh_environmentSettings()
 void SerenityEditorSerenity3D_Frame::refresh_actor_fx_material(int stage_project_index, int actor_project_index, int actor_material_num, int material_index)
 {
     std::cout << "STRT" << std::endl;
+
     if(!project.stages[stage_project_index].actors[actor_project_index].fx_material_needs_update)
         return;
 
@@ -2263,6 +2316,56 @@ void SerenityEditorSerenity3D_Frame::refresh_actor_fx_material(int stage_project
         {
             project.stages[stage_index].actors[actor_index].node->getMaterial(actor_material_num).MaterialType = (video::E_MATERIAL_TYPE)project.materials[mat_index].shader[fx_shader_index]->getMaterial();
             project.materials[mat_index].shader[fx_shader_index]->setObjectNode(project.stages[stage_index].actors[actor_index].node);
+
+            for(int constant_index = 0; constant_index < project.materials[mat_index].shader[fx_shader_index]->getUniformVariableCount(); constant_index++)
+            {
+                std::string constant_name(project.materials[mat_index].shader[fx_shader_index]->getUniformVariable(constant_index)->name.c_str());
+                for(int fx_var_index = 0; fx_var_index < project.materials[mat_index].fx_var.size(); fx_var_index++)
+                {
+                    if(project.materials[mat_index].fx_var[fx_var_index].var_name.compare(constant_name)==0)
+                    {
+                        double n1 = project.materials[mat_index].fx_var[fx_var_index].var_value[0];
+                        double n2 = project.materials[mat_index].fx_var[fx_var_index].var_value[1];
+                        double n3 = project.materials[mat_index].fx_var[fx_var_index].var_value[2];
+                        double n4 = project.materials[mat_index].fx_var[fx_var_index].var_value[3];
+
+                        switch(project.materials[mat_index].fx_var[fx_var_index].var_type)
+                        {
+                            case RC_FX_CONSTANT_TYPE_FLOAT:
+                            {
+                                project.materials[mat_index].shader[fx_shader_index]->getUniformVariable(constant_index)->value[0] = n1;
+                            }
+                            break;
+
+                            case RC_FX_CONSTANT_TYPE_VEC2:
+                            {
+                                project.materials[mat_index].shader[fx_shader_index]->getUniformVariable(constant_index)->value[0] = n1;
+                                project.materials[mat_index].shader[fx_shader_index]->getUniformVariable(constant_index)->value[1] = n2;
+                            }
+                            break;
+
+                            case RC_FX_CONSTANT_TYPE_VEC3:
+                            {
+                                project.materials[mat_index].shader[fx_shader_index]->getUniformVariable(constant_index)->value[0] = n1;
+                                project.materials[mat_index].shader[fx_shader_index]->getUniformVariable(constant_index)->value[1] = n2;
+                                project.materials[mat_index].shader[fx_shader_index]->getUniformVariable(constant_index)->value[2] = n3;
+                            }
+                            break;
+
+                            case RC_FX_CONSTANT_TYPE_VEC4:
+                            {
+                                project.materials[mat_index].shader[fx_shader_index]->getUniformVariable(constant_index)->value[0] = n1;
+                                project.materials[mat_index].shader[fx_shader_index]->getUniformVariable(constant_index)->value[1] = n2;
+                                project.materials[mat_index].shader[fx_shader_index]->getUniformVariable(constant_index)->value[2] = n3;
+                                project.materials[mat_index].shader[fx_shader_index]->getUniformVariable(constant_index)->value[3] = n4;
+                            }
+                            break;
+                        }
+
+                        break;
+                    }
+                }
+            }
 
             registerSceneNodeForRTT(stage_window->GetVideoDriver(), project.stages[stage_index].actors[actor_index].node, project.materials[mat_index].shader[fx_shader_index]->getRTTInfo(ERT_VIEW));
         }
@@ -8682,6 +8785,17 @@ void SerenityEditorSerenity3D_Frame::On_Material_RemoveMaterial_ButtonClicked( w
 			if(project.meshes[i].material_index[m] == materialTab_selected_material_project_index)
 			{
 				project.meshes[i].material_index[m] = -1;
+
+				for(int stage_index = 0; stage_index < project.stages.size(); stage_index++)
+                {
+                    for(int actor_index = 0; actor_index < project.stages[stage_index].actors.size(); actor_index++)
+                    {
+                        if(project.stages[stage_index].actors[actor_index].mesh_index == i)
+                        {
+                            project.stages[stage_index].actors[actor_index].node->getMaterial(m) = irr::video::SMaterial();
+                        }
+                    }
+                }
 			}
 		}
 	}
@@ -8689,6 +8803,20 @@ void SerenityEditorSerenity3D_Frame::On_Material_RemoveMaterial_ButtonClicked( w
 	project.materials[materialTab_selected_material_project_index].id_name = "";
 	project.materials[materialTab_selected_material_project_index].file = "";
 	project.materials[materialTab_selected_material_project_index].texture_id.clear();
+
+	if(project.materials[materialTab_selected_material_project_index].isFX)
+    {
+        for(int i = 0; i < project.materials[materialTab_selected_material_project_index].shader.size(); i++)
+        {
+            if(project.materials[materialTab_selected_material_project_index].shader[i])
+                delete project.materials[materialTab_selected_material_project_index].shader[i];
+            project.materials[materialTab_selected_material_project_index].shader[i] = NULL;
+        }
+        project.materials[materialTab_selected_material_project_index].shader.clear();
+        project.materials[materialTab_selected_material_project_index].isFX = false;
+        project.materials[materialTab_selected_material_project_index].fx_var.clear();
+        test_material_mesh->getMaterial(0) = irr::video::SMaterial();
+    }
 
 	refreshMaterialList();
 
@@ -8874,6 +9002,15 @@ void SerenityEditorSerenity3D_Frame::updateTestMesh()
                 test_material_mesh->getMaterial(0).MaterialType = (video::E_MATERIAL_TYPE)project.materials[n].shader[fx_shader_index]->getMaterial();
                 project.materials[n].shader[fx_shader_index]->setObjectNode(test_material_mesh);
 
+                for(int constant_index = 0; constant_index < project.materials[n].fx_var.size(); constant_index++)
+                {
+                    project.setMaterialConstant(n, project.materials[n].fx_var[constant_index].var_name,
+                                                   project.materials[n].fx_var[constant_index].var_value[0],
+                                                   project.materials[n].fx_var[constant_index].var_value[1],
+                                                   project.materials[n].fx_var[constant_index].var_value[2],
+                                                   project.materials[n].fx_var[constant_index].var_value[3]);
+                }
+
                 registerSceneNodeForRTT(material_window->GetVideoDriver(), test_material_mesh, project.materials[n].shader[fx_shader_index]->getRTTInfo(ERT_VIEW));
             }
 
@@ -8949,6 +9086,45 @@ void SerenityEditorSerenity3D_Frame::On_Material_MaterialType_Update( wxCommandE
 	if(n < 0 || n >= project.materials.size())
 		return;
 
+
+    if(project.materials[materialTab_selected_material_project_index].isFX)
+    {
+
+        for(int i = 0; i < project.meshes.size(); i++)
+        {
+            for(int m = 0; m < project.meshes[i].material_index.size(); m++)
+            {
+                if(project.meshes[i].material_index[m] == materialTab_selected_material_project_index)
+                {
+                    //project.meshes[i].material_index[m] = -1;
+
+                    for(int stage_index = 0; stage_index < project.stages.size(); stage_index++)
+                    {
+                        for(int actor_index = 0; actor_index < project.stages[stage_index].actors.size(); actor_index++)
+                        {
+                            if(project.stages[stage_index].actors[actor_index].mesh_index == i)
+                            {
+                                if(project.stages[stage_index].actors[actor_index].node)
+                                    project.stages[stage_index].actors[actor_index].node->getMaterial(m) = irr::video::SMaterial();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        for(int i = 0; i < project.materials[materialTab_selected_material_project_index].shader.size(); i++)
+        {
+            if(project.materials[materialTab_selected_material_project_index].shader[i])
+                delete project.materials[materialTab_selected_material_project_index].shader[i];
+            project.materials[materialTab_selected_material_project_index].shader[i] = NULL;
+        }
+        project.materials[materialTab_selected_material_project_index].shader.clear();
+        project.materials[materialTab_selected_material_project_index].isFX = false;
+        test_material_mesh->getMaterial(0) = irr::video::SMaterial();
+    }
+
 	for(int i = 0; i < rc_material_types_list.size(); i++)
 	{
 		if(rc_material_types_list[i].key.compare(m_material_type_comboBox->GetValue().ToStdString())==0)
@@ -8959,13 +9135,51 @@ void SerenityEditorSerenity3D_Frame::On_Material_MaterialType_Update( wxCommandE
             {
                 project.materials[n].isFX = true;
                 project.materials[n].fxMatType = rc_material_types_list[i].val;
+
+                for(int var_index = 0; var_index < project.materials[n].fx_var.size(); var_index++)
+                {
+                    project.setMaterialConstant(n, project.materials[n].fx_var[var_index].var_name,
+                                                   project.materials[n].fx_var[var_index].var_value[0],
+                                                   project.materials[n].fx_var[var_index].var_value[1],
+                                                   project.materials[n].fx_var[var_index].var_value[2],
+                                                   project.materials[n].fx_var[var_index].var_value[3]);
+                }
             }
 
 			break;
 		}
 	}
 
+
 	updateTestMesh();
+
+
+	//--------------------------------------------------------------------------------------------
+	int stage_project_index = stageTab_active_stage_project_index;
+
+	if(stage_project_index < 0 || stage_project_index >= project.stages.size())
+        return;
+
+    //wxMessageBox(_("TYPESET START"));
+
+	for(int i = 0; i < project.stages[stage_project_index].actors.size(); i++)
+	{
+		project.stages[stage_project_index].actors[i].fx_material_needs_update = true;
+		if(project.stages[stage_project_index].actors[i].mesh_index < 0 || project.stages[stage_project_index].actors[i].mesh_index >= project.meshes.size())
+            continue;
+
+        if(project.stages[stage_project_index].actors[i].fx_material_shader_index.size() < project.meshes[project.stages[stage_project_index].actors[i].mesh_index].material_index.size())
+            project.stages[stage_project_index].actors[i].fx_material_shader_index.resize(project.meshes[project.stages[stage_project_index].actors[i].mesh_index].material_index.size());
+
+		for(int mat_num = 0; mat_num < project.meshes[project.stages[stage_project_index].actors[i].mesh_index].material_index.size(); mat_num++)
+		{
+		    project.stages[stage_project_index].actors[i].fx_material_shader_index[mat_num] = -1;
+		}
+
+		//std::cout << "POK" << std::endl;
+	}
+
+	//wxMessageBox(_("TYPESET END"));
 }
 
 void SerenityEditorSerenity3D_Frame::On_Material_Ambient_Update( wxColourPickerEvent& event )
@@ -9432,6 +9646,336 @@ void SerenityEditorSerenity3D_Frame::On_Material_ClearTextureLevel_ButtonClicked
 
 	updateTestMesh();
 }
+
+
+void SerenityEditorSerenity3D_Frame::On_Material_AddVariable_ButtonClicked( wxCommandEvent& event )
+{
+    int n = materialTab_selected_material_project_index;
+
+	if(n < 0 || n >= project.materials.size())
+		return;
+
+    SerenityEditor_FXVariable_Dialog* dialog = new SerenityEditor_FXVariable_Dialog(this);
+    dialog->initTitle(_("Add Variable"));
+
+    dialog->ShowModal();
+
+    if(!dialog->set_flag)
+        return;
+
+    std::string d_var = dialog->f_name.ToStdString();
+    for(int i = 0; i < project.materials[n].fx_var.size(); i++)
+    {
+        if(d_var.compare(project.materials[n].fx_var[i].var_name)==0)
+        {
+            wxMessageBox(_("Variable already exist in the current material"));
+            return;
+        }
+    }
+
+    rc_fx_constant new_var;
+    new_var.var_name = d_var;
+    new_var.var_type = dialog->var_type;
+    new_var.var_value[0] = dialog->f_value[0];
+    new_var.var_value[1] = dialog->f_value[1];
+    new_var.var_value[2] = dialog->f_value[2];
+    new_var.var_value[3] = dialog->f_value[3];
+
+    //std::cout << "Color: " << new_var.var_value[0] << ", " << new_var.var_value[1] << ", " << new_var.var_value[2] << ", " << new_var.var_value[3] << std::endl;
+
+    project.materials[n].fx_var.push_back(new_var);
+    project.setMaterialConstant(n, new_var.var_name, new_var.var_value[0], new_var.var_value[1], new_var.var_value[2], new_var.var_value[3]);
+
+    m_material_fxVar_listBox-> wxListBox::AppendAndEnsureVisible(wxString(new_var.var_name));
+
+	//project.materials[n].texture_id.push_back(-1);
+	//setMaterialTextureLevels();
+}
+
+void SerenityEditorSerenity3D_Frame::On_Material_RemoveVariable_ButtonClicked( wxCommandEvent& event )
+{
+    int selected_var = m_material_fxVar_listBox-> wxListBox::GetSelection();
+
+    if(selected_var < 0 || selected_var >= m_material_fxVar_listBox-> wxListBox::GetCount())
+        return;
+
+    std::string selected_var_name = m_material_fxVar_listBox-> wxListBox::GetString(selected_var).ToStdString();
+
+    int var_index = -1;
+    int n = materialTab_selected_material_project_index;
+
+	if(n < 0 || n >= project.materials.size())
+		return;
+
+    for(int v = 0; v < project.materials[n].fx_var.size(); v++)
+    {
+        if(project.materials[n].fx_var[v].var_name.compare(selected_var_name)==0)
+        {
+            var_index = v;
+            break;
+        }
+    }
+
+    if(var_index < 0)
+        return;
+
+
+    switch(project.materials[n].fxMatType)
+    {
+        case FX_MATERIAL_TYPE_NORMAL_BLEND:
+        {
+            if(selected_var_name.compare("Alpha")==0)
+            {
+                project.setMaterialConstant(n, "Alpha", 1.0, 0.0, 0.0, 0.0);
+            }
+        }
+        break;
+
+        case FX_MATERIAL_TYPE_REFRACTION:
+        {
+            if(selected_var_name.compare("BaseColor")==0)
+            {
+                project.setMaterialConstant(n, "BaseColor", 0.4, 0.4, 0.1, 0.0);
+            }
+            else if(selected_var_name.compare("Depth")==0)
+            {
+                project.setMaterialConstant(n, "Depth", 0.1, 0.0, 0.0, 0.0);
+            }
+            else if(selected_var_name.compare("MixRatio")==0)
+            {
+                project.setMaterialConstant(n, "MixRatio", 1.0, 0.0, 0.0, 0.0);
+            }
+            else if(selected_var_name.compare("FrameHeight")==0)
+            {
+                project.setMaterialConstant(n, "FrameHeight", 255.0, 0.0, 0.0, 0.0);
+            }
+            else if(selected_var_name.compare("FrameWidth")==0)
+            {
+                project.setMaterialConstant(n, "FrameWidth", 255.0, 0.0, 0.0, 0.0);
+            }
+        }
+        break;
+
+        case FX_MATERIAL_TYPE_REFRACTION2:
+        {
+        }
+        break;
+
+        case FX_MATERIAL_TYPE_GOOCH:
+        {
+            if(selected_var_name.compare("SurfaceColor")==0)
+            {
+                project.setMaterialConstant(n, "SurfaceColor", 0.75, 0.75, 0.75, 0.0);
+            }
+            else if(selected_var_name.compare("WarmColor")==0)
+            {
+                project.setMaterialConstant(n, "WarmColor", 0.6, 0.6, 0.0, 0.0);
+            }
+            else if(selected_var_name.compare("CoolColor")==0)
+            {
+                project.setMaterialConstant(n, "CoolColor", 0.0, 0.0, 0.6, 0.0);
+            }
+            else if(selected_var_name.compare("DiffuseWarm")==0)
+            {
+                project.setMaterialConstant(n, "DiffuseWarm", 0.45, 0.0, 0.0, 0.0);
+            }
+            else if(selected_var_name.compare("DiffuseCool")==0)
+            {
+                project.setMaterialConstant(n, "DiffuseCool", 0.45, 0.0, 0.0, 0.0);
+            }
+        }
+        break;
+
+        case FX_MATERIAL_TYPE_PLASTIC:
+        {
+            if(selected_var_name.compare("Color")==0)
+            {
+                project.setMaterialConstant(n, "Color", 0.8, 0.0, 0.0, 1.0);
+            }
+            else if(selected_var_name.compare("intensity")==0)
+            {
+                project.setMaterialConstant(n, "intensity", 1.0, 0.0, 0.0, 0.0);
+            }
+        }
+        break;
+
+        case FX_MATERIAL_TYPE_TANGENT:
+        {
+            if(selected_var_name.compare("bViewSpace")==0)
+            {
+                project.setMaterialConstant(n, "bViewSpace", 1.0, 0.0, 0.0, 0.0);
+            }
+        }
+        break;
+
+        case FX_MATERIAL_TYPE_SPEAKER:
+        {
+            if(selected_var_name.compare("pulseSharpness")==0)
+            {
+                project.setMaterialConstant(n, "pulseSharpness", 14.0, 0.0, 0.0, 0.0);
+            }
+            else if(selected_var_name.compare("beat")==0)
+            {
+                project.setMaterialConstant(n, "beat", 2.25, 0.0, 0.0, 0.0);
+            }
+            else if(selected_var_name.compare("amplitude")==0)
+            {
+                project.setMaterialConstant(n, "amplitude", 2.4, 0.0, 0.0, 0.0);
+            }
+            else if(selected_var_name.compare("bassFrequency")==0)
+            {
+                project.setMaterialConstant(n, "bassFrequency", 44.0, 0.0, 0.0, 0.0);
+            }
+        }
+        break;
+
+        case FX_MATERIAL_TYPE_PHONG_TEXTURE:
+        {
+            if(selected_var_name.compare("fvAmbient")==0)
+            {
+                project.setMaterialConstant(n, "fvAmbient", 0.3686, 0.3684, 0.3684, 1.0);
+            }
+            else if(selected_var_name.compare("fvSpecular")==0)
+            {
+                project.setMaterialConstant(n, "fvSpecular", 0.4902, 0.4887, 0.4887, 1.0);
+            }
+            else if(selected_var_name.compare("fvDiffuse")==0)
+            {
+                project.setMaterialConstant(n, "fvDiffuse", 0.8863, 0.8850, 0.8850, 1.0);
+            }
+            else if(selected_var_name.compare("fSpecularPower")==0)
+            {
+                project.setMaterialConstant(n, "fSpecularPower", 25.0, 0.0, 0.0, 0.0);
+            }
+        }
+        break;
+
+        case FX_MATERIAL_TYPE_STYLE:
+        {
+        }
+        break;
+
+        case FX_MATERIAL_TYPE_STYLE2:
+        {
+        }
+        break;
+
+        case FX_MATERIAL_TYPE_STYLE3:
+        {
+        }
+        break;
+
+        case FX_MATERIAL_TYPE_STYLE4:
+        {
+            if(selected_var_name.compare("silhouetteThreshold")==0)
+            {
+                project.setMaterialConstant(n, "silhouetteThreshold", 0.2, 0.0, 0.0, 0.0);
+            }
+            else if(selected_var_name.compare("silhouetteColor")==0)
+            {
+                project.setMaterialConstant(n, "silhouetteColor", 1.0, 1.0, 1.0, 1.0);
+            }
+            else if(selected_var_name.compare("enableLighting")==0)
+            {
+                project.setMaterialConstant(n, "enableLighting", 1.0, 0.0, 0.0, 0.0);
+            }
+        }
+        break;
+    }
+
+    project.materials[n].fx_var.erase(project.materials[n].fx_var.begin() + var_index);
+
+    m_material_fxVar_listBox->Clear();
+    for(int i = 0; i < project.materials[n].fx_var.size(); i++)
+    {
+        m_material_fxVar_listBox-> wxListBox::AppendAndEnsureVisible(wxString(project.materials[n].fx_var[i].var_name));
+    }
+
+    updateTestMesh();
+
+
+    for(int stage_index = 0; stage_index < project.stages.size(); stage_index++)
+    {
+        for(int actor_index = 0; actor_index < project.stages[stage_index].actors.size(); actor_index++)
+        {
+            int mesh_index = project.stages[stage_index].actors[actor_index].mesh_index;
+
+            if(mesh_index < 0 || mesh_index >= project.meshes.size())
+                continue;
+
+            for(int mat_num = 0; mat_num < project.meshes[mesh_index].material_index.size(); mat_num++)
+            {
+                int mat_index = project.meshes[mesh_index].material_index[mat_num];
+
+                if(mat_index < 0 || mat_index >= project.materials.size())
+                    continue;
+
+                if(mat_index == n)
+                {
+                    project.stages[stage_index].actors[actor_index].fx_material_needs_update = true;
+                    break;
+                }
+            }
+        }
+    }
+
+}
+
+void SerenityEditorSerenity3D_Frame::On_Material_EditVariable_ButtonClicked( wxCommandEvent& event )
+{
+    int selected_var = m_material_fxVar_listBox-> wxListBox::GetSelection();
+
+    if(selected_var < 0 || selected_var >= m_material_fxVar_listBox-> wxListBox::GetCount())
+        return;
+
+    std::string selected_var_name = m_material_fxVar_listBox-> wxListBox::GetString(selected_var).ToStdString();
+
+    int var_index = -1;
+    int n = materialTab_selected_material_project_index;
+
+	if(n < 0 || n >= project.materials.size())
+		return;
+
+    for(int v = 0; v < project.materials[n].fx_var.size(); v++)
+    {
+        if(project.materials[n].fx_var[v].var_name.compare(selected_var_name)==0)
+        {
+            var_index = v;
+            break;
+        }
+    }
+
+    if(var_index < 0)
+        return;
+
+    SerenityEditor_FXVariable_Dialog* dialog = new SerenityEditor_FXVariable_Dialog(this);
+    dialog->initTitle(_("Edit Variable"));
+    dialog->initVariable(selected_var_name, project.materials[n].fx_var[var_index].var_value[0],
+                                            project.materials[n].fx_var[var_index].var_value[1],
+                                            project.materials[n].fx_var[var_index].var_value[2],
+                                            project.materials[n].fx_var[var_index].var_value[3]);
+
+    dialog->ShowModal();
+
+    if(!dialog->set_flag)
+        return;
+
+    std::string d_var = dialog->f_name.ToStdString();
+
+    rc_fx_constant new_var;
+    new_var.var_name = d_var;
+    new_var.var_type = dialog->var_type;
+    new_var.var_value[0] = dialog->f_value[0];
+    new_var.var_value[1] = dialog->f_value[1];
+    new_var.var_value[2] = dialog->f_value[2];
+    new_var.var_value[3] = dialog->f_value[3];
+
+    //std::cout << "Color: " << new_var.var_value[0] << ", " << new_var.var_value[1] << ", " << new_var.var_value[2] << ", " << new_var.var_value[3] << std::endl;
+
+    project.materials[n].fx_var[var_index] = new_var;
+    project.setMaterialConstant(n, new_var.var_name, new_var.var_value[0], new_var.var_value[1], new_var.var_value[2], new_var.var_value[3]);
+}
+
 
 //-------------------TEXTURE TAB-------------------------
 
