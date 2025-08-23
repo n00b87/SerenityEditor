@@ -47,6 +47,7 @@ struct Serenity_PreviewMesh
 	irr::scene::IAnimatedMeshSceneNode* node;
 	int project_mesh_index;
 	bool animation_change;
+	int fx_material_shader_index;
 };
 
 #define RC_STAGE_NODE_NONE		0
@@ -151,12 +152,14 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
 		void updateToolSelection();
 		int getStageToolIndex(wxAuiToolBarItem* toolbar_item);
 
+		bool stage_open_flag = false;
 		void open_stage(int stage_project_index);
 
 		bool delete_actor(int stage_index, int actor_stage_index);
 
 		int stageTab_active_stage_project_index = -1;
 
+		void refresh_actor_fx_material(int stage_project_index, int actor_project_index, int actor_material_num, int material_index);
 		void refresh_actor(int actor_project_index);
 		void refresh_environmentSettings();
 
@@ -204,6 +207,7 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
 		void setMaterialTextureLevels();
 
 		irr::scene::ISceneNode* test_material_mesh = NULL;
+		int test_material_shader_index = -1;
 		irr::scene::ILightSceneNode* test_material_light = NULL;
 		void updateTestMesh();
 
@@ -356,6 +360,10 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
 		void On_Material_RemoveTextureLevel_ButtonClicked( wxCommandEvent& event );
 		void On_Material_SetTextureLevel_ButtonClicked( wxCommandEvent& event );
 		void On_Material_ClearTextureLevel_ButtonClicked( wxCommandEvent& event );
+
+		void On_Material_AddVariable_ButtonClicked( wxCommandEvent& event );
+		void On_Material_RemoveVariable_ButtonClicked( wxCommandEvent& event );
+		void On_Material_EditVariable_ButtonClicked( wxCommandEvent& event );
 
 		//Textures Tab
 		void On_Texture_AddTexture_ButtonClicked( wxCommandEvent& event );

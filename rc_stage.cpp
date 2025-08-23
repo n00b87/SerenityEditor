@@ -153,10 +153,15 @@ rc_stage::rc_stage()
 
 	sky.type = 0;
 	sky.node = NULL;
+
+	actors.clear();
 }
 
 rc_stage::~rc_stage()
 {
+    if(!clear_flag)
+        return;
+    //wxMessageBox(_("Destructor"));
 	idIsActive=false;
 	clearStage();
 }
@@ -183,6 +188,9 @@ void rc_stage::clearActorVector(std::vector<rc_actor>& actor_vector)
 
 void rc_stage::clearStage()
 {
+    if(!clear_flag)
+        return;
+    //wxMessageBox(_("Clear Stage"));
 	clearActorVector(actors);
 
 	if(sky.node)
@@ -208,7 +216,7 @@ int rc_stage::addActor(std::string actor_id, int actor_type)
 	p_actor.animation_index = -1; //if less than 0 then frame 0 is set
 	p_actor.num_loops = -1;
 	p_actor.visible = true;
-	p_actor.hasShadow = true;
+	p_actor.hasShadow = false;
 	p_actor.isCastingShadow = true; //LIGHTS ONLY
 	p_actor.auto_culling = true;
 	p_actor.cube_size = 1;
@@ -265,6 +273,8 @@ int rc_stage::addActor(std::string actor_id, int actor_type)
 
 	p_actor.auto_culling = irr::scene::EAC_BOX;
 	p_actor.use_light_attenuation = false;
+
+	p_actor.fx_material_needs_update = true;
 
 	int actor_index = actors.size();
 

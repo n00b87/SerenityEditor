@@ -4,7 +4,7 @@
 #include <vector>
 #include <irrlicht.h>
 #include "an8parser.h"
-//#include "CShader.h"
+#include "CShader.h"
 
 #define SN_IRR_WINDOW_STAGE 0
 #define SN_IRR_WINDOW_MESH 1
@@ -26,7 +26,18 @@ struct rc_texture
 	bool load_flag = false;
 };
 
+#define RC_FX_CONSTANT_TYPE_NONE    0
+#define RC_FX_CONSTANT_TYPE_FLOAT   1
+#define RC_FX_CONSTANT_TYPE_VEC2    2
+#define RC_FX_CONSTANT_TYPE_VEC3    3
+#define RC_FX_CONSTANT_TYPE_VEC4    4
 
+struct rc_fx_constant
+{
+    std::string var_name;
+    int var_type;
+    double var_value[4];
+};
 
 struct rc_material
 {
@@ -38,7 +49,8 @@ struct rc_material
 	//FX_Material properties
 	bool isFX = false;
     int fxMatType = -1;
-    //CShader* shader = NULL;
+    std::vector<CShader*> shader;
+    std::vector<rc_fx_constant> fx_var;
 
 	std::string p_cmd;
 	std::string p_onLoad_cmd;
@@ -217,6 +229,9 @@ struct rc_actor
 	irr::core::aabbox3df box;
 	irr::core::vector3df center;
 
+	std::vector<int> fx_material_shader_index;
+	bool fx_material_needs_update;
+
 	bool use_every_vertex;
 	bool use_normal_direction;
 	double normal_direction_modifier;
@@ -371,6 +386,7 @@ class rc_stage
 
 
 		bool idIsActive;
+		bool clear_flag = false;
 
 		rc_stage();
 		~rc_stage();

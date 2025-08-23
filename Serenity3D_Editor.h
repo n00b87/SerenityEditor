@@ -573,12 +573,19 @@ class Serenity3D_Frame : public wxFrame
 		wxAuiToolBarItem* m_materialPreviewMesh_tool;
 		wxAuiToolBarItem* m_materialPreviewSettings_tool;
 		wxPanel* m_panel42;
+		wxPanel* m_panel56;
 		wxStaticText* m_staticText57;
 		wxButton* m_material_addTextureLevel_button;
 		wxButton* m_material_removeTextureLevel_button;
 		wxButton* m_material_setTextureLevel_button;
 		wxButton* m_material_clearTextureLevel_button;
 		wxListBox* m_material_textureLevel_listBox;
+		wxPanel* m_panel57;
+		wxStaticText* m_staticText124;
+		wxButton* m_material_addVariable_button;
+		wxButton* m_material_removeVariable_button;
+		wxButton* m_material_editVariable_button;
+		wxListBox* m_material_fxVar_listBox;
 		wxPanel* m_textureDB_panel;
 		wxSplitterWindow* m_splitter5;
 		wxPanel* m_panel39;
@@ -707,6 +714,9 @@ class Serenity3D_Frame : public wxFrame
 		virtual void On_Material_RemoveTextureLevel_ButtonClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Material_SetTextureLevel_ButtonClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Material_ClearTextureLevel_ButtonClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Material_AddVariable_ButtonClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Material_RemoveVariable_ButtonClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Material_EditVariable_ButtonClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Texture_AddTexture_ButtonClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Texture_RemoveTexture_ButtonClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Texture_TextureList_Select( wxCommandEvent& event ) { event.Skip(); }
@@ -1606,6 +1616,46 @@ class SetCamera_Dialog : public wxDialog
 		SetCamera_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Set Viewport Camera"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 494,177 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~SetCamera_Dialog();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class FXVariable_Dialog
+///////////////////////////////////////////////////////////////////////////////
+class FXVariable_Dialog : public wxDialog
+{
+	private:
+
+	protected:
+		wxStaticText* m_staticText125;
+		wxComboBox* m_variable_comboBox;
+		wxSimplebook* m_vtype_simplebook;
+		wxPanel* m_type_none_panel;
+		wxPanel* m_type_float_panel;
+		wxStaticText* m_staticText128;
+		wxSpinCtrlDouble* m_float_value_spinCtrlDouble;
+		wxPanel* m_type_vec2_panel;
+		wxStaticText* m_staticText1281;
+		wxSpinCtrlDouble* m_vec2_value1_spinCtrlDouble;
+		wxStaticText* m_staticText12811;
+		wxSpinCtrlDouble* m_vec2_value2_spinCtrlDouble;
+		wxPanel* m_type_color_panel;
+		wxStaticText* m_staticText133;
+		wxColourPickerCtrl* m_color_value_colourPicker;
+		wxButton* m_button100;
+		wxButton* m_button99;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void OnVariableChange( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnCancel( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnSet( wxCommandEvent& event ) { event.Skip(); }
+
+
+	public:
+
+		FXVariable_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 573,225 ), long style = wxDEFAULT_DIALOG_STYLE );
+
+		~FXVariable_Dialog();
 
 };
 

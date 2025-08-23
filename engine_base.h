@@ -49,6 +49,8 @@ public:
 	bool project_initialized = false;
 	int active_stage;
 
+	bool clear_flag = true;
+
 	serenity_project(std::string project_file, std::string p_name, irr::IrrlichtDevice* scene_device, wxIrrlicht* st_win, wxIrrlicht* ani_win, wxIrrlicht* mat_win, wxIrrlicht* tx_win);
 	serenity_project()
 	{
@@ -149,6 +151,12 @@ public:
 	wxIrrlicht* getCurrentContextControl();
 
 	void swapMaterialTexture(wxIrrlicht* control_window);
+
+	void setMaterialConstant(int material_id, std::string m_constant, double n1, double n2, double n3, double n4);
+    void getMaterialConstant(int material_id, std::string m_constant, double* n1, double* n2, double* n3, double* n4);
+
+    wxString getMaterialConstantTypeName(int m_constant_type);
+    int getMaterialConstantTypeValue(wxString m_constant_type_name);
 };
 
 #endif // ENGINE_BASE_H_INCLUDED
