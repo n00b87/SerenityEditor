@@ -8955,6 +8955,13 @@ void SerenityEditorSerenity3D_Frame::On_Material_MaterialList_Select( wxCommandE
 
 	m_material_shineness_spinCtrl->SetValue(project.materials[n].material.Shininess);
 
+	m_material_fxVar_listBox->Clear();
+
+	for(int i = 0; i < project.materials[n].fx_var.size(); i++)
+    {
+        m_material_fxVar_listBox->AppendAndEnsureVisible(wxString(project.materials[n].fx_var[i].var_name));
+    }
+
 
 	//TEXTURE LEVELS
 	setMaterialTextureLevels();

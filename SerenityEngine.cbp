@@ -72,6 +72,8 @@
 		<Unit filename="SerenityEditor_EditStageGroup_Dialog.h" />
 		<Unit filename="SerenityEditor_ExitEditorAlert_Dialog.cpp" />
 		<Unit filename="SerenityEditor_ExitEditorAlert_Dialog.h" />
+		<Unit filename="SerenityEditor_FXVariable_Dialog.cpp" />
+		<Unit filename="SerenityEditor_FXVariable_Dialog.h" />
 		<Unit filename="SerenityEditor_MaterialPreviewSettings_Dialog.cpp" />
 		<Unit filename="SerenityEditor_MaterialPreviewSettings_Dialog.h" />
 		<Unit filename="SerenityEditor_NewAnimatedActor_Dialog.cpp" />
@@ -117,6 +119,7 @@
 		<Unit filename="rc_camera.h" />
 		<Unit filename="rc_defines.h" />
 		<Unit filename="rc_font.h" />
+		<Unit filename="rc_fx_materials.cpp" />
 		<Unit filename="rc_fx_materials.h" />
 		<Unit filename="rc_fx_shaders.h" />
 		<Unit filename="rc_gfx.h" />

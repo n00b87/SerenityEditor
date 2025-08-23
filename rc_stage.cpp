@@ -216,7 +216,7 @@ int rc_stage::addActor(std::string actor_id, int actor_type)
 	p_actor.animation_index = -1; //if less than 0 then frame 0 is set
 	p_actor.num_loops = -1;
 	p_actor.visible = true;
-	p_actor.hasShadow = true;
+	p_actor.hasShadow = false;
 	p_actor.isCastingShadow = true; //LIGHTS ONLY
 	p_actor.auto_culling = true;
 	p_actor.cube_size = 1;

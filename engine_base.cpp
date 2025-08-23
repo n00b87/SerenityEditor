@@ -856,151 +856,234 @@ bool serenity_project::genRCBasicProject()
 			mat_str += _("SetMaterialGouraudShading(") + mat_id + _(", ") + (materials[i].material.GouraudShading ? _("TRUE") : _("FALSE")) + _(")") + _(" \n");
 			mat_str += _("SetMaterialLighting(") + mat_id + _(", ") + (materials[i].material.Lighting ? _("TRUE") : _("FALSE")) + _(")") + _(" \n");
 
-			switch(materials[i].material.MaterialType)
+			wxString fx_mat_cmd = _("");
+
+			if(materials[i].isFX)
+            {
+                switch(materials[i].fxMatType)
+                {
+                    case FX_MATERIAL_TYPE_NORMAL_BLEND:
+                    {
+                        fx_mat_cmd += _("SetMaterialType(") + mat_id + _(", FX_MATERIAL_TYPE_NORMAL_BLEND )") + _(" \n");
+                    }
+                    break;
+
+                    case FX_MATERIAL_TYPE_REFRACTION:
+                    {
+                        fx_mat_cmd += _("SetMaterialType(") + mat_id + _(", FX_MATERIAL_TYPE_REFRACTION )") + _(" \n");
+                    }
+                    break;
+
+                    case FX_MATERIAL_TYPE_REFRACTION2:
+                    {
+                        fx_mat_cmd += _("SetMaterialType(") + mat_id + _(", FX_MATERIAL_TYPE_REFRACTION2 )") + _(" \n");
+                    }
+                    break;
+
+                    case FX_MATERIAL_TYPE_GOOCH:
+                    {
+                        fx_mat_cmd += _("SetMaterialType(") + mat_id + _(", FX_MATERIAL_TYPE_GOOCH )") + _(" \n");
+                    }
+                    break;
+
+                    case FX_MATERIAL_TYPE_PLASTIC:
+                    {
+                        fx_mat_cmd += _("SetMaterialType(") + mat_id + _(", FX_MATERIAL_TYPE_PLASTIC )") + _(" \n");
+                    }
+                    break;
+
+                    case FX_MATERIAL_TYPE_TANGENT:
+                    {
+                        fx_mat_cmd += _("SetMaterialType(") + mat_id + _(", FX_MATERIAL_TYPE_TANGENT )") + _(" \n");
+                    }
+                    break;
+
+                    case FX_MATERIAL_TYPE_SPEAKER:
+                    {
+                        fx_mat_cmd += _("SetMaterialType(") + mat_id + _(", FX_MATERIAL_TYPE_SPEAKER )") + _(" \n");
+                    }
+                    break;
+
+                    case FX_MATERIAL_TYPE_PHONG_TEXTURE:
+                    {
+                        fx_mat_cmd += _("SetMaterialType(") + mat_id + _(", FX_MATERIAL_TYPE_PHONG_TEXTURE )") + _(" \n");
+                    }
+                    break;
+
+                    case FX_MATERIAL_TYPE_STYLE:
+                    {
+                        fx_mat_cmd += _("SetMaterialType(") + mat_id + _(", FX_MATERIAL_TYPE_STYLE )") + _(" \n");
+                    }
+                    break;
+
+                    case FX_MATERIAL_TYPE_STYLE2:
+                    {
+                        fx_mat_cmd += _("SetMaterialType(") + mat_id + _(", FX_MATERIAL_TYPE_STYLE2 )") + _(" \n");
+                    }
+                    break;
+
+                    case FX_MATERIAL_TYPE_STYLE3:
+                    {
+                        fx_mat_cmd += _("SetMaterialType(") + mat_id + _(", FX_MATERIAL_TYPE_STYLE3 )") + _(" \n");
+                    }
+                    break;
+
+                    case FX_MATERIAL_TYPE_STYLE4:
+                    {
+                        fx_mat_cmd += _("SetMaterialType(") + mat_id + _(", FX_MATERIAL_TYPE_STYLE4 )") + _(" \n");
+                    }
+                    break;
+                }
+            }
+			else
 			{
-				case irr::video::EMT_DETAIL_MAP:
-				{
-					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_DETAIL_MAP )") + _(" \n");
-				}
-				break;
+			    switch(materials[i].material.MaterialType)
+                {
+                    case irr::video::EMT_DETAIL_MAP:
+                    {
+                        mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_DETAIL_MAP )") + _(" \n");
+                    }
+                    break;
 
-				case irr::video::EMT_LIGHTMAP:
-				{
-					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_LIGHTMAP )") + _(" \n");
-				}
-				break;
+                    case irr::video::EMT_LIGHTMAP:
+                    {
+                        mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_LIGHTMAP )") + _(" \n");
+                    }
+                    break;
 
-				case irr::video::EMT_LIGHTMAP_ADD:
-				{
-					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_LIGHTMAP_ADD )") + _(" \n");
-				}
-				break;
+                    case irr::video::EMT_LIGHTMAP_ADD:
+                    {
+                        mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_LIGHTMAP_ADD )") + _(" \n");
+                    }
+                    break;
 
-				case irr::video::EMT_LIGHTMAP_LIGHTING:
-				{
-					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_LIGHTMAP_LIGHTING )") + _(" \n");
-				}
-				break;
+                    case irr::video::EMT_LIGHTMAP_LIGHTING:
+                    {
+                        mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_LIGHTMAP_LIGHTING )") + _(" \n");
+                    }
+                    break;
 
-				case irr::video::EMT_LIGHTMAP_LIGHTING_M2:
-				{
-					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_LIGHTMAP_LIGHTING_M2 )") + _(" \n");
-				}
-				break;
+                    case irr::video::EMT_LIGHTMAP_LIGHTING_M2:
+                    {
+                        mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_LIGHTMAP_LIGHTING_M2 )") + _(" \n");
+                    }
+                    break;
 
-				case irr::video::EMT_LIGHTMAP_LIGHTING_M4:
-				{
-					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_LIGHTMAP_LIGHTING_M4 )") + _(" \n");
-				}
-				break;
+                    case irr::video::EMT_LIGHTMAP_LIGHTING_M4:
+                    {
+                        mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_LIGHTMAP_LIGHTING_M4 )") + _(" \n");
+                    }
+                    break;
 
-				case irr::video::EMT_LIGHTMAP_M2:
-				{
-					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_LIGHTMAP_M2 )") + _(" \n");
-				}
-				break;
+                    case irr::video::EMT_LIGHTMAP_M2:
+                    {
+                        mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_LIGHTMAP_M2 )") + _(" \n");
+                    }
+                    break;
 
-				case irr::video::EMT_LIGHTMAP_M4:
-				{
-					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_LIGHTMAP_M4 )") + _(" \n");
-				}
-				break;
+                    case irr::video::EMT_LIGHTMAP_M4:
+                    {
+                        mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_LIGHTMAP_M4 )") + _(" \n");
+                    }
+                    break;
 
-				case irr::video::EMT_NORMAL_MAP_SOLID:
-				{
-					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_NORMAL_MAP_SOLID )") + _(" \n");
-				}
-				break;
+                    case irr::video::EMT_NORMAL_MAP_SOLID:
+                    {
+                        mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_NORMAL_MAP_SOLID )") + _(" \n");
+                    }
+                    break;
 
-				case irr::video::EMT_NORMAL_MAP_TRANSPARENT_ADD_COLOR:
-				{
-					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_NORMAL_MAP_TRANSPARENT_ADD_COLOR )") + _(" \n");
-				}
-				break;
+                    case irr::video::EMT_NORMAL_MAP_TRANSPARENT_ADD_COLOR:
+                    {
+                        mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_NORMAL_MAP_TRANSPARENT_ADD_COLOR )") + _(" \n");
+                    }
+                    break;
 
-				case irr::video::EMT_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA:
-				{
-					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA )") + _(" \n");
-				}
-				break;
+                    case irr::video::EMT_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA:
+                    {
+                        mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA )") + _(" \n");
+                    }
+                    break;
 
-				case irr::video::EMT_ONETEXTURE_BLEND:
-				{
-					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_ONETEXTURE_BLEND )") + _(" \n");
-				}
-				break;
+                    case irr::video::EMT_ONETEXTURE_BLEND:
+                    {
+                        mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_ONETEXTURE_BLEND )") + _(" \n");
+                    }
+                    break;
 
-				case irr::video::EMT_PARALLAX_MAP_SOLID:
-				{
-					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_PARALLAX_MAP_SOLID )") + _(" \n");
-				}
-				break;
+                    case irr::video::EMT_PARALLAX_MAP_SOLID:
+                    {
+                        mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_PARALLAX_MAP_SOLID )") + _(" \n");
+                    }
+                    break;
 
-				case irr::video::EMT_PARALLAX_MAP_TRANSPARENT_ADD_COLOR:
-				{
-					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_PARALLAX_MAP_TRANSPARENT_ADD_COLOR )") + _(" \n");
-				}
-				break;
+                    case irr::video::EMT_PARALLAX_MAP_TRANSPARENT_ADD_COLOR:
+                    {
+                        mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_PARALLAX_MAP_TRANSPARENT_ADD_COLOR )") + _(" \n");
+                    }
+                    break;
 
-				case irr::video::EMT_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA:
-				{
-					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA )") + _(" \n");
-				}
-				break;
+                    case irr::video::EMT_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA:
+                    {
+                        mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA )") + _(" \n");
+                    }
+                    break;
 
-				case irr::video::EMT_REFLECTION_2_LAYER:
-				{
-					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_REFLECTION_2_LAYER )") + _(" \n");
-				}
-				break;
+                    case irr::video::EMT_REFLECTION_2_LAYER:
+                    {
+                        mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_REFLECTION_2_LAYER )") + _(" \n");
+                    }
+                    break;
 
-				case irr::video::EMT_SOLID:
-				{
-					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_SOLID )") + _(" \n");
-				}
-				break;
+                    case irr::video::EMT_SOLID:
+                    {
+                        mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_SOLID )") + _(" \n");
+                    }
+                    break;
 
-				case irr::video::EMT_SOLID_2_LAYER:
-				{
-					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_SOLID_2_LAYER )") + _(" \n");
-				}
-				break;
+                    case irr::video::EMT_SOLID_2_LAYER:
+                    {
+                        mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_SOLID_2_LAYER )") + _(" \n");
+                    }
+                    break;
 
-				case irr::video::EMT_SPHERE_MAP:
-				{
-					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_SPHERE_MAP )") + _(" \n");
-				}
-				break;
+                    case irr::video::EMT_SPHERE_MAP:
+                    {
+                        mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_SPHERE_MAP )") + _(" \n");
+                    }
+                    break;
 
-				case irr::video::EMT_TRANSPARENT_ADD_COLOR:
-				{
-					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_TRANSPARENT_ADD_COLOR )") + _(" \n");
-				}
-				break;
+                    case irr::video::EMT_TRANSPARENT_ADD_COLOR:
+                    {
+                        mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_TRANSPARENT_ADD_COLOR )") + _(" \n");
+                    }
+                    break;
 
-				case irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL:
-				{
-					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_TRANSPARENT_ALPHA_CHANNEL )") + _(" \n");
-				}
-				break;
+                    case irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL:
+                    {
+                        mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_TRANSPARENT_ALPHA_CHANNEL )") + _(" \n");
+                    }
+                    break;
 
-				case irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL_REF:
-				{
-					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_TRANSPARENT_ALPHA_CHANNEL_REF )") + _(" \n");
-				}
-				break;
+                    case irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL_REF:
+                    {
+                        mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_TRANSPARENT_ALPHA_CHANNEL_REF )") + _(" \n");
+                    }
+                    break;
 
-				case irr::video::EMT_TRANSPARENT_REFLECTION_2_LAYER:
-				{
-					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_TRANSPARENT_REFLECTION_2_LAYER )") + _(" \n");
-				}
-				break;
+                    case irr::video::EMT_TRANSPARENT_REFLECTION_2_LAYER:
+                    {
+                        mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_TRANSPARENT_REFLECTION_2_LAYER )") + _(" \n");
+                    }
+                    break;
 
-				case irr::video::EMT_TRANSPARENT_VERTEX_ALPHA:
-				{
-					mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_TRANSPARENT_VERTEX_ALPHA )") + _(" \n");
-				}
-				break;
+                    case irr::video::EMT_TRANSPARENT_VERTEX_ALPHA:
+                    {
+                        mat_str += _("SetMaterialType(") + mat_id + _(", MATERIAL_TYPE_TRANSPARENT_VERTEX_ALPHA )") + _(" \n");
+                    }
+                    break;
+
+                }
 			}
 
 			mat_str += _("SetMaterialNormalize(") + mat_id + _(", ") + (materials[i].material.NormalizeNormals ? _("TRUE") : _("FALSE")) + _(")") + _(" \n");
@@ -1042,6 +1125,16 @@ bool serenity_project::genRCBasicProject()
 
 				p_onClear_cmd += _("\t") + _("SetMaterialTexture(") + mat_id + _(", ") + wxString::Format(_("%d"), m_texture_level) + _(", -1 )") + _(" \n");
 			}
+
+			p_onLoad_cmd += _("\t") + fx_mat_cmd + _("\n");
+
+			for(int m_var_index = 0; m_var_index < materials[i].fx_var.size(); m_var_index++)
+            {
+                p_onLoad_cmd += _("\t") + _("SetMaterialConstant(") + mat_id + _(", \"") + wxString(materials[i].fx_var[m_var_index].var_name) + _("\", ") + wxString::FromDouble(materials[i].fx_var[m_var_index].var_value[0]) + _(", ") +
+                                                                                                                                                         wxString::FromDouble(materials[i].fx_var[m_var_index].var_value[1]) + _(", ") +
+                                                                                                                                                         wxString::FromDouble(materials[i].fx_var[m_var_index].var_value[2]) + _(", ") +
+                                                                                                                                                         wxString::FromDouble(materials[i].fx_var[m_var_index].var_value[3]) + _(") \n");
+            }
 
 			mat_sn_id++;
 
@@ -2430,6 +2523,16 @@ bool serenity_project::genRCBasicProject()
 				actor_load_properties += _("\t") + _("SetActorMaterial( [ACTOR], 0, Serenity_Global_Material_List[ ") + _("Materials.") + mat_id + _(".SN_ID ].ID )") + _("\n");
 			}
 
+			actor_load_properties += _("\n");
+
+			actor_load_properties += _("\t") + _("SetActorVisible( [ACTOR], ") + actor_id + _(".Visible ) ") + _("\n");
+			actor_load_properties += _("\t") + _("SetActorAutoCulling( [ACTOR], ") + actor_id + _(".AutoCulling ) ") + _("\n");
+
+			if(stages[stage].actors[actor].type != SN_ACTOR_TYPE_TERRAIN && stages[stage].actors[actor].type != SN_ACTOR_TYPE_WATER && stages[stage].actors[actor].type != SN_ACTOR_TYPE_LIGHT)
+				actor_load_properties += _("\t") + (stages[stage].actors[actor].hasShadow ? _("AddActorShadow( [ACTOR] ) ") : _("RemoveActorShadow( [ACTOR] ) ") )  + _("\n");
+
+            actor_load_properties += _("\n");
+
 			actor_define += actor_id + _(".Shadow = ") + (stages[stage].actors[actor].hasShadow ? _("TRUE") : _("FALSE")) + _("\n");
 			actor_define += actor_id + _(".AutoCulling = ") + wxString::FromUTF8( rc_getAutoCullingName(stages[stage].actors[actor].auto_culling)) + _("\n");
 			actor_define += actor_id + _(".Visible = ") + (stages[stage].actors[actor].visible ? _("TRUE") : _("FALSE")) + _("\n");
@@ -2821,12 +2924,6 @@ bool serenity_project::genRCBasicProject()
 			}
 
 			actor_load_properties += _("\n");
-
-			actor_load_properties += _("\t") + _("SetActorVisible( [ACTOR], ") + actor_id + _(".Visible ) ") + _("\n");
-			actor_load_properties += _("\t") + _("SetActorAutoCulling( [ACTOR], ") + actor_id + _(".AutoCulling ) ") + _("\n");
-
-			if(stages[stage].actors[actor].type != SN_ACTOR_TYPE_TERRAIN && stages[stage].actors[actor].type != SN_ACTOR_TYPE_WATER && stages[stage].actors[actor].type != SN_ACTOR_TYPE_LIGHT)
-				actor_load_properties += _("\t") + (stages[stage].actors[actor].hasShadow ? _("AddActorShadow( [ACTOR] ) ") : _("RemoveActorShadow( [ACTOR] ) ") )  + _("\n");
 
 			actor_load_properties += _("\t") + _("SetActorShape( [ACTOR], ") + actor_id + _(".Physics.Shape, ") + actor_id + _(".Physics.Mass ) ") + _("\n");
 
@@ -5182,6 +5279,44 @@ rc_material serenity_project::loadMaterialFile(wxString mfile, wxString mID)
 					}
 				}
 			}
+			else if(st_obj[line_num].dict[0].key.compare(_("variable"))==0)
+			{
+				int level = 0;
+				wxString filename = _("");
+
+				rc_fx_constant fx_var;
+
+				for(int tx_item = 1; tx_item < st_obj[line_num].dict.size(); tx_item++)
+				{
+					if(st_obj[line_num].dict[tx_item].key.compare(_("name"))==0)
+					{
+					    fx_var.var_name = st_obj[line_num].dict[tx_item].val.ToStdString();
+					}
+					else if(st_obj[line_num].dict[tx_item].key.compare(_("data_type"))==0)
+					{
+						fx_var.var_type = getMaterialConstantTypeValue(st_obj[line_num].dict[tx_item].val);
+					}
+					else if(st_obj[line_num].dict[tx_item].key.compare(_("n1"))==0)
+					{
+						st_obj[line_num].dict[tx_item].val.ToDouble(&fx_var.var_value[0]);
+					}
+					else if(st_obj[line_num].dict[tx_item].key.compare(_("n2"))==0)
+					{
+						st_obj[line_num].dict[tx_item].val.ToDouble(&fx_var.var_value[1]);
+					}
+					else if(st_obj[line_num].dict[tx_item].key.compare(_("n3"))==0)
+					{
+						st_obj[line_num].dict[tx_item].val.ToDouble(&fx_var.var_value[2]);
+					}
+					else if(st_obj[line_num].dict[tx_item].key.compare(_("n4"))==0)
+					{
+						st_obj[line_num].dict[tx_item].val.ToDouble(&fx_var.var_value[3]);
+					}
+				}
+
+				p_mat.fx_var.push_back(fx_var);
+
+			}
 
 			break;
 		}
@@ -5680,6 +5815,18 @@ bool serenity_project::save_material(int material_index)
 		}
 	}
 
+
+	for(int i = 0; i < p_mat.fx_var.size(); i++)
+	{
+		mat_file.Write(_("variable  name=") + wxString(p_mat.fx_var[i].var_name) + _("  ") + _("  data_type=") + getMaterialConstantTypeName(p_mat.fx_var[i].var_type) + _("  ") +
+                                                                                             _("n1=") + wxString::FromDouble(p_mat.fx_var[i].var_value[0]) + _("  ") +
+                                                                                             _("n2=") + wxString::FromDouble(p_mat.fx_var[i].var_value[1]) + _("  ") +
+                                                                                             _("n3=") + wxString::FromDouble(p_mat.fx_var[i].var_value[2]) + _("  ") +
+                                                                                             _("n4=") + wxString::FromDouble(p_mat.fx_var[i].var_value[3]) + _("  ") + _("\";"));
+        mat_file.Write(_("\n"));
+	}
+
+
 	mat_file.Close();
 
 	return true;
@@ -6130,4 +6277,36 @@ void serenity_project::getMaterialConstant(int material_id, std::string m_consta
             break;
         }
     }
+}
+
+int serenity_project::getMaterialConstantTypeValue(wxString m_constant_type_name)
+{
+    if(m_constant_type_name.compare(_("RC_FX_CONSTANT_TYPE_NONE"))==0)
+        return RC_FX_CONSTANT_TYPE_NONE;
+    else if(m_constant_type_name.compare(_("RC_FX_CONSTANT_TYPE_FLOAT"))==0)
+        return RC_FX_CONSTANT_TYPE_FLOAT;
+    else if(m_constant_type_name.compare(_("RC_FX_CONSTANT_TYPE_VEC2"))==0)
+        return RC_FX_CONSTANT_TYPE_VEC2;
+    else if(m_constant_type_name.compare(_("RC_FX_CONSTANT_TYPE_VEC3"))==0)
+        return RC_FX_CONSTANT_TYPE_VEC3;
+    else if(m_constant_type_name.compare(_("RC_FX_CONSTANT_TYPE_VEC4"))==0)
+        return RC_FX_CONSTANT_TYPE_VEC4;
+
+    return 0;
+}
+
+wxString serenity_project::getMaterialConstantTypeName(int m_constant_type)
+{
+    if(m_constant_type == RC_FX_CONSTANT_TYPE_NONE)
+        return _("RC_FX_CONSTANT_TYPE_NONE");
+    else if(m_constant_type == RC_FX_CONSTANT_TYPE_FLOAT)
+        return _("RC_FX_CONSTANT_TYPE_FLOAT");
+    else if(m_constant_type == RC_FX_CONSTANT_TYPE_VEC2)
+        return _("RC_FX_CONSTANT_TYPE_VEC2");
+    else if(m_constant_type == RC_FX_CONSTANT_TYPE_VEC3)
+        return _("RC_FX_CONSTANT_TYPE_VEC3");
+    else if(m_constant_type == RC_FX_CONSTANT_TYPE_VEC4)
+        return _("RC_FX_CONSTANT_TYPE_VEC4");
+
+    return _("RC_FX_CONSTANT_TYPE_NONE");
 }

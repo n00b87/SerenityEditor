@@ -154,6 +154,9 @@ public:
 
 	void setMaterialConstant(int material_id, std::string m_constant, double n1, double n2, double n3, double n4);
     void getMaterialConstant(int material_id, std::string m_constant, double* n1, double* n2, double* n3, double* n4);
+
+    wxString getMaterialConstantTypeName(int m_constant_type);
+    int getMaterialConstantTypeValue(wxString m_constant_type_name);
 };
 
 #endif // ENGINE_BASE_H_INCLUDED
