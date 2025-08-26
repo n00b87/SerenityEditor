@@ -1823,6 +1823,12 @@ void SerenityEditorSerenity3D_Frame::On_Stage_DeleteActor( wxCommandEvent& event
 	m_project_stage_treeCtrl->SelectItem(stage_tree_nodes[s_node_index].tree_item);
 }
 
+void SerenityEditorSerenity3D_Frame::On_Stage_CopyActor( wxCommandEvent& event )
+{
+
+}
+
+
 int SerenityEditorSerenity3D_Frame::getCurrentStageNodeIndex()
 {
 	for(int i = 0; i < stage_tree_nodes.size(); i++)
@@ -2269,7 +2275,7 @@ void SerenityEditorSerenity3D_Frame::refresh_environmentSettings()
 
 void SerenityEditorSerenity3D_Frame::refresh_actor_fx_material(int stage_project_index, int actor_project_index, int actor_material_num, int material_index)
 {
-    std::cout << "STRT" << std::endl;
+    //std::cout << "STRT" << std::endl;
 
     if(!project.stages[stage_project_index].actors[actor_project_index].fx_material_needs_update)
         return;
@@ -2295,7 +2301,7 @@ void SerenityEditorSerenity3D_Frame::refresh_actor_fx_material(int stage_project
         {
             if(project.materials[mat_index].shader[current_fx_shader_index] != NULL)
             {
-                std::cout << "TEST UP" << std::endl;
+                //std::cout << "TEST UP" << std::endl;
                 delete project.materials[mat_index].shader[current_fx_shader_index];
                 project.materials[mat_index].shader[current_fx_shader_index] = NULL;
             }
@@ -2468,8 +2474,19 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 				        int mat_index = project.stages[stage_project_index].actors[i].override_material_index;
                         if(mat_index >= 0 && mat_index < project.materials.size())
                         {
-                            if(project.materials[mat_index].id_name.compare("")!=0)
-                                node->getMaterial(0) = project.materials[mat_index].material;
+                            if(project.materials[mat_index].id_name.compare("") != 0)
+                            {
+                                if(project.materials[mat_index].isFX)
+                                {
+                                    refresh_actor_fx_material(stage_project_index, actor_project_index, 0, mat_index);
+                                }
+                                else
+                                {
+                                    node->getMaterial(0) = project.materials[mat_index].material;
+                                }
+                            }
+                            else
+                                node->getMaterial(0) = irr::video::SMaterial();
                         }
 				    }
 				}
@@ -2491,10 +2508,26 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 
 				int mat_index = project.stages[stage_project_index].actors[i].override_material_index;
 				if(mat_index >= 0 && mat_index < project.materials.size())
-				{
-					if(project.materials[mat_index].id_name.compare("")!=0)
-						node->getMaterial(0) = project.materials[mat_index].material;
-				}
+                {
+                    if(project.materials[mat_index].id_name.compare("") != 0)
+                    {
+                        if(project.materials[mat_index].isFX)
+                        {
+                            if(project.stages[stage_project_index].actors[i].fx_material_shader_index.size() == 0)
+                                project.stages[stage_project_index].actors[i].fx_material_shader_index.push_back(-1);
+
+                            project.stages[stage_project_index].actors[i].fx_material_needs_update = true;
+
+                            refresh_actor_fx_material(stage_project_index, actor_project_index, 0, mat_index);
+                        }
+                        else
+                        {
+                            node->getMaterial(0) = project.materials[mat_index].material;
+                        }
+                    }
+                    else
+                        node->getMaterial(0) = irr::video::SMaterial();
+                }
 			}
 		}
 		break;
@@ -2515,10 +2548,26 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 				//-----APPLY MATERIAL-----------
 				int mat_index = project.stages[stage_project_index].actors[i].override_material_index;
 				if(mat_index >= 0 && mat_index < project.materials.size())
-				{
-					if(project.materials[mat_index].id_name.compare("")!=0)
-						node->getMaterial(0) = project.materials[mat_index].material;
-				}
+                {
+                    if(project.materials[mat_index].id_name.compare("") != 0)
+                    {
+                        if(project.materials[mat_index].isFX)
+                        {
+                            if(project.stages[stage_project_index].actors[i].fx_material_shader_index.size() == 0)
+                                project.stages[stage_project_index].actors[i].fx_material_shader_index.push_back(-1);
+
+                            project.stages[stage_project_index].actors[i].fx_material_needs_update = true;
+
+                            refresh_actor_fx_material(stage_project_index, actor_project_index, 0, mat_index);
+                        }
+                        else
+                        {
+                            node->getMaterial(0) = project.materials[mat_index].material;
+                        }
+                    }
+                    else
+                        node->getMaterial(0) = irr::video::SMaterial();
+                }
 			}
 		}
 		break;
@@ -2586,10 +2635,26 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 				//-----APPLY MATERIAL-----------
 				int mat_index = project.stages[stage_project_index].actors[i].override_material_index;
 				if(mat_index >= 0 && mat_index < project.materials.size())
-				{
-					if(project.materials[mat_index].id_name.compare("")!=0)
-						node->getMaterial(0) = project.materials[mat_index].material;
-				}
+                {
+                    if(project.materials[mat_index].id_name.compare("") != 0)
+                    {
+                        if(project.materials[mat_index].isFX)
+                        {
+                            if(project.stages[stage_project_index].actors[i].fx_material_shader_index.size() == 0)
+                                project.stages[stage_project_index].actors[i].fx_material_shader_index.push_back(-1);
+
+                            project.stages[stage_project_index].actors[i].fx_material_needs_update = true;
+
+                            refresh_actor_fx_material(stage_project_index, actor_project_index, 0, mat_index);
+                        }
+                        else
+                        {
+                            node->getMaterial(0) = project.materials[mat_index].material;
+                        }
+                    }
+                    else
+                        node->getMaterial(0) = irr::video::SMaterial();
+                }
 
 				//icon_node->setPosition(node->getPosition());
 				icon_node->setPosition(irr::core::vector3df(0,0,0));
@@ -2628,10 +2693,49 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 					{
 						int mat_index = project.meshes[mesh_index].material_index[i];
 						if(project.materials[mat_index].id_name.compare("") != 0)
-							node->getMaterial(i) = project.materials[mat_index].material;
+                        {
+                            if(project.materials[mat_index].isFX)
+                            {
+                                refresh_actor_fx_material(stage_project_index, actor_project_index, i, mat_index);
+                            }
+                            else
+                            {
+                                node->getMaterial(i) = project.materials[mat_index].material;
+                            }
+                        }
 						else
 							node->getMaterial(i) = irr::video::SMaterial();
 					}
+				}
+
+				//OVERRIDE MATERIAL FOR MESH PRIMITIVES
+				if(mesh_index >= 0 && mesh_index < project.meshes.size())
+				{
+				    if(project.meshes[mesh_index].file.substr(0,1).compare("!")==0)
+				    {
+				        int mat_index = project.stages[stage_project_index].actors[i].override_material_index;
+                        if(mat_index >= 0 && mat_index < project.materials.size())
+                        {
+                            if(project.materials[mat_index].id_name.compare("") != 0)
+                            {
+                                if(project.materials[mat_index].isFX)
+                                {
+                                    if(project.stages[stage_project_index].actors[i].fx_material_shader_index.size() == 0)
+                                        project.stages[stage_project_index].actors[i].fx_material_shader_index.push_back(-1);
+
+                                    project.stages[stage_project_index].actors[i].fx_material_needs_update = true;
+
+                                    refresh_actor_fx_material(stage_project_index, actor_project_index, 0, mat_index);
+                                }
+                                else
+                                {
+                                    node->getMaterial(0) = project.materials[mat_index].material;
+                                }
+                            }
+                            else
+                                node->getMaterial(0) = irr::video::SMaterial();
+                        }
+				    }
 				}
 
 			}
@@ -2727,16 +2831,55 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 					}
 					//-----APPLY MATERIAL-----------
 					for(int i = 0; i < project.meshes[mesh_index].material_index.size(); i++)
-					{
-						if(project.meshes[mesh_index].material_index[i] >= 0 && project.meshes[mesh_index].material_index[i] < project.materials.size())
-						{
-							int mat_index = project.meshes[mesh_index].material_index[i];
-							if(project.materials[mat_index].id_name.compare("") != 0)
-								p_node->getMaterial(i) = project.materials[mat_index].material;
-							else
-								p_node->getMaterial(i) = irr::video::SMaterial();
-						}
-					}
+                    {
+                        if(project.meshes[mesh_index].material_index[i] >= 0 && project.meshes[mesh_index].material_index[i] < project.materials.size())
+                        {
+                            int mat_index = project.meshes[mesh_index].material_index[i];
+                            if(project.materials[mat_index].id_name.compare("") != 0)
+                            {
+                                if(project.materials[mat_index].isFX)
+                                {
+                                    refresh_actor_fx_material(stage_project_index, actor_project_index, i, mat_index);
+                                }
+                                else
+                                {
+                                    project.stages[stage_project_index].actors[i].node->getMaterial(i) = project.materials[mat_index].material;
+                                }
+                            }
+                            else
+                                project.stages[stage_project_index].actors[i].node->getMaterial(i) = irr::video::SMaterial();
+                        }
+                    }
+
+                    //OVERRIDE MATERIAL FOR MESH PRIMITIVES
+                    if(mesh_index >= 0 && mesh_index < project.meshes.size())
+                    {
+                        if(project.meshes[mesh_index].file.substr(0,1).compare("!")==0)
+                        {
+                            int mat_index = project.stages[stage_project_index].actors[i].override_material_index;
+                            if(mat_index >= 0 && mat_index < project.materials.size())
+                            {
+                                if(project.materials[mat_index].id_name.compare("") != 0)
+                                {
+                                    if(project.materials[mat_index].isFX)
+                                    {
+                                        if(project.stages[stage_project_index].actors[i].fx_material_shader_index.size() == 0)
+                                            project.stages[stage_project_index].actors[i].fx_material_shader_index.push_back(-1);
+
+                                        project.stages[stage_project_index].actors[i].fx_material_needs_update = true;
+
+                                        refresh_actor_fx_material(stage_project_index, actor_project_index, 0, mat_index);
+                                    }
+                                    else
+                                    {
+                                        project.stages[stage_project_index].actors[i].node->getMaterial(0) = project.materials[mat_index].material;
+                                    }
+                                }
+                                else
+                                    project.stages[stage_project_index].actors[i].node->getMaterial(0) = irr::video::SMaterial();
+                            }
+                        }
+                    }
 				}
 
 			}
@@ -2814,10 +2957,26 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 				//-----APPLY MATERIAL-----------
 				int mat_index = project.stages[stage_project_index].actors[i].override_material_index;
 				if(mat_index >= 0 && mat_index < project.materials.size())
-				{
-					if(project.materials[mat_index].id_name.compare("")!=0)
-						project.stages[stage_project_index].actors[i].node->getMaterial(0) = project.materials[mat_index].material;
-				}
+                {
+                    if(project.materials[mat_index].id_name.compare("") != 0)
+                    {
+                        if(project.materials[mat_index].isFX)
+                        {
+                            if(project.stages[stage_project_index].actors[i].fx_material_shader_index.size() == 0)
+                                project.stages[stage_project_index].actors[i].fx_material_shader_index.push_back(-1);
+
+                            project.stages[stage_project_index].actors[i].fx_material_needs_update = true;
+
+                            refresh_actor_fx_material(stage_project_index, actor_project_index, 0, mat_index);
+                        }
+                        else
+                        {
+                            project.stages[stage_project_index].actors[i].node->getMaterial(0) = project.materials[mat_index].material;
+                        }
+                    }
+                    else
+                        project.stages[stage_project_index].actors[i].node->getMaterial(0) = irr::video::SMaterial();
+                }
 
 			}
 		}
@@ -2834,10 +2993,26 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 				//-----APPLY MATERIAL-----------
 				int mat_index = project.stages[stage_project_index].actors[i].override_material_index;
 				if(mat_index >= 0 && mat_index < project.materials.size())
-				{
-					if(project.materials[mat_index].id_name.compare("")!=0)
-						project.stages[stage_project_index].actors[i].node->getMaterial(0) = project.materials[mat_index].material;
-				}
+                {
+                    if(project.materials[mat_index].id_name.compare("") != 0)
+                    {
+                        if(project.materials[mat_index].isFX)
+                        {
+                            if(project.stages[stage_project_index].actors[i].fx_material_shader_index.size() == 0)
+                                project.stages[stage_project_index].actors[i].fx_material_shader_index.push_back(-1);
+
+                            project.stages[stage_project_index].actors[i].fx_material_needs_update = true;
+
+                            refresh_actor_fx_material(stage_project_index, actor_project_index, 0, mat_index);
+                        }
+                        else
+                        {
+                            project.stages[stage_project_index].actors[i].node->getMaterial(0) = project.materials[mat_index].material;
+                        }
+                    }
+                    else
+                        project.stages[stage_project_index].actors[i].node->getMaterial(0) = irr::video::SMaterial();
+                }
 
 			}
 		}
@@ -2867,10 +3042,26 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 				//-----APPLY MATERIAL-----------
 				int mat_index = project.stages[stage_project_index].actors[i].override_material_index;
 				if(mat_index >= 0 && mat_index < project.materials.size())
-				{
-					if(project.materials[mat_index].id_name.compare("")!=0)
-						node->getMaterial(0) = project.materials[mat_index].material;
-				}
+                {
+                    if(project.materials[mat_index].id_name.compare("") != 0)
+                    {
+                        if(project.materials[mat_index].isFX)
+                        {
+                            if(project.stages[stage_project_index].actors[i].fx_material_shader_index.size() == 0)
+                                project.stages[stage_project_index].actors[i].fx_material_shader_index.push_back(-1);
+
+                            project.stages[stage_project_index].actors[i].fx_material_needs_update = true;
+
+                            refresh_actor_fx_material(stage_project_index, actor_project_index, 0, mat_index);
+                        }
+                        else
+                        {
+                            node->getMaterial(0) = project.materials[mat_index].material;
+                        }
+                    }
+                    else
+                        node->getMaterial(0) = irr::video::SMaterial();
+                }
 
 			}
 		}
@@ -2907,10 +3098,49 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 					{
 						int mat_index = project.meshes[mesh_index].material_index[i];
 						if(project.materials[mat_index].id_name.compare("") != 0)
-							node->getMaterial(i) = project.materials[mat_index].material;
+                        {
+                            if(project.materials[mat_index].isFX)
+                            {
+                                refresh_actor_fx_material(stage_project_index, actor_project_index, i, mat_index);
+                            }
+                            else
+                            {
+                                node->getMaterial(i) = project.materials[mat_index].material;
+                            }
+                        }
 						else
 							node->getMaterial(i) = irr::video::SMaterial();
 					}
+				}
+
+				//OVERRIDE MATERIAL FOR MESH PRIMITIVES
+				if(mesh_index >= 0 && mesh_index < project.meshes.size())
+				{
+				    if(project.meshes[mesh_index].file.substr(0,1).compare("!")==0)
+				    {
+				        int mat_index = project.stages[stage_project_index].actors[i].override_material_index;
+                        if(mat_index >= 0 && mat_index < project.materials.size())
+                        {
+                            if(project.materials[mat_index].id_name.compare("") != 0)
+                            {
+                                if(project.materials[mat_index].isFX)
+                                {
+                                    if(project.stages[stage_project_index].actors[i].fx_material_shader_index.size() == 0)
+                                        project.stages[stage_project_index].actors[i].fx_material_shader_index.push_back(-1);
+
+                                    project.stages[stage_project_index].actors[i].fx_material_needs_update = true;
+
+                                    refresh_actor_fx_material(stage_project_index, actor_project_index, 0, mat_index);
+                                }
+                                else
+                                {
+                                    node->getMaterial(0) = project.materials[mat_index].material;
+                                }
+                            }
+                            else
+                                node->getMaterial(0) = irr::video::SMaterial();
+                        }
+				    }
 				}
 
 			}
@@ -4329,6 +4559,8 @@ void SerenityEditorSerenity3D_Frame::OnStagePropertyGridChanged( wxPropertyGridE
 				{
 					int ov_mat_index = project.stages[stage_index].actors[actor_index].override_material_index;
 					project.stages[stage_index].actors[actor_index].node->getMaterial(0) = project.materials[ov_mat_index].material;
+					refresh_actor(actor_index);
+					//std::cout << "COMON" << std::endl;
 				}
 			}
 

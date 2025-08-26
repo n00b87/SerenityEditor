@@ -102,6 +102,7 @@ class Serenity3D_Frame : public wxFrame
 		wxBitmapButton* m_bpButton5;
 		wxBitmapButton* m_bpButton6;
 		wxBitmapButton* m_bpButton61;
+		wxBitmapButton* m_bpButton7;
 		wxTreeCtrl* m_project_stage_treeCtrl;
 		wxPanel* m_panel311;
 		wxPropertyGridManager* m_stage_propertyGridManager;
@@ -639,6 +640,7 @@ class Serenity3D_Frame : public wxFrame
 		virtual void On_Stage_DeleteGroup( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Stage_EditGroup( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Stage_DeleteActor( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Stage_CopyActor( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Stage_StageNodeActivated( wxTreeEvent& event ) { event.Skip(); }
 		virtual void On_Stage_StageNodeSelected( wxTreeEvent& event ) { event.Skip(); }
 		virtual void OnStagePropertyGridChanged( wxPropertyGridEvent& event ) { event.Skip(); }
