@@ -1825,7 +1825,125 @@ void SerenityEditorSerenity3D_Frame::On_Stage_DeleteActor( wxCommandEvent& event
 
 void SerenityEditorSerenity3D_Frame::On_Stage_CopyActor( wxCommandEvent& event )
 {
+    if(project.project_name.compare("")==0)
+		return;
 
+	int stage_project_index = stageTab_active_stage_project_index;;
+	int actor_project_index = -1;
+
+	if(stage_project_index < 0 || stage_project_index >= project.stages.size())
+		return;
+
+    if(!stage_window)
+        return;
+
+    std::vector<int> copy_actor_index;
+    int current_scene_actor_index = stage_window->scene_actors.size();
+
+	for(int i = 0; i < stage_window->selected_actors.size(); i++)
+	{
+	    actor_project_index = stage_window->selected_actors[i].actor_index;
+
+        int suffix = 1;
+        wxString actor_id = wxString(project.stages[stage_project_index].actors[actor_project_index].id_name).Trim() + wxString::Format(_("%i"), suffix);
+
+        for(int n = 0; n < project.stages[stage_project_index].actors.size(); n++)
+        {
+            if(n < 0)
+                continue;
+
+            if(wxString(project.stages[stage_project_index].actors[n].id_name).Trim().compare(actor_id)==0)
+            {
+                suffix++;
+                actor_id = wxString(project.stages[stage_project_index].actors[actor_project_index].id_name).Trim() + wxString::Format(_("%i"), suffix);
+                n = -1;
+            }
+        }
+
+        if(!isValidID(actor_id, RC_ID_ACTOR))
+        {
+            wxMessageBox(_("Warning: Actor ID is invalid. A default Actor ID will be generated."));
+            actor_id = project.genActorID(stageTab_active_stage_project_index);
+        }
+
+        int new_actor_project_index = project.stages[stage_project_index].addActor(actor_id.ToStdString(), project.stages[stage_project_index].actors[actor_project_index].type);
+
+        if(new_actor_project_index < 0)
+        {
+            wxMessageBox(_("Error: Could not copy actor [") + wxString(project.stages[stage_project_index].actors[actor_project_index].id_name) + _("]"));
+            break;
+        }
+
+        project.stages[stage_project_index].actors[new_actor_project_index] = project.stages[stage_project_index].actors[actor_project_index];
+
+        project.stages[stage_project_index].actors[new_actor_project_index].id_name = actor_id.ToStdString();
+        project.stages[stage_project_index].actors[new_actor_project_index].node = NULL;
+        project.stages[stage_project_index].actors[new_actor_project_index].icon_node = NULL;
+        project.stages[stage_project_index].actors[new_actor_project_index].fx_material_needs_update = true;
+        project.stages[stage_project_index].actors[new_actor_project_index].fx_material_shader_index.clear();
+
+
+        Serenity_StageNode s_actor_node;
+        s_actor_node.node_type = RC_STAGE_NODE_ACTOR;
+        s_actor_node.group_label = wxString(project.stages[stage_project_index].actors[new_actor_project_index].group_name);
+        s_actor_node.active = false;
+        s_actor_node.project_index = new_actor_project_index; //index in stage.actors
+
+        int stage_node_index = -1;
+        for(int sn_index = 0; sn_index < stage_tree_nodes.size(); sn_index++)
+        {
+            if(stage_tree_nodes[sn_index].project_index == stage_project_index)
+            {
+                stage_node_index = sn_index;
+                break;
+            }
+        }
+
+        s_actor_node.parent_item = stage_tree_nodes[stage_node_index].tree_item;
+        if(project.stages[stage_project_index].actors[new_actor_project_index].group_name.compare("")!=0)
+        {
+            for(int group_index = 0; group_index < stage_tree_nodes[stage_node_index].groups.size(); group_index++)
+            {
+                if(stage_tree_nodes[stage_node_index].groups[group_index].group_label.compare(s_actor_node.group_label)==0)
+                {
+                    s_actor_node.parent_item = stage_tree_nodes[stage_node_index].groups[group_index].tree_item;
+                    break;
+                }
+            }
+        }
+
+        s_actor_node.tree_item = m_project_stage_treeCtrl->AppendItem(s_actor_node.parent_item, wxString::FromUTF8(project.stages[stage_project_index].actors[new_actor_project_index].id_name), stage_tree_assetImage );
+        stage_tree_nodes[stage_node_index].actors.push_back(s_actor_node);
+
+        refresh_actor(new_actor_project_index);
+
+        if(tmp_scene_actor_index >= 0)
+            copy_actor_index.push_back(tmp_scene_actor_index);
+
+        if(project.stages[stage_project_index].actors[new_actor_project_index].node)
+        {
+            //std::cout << "COPY TRANSFORM" << std::endl;
+            irr::scene::ISceneNode* original_node = project.stages[stage_project_index].actors[actor_project_index].node;
+            project.stages[stage_project_index].actors[new_actor_project_index].node->setPosition(original_node->getAbsolutePosition());
+            project.stages[stage_project_index].actors[new_actor_project_index].node->setRotation(original_node->getRotation());
+            project.stages[stage_project_index].actors[new_actor_project_index].node->setScale(original_node->getScale());
+        }
+	}
+
+	stage_window->selected_actors.clear();
+
+    for(int i = 0; i < copy_actor_index.size(); i++)
+    {
+        int scene_actor_index = copy_actor_index[i];
+        //std::cout << "copy index = " << scene_actor_index << std::endl;
+        stage_window->selected_actors.push_back(stage_window->scene_actors[scene_actor_index]);
+    }
+
+    tmp_copy_select = true;
+
+    stage_window->stage_edit_tool = RC_EDIT_TOOL_MOVE;
+    stage_tools_selection = getStageToolIndex(m_s3d_move_tool);
+    updateToolSelection();
 }
 
 
@@ -2380,6 +2498,8 @@ void SerenityEditorSerenity3D_Frame::refresh_actor_fx_material(int stage_project
 
 void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 {
+    tmp_scene_actor_index = -1;
+
 	if(!stage_window)
 		return;
 
@@ -2418,6 +2538,8 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 					else
 						project.stages[stage_project_index].actors[i].node = smgr->addAnimatedMeshSceneNode(mesh);
 				}
+				else
+                    std::cout << "NO DICE" << std::endl;
 			}
 
 
@@ -3262,6 +3384,8 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 		}
 		if(!scene_actor_exists)
 		{
+		    tmp_scene_actor_index = stage_window->scene_actors.size();
+		    //std::cout << "TMP: " << tmp_scene_actor_index << std::endl;
 			stage_window->scene_actors.push_back(scene_obj);
 		}
 	}
@@ -6078,6 +6202,12 @@ void SerenityEditorSerenity3D_Frame::getGridTextureList(wxPGChoices* choices)
 
 void SerenityEditorSerenity3D_Frame::On_Stage_StageNodeSelected( wxTreeEvent& event )
 {
+    if(tmp_copy_select)
+    {
+        tmp_copy_select = false;
+        return;
+    }
+
 	wxTreeItemId selected_item = event.GetItem();
 	int stage_node_index = -1;
 	int group_node_index = -1;

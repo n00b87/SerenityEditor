@@ -147,6 +147,9 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
 		int stage_tools_selection = 0;
 		int stage_render_mode = 1;
 
+		int tmp_scene_actor_index = -1;
+		bool tmp_copy_select = false;
+
 		void updateRenderMode();
 
 		void updateToolSelection();
