@@ -148,7 +148,7 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
 		int stage_render_mode = 1;
 
 		int tmp_scene_actor_index = -1;
-		bool tmp_copy_select = false;
+		bool tmp_copy_select = false; //NOTE: also used for group select but I just don't really care about changing the name
 
 		void updateRenderMode();
 

@@ -6386,6 +6386,24 @@ void SerenityEditorSerenity3D_Frame::On_Stage_StageNodeSelected( wxTreeEvent& ev
 				}
 			}
 
+			if(stage_window && stageTabGrid_current_group >= 0)
+            {
+                stage_window->selected_actors.clear();
+                wxString group_name = stage_tree_nodes[stage_node_index].groups[stageTabGrid_current_group].group_label.Trim();
+                for(int scene_actor_index = 0; scene_actor_index < stage_window->scene_actors.size(); scene_actor_index++)
+                {
+                    if(!stage_window->scene_actors[scene_actor_index].node)
+                        continue;
+
+                    int actor_project_index = stage_window->scene_actors[scene_actor_index].actor_index;
+                    wxString actor_group_name = wxString(project.stages[stage_project_index].actors[actor_project_index].group_name).Trim();
+                    if(actor_group_name.compare(group_name)==0)
+                        stage_window->selected_actors.push_back(stage_window->scene_actors[scene_actor_index]);
+                }
+                if(stage_window->selected_actors.size() > 0)
+                    tmp_copy_select = true;
+            }
+
 			m_stage_propertyGridManager->SelectPage(m_group_propertyGridPage);
 
 			if(stageTabGrid_current_stage >= 0 && stageTabGrid_current_stage < project.stages.size())
