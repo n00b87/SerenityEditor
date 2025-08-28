@@ -1,8 +1,8 @@
 # depslib dependency file v1.0
-1755844560 source:/home/n00b/Projects/SerenityEngine/Serenity3D_Editor.cpp
+1756188452 source:/home/n00b/Projects/SerenityEngine/Serenity3D_Editor.cpp
 	"Serenity3D_Editor.h"
 
-1755712517 /home/n00b/Projects/SerenityEngine/Serenity3D_Editor.h
+1756188452 /home/n00b/Projects/SerenityEngine/Serenity3D_Editor.h
 	<wx/artprov.h>
 	<wx/xrc/xmlres.h>
 	<wx/string.h>
@@ -1433,7 +1433,7 @@
 	"wx/icon.h"
 	"wx/aui/auibook.h"
 
-1755880830 source:/home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.cpp
+1756271618 source:/home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.cpp
 	<wx/stdpaths.h>
 	<wx/propgrid/manager.h>
 	<wx/propgrid/propgridpagestate.h>
@@ -1476,7 +1476,7 @@
 	"SerenityEditor_FXVariable_Dialog.h"
 	"rc_fx_materials.h"
 
-1755668228 /home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.h
+1756345895 /home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.h
 	<vector>
 	<wx/propgrid/propgrid.h>
 	<wx/propgrid/advprops.h>
@@ -9699,13 +9699,13 @@
 1750918341 /home/n00b/Projects/SerenityEngine/CGridSceneNode.h
 	"irrlicht.h"
 
-1755902551 source:/home/n00b/Projects/SerenityEngine/rc_stage.cpp
+1755933292 source:/home/n00b/Projects/SerenityEngine/rc_stage.cpp
 	<vector>
 	<irrlicht.h>
 	"engine_base.h"
 	"rc_stage.h"
 
-1755880181 /home/n00b/Projects/SerenityEngine/engine_base.h
+1755933292 /home/n00b/Projects/SerenityEngine/engine_base.h
 	<wx/wx.h>
 	<wx/filename.h>
 	<vector>
@@ -9714,7 +9714,7 @@
 	"rc_stage.h"
 	"wxIrrlicht.h"
 
-1755679161 /home/n00b/Projects/SerenityEngine/rc_stage.h
+1755933292 /home/n00b/Projects/SerenityEngine/rc_stage.h
 	<vector>
 	<irrlicht.h>
 	"an8parser.h"
@@ -9730,7 +9730,7 @@
 
 1731957962 /usr/include/wx-3.2/wx/unix/stdpaths.h
 
-1755897800 source:/home/n00b/Projects/SerenityEngine/engine_base.cpp
+1755933292 source:/home/n00b/Projects/SerenityEngine/engine_base.cpp
 	<wx/wx.h>
 	<wx/filename.h>
 	<wx/stdpaths.h>
@@ -9741,7 +9741,7 @@
 	"rc_fx_materials.h"
 	"rc_defines.h"
 
-1755405128 /home/n00b/Projects/SerenityEngine/rc_defines.h
+1755933292 /home/n00b/Projects/SerenityEngine/rc_defines.h
 
 1750918341 /home/n00b/Projects/SerenityEngine/camera.h
 	<irrlicht.h>
@@ -10148,33 +10148,33 @@
 
 1752079328 /usr/include/x86_64-linux-gnu/bits/select-decl.h
 
-1748042868 /home/n00b/Projects/SerenityEngine/CShader.h
+1755933292 /home/n00b/Projects/SerenityEngine/CShader.h
 	<irrlicht.h>
 	<string>
 
-1748042868 source:/home/n00b/Projects/SerenityEngine/CShader.cpp
+1755933292 source:/home/n00b/Projects/SerenityEngine/CShader.cpp
 	<irrlicht.h>
 	<iostream>
 	"CShader.h"
 
-1755826983 source:/home/n00b/Projects/SerenityEngine/rc_fx_materials.cpp
+1755933292 source:/home/n00b/Projects/SerenityEngine/rc_fx_materials.cpp
 	<irrlicht.h>
 	"CShader.h"
 	"rc_fx_shaders.h"
 	"rc_stage.h"
 
-1752028340 /home/n00b/Projects/SerenityEngine/rc_fx_shaders.h
+1755933292 /home/n00b/Projects/SerenityEngine/rc_fx_shaders.h
 
-1755412751 /home/n00b/Projects/SerenityEngine/rc_fx_materials.h
+1755933292 /home/n00b/Projects/SerenityEngine/rc_fx_materials.h
 	<irrlicht.h>
 	"CShader.h"
 	"rc_fx_shaders.h"
 	"rc_stage.h"
 
-1755846803 source:/home/n00b/Projects/SerenityEngine/SerenityEditor_FXVariable_Dialog.cpp
+1755933292 source:/home/n00b/Projects/SerenityEngine/SerenityEditor_FXVariable_Dialog.cpp
 	"SerenityEditor_FXVariable_Dialog.h"
 	"rc_stage.h"
 
-1755845801 /home/n00b/Projects/SerenityEngine/SerenityEditor_FXVariable_Dialog.h
+1755933292 /home/n00b/Projects/SerenityEngine/SerenityEditor_FXVariable_Dialog.h
 	"Serenity3D_Editor.h"
 

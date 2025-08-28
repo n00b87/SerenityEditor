@@ -215,6 +215,11 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_bpButton61->SetBitmap( wxBitmap( wxT("icons/remove_actor.png"), wxBITMAP_TYPE_ANY ) );
 	bSizer163->Add( m_bpButton61, 0, wxALL, 5 );
 
+	m_bpButton7 = new wxBitmapButton( m_panel44, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW|wxBORDER_NONE );
+
+	m_bpButton7->SetBitmap( wxBitmap( wxT("icons/copy.png"), wxBITMAP_TYPE_ANY ) );
+	bSizer163->Add( m_bpButton7, 0, wxALL, 5 );
+
 
 	bSizer305->Add( bSizer163, 0, wxEXPAND, 5 );
 
@@ -2079,6 +2084,7 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_bpButton5->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_DeleteGroup ), NULL, this );
 	m_bpButton6->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_EditGroup ), NULL, this );
 	m_bpButton61->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_DeleteActor ), NULL, this );
+	m_bpButton7->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_CopyActor ), NULL, this );
 	m_project_stage_treeCtrl->Connect( wxEVT_COMMAND_TREE_ITEM_ACTIVATED, wxTreeEventHandler( Serenity3D_Frame::On_Stage_StageNodeActivated ), NULL, this );
 	m_project_stage_treeCtrl->Connect( wxEVT_COMMAND_TREE_SEL_CHANGED, wxTreeEventHandler( Serenity3D_Frame::On_Stage_StageNodeSelected ), NULL, this );
 	m_stage_propertyGridManager->Connect( wxEVT_PG_CHANGED, wxPropertyGridEventHandler( Serenity3D_Frame::OnStagePropertyGridChanged ), NULL, this );
@@ -2201,6 +2207,7 @@ Serenity3D_Frame::~Serenity3D_Frame()
 	m_bpButton5->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_DeleteGroup ), NULL, this );
 	m_bpButton6->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_EditGroup ), NULL, this );
 	m_bpButton61->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_DeleteActor ), NULL, this );
+	m_bpButton7->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_CopyActor ), NULL, this );
 	m_project_stage_treeCtrl->Disconnect( wxEVT_COMMAND_TREE_ITEM_ACTIVATED, wxTreeEventHandler( Serenity3D_Frame::On_Stage_StageNodeActivated ), NULL, this );
 	m_project_stage_treeCtrl->Disconnect( wxEVT_COMMAND_TREE_SEL_CHANGED, wxTreeEventHandler( Serenity3D_Frame::On_Stage_StageNodeSelected ), NULL, this );
 	m_stage_propertyGridManager->Disconnect( wxEVT_PG_CHANGED, wxPropertyGridEventHandler( Serenity3D_Frame::OnStagePropertyGridChanged ), NULL, this );

@@ -147,6 +147,9 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
 		int stage_tools_selection = 0;
 		int stage_render_mode = 1;
 
+		int tmp_scene_actor_index = -1;
+		bool tmp_copy_select = false; //NOTE: also used for group select but I just don't really care about changing the name
+
 		void updateRenderMode();
 
 		void updateToolSelection();
@@ -259,6 +262,7 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
 		void On_Stage_DeleteGroup( wxCommandEvent& event );
 		void On_Stage_EditGroup( wxCommandEvent& event );
 		void On_Stage_DeleteActor( wxCommandEvent& event );
+		void On_Stage_CopyActor( wxCommandEvent& event );
 
 		void On_Stage_StageNodeActivated( wxTreeEvent& event );
 		void On_Stage_StageNodeSelected( wxTreeEvent& event );
