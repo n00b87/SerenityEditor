@@ -56,6 +56,7 @@ Serenity3D_Frame( parent )
 	stage_tools.push_back(m_s3d_move_tool);
 	stage_tools.push_back(m_s3d_rotate_tool);
 	stage_tools.push_back(m_s3d_scale_tool);
+	stage_tools.push_back(m_s3d_terrainBrush_tool);
 
 	//stage_tools.push_back(m_s3d_plane_tool);
 	stage_tools.push_back(m_s3d_cube_tool);
@@ -159,6 +160,11 @@ Serenity3D_Frame( parent )
 		}
 	}
 
+	m_terrainBrush_shape_comboBox->Insert(_("DOME"), 0);
+	m_terrainBrush_shape_comboBox->Insert(_("BOX"), 1);
+	m_terrainBrush_shape_comboBox->Insert(_("POINT"), 2);
+
+	m_terrainBrush_shape_comboBox->SetSelection(0);
 
 	//----------MATERIALS TAB--------------------------
 
@@ -2092,10 +2098,14 @@ void SerenityEditorSerenity3D_Frame::OnStageUpdate( wxUpdateUIEvent& event )
 				page->GetPropertyByName(_("pos_z"))->SetValue(pos.Z);
 
 				//-------------Setting Rotation---------------------------
-				irr::core::vector3df rot = project.stages[stage_project_index].actors[actor_stage_index].rotation;
-				page->GetPropertyByName(_("rot_x"))->SetValue(rot.X);
-				page->GetPropertyByName(_("rot_y"))->SetValue(rot.Y);
-				page->GetPropertyByName(_("rot_z"))->SetValue(rot.Z);
+				// Removed rotation from terrain because the terrainSelector only works when rotation is 0
+				if(project.stages[stage_project_index].actors[actor_stage_index].type != SN_ACTOR_TYPE_TERRAIN)
+				{
+				    irr::core::vector3df rot = project.stages[stage_project_index].actors[actor_stage_index].rotation;
+                    page->GetPropertyByName(_("rot_x"))->SetValue(rot.X);
+                    page->GetPropertyByName(_("rot_y"))->SetValue(rot.Y);
+                    page->GetPropertyByName(_("rot_z"))->SetValue(rot.Z);
+				}
 
 				//-------------Setting Scale---------------------------
 				irr::core::vector3df scale = project.stages[stage_project_index].actors[actor_stage_index].scale;
@@ -3754,9 +3764,32 @@ void SerenityEditorSerenity3D_Frame::OnStagePropertyGridChanged( wxPropertyGridE
 		int stage_index = stageTabGrid_current_stage;
 		int actor_index = stageTabGrid_current_actor;
 
-		project.stages[stage_index].actors[actor_index].scale.X = page->GetPropertyByName(_("scale_x"))->GetValue().GetDouble();
-		project.stages[stage_index].actors[actor_index].scale.Y = page->GetPropertyByName(_("scale_y"))->GetValue().GetDouble();
-		project.stages[stage_index].actors[actor_index].scale.Z = page->GetPropertyByName(_("scale_z"))->GetValue().GetDouble();
+		//Ensure terrain x and z match
+		if(project.stages[stage_index].actors[actor_index].type == SN_ACTOR_TYPE_TERRAIN)
+        {
+            if(property_name.compare(_("scale_x"))==0)
+            {
+                project.stages[stage_index].actors[actor_index].scale.X = page->GetPropertyByName(_("scale_x"))->GetValue().GetDouble();
+                project.stages[stage_index].actors[actor_index].scale.Z = page->GetPropertyByName(_("scale_x"))->GetValue().GetDouble();
+                page->GetPropertyByName(_("scale_z"))->SetValue(project.stages[stage_index].actors[actor_index].scale.Z);
+            }
+            else if(property_name.compare(_("scale_z"))==0)
+            {
+                project.stages[stage_index].actors[actor_index].scale.X = page->GetPropertyByName(_("scale_z"))->GetValue().GetDouble();
+                project.stages[stage_index].actors[actor_index].scale.Z = page->GetPropertyByName(_("scale_z"))->GetValue().GetDouble();
+                page->GetPropertyByName(_("scale_x"))->SetValue(project.stages[stage_index].actors[actor_index].scale.X);
+            }
+            else if(property_name.compare(_("scale_y"))==0)
+            {
+                project.stages[stage_index].actors[actor_index].scale.Y = page->GetPropertyByName(_("scale_y"))->GetValue().GetDouble();
+            }
+        }
+        else
+		{
+		    project.stages[stage_index].actors[actor_index].scale.X = page->GetPropertyByName(_("scale_x"))->GetValue().GetDouble();
+            project.stages[stage_index].actors[actor_index].scale.Y = page->GetPropertyByName(_("scale_y"))->GetValue().GetDouble();
+            project.stages[stage_index].actors[actor_index].scale.Z = page->GetPropertyByName(_("scale_z"))->GetValue().GetDouble();
+		}
 
 		if(stage_index == stageTab_active_stage_project_index)
 		{
@@ -5440,10 +5473,10 @@ void SerenityEditorSerenity3D_Frame::setTerrainActorGrid(int stage_project_index
 	m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("pos_z"))->SetValue(pos.Z);
 
 	//-------------Setting Rotation---------------------------
-	irr::core::vector3df rot = project.stages[stage_project_index].actors[actor_project_index].rotation;
-	m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("rot_x"))->SetValue(rot.X);
-	m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("rot_y"))->SetValue(rot.Y);
-	m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("rot_z"))->SetValue(rot.Z);
+	//irr::core::vector3df rot = project.stages[stage_project_index].actors[actor_project_index].rotation;
+	//m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("rot_x"))->SetValue(rot.X);
+	//m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("rot_y"))->SetValue(rot.Y);
+	//m_terrainActorProperties_propertyGridPage->GetPropertyByName(_("rot_z"))->SetValue(rot.Z);
 
 	//-------------Setting Scale---------------------------
 	irr::core::vector3df scale = project.stages[stage_project_index].actors[actor_project_index].scale;
@@ -6313,6 +6346,13 @@ void SerenityEditorSerenity3D_Frame::On_Stage_StageNodeSelected( wxTreeEvent& ev
 						}
 					}
 
+					if(project.stages[stage_project_index].actors[actor_stage_index].type == SN_ACTOR_TYPE_TERRAIN)
+					{
+					    stage_window->terrain_size = project.stages[stage_project_index].actors[actor_stage_index].terrain_size;
+					    stage_window->terrain_scale = project.stages[stage_project_index].actors[actor_stage_index].scale;
+					}
+
+
 					stage_window->selected_actors.push_back(scene_obj);
 				}
 			}
@@ -6341,6 +6381,10 @@ void SerenityEditorSerenity3D_Frame::On_Stage_StageNodeSelected( wxTreeEvent& ev
 			{
 				m_stage_propertyGridManager->SelectPage(m_terrainActorProperties_propertyGridPage);
 				setTerrainActorGrid(stage_project_index, actor_stage_index);
+				if(stage_window)
+                {
+                    stage_window->terrain_size = project.stages[stage_project_index].actors[actor_stage_index].terrain_size;
+                }
 			}
 			else if(project.stages[stage_project_index].actors[actor_stage_index].type == SN_ACTOR_TYPE_WATER)
 			{
@@ -6468,6 +6512,33 @@ void SerenityEditorSerenity3D_Frame::On_StageSettings_ShowAxisRings( wxCommandEv
 		stage_window->show_axis_rings = event.IsChecked();
 
 	project.show_axis_rings = event.IsChecked();
+}
+
+void SerenityEditorSerenity3D_Frame::On_StageSettings_SetTerrainBrushShape( wxCommandEvent& event )
+{
+    if(stage_window)
+    {
+        wxString shape_name = event.GetString().Upper().Trim();
+        stage_window->terrain_brush_shape = project.getTerrainBrushShape(shape_name);
+    }
+}
+
+void SerenityEditorSerenity3D_Frame::On_StageSettings_SetTerrainBrushSize( wxSpinEvent& event )
+{
+    if(stage_window)
+    {
+        int shape_size = event.GetValue();
+        stage_window->terrain_brush_size = shape_size;
+    }
+}
+
+void SerenityEditorSerenity3D_Frame::On_StageSettings_SetTerrainBrushStep( wxSpinEvent& event )
+{
+    if(stage_window)
+    {
+        int shape_step = event.GetValue();
+        stage_window->terrain_brush_step = shape_step;
+    }
 }
 
 void SerenityEditorSerenity3D_Frame::On_StageSettings_ShowViewCameraPosition( wxCommandEvent& event )
@@ -6655,6 +6726,29 @@ void SerenityEditorSerenity3D_Frame::OnS3DScaleClicked( wxCommandEvent& event )
 	stage_tools_selection = getStageToolIndex(m_s3d_scale_tool);
 	updateToolSelection();
 	stage_window->stage_edit_tool = RC_EDIT_TOOL_SCALE;
+}
+
+void SerenityEditorSerenity3D_Frame::OnS3DTerrainBrushClicked( wxCommandEvent& event )
+{
+    if(!stage_window)
+		return;
+	stage_tools_selection = getStageToolIndex(m_s3d_terrainBrush_tool);
+	updateToolSelection();
+	stage_window->stage_edit_tool = RC_EDIT_TOOL_TERRAINBRUSH;
+
+	if(stage_window->selected_actors.size() > 0)
+    {
+        int stage_index = stageTab_active_stage_project_index;
+        int actor_index = stage_window->selected_actors[0].actor_index;
+
+        if(stage_index < 0 || stage_index >= project.stages.size())
+            return;
+
+        if(actor_index < 0 || actor_index >= project.stages[stage_index].actors.size())
+            return;
+
+        stage_window->terrain_scale = project.stages[stage_index].actors[actor_index].scale;
+    }
 }
 
 void SerenityEditorSerenity3D_Frame::OnS3DPlaneClicked( wxCommandEvent& event )
@@ -7232,6 +7326,32 @@ void SerenityEditorSerenity3D_Frame::OnS3DLightClicked( wxCommandEvent& event )
 	}
 }
 
+bool SerenityEditorSerenity3D_Frame::genHeightMap(wxString hmap_file, int hmap_size)
+{
+    if(!current_window)
+        return false;
+
+    core::dimension2d<u32> dim (hmap_size,hmap_size);
+    video::IImage *img = current_window->GetVideoDriver()->createImage(ECF_R8G8B8, dim);
+
+    for (irr::u32 y=0; y < hmap_size; y++)
+    {
+        for(irr::u32 x=0; x < hmap_size; x++)
+        {
+            img->setPixel(x, y, irr::video::SColor(0,0,0,0));
+        }
+    }
+
+    wxFileName out_file = project.project_path;
+    out_file.AppendDir(_("textures"));
+    out_file.SetFullName(hmap_file);
+
+    current_window->GetVideoDriver()->writeImageToFile(img, out_file.GetAbsolutePath().ToStdString().c_str(), 0);
+    img->drop();
+
+    return true;
+}
+
 void SerenityEditorSerenity3D_Frame::OnS3DTerrainClicked( wxCommandEvent& event )
 {
 	if(!stage_window)
@@ -7248,13 +7368,6 @@ void SerenityEditorSerenity3D_Frame::OnS3DTerrainClicked( wxCommandEvent& event 
 
 	SerenityEditor_NewTerrainActor_Dialog* dialog = new SerenityEditor_NewTerrainActor_Dialog(this);
 
-	for(int i = 0; i < project.textures.size(); i++)
-	{
-		dialog->textures.push_back(project.textures[i].id_name);
-	}
-
-	dialog->refresh_list();
-
 	preDialog();
 	dialog->ShowModal();
 	postDialog();
@@ -7263,23 +7376,33 @@ void SerenityEditorSerenity3D_Frame::OnS3DTerrainClicked( wxCommandEvent& event 
 	if(!dialog->create_flag)
 		return;
 
+	int texture_n = 0;
+	wxString texture_id_name = _("serenity__hmap__") + wxString::Format(_("%i"), dialog->terrain_size) + _("_") + wxString::Format(_("%i"), texture_n);
+	wxString texture_file = texture_id_name.Trim() + _(".bmp");
 	int texture_index = -1;
-	wxString texture_id_name = dialog->texture_id_name;
 
-	for(int i = 0; i < project.textures.size(); i++)
+	for(int i = 0; i < project.height_maps.size(); i++)
 	{
-		if(project.textures[i].id_name.compare(texture_id_name.ToStdString())==0)
+	    if(i < 0)
+            continue;
+
+		if(project.height_maps[i].compare(texture_file.ToStdString())==0)
 		{
-			texture_index = i;
+		    texture_n++;
+		    texture_id_name = _("serenity__hmap__") + wxString::Format(_("%i"), dialog->terrain_size) + _("_") + wxString::Format(_("%i"), texture_n);
+		    texture_file = texture_id_name.Trim() + _(".bmp");
+		    i = -1;
 			break;
 		}
 	}
 
-	if(texture_index < 0 || texture_index >= project.textures.size())
-	{
-		wxMessageBox(_("A heightmap must be selected to create terrain actor."));
-		return;
-	}
+	if(!genHeightMap(texture_file, dialog->terrain_size))
+    {
+        wxMessageBox(_("Error: Failed to generate height map"));
+        return;
+    }
+
+    project.height_maps.push_back(texture_file.ToStdString());
 
 	wxString actor_id = dialog->id_name;
 
@@ -7295,9 +7418,11 @@ void SerenityEditorSerenity3D_Frame::OnS3DTerrainClicked( wxCommandEvent& event 
 	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.mass = 0;
 	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].physics.shape = SN_PHYSICS_SHAPE_TRIMESH;
 
-	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].terrain_hmap_file = project.textures[texture_index].file;
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].terrain_hmap_file = texture_file.ToStdString();
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].terrain_size = dialog->terrain_size;
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].terrain_patch_size = dialog->patch_size;
 
-	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].position = stage_window->getNewActorPosition();
+	project.stages[stageTab_active_stage_project_index].actors[actor_project_index].position.set(0, 0, 0); // = stage_window->getNewActorPosition();
 
 	Serenity_StageNode s_actor_node;
 	s_actor_node.node_type = RC_STAGE_NODE_ACTOR;
@@ -7611,7 +7736,6 @@ bool SerenityEditorSerenity3D_Frame::load_project(wxFileName pfile)
 	stageTabGrid_current_group = -1;
 	stageTabGrid_current_actor = -1;
 
-
 	m_mesh_mesh_listBox->Clear();
 	m_mesh_materialList_listBox->Clear();
 	m_mesh_meshAnimation_listBox->Clear();
@@ -7813,6 +7937,18 @@ void SerenityEditorSerenity3D_Frame::OnLoadProjectMenuSelection( wxCommandEvent&
 		m_toolSettings_showAxisRings_checkBox->SetValue(project.show_axis_rings);
 		stage_window->show_axis_rings = project.show_axis_rings;
 
+		//Terrain Brush Settings
+		if(stage_window->terrain_brush_shape >= 0 && stage_window->terrain_brush_shape < RC_TERRAIN_BRUSH_SHAPE_COUNT)
+            m_terrainBrush_shape_comboBox->SetSelection(stage_window->terrain_brush_shape);
+		else
+        {
+            stage_window->terrain_brush_shape = 0;
+            m_terrainBrush_shape_comboBox->SetSelection(stage_window->terrain_brush_shape);
+        }
+
+		m_terrainBrush_size_spinCtrl->SetValue(stage_window->terrain_brush_size);
+		m_terrainBrush_step_spinCtrl->SetValue(stage_window->terrain_brush_step);
+
 		//Camera Settings
 		m_cameraSettings_showPosition_checkBox->SetValue(project.show_camera_pos);
 		stage_window->show_camera_pos = project.show_camera_pos;
@@ -7876,6 +8012,11 @@ bool SerenityEditorSerenity3D_Frame::save_project()
 				_("visible=") + (project.grid_visible ? _("true") : _("false")) + _(" ") +
 				_("size=") + wxString::FromDouble(project.grid_size) + _(" ") +
 				_("spacing=") + wxString::FromDouble(project.grid_spacing) + _(";\n"));
+
+	pfile.Write(_("TerrainBrush ") +
+				_("shape=\"") + project.getTerrainBrushShapeString(stage_window->terrain_brush_shape).Upper().Trim() + _("\" ") +
+                _("size=") + wxString::Format(_("%i"), stage_window->terrain_brush_size) + _(" ") +
+				_("step=") + wxString::Format(_("%i"), stage_window->terrain_brush_step) + _(";\n") );
 
 	pfile.Write(_("Tool ") +
 				_("show_lines=") + (project.show_axis_lines ? _("true") : _("false")) + _(" ") +
@@ -7964,6 +8105,7 @@ void SerenityEditorSerenity3D_Frame::OnCodeGen( wxCommandEvent& event )
 	if(project.project_name.compare("")==0)
 		return;
 
+	save_project();
 	project.genRCBasicProject();
 }
 

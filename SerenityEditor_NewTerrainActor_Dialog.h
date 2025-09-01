@@ -15,16 +15,13 @@ class SerenityEditor_NewTerrainActor_Dialog : public NewTerrainActor_Dialog
 {
 	protected:
 		// Handlers for NewTerrainActor_Dialog events.
-		void OnSearchText( wxCommandEvent& event );
 		void OnCancelButtonClicked( wxCommandEvent& event );
 		void OnCreateButtonClicked( wxCommandEvent& event );
 	public:
 		wxString id_name;
-		wxString texture_id_name;
-		wxArrayString textures;
+		int terrain_size = 0;
+		int patch_size = 0;
 		bool create_flag;
-
-		void refresh_list();
 
 		/** Constructor */
 		SerenityEditor_NewTerrainActor_Dialog( wxWindow* parent );

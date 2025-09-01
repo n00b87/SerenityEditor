@@ -38,6 +38,8 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 
 	m_s3d_scale_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/scale.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_CHECK, wxT("Scale Selected Objects"), wxEmptyString, NULL );
 
+	m_s3d_terrainBrush_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/paint-brush.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_CHECK, wxEmptyString, wxEmptyString, NULL );
+
 	m_auiToolBar52->AddSeparator();
 
 	m_s3d_animatedActor_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("Add Animated Actor"), wxBitmap( wxT("icons/animated_mesh.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxT("Add Animated Actor to Stage"), wxEmptyString, NULL );
@@ -74,7 +76,7 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_splitter3 = new wxSplitterWindow( m_stage_panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_3D );
 	m_splitter3->SetSashGravity( 1 );
 	m_splitter3->Connect( wxEVT_IDLE, wxIdleEventHandler( Serenity3D_Frame::m_splitter3OnIdle ), NULL, this );
-	m_splitter3->SetMinimumPaneSize( 300 );
+	m_splitter3->SetMinimumPaneSize( 320 );
 
 	m_panel71 = new wxPanel( m_splitter3, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer10;
@@ -528,10 +530,6 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_propertyGridItem47112 = m_terrainActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("X"), wxT("pos_x") ) );
 	m_propertyGridItem48112 = m_terrainActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("pos_y") ) );
 	m_propertyGridItem49112 = m_terrainActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("pos_z") ) );
-	m_propertyGridItem50112 = m_terrainActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Rotation") ) );
-	m_propertyGridItem51112 = m_terrainActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("X"), wxT("rot_x") ) );
-	m_propertyGridItem52112 = m_terrainActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("rot_y") ) );
-	m_propertyGridItem53112 = m_terrainActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Z"), wxT("rot_z") ) );
 	m_propertyGridItem54112 = m_terrainActorProperties_propertyGridPage->Append( new wxPropertyCategory( wxT("Scale") ) );
 	m_propertyGridItem55112 = m_terrainActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("X"), wxT("scale_x") ) );
 	m_propertyGridItem56112 = m_terrainActorProperties_propertyGridPage->Append( new wxFloatProperty( wxT("Y"), wxT("scale_y") ) );
@@ -616,7 +614,6 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer702 = new wxBoxSizer( wxHORIZONTAL );
 
 	m_viewportSettings_showGrid_checkBox = new wxCheckBox( m_panel422, wxID_ANY, wxT("Show Grid"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT );
-	m_viewportSettings_showGrid_checkBox->SetValue(true);
 	m_viewportSettings_showGrid_checkBox->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
 
 	bSizer702->Add( m_viewportSettings_showGrid_checkBox, 0, wxALL, 5 );
@@ -724,6 +721,81 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_panel392->Layout();
 	bSizer167->Fit( m_panel392 );
 	bSizer671->Add( m_panel392, 0, wxEXPAND | wxALL, 5 );
+
+	m_panel62 = new wxPanel( m_scrolledWindow2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SIMPLE|wxTAB_TRAVERSAL );
+	m_panel62->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_GRAYTEXT ) );
+
+	wxBoxSizer* bSizer294;
+	bSizer294 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer295;
+	bSizer295 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText131 = new wxStaticText( m_panel62, wxID_ANY, wxT("Terrain Brush"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText131->Wrap( -1 );
+	m_staticText131->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
+	bSizer295->Add( m_staticText131, 0, wxALL, 5 );
+
+
+	bSizer294->Add( bSizer295, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer293;
+	bSizer293 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText130 = new wxStaticText( m_panel62, wxID_ANY, wxT("Shape"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText130->Wrap( -1 );
+	m_staticText130->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
+	bSizer293->Add( m_staticText130, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_terrainBrush_shape_comboBox = new wxComboBox( m_panel62, wxID_ANY, wxT("Combo!"), wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	m_terrainBrush_shape_comboBox->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
+	bSizer293->Add( m_terrainBrush_shape_comboBox, 2, wxALL, 5 );
+
+
+	bSizer294->Add( bSizer293, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer296;
+	bSizer296 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText132 = new wxStaticText( m_panel62, wxID_ANY, wxT("Size"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText132->Wrap( -1 );
+	m_staticText132->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
+	bSizer296->Add( m_staticText132, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_terrainBrush_size_spinCtrl = new wxSpinCtrl( m_panel62, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100000, 0 );
+	m_terrainBrush_size_spinCtrl->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
+	bSizer296->Add( m_terrainBrush_size_spinCtrl, 2, wxALL, 5 );
+
+
+	bSizer294->Add( bSizer296, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer2961;
+	bSizer2961 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText1321 = new wxStaticText( m_panel62, wxID_ANY, wxT("Step"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText1321->Wrap( -1 );
+	m_staticText1321->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
+	bSizer2961->Add( m_staticText1321, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_terrainBrush_step_spinCtrl = new wxSpinCtrl( m_panel62, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100000, 0 );
+	m_terrainBrush_step_spinCtrl->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+
+	bSizer2961->Add( m_terrainBrush_step_spinCtrl, 2, wxALL, 5 );
+
+
+	bSizer294->Add( bSizer2961, 0, wxEXPAND, 5 );
+
+
+	m_panel62->SetSizer( bSizer294 );
+	m_panel62->Layout();
+	bSizer294->Fit( m_panel62 );
+	bSizer671->Add( m_panel62, 0, wxEXPAND | wxALL, 5 );
 
 	m_panel403 = new wxPanel( m_scrolledWindow2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SIMPLE|wxTAB_TRAVERSAL );
 	m_panel403->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_GRAYTEXT ) );
@@ -2061,6 +2133,7 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	this->Connect( m_s3d_move_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DMoveClicked ) );
 	this->Connect( m_s3d_rotate_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DRotateClicked ) );
 	this->Connect( m_s3d_scale_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DScaleClicked ) );
+	this->Connect( m_s3d_terrainBrush_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DTerrainBrushClicked ) );
 	this->Connect( m_s3d_animatedActor_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DWizClicked ) );
 	this->Connect( m_s3d_octreeActor_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DDumpClicked ) );
 	this->Connect( m_s3d_billboardActor_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DBillboardClicked ) );
@@ -2094,6 +2167,9 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_viewportSettings_gridColor_colourPicker->Connect( wxEVT_COMMAND_COLOURPICKER_CHANGED, wxColourPickerEventHandler( Serenity3D_Frame::On_StageSettings_SetGridColor ), NULL, this );
 	m_toolSettings_showAxisLines_checkBox->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_StageSettings_ShowAxisLines ), NULL, this );
 	m_toolSettings_showAxisRings_checkBox->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_StageSettings_ShowAxisRings ), NULL, this );
+	m_terrainBrush_shape_comboBox->Connect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( Serenity3D_Frame::On_StageSettings_SetTerrainBrushShape ), NULL, this );
+	m_terrainBrush_size_spinCtrl->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( Serenity3D_Frame::On_StageSettings_SetTerrainBrushSize ), NULL, this );
+	m_terrainBrush_step_spinCtrl->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( Serenity3D_Frame::On_StageSettings_SetTerrainBrushStep ), NULL, this );
 	m_cameraSettings_showPosition_checkBox->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_StageSettings_ShowViewCameraPosition ), NULL, this );
 	m_cameraSettings_showRotation_checkBox->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_StageSettings_ShowViewCameraRotation ), NULL, this );
 	m_cameraSettings_moveSpeed_spinCtrlDouble->Connect( wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, wxSpinDoubleEventHandler( Serenity3D_Frame::On_StageSettings_ViewCameraSpeed ), NULL, this );
@@ -2184,6 +2260,7 @@ Serenity3D_Frame::~Serenity3D_Frame()
 	this->Disconnect( m_s3d_move_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DMoveClicked ) );
 	this->Disconnect( m_s3d_rotate_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DRotateClicked ) );
 	this->Disconnect( m_s3d_scale_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DScaleClicked ) );
+	this->Disconnect( m_s3d_terrainBrush_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DTerrainBrushClicked ) );
 	this->Disconnect( m_s3d_animatedActor_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DWizClicked ) );
 	this->Disconnect( m_s3d_octreeActor_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DDumpClicked ) );
 	this->Disconnect( m_s3d_billboardActor_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DBillboardClicked ) );
@@ -2217,6 +2294,9 @@ Serenity3D_Frame::~Serenity3D_Frame()
 	m_viewportSettings_gridColor_colourPicker->Disconnect( wxEVT_COMMAND_COLOURPICKER_CHANGED, wxColourPickerEventHandler( Serenity3D_Frame::On_StageSettings_SetGridColor ), NULL, this );
 	m_toolSettings_showAxisLines_checkBox->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_StageSettings_ShowAxisLines ), NULL, this );
 	m_toolSettings_showAxisRings_checkBox->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_StageSettings_ShowAxisRings ), NULL, this );
+	m_terrainBrush_shape_comboBox->Disconnect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( Serenity3D_Frame::On_StageSettings_SetTerrainBrushShape ), NULL, this );
+	m_terrainBrush_size_spinCtrl->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( Serenity3D_Frame::On_StageSettings_SetTerrainBrushSize ), NULL, this );
+	m_terrainBrush_step_spinCtrl->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( Serenity3D_Frame::On_StageSettings_SetTerrainBrushStep ), NULL, this );
 	m_cameraSettings_showPosition_checkBox->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_StageSettings_ShowViewCameraPosition ), NULL, this );
 	m_cameraSettings_showRotation_checkBox->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_StageSettings_ShowViewCameraRotation ), NULL, this );
 	m_cameraSettings_moveSpeed_spinCtrlDouble->Disconnect( wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, wxSpinDoubleEventHandler( Serenity3D_Frame::On_StageSettings_ViewCameraSpeed ), NULL, this );
@@ -4023,40 +4103,18 @@ NewTerrainActor_Dialog::NewTerrainActor_Dialog( wxWindow* parent, wxWindowID id,
 
 	bSizer77->Add( bSizer78, 0, wxEXPAND, 5 );
 
-	wxBoxSizer* bSizer79;
-	bSizer79 = new wxBoxSizer( wxHORIZONTAL );
+	wxBoxSizer* bSizer781;
+	bSizer781 = new wxBoxSizer( wxHORIZONTAL );
 
-	m_staticText34 = new wxStaticText( m_panel38, wxID_ANY, wxT("Height Map"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText34->Wrap( -1 );
-	bSizer79->Add( m_staticText34, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	m_staticText331 = new wxStaticText( m_panel38, wxID_ANY, wxT("Terrain Size"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText331->Wrap( -1 );
+	bSizer781->Add( m_staticText331, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	wxBoxSizer* bSizer81;
-	bSizer81 = new wxBoxSizer( wxHORIZONTAL );
-
-	m_textureSearch_searchCtrl = new wxSearchCtrl( m_panel38, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	#ifndef __WXMAC__
-	m_textureSearch_searchCtrl->ShowSearchButton( true );
-	#endif
-	m_textureSearch_searchCtrl->ShowCancelButton( false );
-	bSizer81->Add( m_textureSearch_searchCtrl, 1, wxALL, 5 );
+	m_terrainSize_spinCtrl = new wxSpinCtrl( m_panel38, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100000, 0 );
+	bSizer781->Add( m_terrainSize_spinCtrl, 4, wxALL, 5 );
 
 
-	bSizer79->Add( bSizer81, 4, wxEXPAND, 5 );
-
-
-	bSizer77->Add( bSizer79, 1, wxEXPAND, 5 );
-
-	wxBoxSizer* bSizer80;
-	bSizer80 = new wxBoxSizer( wxHORIZONTAL );
-
-
-	bSizer80->Add( 0, 0, 1, wxEXPAND, 5 );
-
-	m_texture_listBox = new wxListBox( m_panel38, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
-	bSizer80->Add( m_texture_listBox, 4, wxALL|wxEXPAND, 5 );
-
-
-	bSizer77->Add( bSizer80, 9, wxEXPAND, 5 );
+	bSizer77->Add( bSizer781, 0, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer82;
 	bSizer82 = new wxBoxSizer( wxHORIZONTAL );
@@ -4086,7 +4144,6 @@ NewTerrainActor_Dialog::NewTerrainActor_Dialog( wxWindow* parent, wxWindowID id,
 	this->Centre( wxBOTH );
 
 	// Connect Events
-	m_textureSearch_searchCtrl->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( NewTerrainActor_Dialog::OnSearchText ), NULL, this );
 	m_cancel_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewTerrainActor_Dialog::OnCancelButtonClicked ), NULL, this );
 	m_create_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewTerrainActor_Dialog::OnCreateButtonClicked ), NULL, this );
 }
@@ -4094,7 +4151,6 @@ NewTerrainActor_Dialog::NewTerrainActor_Dialog( wxWindow* parent, wxWindowID id,
 NewTerrainActor_Dialog::~NewTerrainActor_Dialog()
 {
 	// Disconnect Events
-	m_textureSearch_searchCtrl->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( NewTerrainActor_Dialog::OnSearchText ), NULL, this );
 	m_cancel_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewTerrainActor_Dialog::OnCancelButtonClicked ), NULL, this );
 	m_create_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( NewTerrainActor_Dialog::OnCreateButtonClicked ), NULL, this );
 

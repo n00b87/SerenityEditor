@@ -40,6 +40,9 @@ public:
 
 	std::vector<int> tmp_mesh_index;
 
+	std::vector<std::string> height_maps;
+	int terrain_shape = 0;
+
 	uint32_t grid_color;
 	irr::IrrlichtDevice* device;
 
@@ -121,6 +124,10 @@ public:
 	void init_hud(std::vector<serenity_project_dict_obj> param);
 	void init_ortho(std::vector<serenity_project_dict_obj> param);
 	void init_perspective(std::vector<serenity_project_dict_obj> param);
+	void init_terrainBrush(std::vector<serenity_project_dict_obj> param);
+
+	int getTerrainBrushShape(wxString brush_name);
+	wxString getTerrainBrushShapeString(int brush_shape);
 
 	void setGridVisible(bool flag);
 	void setGridSize(float g_size);
@@ -141,6 +148,13 @@ public:
 		show_camera_rot = false;
 		camera_speed = 5;
 		hud_color = irr::video::SColor(255,255,255,255);
+
+		if(stage_window)
+        {
+            stage_window->terrain_brush_shape = 0;
+            stage_window->terrain_brush_size = 40;
+            stage_window->terrain_brush_step = 10;
+        }
 	}
 
 	wxIrrlicht* stage_window = NULL;

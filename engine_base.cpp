@@ -222,6 +222,9 @@ serenity_project::serenity_project(std::string project_file, std::string p_name,
 	pfile.ReadAll(&p_data);
 	pfile.Close();
 
+	height_maps.clear();
+	int terrain_shape = RC_TERRAIN_BRUSH_SHAPE_DOME;
+
 	std::vector<serenity_project_dict_obj> dict;
 	dict.clear();
 
@@ -259,6 +262,8 @@ serenity_project::serenity_project(std::string project_file, std::string p_name,
 				init_ortho(dict);
 			else if(dict[0].key.compare(_("PerspectiveView"))==0)
 				init_perspective(dict);
+            else if(dict[0].key.compare(_("TerrainBrush"))==0)
+                init_terrainBrush(dict);
 
 
 			//clear parameters
@@ -3215,6 +3220,71 @@ void serenity_project::init_perspective(std::vector<serenity_project_dict_obj> p
 	}
 }
 
+int serenity_project::getTerrainBrushShape(wxString brush_name)
+{
+    std::vector<wxString> b_list;
+    b_list.push_back(_("DOME"));
+    b_list.push_back(_("BOX"));
+    b_list.push_back(_("POINT"));
+
+    for(int i = 0; i < b_list.size(); i++)
+    {
+        if(b_list[i].compare(brush_name)==0)
+            return i;
+    }
+
+    return -1;
+}
+
+wxString serenity_project::getTerrainBrushShapeString(int brush_shape)
+{
+    std::vector<int> b_list;
+    b_list.push_back(RC_TERRAIN_BRUSH_SHAPE_DOME);
+    b_list.push_back(RC_TERRAIN_BRUSH_SHAPE_BOX);
+    b_list.push_back(RC_TERRAIN_BRUSH_SHAPE_POINT);
+
+    std::vector<wxString> bname_list;
+    bname_list.push_back(_("DOME"));
+    bname_list.push_back(_("BOX"));
+    bname_list.push_back(_("POINT"));
+
+    for(int i = 0; i < b_list.size(); i++)
+    {
+        if(b_list[i] == brush_shape)
+            return bname_list[i];
+    }
+
+    return _("");
+}
+
+void serenity_project::init_terrainBrush(std::vector<serenity_project_dict_obj> param)
+{
+	if(!stage_window)
+		return;
+
+	for(int i = 0; i < param.size(); i++)
+	{
+		if(param[i].key.compare(_("shape"))==0)
+		{
+		    //std::cout << "LOAD brush: " << getTerrainBrushShape(param[i].val) << std::endl;
+			stage_window->terrain_brush_shape = getTerrainBrushShape(param[i].val);
+		}
+		else if(param[i].key.compare(_("size"))==0)
+		{
+			int n = 0;
+			param[i].val.ToInt(&n);
+			stage_window->terrain_brush_size = n;
+			//std::cout << "LOAD brush size: " << stage_window->terrain_brush_size << std::endl;
+		}
+		else if(param[i].key.compare(_("step"))==0)
+		{
+			int n = 0;
+			param[i].val.ToInt(&n);
+			stage_window->terrain_brush_step = n;
+		}
+	}
+}
+
 void serenity_project::resolve_materialReferences()
 {
 	//resolve material ids to indices in meshes
@@ -3565,6 +3635,24 @@ void serenity_project::save_stage(int stage_id)
 		if(stages[stage_id].actors[i].override_material_index >= 0 && stages[stage_id].actors[i].override_material_index < materials.size())
 			actor_material = materials[stages[stage_id].actors[i].override_material_index].id_name;
 
+		if(stages[stage_id].actors[i].type == SN_ACTOR_TYPE_TERRAIN)
+        {
+            std::cout << "Save Terrain" << std::endl;
+
+            if(stage_window)
+            {
+                wxFileName tmap_out_file = project_path;
+                tmap_out_file.AppendDir(_("textures"));
+                tmap_out_file.SetFullName(wxString(stages[stage_id].actors[i].terrain_hmap_file));
+                std::cout << "Save to: " << tmap_out_file.GetAbsolutePath().ToStdString() << std::endl;
+                stage_window->saveTerrainHMap((irr::scene::ITerrainSceneNode*)stages[stage_id].actors[i].node, stages[stage_id].actors[i].terrain_size, tmap_out_file);
+            }
+            else
+            {
+                wxMessageBox(_("Error: Could not output heightmap for [") + wxString(stages[stage_id].actors[i].id_name) + _("]"));
+            }
+        }
+
 		stage_file.Write(_("Actor type=") + getActorTypeString(stages[stage_id].actors[i].type) + _(" ") +
 							_("id=") + wxString::FromUTF8(stages[stage_id].actors[i].id_name) + _(" ") +
 							( actor_group.Trim().compare(_(""))==0 ? _("") : _("group=\"") + actor_group + _("\"")) + _(" ") +
@@ -3636,6 +3724,8 @@ void serenity_project::save_stage(int stage_id)
 							_("length=") + wxString::FromDouble(stages[stage_id].actors[i].cylinder_length) + _(" ") +
 							_("use_outline_only=") + (stages[stage_id].actors[i].use_outline_only ? _("true") : _("false")) + _(" ") +
 							_("terrain_hmap_file=") + wxString::FromUTF8(stages[stage_id].actors[i].terrain_hmap_file) + _(" ") +
+                            _("terrain_size=") + wxString::Format(_("%i"), stages[stage_id].actors[i].terrain_size) + _(" ") +
+                            _("patch_size=") + wxString::Format(_("%i"), stages[stage_id].actors[i].terrain_patch_size) + _(" ") +
 							_("wave_height=") + wxString::FromDouble(stages[stage_id].actors[i].wave_height) + _(" ") +
 							_("wave_speed=") + wxString::FromDouble(stages[stage_id].actors[i].wave_speed) + _(" ") +
 							_("wave_length=") + wxString::FromDouble(stages[stage_id].actors[i].wave_length) + _(";\n") );
@@ -3883,6 +3973,8 @@ rc_actor serenity_project::load_actor(std::vector<serenity_project_dict_obj> par
 	p_actor.diffuse = irr::video::SColor();
 	p_actor.specular = irr::video::SColor();
 	p_actor.terrain_hmap_file = "";
+	p_actor.terrain_size = 0;
+	p_actor.terrain_patch_size = 0;
 	p_actor.wave_height = 0;
 	p_actor.wave_length = 0;
 	p_actor.wave_speed = 0;
@@ -4018,7 +4110,14 @@ rc_actor serenity_project::load_actor(std::vector<serenity_project_dict_obj> par
 			p_actor.specular = irr::video::SColor(c);
 		}
 		else if(param[i].key.compare(_("terrain_hmap_file"))==0)
-			p_actor.terrain_hmap_file = param[i].val.ToStdString();
+        {
+            p_actor.terrain_hmap_file = param[i].val.ToStdString();
+            height_maps.push_back(p_actor.terrain_hmap_file);
+        }
+        else if(param[i].key.compare(_("terrain_size"))==0)
+			param[i].val.ToInt(&p_actor.terrain_size);
+        else if(param[i].key.compare(_("patch_size"))==0)
+			param[i].val.ToInt(&p_actor.terrain_patch_size);
 		else if(param[i].key.compare(_("wave_height"))==0)
 			param[i].val.ToDouble(&p_actor.wave_height);
 		else if(param[i].key.compare(_("wave_length"))==0)
