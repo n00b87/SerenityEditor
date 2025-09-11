@@ -4506,6 +4506,7 @@ int serenity_project::load_mesh(std::vector<serenity_project_dict_obj> param, in
 	wxString collision_mesh = _("");
 
 	rc_mesh p_mesh;
+	p_mesh.mesh = NULL;
 	p_mesh.ref_an8_id = "";
 	p_mesh.isAN8Scene = false;
 	p_mesh.isMD2 = false;
@@ -4638,7 +4639,26 @@ int serenity_project::load_mesh(std::vector<serenity_project_dict_obj> param, in
 	if(in_zip)
 	{
 		device->getFileSystem()->addFileArchive(fname.GetAbsolutePath().ToStdString().c_str());
-		p_mesh.mesh = device->getSceneManager()->getMesh(file_name.ToStdString().c_str());
+		//p_mesh.mesh = device->getSceneManager()->getMesh(file_name.ToStdString().c_str());
+		int archive_index = device->getFileSystem()->getFileArchiveCount()-1;
+		if(archive_index >= 0)
+		{
+		    const irr::io::IFileList* f_list = device->getFileSystem()->getFileArchive(archive_index)->getFileList();
+		    for(int i = 0; i < f_list->getFileCount(); i++)
+            {
+                wxString f_name(f_list->getFileName(i).c_str());
+                wxString f_ext = _("");
+
+                if(f_name.length() > 4)
+                    f_ext = f_name.substr(f_name.length()-4);
+
+                if(f_ext.compare(_(".bsp"))==0)
+                {
+                    p_mesh.mesh = device->getSceneManager()->getMesh(f_name.ToStdString().c_str());
+                    break;
+                }
+            }
+		}
 		device->getFileSystem()->removeFileArchive((irr::u32) 0);
 
 		std::cout << "LOADED FROM PK: " << file_name.ToStdString() << ", " << (p_mesh.mesh != NULL ? "SUCCESS" : "FAIL") << std::endl;

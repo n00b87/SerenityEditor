@@ -2809,7 +2809,13 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 			{
 				if(mesh)
 				{
-					project.stages[stage_project_index].actors[i].node = smgr->addOctreeSceneNode(mesh);
+				    if(project.meshes[mesh_index].isZipped)
+                    {
+                        irr::scene::IAnimatedMesh* a_mesh = (irr::scene::IAnimatedMesh*)mesh;
+                        project.stages[stage_project_index].actors[i].node = smgr->addOctreeSceneNode(a_mesh->getMesh(0));
+                    }
+                    else
+                        project.stages[stage_project_index].actors[i].node = smgr->addOctreeSceneNode(mesh);
 				}
 			}
 
@@ -8772,6 +8778,12 @@ void SerenityEditorSerenity3D_Frame::On_Mesh_Load_ButtonClick( wxCommandEvent& e
 
 			param.push_back(p_obj);
 			isAN8 = true;
+		}
+		else if(file_ext.compare(_(".pk3"))==0)
+		{
+			p_obj.key = _("zip");
+            p_obj.val = dialog->selected_files[i];
+            param.push_back(p_obj);
 		}
 		else
 		{
