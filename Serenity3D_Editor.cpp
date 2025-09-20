@@ -28,6 +28,10 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer99->Add( 0, 0, 1, wxEXPAND, 5 );
 
 	m_auiToolBar52 = new wxAuiToolBar( m_stage_panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_TB_VERTICAL );
+	m_s3d_target_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/focus.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+
+	m_auiToolBar52->AddSeparator();
+
 	m_s3d_select_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/cursor.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_CHECK, wxT("Select"), wxEmptyString, NULL );
 
 	m_s3d_boxSelect_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/selection-box.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_CHECK, wxT("Box Select"), wxEmptyString, NULL );
@@ -2128,6 +2132,7 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 
 	// Connect Events
 	m_editorMain_auinotebook->Connect( wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGED, wxAuiNotebookEventHandler( Serenity3D_Frame::OnMainEditorNotebookPageChanged ), NULL, this );
+	this->Connect( m_s3d_target_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DTargetClicked ) );
 	this->Connect( m_s3d_select_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DSelectClicked ) );
 	this->Connect( m_s3d_boxSelect_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DBoxClicked ) );
 	this->Connect( m_s3d_move_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DMoveClicked ) );
@@ -2255,6 +2260,7 @@ Serenity3D_Frame::~Serenity3D_Frame()
 {
 	// Disconnect Events
 	m_editorMain_auinotebook->Disconnect( wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGED, wxAuiNotebookEventHandler( Serenity3D_Frame::OnMainEditorNotebookPageChanged ), NULL, this );
+	this->Disconnect( m_s3d_target_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DTargetClicked ) );
 	this->Disconnect( m_s3d_select_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DSelectClicked ) );
 	this->Disconnect( m_s3d_boxSelect_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DBoxClicked ) );
 	this->Disconnect( m_s3d_move_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DMoveClicked ) );

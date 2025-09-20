@@ -232,6 +232,7 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
     	void OnCodeGen( wxCommandEvent& event );
 
     	void OnMainEditorNotebookPageChanged( wxAuiNotebookEvent& event );
+    	void OnS3DTargetClicked( wxCommandEvent& event );
     	void OnS3DSelectClicked( wxCommandEvent& event );
 		void OnS3DBoxClicked( wxCommandEvent& event );
 		void OnS3DMoveClicked( wxCommandEvent& event );

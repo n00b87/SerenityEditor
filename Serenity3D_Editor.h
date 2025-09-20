@@ -61,6 +61,7 @@ class Serenity3D_Frame : public wxFrame
 		wxAuiNotebook* m_editorMain_auinotebook;
 		wxPanel* m_stage_panel;
 		wxAuiToolBar* m_auiToolBar52;
+		wxAuiToolBarItem* m_s3d_target_tool;
 		wxAuiToolBarItem* m_s3d_select_tool;
 		wxAuiToolBarItem* m_s3d_boxSelect_tool;
 		wxAuiToolBarItem* m_s3d_move_tool;
@@ -617,6 +618,7 @@ class Serenity3D_Frame : public wxFrame
 
 		// Virtual event handlers, override them in your derived class
 		virtual void OnMainEditorNotebookPageChanged( wxAuiNotebookEvent& event ) { event.Skip(); }
+		virtual void OnS3DTargetClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnS3DSelectClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnS3DBoxClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnS3DMoveClicked( wxCommandEvent& event ) { event.Skip(); }
@@ -742,7 +744,7 @@ class Serenity3D_Frame : public wxFrame
 
 	public:
 
-		Serenity3D_Frame( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Serenity"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 1368,758 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
+		Serenity3D_Frame( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Serenity"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 1368,795 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
 
 		~Serenity3D_Frame();
 

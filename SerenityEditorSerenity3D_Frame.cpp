@@ -6689,6 +6689,92 @@ int SerenityEditorSerenity3D_Frame::getStageToolIndex(wxAuiToolBarItem* toolbar_
 	return 0;
 }
 
+void SerenityEditorSerenity3D_Frame::OnS3DTargetClicked( wxCommandEvent& event )
+{
+    if(!stage_window)
+		return;
+
+    if(stage_window->selected_actors.size() == 0)
+        return;
+
+    double center_x = 0;
+    double center_y = 0;
+    double center_z = 0;
+
+    int max_height = 0;
+    int max_depth = 0;
+
+    int num_actors = 0;
+
+    for(int i = 0; i < stage_window->selected_actors.size(); i++)
+    {
+        int actor_index = stage_window->selected_actors[i].actor_index;
+        if(project.stages[stageTab_active_stage_project_index].actors[actor_index].node)
+        {
+            center_x += project.stages[stageTab_active_stage_project_index].actors[actor_index].node->getAbsolutePosition().X;
+            center_y += project.stages[stageTab_active_stage_project_index].actors[actor_index].node->getAbsolutePosition().Y;
+            center_z += project.stages[stageTab_active_stage_project_index].actors[actor_index].node->getAbsolutePosition().Z;
+
+            int h = project.stages[stageTab_active_stage_project_index].actors[actor_index].node->getBoundingBox().MaxEdge.Y;
+            h -= project.stages[stageTab_active_stage_project_index].actors[actor_index].node->getBoundingBox().MinEdge.Y;
+
+            h = irr::core::abs_(h) * irr::core::abs_(project.stages[stageTab_active_stage_project_index].actors[actor_index].node->getScale().Y);
+
+            if(h > max_height)
+                max_height = h;
+
+
+            int d = project.stages[stageTab_active_stage_project_index].actors[actor_index].node->getBoundingBox().MaxEdge.Z;
+            d -= project.stages[stageTab_active_stage_project_index].actors[actor_index].node->getBoundingBox().MinEdge.Z;
+
+            d = irr::core::abs_(d) * irr::core::abs_(project.stages[stageTab_active_stage_project_index].actors[actor_index].node->getScale().Z);
+
+            if(d > max_depth)
+                max_depth = d;
+
+            num_actors++;
+        }
+    }
+
+    center_x = center_x / num_actors;
+    center_y = center_y / num_actors;
+    center_z = center_z / num_actors;
+
+    //std::cout << "Center = " << center_x << ", " << center_y << ", " << center_z << "  Max = " << max_height << ", " << max_depth << std::endl;
+
+    int cam_index = stage_window->active_camera;
+
+    int px = center_x;
+    int py = center_y;
+    int pz = (center_z - (max_depth/2)) - (max_height/2);
+
+
+    for(int i = 0; i < 4; i++)
+	{
+		stage_window->camera[i].camera.setPosition(px, py, pz);
+
+		if(stage_window->camera[i].pov == RC_CAMERA_VIEW_PERSPECTIVE)
+		{
+			stage_window->camera[i].camera.setRotation(0, 0, 0);
+			stage_window->camera[i].camera.rotate(0, 0, 0);
+
+			if(stage_window->num_views == 4)
+			{
+				stage_window->active_camera = i;
+			}
+		}
+	}
+
+	if(stage_window->num_views == 4)
+	{
+		stage_window->SetViews(RC_CAMERA_VIEW_ALL, RC_CAMERA_VIEW_FRONT, RC_CAMERA_VIEW_RIGHT, RC_CAMERA_VIEW_TOP, RC_CAMERA_VIEW_PERSPECTIVE);
+	}
+	else
+	{
+		stage_window->SetViews(stage_window->camera[stage_window->active_camera].pov);
+	}
+}
+
 void SerenityEditorSerenity3D_Frame::OnS3DSelectClicked( wxCommandEvent& event )
 {
 	if(!stage_window)
