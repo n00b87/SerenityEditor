@@ -219,6 +219,8 @@ struct rc_actor
 	irr::video::SColor diffuse;
 	irr::video::SColor specular;
 	std::string terrain_hmap_file;
+	int terrain_size;
+	int terrain_patch_size; //NOT USED
 	double wave_height;
 	double wave_length;
 	double wave_speed;

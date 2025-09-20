@@ -266,6 +266,24 @@ actual_params->WindowId = (HWND)this->GetHandle();
 	transform_tool_widget.widget_size = 32;
 	transform_tool_widget.image_size = 64;
 
+
+	// Arrow
+    terrain_arrow = m_pSceneManager->addAnimatedMeshSceneNode(m_pSceneManager->addArrowMesh("arrow",
+                                                        SColor(255, 255, 0, 0), SColor(255, 0, 255, 0)), NULL);
+    terrain_arrow->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+    terrain_arrow->setScale(vector3df(20,20,20));
+    terrain_arrow->setRotation(vector3df(0,0,180));
+
+    if(terrain_arrow)
+        terrain_arrow->setVisible(false);
+
+    terrainTimer_then = 0;
+    terrainTimer_then30 = 0;
+    terrainSelector = NULL;
+    terrain_actor_index = -1;
+    terrain_size = -1;
+    terrain_scale.set(1,1,1);
+
 	//wxMessageBox(_("FNT: ") + wxString::Format(_("%d"), active_font));
 
 	//wxMessageBox(_("GS:") + wxString::Format(_("%d"), (int)grid_size) + _(", ") + wxString::Format(_("%d"), (int)grid_spacing) + _(", ") + wxString::Format(_("%d"), (int)grid_color.color));
@@ -1514,6 +1532,292 @@ irr::core::vector2df wxIrrlicht::getRotatedPoint2D(irr::core::vector2df pt, irr:
 }
 
 
+/*==============================================================================
+  Raise or lower terrain (selected vertice)
+==============================================================================*/
+void wxIrrlicht::RaiseTerrainVertex(ITerrainSceneNode* terrain, s32 index, f32 step, bool up)
+{
+   IMesh* pMesh = terrain->getMesh();
+
+   s32 b;
+
+   for (b=0; b<pMesh->getMeshBufferCount(); ++b)
+   {
+      IMeshBuffer* pMeshBuffer = pMesh->getMeshBuffer(b);
+      // skip mesh buffers that are not the right type
+      if (pMeshBuffer->getVertexType() != video::EVT_2TCOORDS) continue;
+
+      video::S3DVertex2TCoords* pVertices = (video::S3DVertex2TCoords*)pMeshBuffer->getVertices();
+
+      pVertices[index].Pos.Y += (up) ? step : -step;
+
+      if(pVertices[index].Pos.Y < 0)
+        pVertices[index].Pos.Y = 0;
+   }
+
+   // force terrain render buffer to reload
+   terrain->setPosition(terrain->getPosition());
+}
+
+
+/*==============================================================================
+  Raise or lower terrain (selected vertice)
+==============================================================================*/
+//-------------
+// Function to calculate a point on a cubic Bezier curve
+vector3df wxIrrlicht::bezierPoint(const vector3df& p0, const vector3df& p1, const vector3df& p2, const vector3df& p3, float t) {
+    float u = 1.0f - t;
+    float tt = t * t;
+    float uu = u * u;
+    float uuu = uu * u;
+    float ttt = tt * t;
+
+    vector3df p = uuu * p0; // (1-t)^3 * p0
+    p += 3 * uu * t * p1;   // 3 * (1-t)^2 * t * p1
+    p += 3 * u * tt * p2;   // 3 * (1-t) * t^2 * p2
+    p += ttt * p3;          // t^3 * p3
+
+    return p;
+}
+
+// Function to draw a Bezier curve
+std::vector<irr::core::vector3df> wxIrrlicht::drawBezierCurve(const vector3df& p0, const vector3df& p1, const vector3df& p2, const vector3df& p3, int segments) {
+    std::vector<vector3df> points;
+
+    for (int i = 0; i <= segments; ++i) {
+        float t = static_cast<float>(i) / segments;
+        points.push_back(bezierPoint(p0, p1, p2, p3, t));
+    }
+
+    return points;
+
+    //for (size_t i = 0; i < points.size() - 1; ++i) {
+    //    driver->draw3DLine(points[i], points[i + 1], color);
+    //}
+}
+
+void wxIrrlicht::RaiseTerrainVertex_C(ITerrainSceneNode* terrain, irr::f32 x, irr::f32 z, irr::s32 hm_size, irr::f32 scale, bool up)
+{
+   IMesh* pMesh = terrain->getMesh();
+
+   s32 b;
+
+   irr::s32 brush_size = terrain_brush_size;
+   irr::s32 step = terrain_brush_step;
+
+   //---------
+   //static const s32 scale = 32; // terrain is scaled 32X
+   //static const s32 size = 256; // heightmap is 256X256 pixels
+   //s32 tx = (s32)((x-(brush_size/2)) / scale);
+   //s32 tz = (s32)((z-(brush_size/2)) / scale);
+
+   int segments = 180;
+
+   std::vector<irr::core::vector3df> curve_points = drawBezierCurve(irr::core::vector3df(-1*brush_size, 0, 0),
+                                                       irr::core::vector3df(-1*brush_size, step, 0),
+                                                       irr::core::vector3df(brush_size, step, 0),
+                                                       irr::core::vector3df(brush_size, 0, 0),
+                                                       segments);
+
+
+    float t = (((float)brush_size)/2) / scale;
+    //std::cout << "TOTAL = " << t << " --> " << curve_points[0].Y << ", " << curve_points[89].Y << ", " << curve_points[179].Y << std::endl;
+
+    bool check_flag = true;
+
+    int ti = 0;
+
+    for(int tz = ((z-(brush_size/2)) / scale); tz < ((z+(brush_size/2)) / scale); tz++ )
+    {
+        //if(tz == ((int)(z/scale)))
+        //    check_flag = true;
+        //else
+        //    check_flag = false;
+
+        for(int tx = ((x-(brush_size/2)) / scale); tx < ((x+(brush_size/2)) / scale); tx++ )
+        {
+           s32 index = tx * hm_size + tz;
+
+           float curve_fraction = (irr::core::vector2df(tx, tz).getDistanceFrom(irr::core::vector2df(x/scale, z/scale)))/t;
+           //curve_fraction = curve_fraction / (brush_size / scale);
+           int curve_index = (0.5 + (curve_fraction/2)) * segments;
+
+           //if(check_flag)
+            //std::cout << ti << ": CF = (" << tx << ", " << tz << ") (" << (x/scale) << ", " << (z/scale) << ") --> " << curve_fraction << " [" << curve_index << "]" << std::endl;
+
+            ti++;
+
+            if(curve_index < 0 || curve_index >= curve_points.size())
+                continue;
+
+           for (b=0; b<pMesh->getMeshBufferCount(); ++b)
+           {
+              irr::scene::IMeshBuffer* pMeshBuffer = pMesh->getMeshBuffer(b);
+              // skip mesh buffers that are not the right type
+              if (pMeshBuffer->getVertexType() != video::EVT_2TCOORDS) continue;
+
+              video::S3DVertex2TCoords* pVertices = (video::S3DVertex2TCoords*)pMeshBuffer->getVertices();
+
+              if(index < 0 || index >= pMeshBuffer->getVertexCount())
+                continue;
+
+              step = curve_points[curve_index].Y;
+              pVertices[index].Pos.Y += (up) ? step : -step;
+
+              if(pVertices[index].Pos.Y < 0)
+                pVertices[index].Pos.Y = 0;
+           }
+        }
+
+        check_flag = false;
+    }
+
+   // force terrain render buffer to reload
+   terrain->setPosition(terrain->getPosition());
+}
+
+
+void wxIrrlicht::RaiseTerrainVertex_B(ITerrainSceneNode* terrain, irr::f32 x, irr::f32 z, irr::s32 hm_size, bool up)
+{
+   IMesh* pMesh = terrain->getMesh();
+
+   s32 b;
+
+   irr::s32 brush_size = terrain_brush_size;
+   irr::s32 step = terrain_brush_step;
+
+   //---------
+   //static const s32 scale = 32; // terrain is scaled 32X
+   //static const s32 size = 256; // heightmap is 256X256 pixels
+   //s32 tx = (s32)((x-(brush_size/2)) / scale);
+   //s32 tz = (s32)((z-(brush_size/2)) / scale);
+
+
+   for(int tz = ((z-(brush_size/2)) / terrain_scale.Z); tz < ((z+(brush_size/2)) / terrain_scale.Z); tz++ )
+   for(int tx = ((x-(brush_size/2)) / terrain_scale.X); tx < ((x+(brush_size/2)) / terrain_scale.X); tx++ )
+   {
+       s32 index = tx * hm_size + tz;
+
+       for (b=0; b<pMesh->getMeshBufferCount(); ++b)
+       {
+          irr::scene::IMeshBuffer* pMeshBuffer = pMesh->getMeshBuffer(b);
+          // skip mesh buffers that are not the right type
+          if (pMeshBuffer->getVertexType() != video::EVT_2TCOORDS) continue;
+
+          video::S3DVertex2TCoords* pVertices = (video::S3DVertex2TCoords*)pMeshBuffer->getVertices();
+
+          if(index < 0 || index >= pMeshBuffer->getVertexCount())
+            continue;
+
+          pVertices[index].Pos.Y += (up) ? step : -step;
+
+          if(pVertices[index].Pos.Y < 0)
+            pVertices[index].Pos.Y = 0;
+       }
+   }
+
+   // force terrain render buffer to reload
+   terrain->setPosition(terrain->getPosition());
+}
+
+
+void wxIrrlicht::terrain_brush_control(irr::scene::ITerrainSceneNode* terrain, irr::scene::ICameraSceneNode* cam, int click_x, int click_y, bool IsLMBDown, bool IsRMBDown)
+{
+    irr::scene::ISceneManager* smgr = m_pDevice->getSceneManager();
+    u32 terrainTimer_now = m_pDevice->getTimer()->getTime();
+
+    if(!terrain)
+        return;
+
+    if(!terrainSelector)
+        return;
+
+    if (terrainTimer_then30 < terrainTimer_now)
+    {
+        // move the arrow to the nearest vertex ...
+        //const position2di clickPosition = m_pDevice->getCursorControl()->getPosition();
+        irr::core::position2di clickPosition(click_x, click_y);
+        const line3df ray = smgr->getSceneCollisionManager()->getRayFromScreenCoordinates(clickPosition, cam);
+        vector3df pos;
+        triangle3df Tri;
+        irr::scene::ISceneNode* tmp;
+        if (smgr->getSceneCollisionManager()->getCollisionPoint(ray, terrainSelector, pos, Tri, tmp))
+        {
+          //arrow->setPosition(pos);
+          static const s32 scale = terrain->getScale().X; // terrain is scaled 32X
+          static const s32 t_size = terrain_size; // heightmap is 256X256 pixels
+          //std::cout << "T_SIZE: " << terrain_scale.X << ", " << terrain_scale.Z << std::endl;
+          pos = pos - selected_actors[0].t_pos;
+          s32 x = (s32)(pos.X / terrain_scale.X);
+          s32 z = (s32)(pos.Z / terrain_scale.Z);
+          s32 index = x * t_size + z;
+
+          // ... Move it if clicked
+          if( (IsLMBDown || IsRMBDown) && terrainTimer_then < terrainTimer_now)
+          {
+            switch(terrain_brush_shape)
+            {
+                case RC_TERRAIN_BRUSH_SHAPE_DOME:
+                {
+                    RaiseTerrainVertex_C(terrain, pos.X, pos.Z, t_size, terrain_scale.X, IsLMBDown);
+                }
+                break;
+
+                case RC_TERRAIN_BRUSH_SHAPE_BOX:
+                {
+                    RaiseTerrainVertex_B(terrain, pos.X, pos.Z, t_size, IsLMBDown);
+                }
+                break;
+
+                case RC_TERRAIN_BRUSH_SHAPE_POINT:
+                {
+                    RaiseTerrainVertex(terrain, index, terrain_brush_step, IsLMBDown);
+                }
+                break;
+            }
+            //RaiseTerrainVertex(terrain, index, step, receiver.IsLMBDown());
+            //RaiseTerrainVertex_B(terrain, pos.X, pos.Z, t_size, receiver.IsLMBDown());
+            //RaiseTerrainVertex_C(terrain, pos.X, pos.Z, t_size, terrain_scale.X, IsLMBDown);
+            terrainTimer_then = terrainTimer_now + 100;
+          }
+
+          x *= terrain_scale.X;
+          z *= terrain_scale.Z;
+
+          terrain_arrow->setPosition(vector3df(x, terrain->getHeight(x, z) + 20, z));
+        }
+
+        terrainTimer_then30 = terrainTimer_now + 30;
+    }
+
+    terrain->setPosition(terrain->getPosition());
+    terrain->updateAbsolutePosition();
+}
+
+
+/*==============================================================================
+  Save file
+==============================================================================*/
+void wxIrrlicht::saveTerrainHMap (ITerrainSceneNode* terrain, int hmap_size, wxFileName out_file)
+{
+    core::dimension2d<u32> dim (hmap_size,hmap_size);
+    video::IImage *img = m_pDriver->createImage(ECF_R8G8B8, dim);
+
+    u32 VertexCount = terrain->getMesh()->getMeshBuffer(0)->getVertexCount();
+    S3DVertex2TCoords* verts = (S3DVertex2TCoords*)terrain->getMesh()->getMeshBuffer(0)->getVertices();
+
+    for (u32 i=0; i<VertexCount; i++)
+    {
+     S3DVertex2TCoords* vertex = verts + i;
+     u8 y = (u8)vertex->Pos.Y;
+     img->setPixel((u32)((hmap_size-1) - vertex->Pos.X), (u32)vertex->Pos.Z, video::SColor(0, y,y,y));
+    }
+
+    m_pDriver->writeImageToFile(img, out_file.GetAbsolutePath().ToStdString().c_str(), 0);
+    img->drop();
+}
+
+
 void wxIrrlicht::OnUpdate()
 {
 	if(window_type == RC_IRR_WINDOW_MATERIAL && (!manual_control))
@@ -1572,9 +1876,23 @@ void wxIrrlicht::OnUpdate()
 //								  wxString::Format(_("%d"), (int)camera[0].camera.rz));
 //	}
 
+    if(stage_edit_tool != RC_EDIT_TOOL_TERRAINBRUSH)
+    {
+        if(terrain_arrow)
+            terrain_arrow->setVisible(false);
+    }
+    else
+    {
+        if(!(mouse_state.LeftIsDown() || mouse_state.RightIsDown()))
+        {
+            if(terrain_arrow)
+                terrain_arrow->setVisible(false);
+        }
+    }
 
 
-	if(mouse_state.LeftIsDown())
+
+	if(mouse_state.LeftIsDown() || (stage_edit_tool==RC_EDIT_TOOL_TERRAINBRUSH && mouse_state.RightIsDown()))
 	{
 		//irr::scene::ITriangleSelector* selector = 0;
 		irr::scene::ISceneCollisionManager* collman = m_pSceneManager->getSceneCollisionManager();
@@ -1610,6 +1928,8 @@ void wxIrrlicht::OnUpdate()
 				transform_tool_widget.lock_x = false;
 				transform_tool_widget.lock_y = false;
 				transform_tool_widget.lock_z = false;
+
+				terrain_actor_index = -1;
 			}
 		}
 
@@ -1751,6 +2071,8 @@ void wxIrrlicht::OnUpdate()
 					move_tool_average_x = 0;
 					move_tool_average_y = 0;
 					move_tool_average_z = 0;
+
+					terrain_actor_index = -1;
 
 					int num_actors = 0;
 					for(int i = 0; i < selected_actors.size(); i++)
@@ -2006,6 +2328,9 @@ void wxIrrlicht::OnUpdate()
 
 				for(int i = 0; i < selected_actors.size(); i++)
 				{
+				    if(selected_actors[i].isTerrain)
+                        continue;
+
 					//Apply Rotation in Y,X,Z order
 					irr::scene::ISceneNode* node = selected_actors[i].node;
 					if(!node)
@@ -2172,7 +2497,25 @@ void wxIrrlicht::OnUpdate()
 					if(!selected_actors[i].node)
 						continue;
 
-					selected_actors[i].node->setScale( selected_actors[i].t_start + scale_vector );
+					if(selected_actors[i].isTerrain)
+                    {
+                        irr::core::vector3df t_scale_vector = selected_actors[i].t_start + scale_vector;
+                        bool use_x = ((t_scale_vector.X >= t_scale_vector.Y) && (t_scale_vector.X >= t_scale_vector.Z));
+                        bool use_y = ((t_scale_vector.Y >= t_scale_vector.X) && (t_scale_vector.Y >= t_scale_vector.Z));
+                        bool use_z = ((t_scale_vector.Z >= t_scale_vector.Y) && (t_scale_vector.Z >= t_scale_vector.X));
+                        if(use_x)
+                            t_scale_vector.set(t_scale_vector.X, t_scale_vector.X, t_scale_vector.X);
+                        else if(use_y)
+                            t_scale_vector.set(t_scale_vector.Y, t_scale_vector.Y, t_scale_vector.Y);
+                        if(use_z)
+                            t_scale_vector.set(t_scale_vector.Z, t_scale_vector.Z, t_scale_vector.Z);
+
+                        selected_actors[i].node->setScale( t_scale_vector );
+                    }
+                    else
+					{
+					    selected_actors[i].node->setScale( selected_actors[i].t_start + scale_vector );
+					}
 				}
 
 				if(selected_actors.size() > 0)
@@ -2246,6 +2589,53 @@ void wxIrrlicht::OnUpdate()
 					//wxMessageBox(_("mouse: ") + wxString::Format(_("%d"), active_camera) + _(" :: ") + wxString::Format(_("%d"), mouse_to_view_x) + _(", ") + wxString::Format(_("%d"), mouse_to_view_y));
 				}
 
+			}
+			break;
+
+
+			case RC_EDIT_TOOL_TERRAINBRUSH:
+			{
+			    if(selected_actors.size() != 1)
+                    break;
+
+                int actor_index = -1;
+
+			    if(init_click)
+                {
+
+                    actor_index = selected_actors[0].actor_index;
+
+                    if(!selected_actors[0].isTerrain)
+                        break;
+
+                    if(!selected_actors[0].node)
+                        break;
+
+                    if(terrainSelector)
+                        terrainSelector->drop();
+
+                    terrainSelector = m_pSceneManager->createTerrainTriangleSelector((irr::scene::ITerrainSceneNode*)selected_actors[0].node, 0);
+                    terrain_actor_index = actor_index;
+
+                    if(terrain_arrow)
+                        terrain_arrow->setVisible(true);
+                }
+
+				if(terrain_actor_index >= 0) //(init_click)
+				{
+
+                    irr::core::vector3df tmp_scale = selected_actors[0].node->getScale();
+                    //selected_actors[0].node->setScale(irr::core::vector3df(1.f, 1.f, 1.f));
+
+                    terrain_brush_control((irr::scene::ITerrainSceneNode*) selected_actors[0].node,
+                                          camera[active_camera].camera.camera,
+                                          px - camera[active_camera].x,
+                                          py - camera[active_camera].y,
+                                          mouse_state.LeftIsDown(),
+                                          mouse_state.RightIsDown());
+                    //selected_actors[0].node->setScale(tmp_scale);
+                    OnRender();
+				}
 			}
 			break;
 		}

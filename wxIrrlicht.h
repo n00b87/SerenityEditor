@@ -201,6 +201,25 @@ class wxIrrlicht : public wxControl {
         irr::core::vector3df getDirectionVector(irr::core::vector3df pos, irr::core::vector3df rot);
         void rc_setDriverMaterial();
 
+
+        u32 terrainTimer_then = 0, terrainTimer_then30 = 0;
+        irr::scene::ITriangleSelector* terrainSelector = NULL;
+        int terrain_actor_index = -1;
+        int terrain_size = -1;
+        irr::core::vector3df terrain_scale;
+        irr::scene::ISceneNode* terrain_arrow = NULL;
+        int terrain_brush_shape = 0;
+        int terrain_brush_size = 0;
+        int terrain_brush_step = 0;
+
+        void RaiseTerrainVertex(irr::scene::ITerrainSceneNode* terrain, s32 index, f32 step, bool up);
+        vector3df bezierPoint(const vector3df& p0, const vector3df& p1, const vector3df& p2, const vector3df& p3, float t);
+        std::vector<irr::core::vector3df> drawBezierCurve(const vector3df& p0, const vector3df& p1, const vector3df& p2, const vector3df& p3, int segments);
+        void RaiseTerrainVertex_C(irr::scene::ITerrainSceneNode* terrain, irr::f32 x, irr::f32 z, irr::s32 hm_size, irr::f32 scale, bool up);
+        void RaiseTerrainVertex_B(irr::scene::ITerrainSceneNode* terrain, irr::f32 x, irr::f32 z, irr::s32 hm_size, bool up);
+        void terrain_brush_control(irr::scene::ITerrainSceneNode* terrain, irr::scene::ICameraSceneNode* cam, int click_x, int click_y, bool IsLMBDown, bool IsRMBDown);
+        void saveTerrainHMap (irr::scene::ITerrainSceneNode* terrain, int hm_size, wxFileName out_file);
+
         irr::core::matrix4 ortho_matrix;
         irr::core::matrix4 perspective_matrix;
 

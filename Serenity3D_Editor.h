@@ -61,11 +61,13 @@ class Serenity3D_Frame : public wxFrame
 		wxAuiNotebook* m_editorMain_auinotebook;
 		wxPanel* m_stage_panel;
 		wxAuiToolBar* m_auiToolBar52;
+		wxAuiToolBarItem* m_s3d_target_tool;
 		wxAuiToolBarItem* m_s3d_select_tool;
 		wxAuiToolBarItem* m_s3d_boxSelect_tool;
 		wxAuiToolBarItem* m_s3d_move_tool;
 		wxAuiToolBarItem* m_s3d_rotate_tool;
 		wxAuiToolBarItem* m_s3d_scale_tool;
+		wxAuiToolBarItem* m_s3d_terrainBrush_tool;
 		wxAuiToolBarItem* m_s3d_animatedActor_tool;
 		wxAuiToolBarItem* m_s3d_octreeActor_tool;
 		wxAuiToolBarItem* m_s3d_billboardActor_tool;
@@ -378,10 +380,6 @@ class Serenity3D_Frame : public wxFrame
 		wxPGProperty* m_propertyGridItem47112;
 		wxPGProperty* m_propertyGridItem48112;
 		wxPGProperty* m_propertyGridItem49112;
-		wxPGProperty* m_propertyGridItem50112;
-		wxPGProperty* m_propertyGridItem51112;
-		wxPGProperty* m_propertyGridItem52112;
-		wxPGProperty* m_propertyGridItem53112;
 		wxPGProperty* m_propertyGridItem54112;
 		wxPGProperty* m_propertyGridItem55112;
 		wxPGProperty* m_propertyGridItem56112;
@@ -438,6 +436,14 @@ class Serenity3D_Frame : public wxFrame
 		wxStaticText* m_staticText58;
 		wxCheckBox* m_toolSettings_showAxisLines_checkBox;
 		wxCheckBox* m_toolSettings_showAxisRings_checkBox;
+		wxPanel* m_panel62;
+		wxStaticText* m_staticText131;
+		wxStaticText* m_staticText130;
+		wxComboBox* m_terrainBrush_shape_comboBox;
+		wxStaticText* m_staticText132;
+		wxSpinCtrl* m_terrainBrush_size_spinCtrl;
+		wxStaticText* m_staticText1321;
+		wxSpinCtrl* m_terrainBrush_step_spinCtrl;
 		wxPanel* m_panel403;
 		wxStaticText* m_staticText59;
 		wxCheckBox* m_cameraSettings_showPosition_checkBox;
@@ -612,11 +618,13 @@ class Serenity3D_Frame : public wxFrame
 
 		// Virtual event handlers, override them in your derived class
 		virtual void OnMainEditorNotebookPageChanged( wxAuiNotebookEvent& event ) { event.Skip(); }
+		virtual void OnS3DTargetClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnS3DSelectClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnS3DBoxClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnS3DMoveClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnS3DRotateClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnS3DScaleClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnS3DTerrainBrushClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnS3DWizClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnS3DDumpClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnS3DBillboardClicked( wxCommandEvent& event ) { event.Skip(); }
@@ -650,6 +658,9 @@ class Serenity3D_Frame : public wxFrame
 		virtual void On_StageSettings_SetGridColor( wxColourPickerEvent& event ) { event.Skip(); }
 		virtual void On_StageSettings_ShowAxisLines( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_StageSettings_ShowAxisRings( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_StageSettings_SetTerrainBrushShape( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_StageSettings_SetTerrainBrushSize( wxSpinEvent& event ) { event.Skip(); }
+		virtual void On_StageSettings_SetTerrainBrushStep( wxSpinEvent& event ) { event.Skip(); }
 		virtual void On_StageSettings_ShowViewCameraPosition( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_StageSettings_ShowViewCameraRotation( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_StageSettings_ViewCameraSpeed( wxSpinDoubleEvent& event ) { event.Skip(); }
@@ -733,7 +744,7 @@ class Serenity3D_Frame : public wxFrame
 
 	public:
 
-		Serenity3D_Frame( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Serenity3D"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 1368,758 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
+		Serenity3D_Frame( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Serenity"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 1368,795 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
 
 		~Serenity3D_Frame();
 
@@ -1402,21 +1413,19 @@ class NewTerrainActor_Dialog : public wxDialog
 		wxPanel* m_panel38;
 		wxStaticText* m_staticText33;
 		wxTextCtrl* m_actorID_textCtrl;
-		wxStaticText* m_staticText34;
-		wxSearchCtrl* m_textureSearch_searchCtrl;
-		wxListBox* m_texture_listBox;
+		wxStaticText* m_staticText331;
+		wxSpinCtrl* m_terrainSize_spinCtrl;
 		wxButton* m_cancel_button;
 		wxButton* m_create_button;
 
 		// Virtual event handlers, override them in your derived class
-		virtual void OnSearchText( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnCancelButtonClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnCreateButtonClicked( wxCommandEvent& event ) { event.Skip(); }
 
 
 	public:
 
-		NewTerrainActor_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("New Terrain Actor"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 564,346 ), long style = wxDEFAULT_DIALOG_STYLE );
+		NewTerrainActor_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("New Terrain Actor"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 564,174 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~NewTerrainActor_Dialog();
 

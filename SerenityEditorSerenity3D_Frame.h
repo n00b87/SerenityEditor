@@ -152,6 +152,8 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
 
 		void updateRenderMode();
 
+		bool genHeightMap(wxString hmap_file, int hmap_size);
+
 		void updateToolSelection();
 		int getStageToolIndex(wxAuiToolBarItem* toolbar_item);
 
@@ -230,11 +232,13 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
     	void OnCodeGen( wxCommandEvent& event );
 
     	void OnMainEditorNotebookPageChanged( wxAuiNotebookEvent& event );
+    	void OnS3DTargetClicked( wxCommandEvent& event );
     	void OnS3DSelectClicked( wxCommandEvent& event );
 		void OnS3DBoxClicked( wxCommandEvent& event );
 		void OnS3DMoveClicked( wxCommandEvent& event );
 		void OnS3DRotateClicked( wxCommandEvent& event );
 		void OnS3DScaleClicked( wxCommandEvent& event );
+		void OnS3DTerrainBrushClicked( wxCommandEvent& event );
 		void OnS3DPlaneClicked( wxCommandEvent& event );
 		void OnS3DCubeClicked( wxCommandEvent& event );
 		void OnS3DSphereClicked( wxCommandEvent& event );
@@ -277,6 +281,9 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
 		void On_StageSettings_SetGridColor( wxColourPickerEvent& event );
 		void On_StageSettings_ShowAxisLines( wxCommandEvent& event );
 		void On_StageSettings_ShowAxisRings( wxCommandEvent& event );
+		void On_StageSettings_SetTerrainBrushShape( wxCommandEvent& event );
+		void On_StageSettings_SetTerrainBrushSize( wxSpinEvent& event );
+		void On_StageSettings_SetTerrainBrushStep( wxSpinEvent& event );
 		void On_StageSettings_ShowViewCameraPosition( wxCommandEvent& event );
 		void On_StageSettings_ShowViewCameraRotation( wxCommandEvent& event );
 		void On_StageSettings_ViewCameraSpeed( wxSpinDoubleEvent& event );
