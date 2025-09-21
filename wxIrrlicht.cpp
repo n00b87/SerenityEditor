@@ -152,6 +152,8 @@ actual_params->WindowId = (HWND)this->GetHandle();
     rendering = false;
     Refresh();
 
+    select_group_flag = false;
+
 	back_buffer = m_pDriver->addRenderTargetTexture(irr::core::dimension2d<irr::u32>((irr::u32)2048, (irr::u32)2048), "rt", ECF_A8R8G8B8);
 
 	camera[0].camera.init(m_pSceneManager, 0, 0, 0);
@@ -1942,6 +1944,7 @@ void wxIrrlicht::OnUpdate()
 
 				if(init_click)
 				{
+				    select_group_flag = false;
 					//wxMessageBox(_("Click"));
 					//irr::scene::ISceneNode * selectedSceneNode =
 					/*collman->getSceneNodeAndCollisionPointFromRay(
@@ -2009,6 +2012,8 @@ void wxIrrlicht::OnUpdate()
 			{
 				if(!left_drag_init)
 					break;
+
+                select_group_flag = false;
 
 
 				selected_actors.clear();

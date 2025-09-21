@@ -2012,6 +2012,11 @@ void SerenityEditorSerenity3D_Frame::OnStageUpdate( wxUpdateUIEvent& event )
 {
 	if(stage_window)
 	{
+	    if(stage_window->select_group_flag)
+        {
+            return;
+        }
+
 		if(stage_window->selected_actors.size() >= 1)
 		{
 
@@ -6243,9 +6248,16 @@ void SerenityEditorSerenity3D_Frame::On_Stage_StageNodeSelected( wxTreeEvent& ev
 {
     if(tmp_copy_select)
     {
+        //std::cout << "COPY FALSE" << std::endl;
         tmp_copy_select = false;
         return;
     }
+
+    //std::cout << "YOLO" << std::endl;
+    if(!stage_window)
+        return;
+
+    stage_window->select_group_flag = false;
 
 	wxTreeItemId selected_item = event.GetItem();
 	int stage_node_index = -1;
@@ -6420,6 +6432,7 @@ void SerenityEditorSerenity3D_Frame::On_Stage_StageNodeSelected( wxTreeEvent& ev
 
 		case RC_STAGE_NODE_GROUP:
 		{
+		    stage_window->select_group_flag = true;
 			int stage_project_index = stage_tree_nodes[stage_node_index].project_index;
 			//int group_stage_index = stage_tree_nodes[stage_node_index].groups[group_node_index].project_index;
 
@@ -6450,8 +6463,8 @@ void SerenityEditorSerenity3D_Frame::On_Stage_StageNodeSelected( wxTreeEvent& ev
                     if(actor_group_name.compare(group_name)==0)
                         stage_window->selected_actors.push_back(stage_window->scene_actors[scene_actor_index]);
                 }
-                if(stage_window->selected_actors.size() > 0)
-                    tmp_copy_select = true;
+                //if(stage_window->selected_actors.size() > 0)
+                  //  tmp_copy_select = true;
             }
 
 			m_stage_propertyGridManager->SelectPage(m_group_propertyGridPage);

@@ -161,6 +161,8 @@ class wxIrrlicht : public wxControl {
         bool manual_control = false;
         int num_views = 1; //will either be 1 or 4
 
+        bool select_group_flag = false;
+
         bool has_context = false;
 
         font_obj font[MAX_FONTS];
