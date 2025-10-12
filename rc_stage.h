@@ -193,6 +193,7 @@ struct rc_actor
 	int mesh_index; //project index
 	irr::scene::ISceneNode* node; //cast to object type
 	irr::scene::ISceneNode* icon_node; //mainly for a physical representation of lights
+	irr::scene::IShadowVolumeSceneNode* shadow;
 	irr::core::vector3df position;
 	irr::core::vector3df rotation;
 	irr::core::vector3df scale;

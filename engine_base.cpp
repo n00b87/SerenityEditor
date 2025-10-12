@@ -3951,6 +3951,7 @@ rc_actor serenity_project::load_actor(std::vector<serenity_project_dict_obj> par
 	p_actor.group_name = "";
 	p_actor.mesh_index = -1; //project index
 	p_actor.node = NULL; //cast to object type
+	p_actor.shadow = NULL;
 	p_actor.position = irr::core::vector3df(0,0,0);
 	p_actor.rotation = irr::core::vector3df(0,0,0);
 	p_actor.scale = irr::core::vector3df(1,1,1);

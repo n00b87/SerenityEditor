@@ -2562,6 +2562,22 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 			{
 				irr::scene::IAnimatedMeshSceneNode* node = (irr::scene::IAnimatedMeshSceneNode*)project.stages[stage_project_index].actors[i].node; //So I can type less
 
+				if(project.stages[stage_project_index].actors[i].hasShadow)
+                {
+                    if(!project.stages[stage_project_index].actors[i].shadow)
+                    {
+                        project.stages[stage_project_index].actors[i].shadow = node->addShadowVolumeSceneNode();
+                    }
+                }
+                else
+                {
+                    if(project.stages[stage_project_index].actors[i].shadow)
+                    {
+                        node->removeChild(project.stages[stage_project_index].actors[i].shadow);
+                        project.stages[stage_project_index].actors[i].shadow = NULL;
+                    }
+                }
+
 
 				//Set starting animation
 				int animation_index = project.stages[stage_project_index].actors[i].animation_index;
@@ -2681,6 +2697,22 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 			if(project.stages[stage_project_index].actors[i].node != NULL)
 			{
 				irr::scene::IMeshSceneNode* node = (irr::scene::IMeshSceneNode*)project.stages[stage_project_index].actors[i].node; //So I can type less
+
+				if(project.stages[stage_project_index].actors[i].hasShadow)
+                {
+                    if(!project.stages[stage_project_index].actors[i].shadow)
+                    {
+                        project.stages[stage_project_index].actors[i].shadow = node->addShadowVolumeSceneNode();
+                    }
+                }
+                else
+                {
+                    if(project.stages[stage_project_index].actors[i].shadow)
+                    {
+                        node->removeChild(project.stages[stage_project_index].actors[i].shadow);
+                        project.stages[stage_project_index].actors[i].shadow = NULL;
+                    }
+                }
 
 				//-----APPLY MATERIAL-----------
 				int mat_index = project.stages[stage_project_index].actors[i].override_material_index;
@@ -2828,6 +2860,22 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 			if(project.stages[stage_project_index].actors[i].node != NULL)
 			{
 				irr::scene::IOctreeSceneNode* node = (irr::scene::IOctreeSceneNode*)project.stages[stage_project_index].actors[i].node; //So I can type less
+
+				if(project.stages[stage_project_index].actors[i].hasShadow)
+                {
+                    if(!project.stages[stage_project_index].actors[i].shadow)
+                    {
+                        project.stages[stage_project_index].actors[i].shadow = node->addShadowVolumeSceneNode();
+                    }
+                }
+                else
+                {
+                    if(project.stages[stage_project_index].actors[i].shadow)
+                    {
+                        node->removeChild(project.stages[stage_project_index].actors[i].shadow);
+                        project.stages[stage_project_index].actors[i].shadow = NULL;
+                    }
+                }
 
 				//-----APPLY MATERIAL-----------
 				for(int i = 0; i < project.meshes[mesh_index].material_index.size(); i++)
@@ -3133,6 +3181,24 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 
 			if(project.stages[stage_project_index].actors[i].node != NULL)
 			{
+			    irr::scene::IMeshSceneNode* node = (irr::scene::IMeshSceneNode*)project.stages[stage_project_index].actors[i].node; //So I can type less
+
+				if(project.stages[stage_project_index].actors[i].hasShadow)
+                {
+                    if(!project.stages[stage_project_index].actors[i].shadow)
+                    {
+                        project.stages[stage_project_index].actors[i].shadow = node->addShadowVolumeSceneNode();
+                    }
+                }
+                else
+                {
+                    if(project.stages[stage_project_index].actors[i].shadow)
+                    {
+                        node->removeChild(project.stages[stage_project_index].actors[i].shadow);
+                        project.stages[stage_project_index].actors[i].shadow = NULL;
+                    }
+                }
+
 				//-----APPLY MATERIAL-----------
 				int mat_index = project.stages[stage_project_index].actors[i].override_material_index;
 				if(mat_index >= 0 && mat_index < project.materials.size())
