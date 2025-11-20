@@ -330,9 +330,9 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
 		void On_Mesh_AnimationList_Select( wxCommandEvent& event );
 
 		void On_Mesh_Animation_AnimationID( wxCommandEvent& event );
-		void On_Mesh_Animation_StartFrame( wxCommandEvent& event );
-		void On_Mesh_Animation_EndFrame( wxCommandEvent& event );
-		void On_Mesh_Animation_Speed( wxCommandEvent& event );
+		void On_Mesh_Animation_StartFrame( wxSpinEvent& event );
+		void On_Mesh_Animation_EndFrame( wxSpinEvent& event );
+		void On_Mesh_Animation_Speed( wxSpinEvent& event );
 
 		//Material Tab
 		void On_Material_NewMaterial_ButtonClicked( wxCommandEvent& event );

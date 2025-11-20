@@ -514,11 +514,11 @@ class Serenity3D_Frame : public wxFrame
 		wxStaticText* m_staticText27;
 		wxTextCtrl* m_mesh_animationID_textCtrl;
 		wxStaticText* m_staticText271;
-		wxTextCtrl* m_mesh_animationStartFrame_textCtrl;
+		wxSpinCtrl* m_mesh_animationStartFrame_spinCtrl;
 		wxStaticText* m_staticText2711;
-		wxTextCtrl* m_mesh_animationEndFrame_textCtrl;
+		wxSpinCtrl* m_mesh_animationEndFrame_spinCtrl;
 		wxStaticText* m_staticText2712;
-		wxTextCtrl* m_mesh_animationSpeed_textCtrl;
+		wxSpinCtrl* m_mesh_animationSpeed_spinCtrl;
 		wxPanel* m_materialDB_panel;
 		wxSplitterWindow* m_splitter4;
 		wxPanel* m_panel37;
@@ -691,9 +691,9 @@ class Serenity3D_Frame : public wxFrame
 		virtual void On_Mesh_DeleteAnimation( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_AnimationList_Select( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_Animation_AnimationID( wxCommandEvent& event ) { event.Skip(); }
-		virtual void On_Mesh_Animation_StartFrame( wxCommandEvent& event ) { event.Skip(); }
-		virtual void On_Mesh_Animation_EndFrame( wxCommandEvent& event ) { event.Skip(); }
-		virtual void On_Mesh_Animation_Speed( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Mesh_Animation_StartFrame( wxSpinEvent& event ) { event.Skip(); }
+		virtual void On_Mesh_Animation_EndFrame( wxSpinEvent& event ) { event.Skip(); }
+		virtual void On_Mesh_Animation_Speed( wxSpinEvent& event ) { event.Skip(); }
 		virtual void On_Material_NewMaterial_ButtonClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Material_LoadMaterial_ButtonClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Material_SaveMaterial_ButtonClicked( wxCommandEvent& event ) { event.Skip(); }

@@ -7914,9 +7914,9 @@ bool SerenityEditorSerenity3D_Frame::load_project(wxFileName pfile)
 	m_mesh_meshID_textCtrl->Clear();
 	m_mesh_meshFile_textCtrl->Clear();
 	m_mesh_animationID_textCtrl->Clear();
-	m_mesh_animationStartFrame_textCtrl->Clear();
-	m_mesh_animationEndFrame_textCtrl->Clear();
-	m_mesh_animationSpeed_textCtrl->Clear();
+	m_mesh_animationStartFrame_spinCtrl->SetValue(0);
+	m_mesh_animationEndFrame_spinCtrl->SetValue(0);
+	m_mesh_animationSpeed_spinCtrl->SetValue(0);
 
 	meshTab_active_animation_index = -1; //index in current mesh
 	meshTab_isPlaying = false;
@@ -8507,16 +8507,16 @@ void SerenityEditorSerenity3D_Frame::On_Mesh_AnimationList_Select( wxCommandEven
 	if(project.meshes[n].isMD2 && (meshTab_active_animation_index < irr::scene::EMAT_COUNT))
 	{
 		m_mesh_animationID_textCtrl->SetValue( wxString::FromUTF8(project.meshes[n].animation[an_index].id_name.c_str()));
-		m_mesh_animationStartFrame_textCtrl->SetValue( wxString::Format(_("%d"), -1));
-		m_mesh_animationEndFrame_textCtrl->SetValue( wxString::Format(_("%d"), -1));
-		m_mesh_animationSpeed_textCtrl->SetValue( wxString::FromDouble(-1));
+		m_mesh_animationStartFrame_spinCtrl->SetValue(-1);
+		m_mesh_animationEndFrame_spinCtrl->SetValue(-1);
+		m_mesh_animationSpeed_spinCtrl->SetValue(-1);
 	}
 	else
 	{
 		m_mesh_animationID_textCtrl->SetValue( wxString::FromUTF8(project.meshes[n].animation[an_index].id_name.c_str()));
-		m_mesh_animationStartFrame_textCtrl->SetValue( wxString::Format(_("%d"), project.meshes[n].animation[an_index].start_frame));
-		m_mesh_animationEndFrame_textCtrl->SetValue( wxString::Format(_("%d"), project.meshes[n].animation[an_index].end_frame));
-		m_mesh_animationSpeed_textCtrl->SetValue( wxString::FromDouble(project.meshes[n].animation[an_index].speed));
+		m_mesh_animationStartFrame_spinCtrl->SetValue( project.meshes[n].animation[an_index].start_frame);
+		m_mesh_animationEndFrame_spinCtrl->SetValue( project.meshes[n].animation[an_index].end_frame);
+		m_mesh_animationSpeed_spinCtrl->SetValue( project.meshes[n].animation[an_index].speed);
 	}
 
 	meshTab_preview_obj.animation_change = true;
@@ -8558,7 +8558,7 @@ void SerenityEditorSerenity3D_Frame::On_Mesh_Animation_AnimationID( wxCommandEve
 	}
 }
 
-void SerenityEditorSerenity3D_Frame::On_Mesh_Animation_StartFrame( wxCommandEvent& event )
+void SerenityEditorSerenity3D_Frame::On_Mesh_Animation_StartFrame( wxSpinEvent& event )
 {
 	if(meshTab_selected_mesh_project_index < 0 || meshTab_selected_mesh_project_index >= project.meshes.size())
 	{
@@ -8581,10 +8581,10 @@ void SerenityEditorSerenity3D_Frame::On_Mesh_Animation_StartFrame( wxCommandEven
 	meshTab_preview_obj.animation_change = true;
 	updatePreviewMesh();
 
-	event.GetString().ToInt(&project.meshes[n].animation[meshTab_active_animation_index].start_frame);
+	project.meshes[n].animation[meshTab_active_animation_index].start_frame = event.GetValue();
 }
 
-void SerenityEditorSerenity3D_Frame::On_Mesh_Animation_EndFrame( wxCommandEvent& event )
+void SerenityEditorSerenity3D_Frame::On_Mesh_Animation_EndFrame( wxSpinEvent& event )
 {
 	if(meshTab_selected_mesh_project_index < 0 || meshTab_selected_mesh_project_index >= project.meshes.size())
 	{
@@ -8607,10 +8607,10 @@ void SerenityEditorSerenity3D_Frame::On_Mesh_Animation_EndFrame( wxCommandEvent&
 	meshTab_preview_obj.animation_change = true;
 	updatePreviewMesh();
 
-	event.GetString().ToInt(&project.meshes[n].animation[meshTab_active_animation_index].end_frame);
+	project.meshes[n].animation[meshTab_active_animation_index].end_frame = event.GetValue();
 }
 
-void SerenityEditorSerenity3D_Frame::On_Mesh_Animation_Speed( wxCommandEvent& event )
+void SerenityEditorSerenity3D_Frame::On_Mesh_Animation_Speed( wxSpinEvent& event )
 {
 	if(meshTab_selected_mesh_project_index < 0 || meshTab_selected_mesh_project_index >= project.meshes.size())
 	{
@@ -8630,9 +8630,7 @@ void SerenityEditorSerenity3D_Frame::On_Mesh_Animation_Speed( wxCommandEvent& ev
 	if(project.meshes[n].isMD2 && (meshTab_active_animation_index < irr::scene::EMAT_COUNT))
 		return;
 
-	double dval = 0;
-	event.GetString().ToDouble(&dval);
-	project.meshes[n].animation[meshTab_active_animation_index].speed = dval;
+	project.meshes[n].animation[meshTab_active_animation_index].speed = (float)event.GetValue();
 
 	meshTab_preview_obj.animation_change = true;
 	updatePreviewMesh();
@@ -8729,9 +8727,9 @@ void SerenityEditorSerenity3D_Frame::On_Mesh_MeshList_Select( wxCommandEvent& ev
 	}
 
 	m_mesh_animationID_textCtrl->SetValue(_(""));
-	m_mesh_animationStartFrame_textCtrl->SetValue(_(""));
-	m_mesh_animationEndFrame_textCtrl->SetValue(_(""));
-	m_mesh_animationSpeed_textCtrl->SetValue(_(""));
+	m_mesh_animationStartFrame_spinCtrl->SetValue(0);
+	m_mesh_animationEndFrame_spinCtrl->SetValue(0);
+	m_mesh_animationSpeed_spinCtrl->SetValue(0);
 
 	if(animation_window)
 	{

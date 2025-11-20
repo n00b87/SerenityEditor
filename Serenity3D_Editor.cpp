@@ -1431,8 +1431,8 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 
 	bSizer7311->Add( m_staticText271, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_mesh_animationStartFrame_textCtrl = new wxTextCtrl( m_panel451, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer7311->Add( m_mesh_animationStartFrame_textCtrl, 2, wxALL, 5 );
+	m_mesh_animationStartFrame_spinCtrl = new wxSpinCtrl( m_panel451, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 99999999, 0 );
+	bSizer7311->Add( m_mesh_animationStartFrame_spinCtrl, 2, wxALL, 5 );
 
 
 	bSizer7311->Add( 0, 0, 3, wxEXPAND, 5 );
@@ -1449,8 +1449,8 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 
 	bSizer73111->Add( m_staticText2711, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_mesh_animationEndFrame_textCtrl = new wxTextCtrl( m_panel451, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer73111->Add( m_mesh_animationEndFrame_textCtrl, 2, wxALL, 5 );
+	m_mesh_animationEndFrame_spinCtrl = new wxSpinCtrl( m_panel451, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 99999999, 0 );
+	bSizer73111->Add( m_mesh_animationEndFrame_spinCtrl, 2, wxALL, 5 );
 
 
 	bSizer73111->Add( 0, 0, 3, wxEXPAND, 5 );
@@ -1467,8 +1467,8 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 
 	bSizer73112->Add( m_staticText2712, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_mesh_animationSpeed_textCtrl = new wxTextCtrl( m_panel451, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer73112->Add( m_mesh_animationSpeed_textCtrl, 2, wxALL, 5 );
+	m_mesh_animationSpeed_spinCtrl = new wxSpinCtrl( m_panel451, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 99999999, 0 );
+	bSizer73112->Add( m_mesh_animationSpeed_spinCtrl, 2, wxALL, 5 );
 
 
 	bSizer73112->Add( 0, 0, 3, wxEXPAND, 5 );
@@ -2205,9 +2205,9 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_mesh_deleteAnimation_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_DeleteAnimation ), NULL, this );
 	m_mesh_meshAnimation_listBox->Connect( wxEVT_COMMAND_LISTBOX_SELECTED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_AnimationList_Select ), NULL, this );
 	m_mesh_animationID_textCtrl->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_Animation_AnimationID ), NULL, this );
-	m_mesh_animationStartFrame_textCtrl->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_Animation_StartFrame ), NULL, this );
-	m_mesh_animationEndFrame_textCtrl->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_Animation_EndFrame ), NULL, this );
-	m_mesh_animationSpeed_textCtrl->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_Animation_Speed ), NULL, this );
+	m_mesh_animationStartFrame_spinCtrl->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( Serenity3D_Frame::On_Mesh_Animation_StartFrame ), NULL, this );
+	m_mesh_animationEndFrame_spinCtrl->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( Serenity3D_Frame::On_Mesh_Animation_EndFrame ), NULL, this );
+	m_mesh_animationSpeed_spinCtrl->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( Serenity3D_Frame::On_Mesh_Animation_Speed ), NULL, this );
 	m_material_newMaterial_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Material_NewMaterial_ButtonClicked ), NULL, this );
 	m_material_loadMaterial_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Material_LoadMaterial_ButtonClicked ), NULL, this );
 	m_material_saveMaterial_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Material_SaveMaterial_ButtonClicked ), NULL, this );
@@ -2333,9 +2333,9 @@ Serenity3D_Frame::~Serenity3D_Frame()
 	m_mesh_deleteAnimation_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_DeleteAnimation ), NULL, this );
 	m_mesh_meshAnimation_listBox->Disconnect( wxEVT_COMMAND_LISTBOX_SELECTED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_AnimationList_Select ), NULL, this );
 	m_mesh_animationID_textCtrl->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_Animation_AnimationID ), NULL, this );
-	m_mesh_animationStartFrame_textCtrl->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_Animation_StartFrame ), NULL, this );
-	m_mesh_animationEndFrame_textCtrl->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_Animation_EndFrame ), NULL, this );
-	m_mesh_animationSpeed_textCtrl->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_Animation_Speed ), NULL, this );
+	m_mesh_animationStartFrame_spinCtrl->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( Serenity3D_Frame::On_Mesh_Animation_StartFrame ), NULL, this );
+	m_mesh_animationEndFrame_spinCtrl->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( Serenity3D_Frame::On_Mesh_Animation_EndFrame ), NULL, this );
+	m_mesh_animationSpeed_spinCtrl->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( Serenity3D_Frame::On_Mesh_Animation_Speed ), NULL, this );
 	m_material_newMaterial_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Material_NewMaterial_ButtonClicked ), NULL, this );
 	m_material_loadMaterial_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Material_LoadMaterial_ButtonClicked ), NULL, this );
 	m_material_saveMaterial_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Material_SaveMaterial_ButtonClicked ), NULL, this );

@@ -1,8 +1,8 @@
 # depslib dependency file v1.0
-1758412761 source:/home/n00b/Projects/SerenityEngine/Serenity3D_Editor.cpp
+1763599658 source:/home/n00b/Projects/SerenityEngine/Serenity3D_Editor.cpp
 	"Serenity3D_Editor.h"
 
-1758412761 /home/n00b/Projects/SerenityEngine/Serenity3D_Editor.h
+1763600340 /home/n00b/Projects/SerenityEngine/Serenity3D_Editor.h
 	<wx/artprov.h>
 	<wx/xrc/xmlres.h>
 	<wx/string.h>
@@ -1433,7 +1433,7 @@
 	"wx/icon.h"
 	"wx/aui/auibook.h"
 
-1758428168 source:/home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.cpp
+1763600019 source:/home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.cpp
 	<wx/stdpaths.h>
 	<wx/propgrid/manager.h>
 	<wx/propgrid/propgridpagestate.h>
@@ -1476,7 +1476,7 @@
 	"SerenityEditor_FXVariable_Dialog.h"
 	"rc_fx_materials.h"
 
-1758426466 /home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.h
+1763600478 /home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.h
 	<vector>
 	<wx/propgrid/propgrid.h>
 	<wx/propgrid/advprops.h>
@@ -2093,7 +2093,7 @@
 	"wx/scrolwin.h"
 	"wx/pen.h"
 
-1752079328 /usr/include/x86_64-linux-gnu/sys/types.h
+1758111459 /usr/include/x86_64-linux-gnu/sys/types.h
 	<features.h>
 	<bits/types.h>
 	<bits/types/clock_t.h>
@@ -2106,38 +2106,38 @@
 	<sys/select.h>
 	<bits/pthreadtypes.h>
 
-1752079328 /usr/include/x86_64-linux-gnu/bits/types.h
+1758111459 /usr/include/x86_64-linux-gnu/bits/types.h
 	<features.h>
 	<bits/wordsize.h>
 	<bits/timesize.h>
 	<bits/typesizes.h>
 	<bits/time64.h>
 
-1752079328 /usr/include/x86_64-linux-gnu/bits/wordsize.h
+1758111459 /usr/include/x86_64-linux-gnu/bits/wordsize.h
 
-1752079328 /usr/include/x86_64-linux-gnu/bits/timesize.h
+1758111459 /usr/include/x86_64-linux-gnu/bits/timesize.h
 	<bits/wordsize.h>
 
-1752079328 /usr/include/x86_64-linux-gnu/bits/typesizes.h
+1758111459 /usr/include/x86_64-linux-gnu/bits/typesizes.h
 
-1752079328 /usr/include/x86_64-linux-gnu/bits/time64.h
+1758111459 /usr/include/x86_64-linux-gnu/bits/time64.h
 
-1752079328 /usr/include/x86_64-linux-gnu/bits/types/clock_t.h
+1758111459 /usr/include/x86_64-linux-gnu/bits/types/clock_t.h
 	<bits/types.h>
 
-1752079328 /usr/include/x86_64-linux-gnu/bits/types/clockid_t.h
+1758111459 /usr/include/x86_64-linux-gnu/bits/types/clockid_t.h
 	<bits/types.h>
 
-1752079328 /usr/include/x86_64-linux-gnu/bits/types/time_t.h
+1758111459 /usr/include/x86_64-linux-gnu/bits/types/time_t.h
 	<bits/types.h>
 
-1752079328 /usr/include/x86_64-linux-gnu/bits/types/timer_t.h
+1758111459 /usr/include/x86_64-linux-gnu/bits/types/timer_t.h
 	<bits/types.h>
 
-1752079328 /usr/include/x86_64-linux-gnu/bits/stdint-intn.h
+1758111459 /usr/include/x86_64-linux-gnu/bits/stdint-intn.h
 	<bits/types.h>
 
-1752079328 /usr/include/x86_64-linux-gnu/sys/select.h
+1758111459 /usr/include/x86_64-linux-gnu/sys/select.h
 	<features.h>
 	<bits/types.h>
 	<bits/select.h>
@@ -2147,48 +2147,48 @@
 	<bits/types/struct_timespec.h>
 	<bits/select2.h>
 
-1752079328 /usr/include/x86_64-linux-gnu/bits/select.h
+1758111459 /usr/include/x86_64-linux-gnu/bits/select.h
 
-1752079328 /usr/include/x86_64-linux-gnu/bits/types/sigset_t.h
+1758111459 /usr/include/x86_64-linux-gnu/bits/types/sigset_t.h
 	<bits/types/__sigset_t.h>
 
-1752079328 /usr/include/x86_64-linux-gnu/bits/types/__sigset_t.h
+1758111459 /usr/include/x86_64-linux-gnu/bits/types/__sigset_t.h
 
-1752079328 /usr/include/x86_64-linux-gnu/bits/types/struct_timeval.h
+1758111459 /usr/include/x86_64-linux-gnu/bits/types/struct_timeval.h
 	<bits/types.h>
 
-1752079328 /usr/include/x86_64-linux-gnu/bits/types/struct_timespec.h
+1758111459 /usr/include/x86_64-linux-gnu/bits/types/struct_timespec.h
 	<bits/types.h>
 	<bits/endian.h>
 	<bits/types/time_t.h>
 
-1752079328 /usr/include/x86_64-linux-gnu/bits/endian.h
+1758111459 /usr/include/x86_64-linux-gnu/bits/endian.h
 	<bits/endianness.h>
 
-1752079328 /usr/include/x86_64-linux-gnu/bits/endianness.h
+1758111459 /usr/include/x86_64-linux-gnu/bits/endianness.h
 
-1752079328 /usr/include/x86_64-linux-gnu/bits/select2.h
+1758111459 /usr/include/x86_64-linux-gnu/bits/select2.h
 	<bits/select-decl.h>
 
-1752079328 /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h
+1758111459 /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h
 	<bits/thread-shared-types.h>
 
-1752079328 /usr/include/x86_64-linux-gnu/bits/thread-shared-types.h
+1758111459 /usr/include/x86_64-linux-gnu/bits/thread-shared-types.h
 	<bits/pthreadtypes-arch.h>
 	<bits/atomic_wide_counter.h>
 	<bits/struct_mutex.h>
 	<bits/struct_rwlock.h>
 
-1752079328 /usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h
+1758111459 /usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h
 	<bits/wordsize.h>
 
-1752079328 /usr/include/x86_64-linux-gnu/bits/atomic_wide_counter.h
+1758111459 /usr/include/x86_64-linux-gnu/bits/atomic_wide_counter.h
 
-1752079328 /usr/include/x86_64-linux-gnu/bits/struct_mutex.h
+1758111459 /usr/include/x86_64-linux-gnu/bits/struct_mutex.h
 
-1752079328 /usr/include/x86_64-linux-gnu/bits/struct_rwlock.h
+1758111459 /usr/include/x86_64-linux-gnu/bits/struct_rwlock.h
 
-1752079328 /usr/include/x86_64-linux-gnu/sys/stat.h
+1758111459 /usr/include/x86_64-linux-gnu/sys/stat.h
 	<features.h>
 	<bits/types.h>
 	<bits/types/struct_timespec.h>
@@ -2196,28 +2196,28 @@
 	<bits/stat.h>
 	<bits/statx.h>
 
-1752079328 /usr/include/x86_64-linux-gnu/bits/stat.h
+1758111459 /usr/include/x86_64-linux-gnu/bits/stat.h
 	<bits/struct_stat.h>
 
-1752079328 /usr/include/x86_64-linux-gnu/bits/struct_stat.h
+1758111459 /usr/include/x86_64-linux-gnu/bits/struct_stat.h
 	<bits/struct_stat_time64_helper.h>
 	<bits/struct_stat_time64_helper.h>
 
-1752079328 /usr/include/x86_64-linux-gnu/bits/struct_stat_time64_helper.h
+1758111459 /usr/include/x86_64-linux-gnu/bits/struct_stat_time64_helper.h
 
-1752079328 /usr/include/x86_64-linux-gnu/bits/statx.h
+1758111459 /usr/include/x86_64-linux-gnu/bits/statx.h
 	"linux/stat.h"
 	<bits/statx-generic.h>
 
-1752079328 /usr/include/x86_64-linux-gnu/bits/statx-generic.h
+1758111459 /usr/include/x86_64-linux-gnu/bits/statx-generic.h
 	<bits/types/struct_statx_timestamp.h>
 	<bits/types/struct_statx.h>
 
-1752079328 /usr/include/x86_64-linux-gnu/bits/types/struct_statx_timestamp.h
+1758111459 /usr/include/x86_64-linux-gnu/bits/types/struct_statx_timestamp.h
 
-1752079328 /usr/include/x86_64-linux-gnu/bits/types/struct_statx.h
+1758111459 /usr/include/x86_64-linux-gnu/bits/types/struct_statx.h
 
-1758428264 source:/home/n00b/Projects/SerenityEngine/wxIrrlicht.cpp
+1759217456 source:/home/n00b/Projects/SerenityEngine/wxIrrlicht.cpp
 	<wx/wx.h>
 	<wx/stdpaths.h>
 	<wx/filename.h>
@@ -9699,7 +9699,7 @@
 1750918341 /home/n00b/Projects/SerenityEngine/CGridSceneNode.h
 	"irrlicht.h"
 
-1755933292 source:/home/n00b/Projects/SerenityEngine/rc_stage.cpp
+1760302478 source:/home/n00b/Projects/SerenityEngine/rc_stage.cpp
 	<vector>
 	<irrlicht.h>
 	"engine_base.h"
@@ -9714,7 +9714,7 @@
 	"rc_stage.h"
 	"wxIrrlicht.h"
 
-1758412761 /home/n00b/Projects/SerenityEngine/rc_stage.h
+1760301960 /home/n00b/Projects/SerenityEngine/rc_stage.h
 	<vector>
 	<irrlicht.h>
 	"an8parser.h"
@@ -9730,7 +9730,7 @@
 
 1731957962 /usr/include/wx-3.2/wx/unix/stdpaths.h
 
-1758412761 source:/home/n00b/Projects/SerenityEngine/engine_base.cpp
+1760302536 source:/home/n00b/Projects/SerenityEngine/engine_base.cpp
 	<wx/wx.h>
 	<wx/filename.h>
 	<wx/stdpaths.h>
@@ -10146,7 +10146,7 @@
 
 1731957962 /usr/lib/x86_64-linux-gnu/wx/include/gtk3-unicode-3.2/wx/setup.h
 
-1752079328 /usr/include/x86_64-linux-gnu/bits/select-decl.h
+1758111459 /usr/include/x86_64-linux-gnu/bits/select-decl.h
 
 1755933292 /home/n00b/Projects/SerenityEngine/CShader.h
 	<irrlicht.h>
