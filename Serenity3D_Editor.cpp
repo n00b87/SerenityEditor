@@ -28,7 +28,7 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer99->Add( 0, 0, 1, wxEXPAND, 5 );
 
 	m_auiToolBar52 = new wxAuiToolBar( m_stage_panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_TB_VERTICAL );
-	m_s3d_target_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/focus.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+	m_s3d_target_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/focus.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxT("Focus on Selected Actor"), wxEmptyString, NULL );
 
 	m_auiToolBar52->AddSeparator();
 
@@ -42,7 +42,7 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 
 	m_s3d_scale_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/scale.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_CHECK, wxT("Scale Selected Objects"), wxEmptyString, NULL );
 
-	m_s3d_terrainBrush_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/paint-brush.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_CHECK, wxEmptyString, wxEmptyString, NULL );
+	m_s3d_terrainBrush_tool = m_auiToolBar52->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/paint-brush.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_CHECK, wxT("Terrain Brush"), wxEmptyString, NULL );
 
 	m_auiToolBar52->AddSeparator();
 
@@ -112,6 +112,8 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer46->Add( 0, 0, 1, wxEXPAND, 5 );
 
 	m_auiToolBar5 = new wxAuiToolBar( m_panel47, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_TB_HORZ_LAYOUT );
+	m_auiToolBar5->SetToolTip( wxT("Set Viewport Camera") );
+
 	m_tool30 = m_auiToolBar5->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/camera.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
 
 	m_auiToolBar5->Realize();
@@ -129,9 +131,9 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_renderMode_auiToolBar->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
 	m_renderMode_auiToolBar->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
 
-	m_render_wire_tool = m_renderMode_auiToolBar->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/wireframe.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_RADIO, wxEmptyString, wxEmptyString, NULL );
+	m_render_wire_tool = m_renderMode_auiToolBar->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/wireframe.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_RADIO, wxT("Wireframe"), wxEmptyString, NULL );
 
-	m_render_solid_tool = m_renderMode_auiToolBar->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/solid.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_RADIO, wxEmptyString, wxEmptyString, NULL );
+	m_render_solid_tool = m_renderMode_auiToolBar->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/solid.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_RADIO, wxT("Solid"), wxEmptyString, NULL );
 
 	m_renderMode_auiToolBar->Realize();
 
@@ -194,36 +196,50 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_bpButton41 = new wxBitmapButton( m_panel44, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW|wxBORDER_NONE );
 
 	m_bpButton41->SetBitmap( wxBitmap( wxT("icons/plus_stage.png"), wxBITMAP_TYPE_ANY ) );
+	m_bpButton41->SetToolTip( wxT("New Stage") );
+
 	bSizer163->Add( m_bpButton41, 0, wxALL|wxEXPAND, 5 );
 
 	m_bpButton51 = new wxBitmapButton( m_panel44, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW|wxBORDER_NONE );
 
 	m_bpButton51->SetBitmap( wxBitmap( wxT("icons/remove_stage.png"), wxBITMAP_TYPE_ANY ) );
+	m_bpButton51->SetToolTip( wxT("Delete Stage") );
+
 	bSizer163->Add( m_bpButton51, 0, wxALL|wxEXPAND, 5 );
 
 	m_bpButton4 = new wxBitmapButton( m_panel44, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW|wxBORDER_NONE );
 
 	m_bpButton4->SetBitmap( wxBitmap( wxT("icons/new-folder.png"), wxBITMAP_TYPE_ANY ) );
+	m_bpButton4->SetToolTip( wxT("New Group") );
+
 	bSizer163->Add( m_bpButton4, 0, wxALL|wxEXPAND, 5 );
 
 	m_bpButton5 = new wxBitmapButton( m_panel44, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW|wxBORDER_NONE );
 
 	m_bpButton5->SetBitmap( wxBitmap( wxT("icons/delete-folder.png"), wxBITMAP_TYPE_ANY ) );
+	m_bpButton5->SetToolTip( wxT("Delete Group") );
+
 	bSizer163->Add( m_bpButton5, 0, wxALL|wxEXPAND, 5 );
 
 	m_bpButton6 = new wxBitmapButton( m_panel44, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW|wxBORDER_NONE );
 
 	m_bpButton6->SetBitmap( wxBitmap( wxT("icons/edit-folder.png"), wxBITMAP_TYPE_ANY ) );
+	m_bpButton6->SetToolTip( wxT("Edit Group") );
+
 	bSizer163->Add( m_bpButton6, 0, wxALL|wxEXPAND, 5 );
 
 	m_bpButton61 = new wxBitmapButton( m_panel44, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW|wxBORDER_NONE );
 
 	m_bpButton61->SetBitmap( wxBitmap( wxT("icons/remove_actor.png"), wxBITMAP_TYPE_ANY ) );
+	m_bpButton61->SetToolTip( wxT("Delete Actor") );
+
 	bSizer163->Add( m_bpButton61, 0, wxALL, 5 );
 
 	m_bpButton7 = new wxBitmapButton( m_panel44, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW|wxBORDER_NONE );
 
 	m_bpButton7->SetBitmap( wxBitmap( wxT("icons/copy.png"), wxBITMAP_TYPE_ANY ) );
+	m_bpButton7->SetToolTip( wxT("Copy Actor") );
+
 	bSizer163->Add( m_bpButton7, 0, wxALL, 5 );
 
 
@@ -1130,9 +1146,13 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer235 = new wxBoxSizer( wxHORIZONTAL );
 
 	m_mesh_createMesh_button = new wxButton( m_panel28, wxID_ANY, wxT("New"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_mesh_createMesh_button->SetToolTip( wxT("Create Mesh") );
+
 	bSizer235->Add( m_mesh_createMesh_button, 1, wxALL, 5 );
 
 	m_mesh_importMesh_button = new wxButton( m_panel28, wxID_ANY, wxT("Load"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_mesh_importMesh_button->SetToolTip( wxT("Load Mesh") );
+
 	bSizer235->Add( m_mesh_importMesh_button, 1, wxALL, 5 );
 
 
@@ -1142,9 +1162,13 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer234 = new wxBoxSizer( wxHORIZONTAL );
 
 	m_mesh_saveMesh_button = new wxButton( m_panel28, wxID_ANY, wxT("Save"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_mesh_saveMesh_button->SetToolTip( wxT("Save Mesh Properties") );
+
 	bSizer234->Add( m_mesh_saveMesh_button, 1, wxALL, 5 );
 
 	m_mesh_removeMesh_button = new wxButton( m_panel28, wxID_ANY, wxT("Remove"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_mesh_removeMesh_button->SetToolTip( wxT("Remove Mesh from Project") );
+
 	bSizer234->Add( m_mesh_removeMesh_button, 1, wxALL, 5 );
 
 
@@ -1280,15 +1304,23 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer143 = new wxBoxSizer( wxVERTICAL );
 
 	m_button51 = new wxButton( m_setMaterial_scrolledWindow, wxID_ANY, wxT("Add"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_button51->SetToolTip( wxT("Add Material to Mesh") );
+
 	bSizer143->Add( m_button51, 0, wxALL, 5 );
 
 	m_button52 = new wxButton( m_setMaterial_scrolledWindow, wxID_ANY, wxT("Remove"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_button52->SetToolTip( wxT("Remove Material from Mesh") );
+
 	bSizer143->Add( m_button52, 0, wxALL, 5 );
 
 	m_button53 = new wxButton( m_setMaterial_scrolledWindow, wxID_ANY, wxT("Set"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_button53->SetToolTip( wxT("Set Selected Material Slot") );
+
 	bSizer143->Add( m_button53, 0, wxALL, 5 );
 
 	m_clear_button = new wxButton( m_setMaterial_scrolledWindow, wxID_ANY, wxT("UnSet"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_clear_button->SetToolTip( wxT("Clear the Selected Material Slot") );
+
 	bSizer143->Add( m_clear_button, 0, wxALL, 5 );
 
 
@@ -1331,9 +1363,9 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer71->Add( m_mesh_animationPreview_panel, 1, wxEXPAND | wxALL, 5 );
 
 	m_toolBar2 = new wxToolBar( m_panel291, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL );
-	m_mesh_meshAnimation_play_tool = m_toolBar2->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/play.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+	m_mesh_meshAnimation_play_tool = m_toolBar2->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/play.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxT("Play Selected Animation"), wxEmptyString, NULL );
 
-	m_mesh_meshAnimation_stop_tool = m_toolBar2->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/stop.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+	m_mesh_meshAnimation_stop_tool = m_toolBar2->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/stop.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxT("Stop Playing Animation"), wxEmptyString, NULL );
 
 	m_toolBar2->Realize();
 
@@ -1374,9 +1406,13 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer82 = new wxBoxSizer( wxVERTICAL );
 
 	m_mesh_newAnimation_button = new wxButton( m_panel46, wxID_ANY, wxT("New"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_mesh_newAnimation_button->SetToolTip( wxT("Create New Animation") );
+
 	bSizer82->Add( m_mesh_newAnimation_button, 0, wxALL, 5 );
 
 	m_mesh_deleteAnimation_button = new wxButton( m_panel46, wxID_ANY, wxT("Delete"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_mesh_deleteAnimation_button->SetToolTip( wxT("Delete Selected Animation") );
+
 	bSizer82->Add( m_mesh_deleteAnimation_button, 0, wxALL, 5 );
 
 
@@ -1531,9 +1567,13 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer95 = new wxBoxSizer( wxHORIZONTAL );
 
 	m_material_newMaterial_button = new wxButton( m_panel37, wxID_ANY, wxT("New"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_material_newMaterial_button->SetToolTip( wxT("Create New Material") );
+
 	bSizer95->Add( m_material_newMaterial_button, 1, wxALL, 5 );
 
 	m_material_loadMaterial_button = new wxButton( m_panel37, wxID_ANY, wxT("Load"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_material_loadMaterial_button->SetToolTip( wxT("Load Material into Project") );
+
 	bSizer95->Add( m_material_loadMaterial_button, 1, wxALL, 5 );
 
 
@@ -1543,9 +1583,13 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer96 = new wxBoxSizer( wxHORIZONTAL );
 
 	m_material_saveMaterial_button = new wxButton( m_panel37, wxID_ANY, wxT("Save"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_material_saveMaterial_button->SetToolTip( wxT("Save Current Material") );
+
 	bSizer96->Add( m_material_saveMaterial_button, 1, wxALL, 5 );
 
 	m_material_removeMaterial_button = new wxButton( m_panel37, wxID_ANY, wxT("Remove"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_material_removeMaterial_button->SetToolTip( wxT("Remove Material from Project") );
+
 	bSizer96->Add( m_material_removeMaterial_button, 1, wxALL, 5 );
 
 
@@ -1856,17 +1900,17 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer138->Add( m_material_materialPreview_panel, 1, wxEXPAND | wxALL, 5 );
 
 	m_auiToolBar2 = new wxAuiToolBar( m_panel411, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_TB_HORZ_LAYOUT );
-	m_material_previewNoLight_tool = m_auiToolBar2->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/no_light.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_RADIO, wxEmptyString, wxEmptyString, NULL );
+	m_material_previewNoLight_tool = m_auiToolBar2->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/no_light.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_RADIO, wxT("Turn off light for preview"), wxEmptyString, NULL );
 
-	m_material_previewDirectionLight_tool = m_auiToolBar2->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/spot_light.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_RADIO, wxEmptyString, wxEmptyString, NULL );
+	m_material_previewDirectionLight_tool = m_auiToolBar2->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/spot_light.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_RADIO, wxT("Turn on directional light for preview"), wxEmptyString, NULL );
 
-	m_material_previewPointLight_tool = m_auiToolBar2->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/point_light.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_RADIO, wxEmptyString, wxEmptyString, NULL );
+	m_material_previewPointLight_tool = m_auiToolBar2->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/point_light.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_RADIO, wxT("Turn on point light for preview"), wxEmptyString, NULL );
 
 	m_auiToolBar2->AddSeparator();
 
-	m_materialPreviewMesh_tool = m_auiToolBar2->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/3d-model.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+	m_materialPreviewMesh_tool = m_auiToolBar2->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/3d-model.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxT("Select Preview Mesh"), wxEmptyString, NULL );
 
-	m_materialPreviewSettings_tool = m_auiToolBar2->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/setting.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+	m_materialPreviewSettings_tool = m_auiToolBar2->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/setting.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxT("Preview Settings"), wxEmptyString, NULL );
 
 	m_auiToolBar2->Realize();
 
@@ -1898,15 +1942,23 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer159 = new wxBoxSizer( wxHORIZONTAL );
 
 	m_material_addTextureLevel_button = new wxButton( m_panel56, wxID_ANY, wxT("Add"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_material_addTextureLevel_button->SetToolTip( wxT("Add Texture Slot to Current Material") );
+
 	bSizer159->Add( m_material_addTextureLevel_button, 0, wxALL, 5 );
 
 	m_material_removeTextureLevel_button = new wxButton( m_panel56, wxID_ANY, wxT("Remove"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_material_removeTextureLevel_button->SetToolTip( wxT("Remove Texture Slot from Current Material") );
+
 	bSizer159->Add( m_material_removeTextureLevel_button, 0, wxALL, 5 );
 
 	m_material_setTextureLevel_button = new wxButton( m_panel56, wxID_ANY, wxT("Set"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_material_setTextureLevel_button->SetToolTip( wxT("Set the Selected Texture Slot") );
+
 	bSizer159->Add( m_material_setTextureLevel_button, 0, wxALL, 5 );
 
 	m_material_clearTextureLevel_button = new wxButton( m_panel56, wxID_ANY, wxT("UnSet"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_material_clearTextureLevel_button->SetToolTip( wxT("Clear the Selected Texture Slot") );
+
 	bSizer159->Add( m_material_clearTextureLevel_button, 0, wxALL, 5 );
 
 
@@ -1935,12 +1987,18 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer281 = new wxBoxSizer( wxHORIZONTAL );
 
 	m_material_addVariable_button = new wxButton( m_panel57, wxID_ANY, wxT("Add"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_material_addVariable_button->SetToolTip( wxT("Add FX Material Variable") );
+
 	bSizer281->Add( m_material_addVariable_button, 0, wxALL, 5 );
 
 	m_material_removeVariable_button = new wxButton( m_panel57, wxID_ANY, wxT("Remove"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_material_removeVariable_button->SetToolTip( wxT("Remove FX Material Variable") );
+
 	bSizer281->Add( m_material_removeVariable_button, 0, wxALL, 5 );
 
 	m_material_editVariable_button = new wxButton( m_panel57, wxID_ANY, wxT("Edit"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_material_editVariable_button->SetToolTip( wxT("Set Selected Variable Value") );
+
 	bSizer281->Add( m_material_editVariable_button, 0, wxALL, 5 );
 
 
@@ -2000,9 +2058,13 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer1142 = new wxBoxSizer( wxHORIZONTAL );
 
 	m_texture_addTexture_button = new wxButton( m_panel39, wxID_ANY, wxT("Add Texture"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_texture_addTexture_button->SetToolTip( wxT("Add Texture to Project") );
+
 	bSizer1142->Add( m_texture_addTexture_button, 0, wxALL, 5 );
 
 	m_texture_removeTexture_button = new wxButton( m_panel39, wxID_ANY, wxT("Remove Texture"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_texture_removeTexture_button->SetToolTip( wxT("Remove Texture from Project") );
+
 	bSizer1142->Add( m_texture_removeTexture_button, 0, wxALL, 5 );
 
 
@@ -2115,15 +2177,15 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	this->Layout();
 	m_main_statusBar = this->CreateStatusBar( 1, wxSTB_SIZEGRIP, wxID_ANY );
 	m_toolBar3 = this->CreateToolBar( wxTB_HORIZONTAL, wxID_ANY );
-	m_tool33 = m_toolBar3->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/new-project.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+	m_tool33 = m_toolBar3->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/new-project.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxT("New Project"), wxEmptyString, NULL );
 
-	m_tool34 = m_toolBar3->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/folder.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+	m_tool34 = m_toolBar3->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/folder.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxT("Open Project"), wxEmptyString, NULL );
 
-	m_tool35 = m_toolBar3->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/save.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+	m_tool35 = m_toolBar3->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/save.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxT("Save Project"), wxEmptyString, NULL );
 
 	m_toolBar3->AddSeparator();
 
-	m_tool36 = m_toolBar3->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/build.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+	m_tool36 = m_toolBar3->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/build.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxT("Generate Code"), wxEmptyString, NULL );
 
 	m_toolBar3->Realize();
 

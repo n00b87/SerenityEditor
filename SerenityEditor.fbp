@@ -276,7 +276,7 @@
                             <property name="name">m_s3d_target_tool</property>
                             <property name="permission">protected</property>
                             <property name="statusbar"></property>
-                            <property name="tooltip"></property>
+                            <property name="tooltip">Focus on Selected Actor</property>
                             <event name="OnToolClicked">OnS3DTargetClicked</event>
                           </object>
                           <object class="toolSeparator" expanded="true">
@@ -351,7 +351,7 @@
                             <property name="name">m_s3d_terrainBrush_tool</property>
                             <property name="permission">protected</property>
                             <property name="statusbar"></property>
-                            <property name="tooltip"></property>
+                            <property name="tooltip">Terrain Brush</property>
                             <event name="OnToolClicked">OnS3DTerrainBrushClicked</event>
                           </object>
                           <object class="toolSeparator" expanded="false">
@@ -550,8 +550,8 @@
                           <property name="window_extra_style"></property>
                           <property name="window_name"></property>
                           <property name="window_style"></property>
-                          <object class="splitteritem" expanded="false">
-                            <object class="wxPanel" expanded="false">
+                          <object class="splitteritem" expanded="true">
+                            <object class="wxPanel" expanded="true">
                               <property name="BottomDockable">1</property>
                               <property name="LeftDockable">1</property>
                               <property name="RightDockable">1</property>
@@ -603,16 +603,16 @@
                               <property name="window_extra_style"></property>
                               <property name="window_name"></property>
                               <property name="window_style">wxTAB_TRAVERSAL</property>
-                              <object class="wxBoxSizer" expanded="false">
+                              <object class="wxBoxSizer" expanded="true">
                                 <property name="minimum_size"></property>
                                 <property name="name">bSizer10</property>
                                 <property name="orient">wxVERTICAL</property>
                                 <property name="permission">none</property>
-                                <object class="sizeritem" expanded="false">
+                                <object class="sizeritem" expanded="true">
                                   <property name="border">5</property>
                                   <property name="flag">wxEXPAND | wxALL</property>
                                   <property name="proportion">1</property>
-                                  <object class="wxPanel" expanded="false">
+                                  <object class="wxPanel" expanded="true">
                                     <property name="BottomDockable">1</property>
                                     <property name="LeftDockable">1</property>
                                     <property name="RightDockable">1</property>
@@ -664,16 +664,16 @@
                                     <property name="window_extra_style"></property>
                                     <property name="window_name"></property>
                                     <property name="window_style">wxTAB_TRAVERSAL</property>
-                                    <object class="wxBoxSizer" expanded="false">
+                                    <object class="wxBoxSizer" expanded="true">
                                       <property name="minimum_size"></property>
                                       <property name="name">bSizer11</property>
                                       <property name="orient">wxVERTICAL</property>
                                       <property name="permission">none</property>
-                                      <object class="sizeritem" expanded="false">
+                                      <object class="sizeritem" expanded="true">
                                         <property name="border">5</property>
                                         <property name="flag">wxEXPAND | wxALL</property>
                                         <property name="proportion">1</property>
-                                        <object class="wxPanel" expanded="false">
+                                        <object class="wxPanel" expanded="true">
                                           <property name="BottomDockable">1</property>
                                           <property name="LeftDockable">1</property>
                                           <property name="RightDockable">1</property>
@@ -725,25 +725,25 @@
                                           <property name="window_extra_style"></property>
                                           <property name="window_name"></property>
                                           <property name="window_style">wxTAB_TRAVERSAL</property>
-                                          <object class="wxBoxSizer" expanded="false">
+                                          <object class="wxBoxSizer" expanded="true">
                                             <property name="minimum_size"></property>
                                             <property name="name">bSizer42</property>
                                             <property name="orient">wxVERTICAL</property>
                                             <property name="permission">none</property>
-                                            <object class="sizeritem" expanded="false">
+                                            <object class="sizeritem" expanded="true">
                                               <property name="border">5</property>
                                               <property name="flag">wxEXPAND</property>
                                               <property name="proportion">0</property>
-                                              <object class="wxBoxSizer" expanded="false">
+                                              <object class="wxBoxSizer" expanded="true">
                                                 <property name="minimum_size"></property>
                                                 <property name="name">bSizer43</property>
                                                 <property name="orient">wxHORIZONTAL</property>
                                                 <property name="permission">none</property>
-                                                <object class="sizeritem" expanded="false">
+                                                <object class="sizeritem" expanded="true">
                                                   <property name="border">5</property>
                                                   <property name="flag">wxEXPAND | wxALL</property>
                                                   <property name="proportion">1</property>
-                                                  <object class="wxPanel" expanded="false">
+                                                  <object class="wxPanel" expanded="true">
                                                     <property name="BottomDockable">1</property>
                                                     <property name="LeftDockable">1</property>
                                                     <property name="RightDockable">1</property>
@@ -795,7 +795,7 @@
                                                     <property name="window_extra_style"></property>
                                                     <property name="window_name"></property>
                                                     <property name="window_style">wxTAB_TRAVERSAL</property>
-                                                    <object class="wxBoxSizer" expanded="false">
+                                                    <object class="wxBoxSizer" expanded="true">
                                                       <property name="minimum_size"></property>
                                                       <property name="name">bSizer46</property>
                                                       <property name="orient">wxHORIZONTAL</property>
@@ -998,7 +998,7 @@
                                                           <property name="style">wxAUI_TB_HORZ_LAYOUT</property>
                                                           <property name="subclass">; ; forward_declare</property>
                                                           <property name="toolbar_pane">0</property>
-                                                          <property name="tooltip"></property>
+                                                          <property name="tooltip">Set Viewport Camera</property>
                                                           <property name="use_explicit_ids">0</property>
                                                           <property name="window_extra_style"></property>
                                                           <property name="window_name"></property>
@@ -1089,11 +1089,11 @@
                                                           <property name="wrap">-1</property>
                                                         </object>
                                                       </object>
-                                                      <object class="sizeritem" expanded="false">
+                                                      <object class="sizeritem" expanded="true">
                                                         <property name="border">5</property>
                                                         <property name="flag">wxALL</property>
                                                         <property name="proportion">0</property>
-                                                        <object class="wxAuiToolBar" expanded="false">
+                                                        <object class="wxAuiToolBar" expanded="true">
                                                           <property name="BottomDockable">1</property>
                                                           <property name="LeftDockable">1</property>
                                                           <property name="RightDockable">1</property>
@@ -1160,7 +1160,7 @@
                                                             <property name="name">m_render_wire_tool</property>
                                                             <property name="permission">protected</property>
                                                             <property name="statusbar"></property>
-                                                            <property name="tooltip"></property>
+                                                            <property name="tooltip">Wireframe</property>
                                                             <event name="OnToolClicked">On_Stage_RenderMode_WireFrame</event>
                                                           </object>
                                                           <object class="tool" expanded="false">
@@ -1172,7 +1172,7 @@
                                                             <property name="name">m_render_solid_tool</property>
                                                             <property name="permission">protected</property>
                                                             <property name="statusbar"></property>
-                                                            <property name="tooltip"></property>
+                                                            <property name="tooltip">Solid</property>
                                                             <event name="OnToolClicked">On_Stage_RenderMode_Solid</event>
                                                           </object>
                                                         </object>
@@ -1741,7 +1741,7 @@
                                                                   <property name="style">wxBORDER_NONE</property>
                                                                   <property name="subclass">; ; forward_declare</property>
                                                                   <property name="toolbar_pane">0</property>
-                                                                  <property name="tooltip"></property>
+                                                                  <property name="tooltip">New Stage</property>
                                                                   <property name="validator_data_type"></property>
                                                                   <property name="validator_style">wxFILTER_NONE</property>
                                                                   <property name="validator_type">wxDefaultValidator</property>
@@ -1816,7 +1816,7 @@
                                                                   <property name="style">wxBORDER_NONE</property>
                                                                   <property name="subclass">; ; forward_declare</property>
                                                                   <property name="toolbar_pane">0</property>
-                                                                  <property name="tooltip"></property>
+                                                                  <property name="tooltip">Delete Stage</property>
                                                                   <property name="validator_data_type"></property>
                                                                   <property name="validator_style">wxFILTER_NONE</property>
                                                                   <property name="validator_type">wxDefaultValidator</property>
@@ -1891,7 +1891,7 @@
                                                                   <property name="style">wxBORDER_NONE</property>
                                                                   <property name="subclass">; ; forward_declare</property>
                                                                   <property name="toolbar_pane">0</property>
-                                                                  <property name="tooltip"></property>
+                                                                  <property name="tooltip">New Group</property>
                                                                   <property name="validator_data_type"></property>
                                                                   <property name="validator_style">wxFILTER_NONE</property>
                                                                   <property name="validator_type">wxDefaultValidator</property>
@@ -1966,7 +1966,7 @@
                                                                   <property name="style">wxBORDER_NONE</property>
                                                                   <property name="subclass">; ; forward_declare</property>
                                                                   <property name="toolbar_pane">0</property>
-                                                                  <property name="tooltip"></property>
+                                                                  <property name="tooltip">Delete Group</property>
                                                                   <property name="validator_data_type"></property>
                                                                   <property name="validator_style">wxFILTER_NONE</property>
                                                                   <property name="validator_type">wxDefaultValidator</property>
@@ -2041,7 +2041,7 @@
                                                                   <property name="style">wxBORDER_NONE</property>
                                                                   <property name="subclass">; ; forward_declare</property>
                                                                   <property name="toolbar_pane">0</property>
-                                                                  <property name="tooltip"></property>
+                                                                  <property name="tooltip">Edit Group</property>
                                                                   <property name="validator_data_type"></property>
                                                                   <property name="validator_style">wxFILTER_NONE</property>
                                                                   <property name="validator_type">wxDefaultValidator</property>
@@ -2116,7 +2116,7 @@
                                                                   <property name="style">wxBORDER_NONE</property>
                                                                   <property name="subclass">; ; forward_declare</property>
                                                                   <property name="toolbar_pane">0</property>
-                                                                  <property name="tooltip"></property>
+                                                                  <property name="tooltip">Delete Actor</property>
                                                                   <property name="validator_data_type"></property>
                                                                   <property name="validator_style">wxFILTER_NONE</property>
                                                                   <property name="validator_type">wxDefaultValidator</property>
@@ -2191,7 +2191,7 @@
                                                                   <property name="style">wxBORDER_NONE</property>
                                                                   <property name="subclass">; ; forward_declare</property>
                                                                   <property name="toolbar_pane">0</property>
-                                                                  <property name="tooltip"></property>
+                                                                  <property name="tooltip">Copy Actor</property>
                                                                   <property name="validator_data_type"></property>
                                                                   <property name="validator_style">wxFILTER_NONE</property>
                                                                   <property name="validator_type">wxDefaultValidator</property>
@@ -8772,7 +8772,7 @@
                                             <property name="style"></property>
                                             <property name="subclass">; ; forward_declare</property>
                                             <property name="toolbar_pane">0</property>
-                                            <property name="tooltip"></property>
+                                            <property name="tooltip">Create Mesh</property>
                                             <property name="validator_data_type"></property>
                                             <property name="validator_style">wxFILTER_NONE</property>
                                             <property name="validator_type">wxDefaultValidator</property>
@@ -8847,7 +8847,7 @@
                                             <property name="style"></property>
                                             <property name="subclass">; ; forward_declare</property>
                                             <property name="toolbar_pane">0</property>
-                                            <property name="tooltip"></property>
+                                            <property name="tooltip">Load Mesh</property>
                                             <property name="validator_data_type"></property>
                                             <property name="validator_style">wxFILTER_NONE</property>
                                             <property name="validator_type">wxDefaultValidator</property>
@@ -8933,7 +8933,7 @@
                                             <property name="style"></property>
                                             <property name="subclass">; ; forward_declare</property>
                                             <property name="toolbar_pane">0</property>
-                                            <property name="tooltip"></property>
+                                            <property name="tooltip">Save Mesh Properties</property>
                                             <property name="validator_data_type"></property>
                                             <property name="validator_style">wxFILTER_NONE</property>
                                             <property name="validator_type">wxDefaultValidator</property>
@@ -9008,7 +9008,7 @@
                                             <property name="style"></property>
                                             <property name="subclass">; ; forward_declare</property>
                                             <property name="toolbar_pane">0</property>
-                                            <property name="tooltip"></property>
+                                            <property name="tooltip">Remove Mesh from Project</property>
                                             <property name="validator_data_type"></property>
                                             <property name="validator_style">wxFILTER_NONE</property>
                                             <property name="validator_type">wxDefaultValidator</property>
@@ -10072,7 +10072,7 @@
                                                                           <property name="style"></property>
                                                                           <property name="subclass">; ; forward_declare</property>
                                                                           <property name="toolbar_pane">0</property>
-                                                                          <property name="tooltip"></property>
+                                                                          <property name="tooltip">Add Material to Mesh</property>
                                                                           <property name="validator_data_type"></property>
                                                                           <property name="validator_style">wxFILTER_NONE</property>
                                                                           <property name="validator_type">wxDefaultValidator</property>
@@ -10147,7 +10147,7 @@
                                                                           <property name="style"></property>
                                                                           <property name="subclass">; ; forward_declare</property>
                                                                           <property name="toolbar_pane">0</property>
-                                                                          <property name="tooltip"></property>
+                                                                          <property name="tooltip">Remove Material from Mesh</property>
                                                                           <property name="validator_data_type"></property>
                                                                           <property name="validator_style">wxFILTER_NONE</property>
                                                                           <property name="validator_type">wxDefaultValidator</property>
@@ -10222,7 +10222,7 @@
                                                                           <property name="style"></property>
                                                                           <property name="subclass">; ; forward_declare</property>
                                                                           <property name="toolbar_pane">0</property>
-                                                                          <property name="tooltip"></property>
+                                                                          <property name="tooltip">Set Selected Material Slot</property>
                                                                           <property name="validator_data_type"></property>
                                                                           <property name="validator_style">wxFILTER_NONE</property>
                                                                           <property name="validator_type">wxDefaultValidator</property>
@@ -10297,7 +10297,7 @@
                                                                           <property name="style"></property>
                                                                           <property name="subclass">; ; forward_declare</property>
                                                                           <property name="toolbar_pane">0</property>
-                                                                          <property name="tooltip"></property>
+                                                                          <property name="tooltip">Clear the Selected Material Slot</property>
                                                                           <property name="validator_data_type"></property>
                                                                           <property name="validator_style">wxFILTER_NONE</property>
                                                                           <property name="validator_type">wxDefaultValidator</property>
@@ -10527,7 +10527,7 @@
                                               <property name="name">m_mesh_meshAnimation_play_tool</property>
                                               <property name="permission">protected</property>
                                               <property name="statusbar"></property>
-                                              <property name="tooltip"></property>
+                                              <property name="tooltip">Play Selected Animation</property>
                                               <event name="OnToolClicked">On_Mesh_previewPlay</event>
                                             </object>
                                             <object class="tool" expanded="false">
@@ -10539,7 +10539,7 @@
                                               <property name="name">m_mesh_meshAnimation_stop_tool</property>
                                               <property name="permission">protected</property>
                                               <property name="statusbar"></property>
-                                              <property name="tooltip"></property>
+                                              <property name="tooltip">Stop Playing Animation</property>
                                               <event name="OnToolClicked">On_Mesh_previewStop</event>
                                             </object>
                                           </object>
@@ -10832,7 +10832,7 @@
                                                                 <property name="style"></property>
                                                                 <property name="subclass">; ; forward_declare</property>
                                                                 <property name="toolbar_pane">0</property>
-                                                                <property name="tooltip"></property>
+                                                                <property name="tooltip">Create New Animation</property>
                                                                 <property name="validator_data_type"></property>
                                                                 <property name="validator_style">wxFILTER_NONE</property>
                                                                 <property name="validator_type">wxDefaultValidator</property>
@@ -10907,7 +10907,7 @@
                                                                 <property name="style"></property>
                                                                 <property name="subclass">; ; forward_declare</property>
                                                                 <property name="toolbar_pane">0</property>
-                                                                <property name="tooltip"></property>
+                                                                <property name="tooltip">Delete Selected Animation</property>
                                                                 <property name="validator_data_type"></property>
                                                                 <property name="validator_style">wxFILTER_NONE</property>
                                                                 <property name="validator_type">wxDefaultValidator</property>
@@ -11682,11 +11682,11 @@
                 </object>
               </object>
             </object>
-            <object class="auinotebookpage" expanded="false">
+            <object class="auinotebookpage" expanded="true">
               <property name="bitmap"></property>
               <property name="label">Material</property>
               <property name="select">0</property>
-              <object class="wxPanel" expanded="false">
+              <object class="wxPanel" expanded="true">
                 <property name="BottomDockable">1</property>
                 <property name="LeftDockable">1</property>
                 <property name="RightDockable">1</property>
@@ -11738,25 +11738,25 @@
                 <property name="window_extra_style"></property>
                 <property name="window_name"></property>
                 <property name="window_style">wxTAB_TRAVERSAL</property>
-                <object class="wxBoxSizer" expanded="false">
+                <object class="wxBoxSizer" expanded="true">
                   <property name="minimum_size"></property>
                   <property name="name">bSizer92</property>
                   <property name="orient">wxVERTICAL</property>
                   <property name="permission">none</property>
-                  <object class="sizeritem" expanded="false">
+                  <object class="sizeritem" expanded="true">
                     <property name="border">5</property>
                     <property name="flag">wxEXPAND</property>
                     <property name="proportion">1</property>
-                    <object class="wxBoxSizer" expanded="false">
+                    <object class="wxBoxSizer" expanded="true">
                       <property name="minimum_size"></property>
                       <property name="name">bSizer93</property>
                       <property name="orient">wxHORIZONTAL</property>
                       <property name="permission">none</property>
-                      <object class="sizeritem" expanded="false">
+                      <object class="sizeritem" expanded="true">
                         <property name="border">5</property>
                         <property name="flag">wxEXPAND</property>
                         <property name="proportion">1</property>
-                        <object class="wxSplitterWindow" expanded="false">
+                        <object class="wxSplitterWindow" expanded="true">
                           <property name="BottomDockable">1</property>
                           <property name="LeftDockable">1</property>
                           <property name="RightDockable">1</property>
@@ -11814,8 +11814,8 @@
                           <property name="window_extra_style"></property>
                           <property name="window_name"></property>
                           <property name="window_style"></property>
-                          <object class="splitteritem" expanded="false">
-                            <object class="wxPanel" expanded="false">
+                          <object class="splitteritem" expanded="true">
+                            <object class="wxPanel" expanded="true">
                               <property name="BottomDockable">1</property>
                               <property name="LeftDockable">1</property>
                               <property name="RightDockable">1</property>
@@ -11867,7 +11867,7 @@
                               <property name="window_extra_style"></property>
                               <property name="window_name"></property>
                               <property name="window_style">wxTAB_TRAVERSAL</property>
-                              <object class="wxBoxSizer" expanded="false">
+                              <object class="wxBoxSizer" expanded="true">
                                 <property name="minimum_size"></property>
                                 <property name="name">bSizer94</property>
                                 <property name="orient">wxVERTICAL</property>
@@ -11945,7 +11945,7 @@
                                         <property name="style"></property>
                                         <property name="subclass">; ; forward_declare</property>
                                         <property name="toolbar_pane">0</property>
-                                        <property name="tooltip"></property>
+                                        <property name="tooltip">Create New Material</property>
                                         <property name="validator_data_type"></property>
                                         <property name="validator_style">wxFILTER_NONE</property>
                                         <property name="validator_type">wxDefaultValidator</property>
@@ -12020,7 +12020,7 @@
                                         <property name="style"></property>
                                         <property name="subclass">; ; forward_declare</property>
                                         <property name="toolbar_pane">0</property>
-                                        <property name="tooltip"></property>
+                                        <property name="tooltip">Load Material into Project</property>
                                         <property name="validator_data_type"></property>
                                         <property name="validator_style">wxFILTER_NONE</property>
                                         <property name="validator_type">wxDefaultValidator</property>
@@ -12033,11 +12033,11 @@
                                     </object>
                                   </object>
                                 </object>
-                                <object class="sizeritem" expanded="false">
+                                <object class="sizeritem" expanded="true">
                                   <property name="border">5</property>
                                   <property name="flag">wxEXPAND</property>
                                   <property name="proportion">0</property>
-                                  <object class="wxBoxSizer" expanded="false">
+                                  <object class="wxBoxSizer" expanded="true">
                                     <property name="minimum_size"></property>
                                     <property name="name">bSizer96</property>
                                     <property name="orient">wxHORIZONTAL</property>
@@ -12106,7 +12106,7 @@
                                         <property name="style"></property>
                                         <property name="subclass">; ; forward_declare</property>
                                         <property name="toolbar_pane">0</property>
-                                        <property name="tooltip"></property>
+                                        <property name="tooltip">Save Current Material</property>
                                         <property name="validator_data_type"></property>
                                         <property name="validator_style">wxFILTER_NONE</property>
                                         <property name="validator_type">wxDefaultValidator</property>
@@ -12181,7 +12181,7 @@
                                         <property name="style"></property>
                                         <property name="subclass">; ; forward_declare</property>
                                         <property name="toolbar_pane">0</property>
-                                        <property name="tooltip"></property>
+                                        <property name="tooltip">Remove Material from Project</property>
                                         <property name="validator_data_type"></property>
                                         <property name="validator_style">wxFILTER_NONE</property>
                                         <property name="validator_type">wxDefaultValidator</property>
@@ -12262,8 +12262,8 @@
                               </object>
                             </object>
                           </object>
-                          <object class="splitteritem" expanded="false">
-                            <object class="wxPanel" expanded="false">
+                          <object class="splitteritem" expanded="true">
+                            <object class="wxPanel" expanded="true">
                               <property name="BottomDockable">1</property>
                               <property name="LeftDockable">1</property>
                               <property name="RightDockable">1</property>
@@ -12315,7 +12315,7 @@
                               <property name="window_extra_style"></property>
                               <property name="window_name"></property>
                               <property name="window_style">wxTAB_TRAVERSAL</property>
-                              <object class="wxBoxSizer" expanded="false">
+                              <object class="wxBoxSizer" expanded="true">
                                 <property name="minimum_size"></property>
                                 <property name="name">bSizer97</property>
                                 <property name="orient">wxHORIZONTAL</property>
@@ -15228,11 +15228,11 @@
                                     </object>
                                   </object>
                                 </object>
-                                <object class="sizeritem" expanded="false">
+                                <object class="sizeritem" expanded="true">
                                   <property name="border">5</property>
                                   <property name="flag">wxEXPAND | wxALL</property>
                                   <property name="proportion">1</property>
-                                  <object class="wxPanel" expanded="false">
+                                  <object class="wxPanel" expanded="true">
                                     <property name="BottomDockable">1</property>
                                     <property name="LeftDockable">1</property>
                                     <property name="RightDockable">1</property>
@@ -15284,16 +15284,16 @@
                                     <property name="window_extra_style"></property>
                                     <property name="window_name"></property>
                                     <property name="window_style">wxTAB_TRAVERSAL</property>
-                                    <object class="wxBoxSizer" expanded="false">
+                                    <object class="wxBoxSizer" expanded="true">
                                       <property name="minimum_size"></property>
                                       <property name="name">bSizer131</property>
                                       <property name="orient">wxVERTICAL</property>
                                       <property name="permission">none</property>
-                                      <object class="sizeritem" expanded="false">
+                                      <object class="sizeritem" expanded="true">
                                         <property name="border">5</property>
                                         <property name="flag">wxEXPAND | wxALL</property>
                                         <property name="proportion">1</property>
-                                        <object class="wxPanel" expanded="false">
+                                        <object class="wxPanel" expanded="true">
                                           <property name="BottomDockable">1</property>
                                           <property name="LeftDockable">1</property>
                                           <property name="RightDockable">1</property>
@@ -15345,7 +15345,7 @@
                                           <property name="window_extra_style"></property>
                                           <property name="window_name"></property>
                                           <property name="window_style">wxTAB_TRAVERSAL</property>
-                                          <object class="wxBoxSizer" expanded="false">
+                                          <object class="wxBoxSizer" expanded="true">
                                             <property name="minimum_size"></property>
                                             <property name="name">bSizer138</property>
                                             <property name="orient">wxVERTICAL</property>
@@ -15408,11 +15408,11 @@
                                                 <property name="window_style">wxBORDER_SIMPLE|wxTAB_TRAVERSAL</property>
                                               </object>
                                             </object>
-                                            <object class="sizeritem" expanded="false">
+                                            <object class="sizeritem" expanded="true">
                                               <property name="border">5</property>
                                               <property name="flag">wxALL|wxEXPAND</property>
                                               <property name="proportion">0</property>
-                                              <object class="wxAuiToolBar" expanded="false">
+                                              <object class="wxAuiToolBar" expanded="true">
                                                 <property name="BottomDockable">1</property>
                                                 <property name="LeftDockable">1</property>
                                                 <property name="RightDockable">1</property>
@@ -15479,7 +15479,7 @@
                                                   <property name="name">m_material_previewNoLight_tool</property>
                                                   <property name="permission">protected</property>
                                                   <property name="statusbar"></property>
-                                                  <property name="tooltip"></property>
+                                                  <property name="tooltip">Turn off light for preview</property>
                                                   <event name="OnToolClicked">On_Material_previewNoLight_Selected</event>
                                                 </object>
                                                 <object class="tool" expanded="false">
@@ -15491,7 +15491,7 @@
                                                   <property name="name">m_material_previewDirectionLight_tool</property>
                                                   <property name="permission">protected</property>
                                                   <property name="statusbar"></property>
-                                                  <property name="tooltip"></property>
+                                                  <property name="tooltip">Turn on directional light for preview</property>
                                                   <event name="OnToolClicked">On_Material_previewDirectionlight_Selected</event>
                                                 </object>
                                                 <object class="tool" expanded="false">
@@ -15503,7 +15503,7 @@
                                                   <property name="name">m_material_previewPointLight_tool</property>
                                                   <property name="permission">protected</property>
                                                   <property name="statusbar"></property>
-                                                  <property name="tooltip"></property>
+                                                  <property name="tooltip">Turn on point light for preview</property>
                                                   <event name="OnToolClicked">On_Material_previewPointlight_Selected</event>
                                                 </object>
                                                 <object class="toolSeparator" expanded="false">
@@ -15518,7 +15518,7 @@
                                                   <property name="name">m_materialPreviewMesh_tool</property>
                                                   <property name="permission">protected</property>
                                                   <property name="statusbar"></property>
-                                                  <property name="tooltip"></property>
+                                                  <property name="tooltip">Select Preview Mesh</property>
                                                   <event name="OnToolClicked">OnSetMaterialPreviewMesh</event>
                                                 </object>
                                                 <object class="tool" expanded="false">
@@ -15530,7 +15530,7 @@
                                                   <property name="name">m_materialPreviewSettings_tool</property>
                                                   <property name="permission">protected</property>
                                                   <property name="statusbar"></property>
-                                                  <property name="tooltip"></property>
+                                                  <property name="tooltip">Preview Settings</property>
                                                   <event name="OnToolClicked">On_Material_previewSettings_Selected</event>
                                                 </object>
                                               </object>
@@ -15795,7 +15795,7 @@
                                                           <property name="style"></property>
                                                           <property name="subclass">; ; forward_declare</property>
                                                           <property name="toolbar_pane">0</property>
-                                                          <property name="tooltip"></property>
+                                                          <property name="tooltip">Add Texture Slot to Current Material</property>
                                                           <property name="validator_data_type"></property>
                                                           <property name="validator_style">wxFILTER_NONE</property>
                                                           <property name="validator_type">wxDefaultValidator</property>
@@ -15870,7 +15870,7 @@
                                                           <property name="style"></property>
                                                           <property name="subclass">; ; forward_declare</property>
                                                           <property name="toolbar_pane">0</property>
-                                                          <property name="tooltip"></property>
+                                                          <property name="tooltip">Remove Texture Slot from Current Material</property>
                                                           <property name="validator_data_type"></property>
                                                           <property name="validator_style">wxFILTER_NONE</property>
                                                           <property name="validator_type">wxDefaultValidator</property>
@@ -15945,7 +15945,7 @@
                                                           <property name="style"></property>
                                                           <property name="subclass">; ; forward_declare</property>
                                                           <property name="toolbar_pane">0</property>
-                                                          <property name="tooltip"></property>
+                                                          <property name="tooltip">Set the Selected Texture Slot</property>
                                                           <property name="validator_data_type"></property>
                                                           <property name="validator_style">wxFILTER_NONE</property>
                                                           <property name="validator_type">wxDefaultValidator</property>
@@ -16020,7 +16020,7 @@
                                                           <property name="style"></property>
                                                           <property name="subclass">; ; forward_declare</property>
                                                           <property name="toolbar_pane">0</property>
-                                                          <property name="tooltip"></property>
+                                                          <property name="tooltip">Clear the Selected Texture Slot</property>
                                                           <property name="validator_data_type"></property>
                                                           <property name="validator_style">wxFILTER_NONE</property>
                                                           <property name="validator_type">wxDefaultValidator</property>
@@ -16296,7 +16296,7 @@
                                                           <property name="style"></property>
                                                           <property name="subclass">; ; forward_declare</property>
                                                           <property name="toolbar_pane">0</property>
-                                                          <property name="tooltip"></property>
+                                                          <property name="tooltip">Add FX Material Variable</property>
                                                           <property name="validator_data_type"></property>
                                                           <property name="validator_style">wxFILTER_NONE</property>
                                                           <property name="validator_type">wxDefaultValidator</property>
@@ -16371,7 +16371,7 @@
                                                           <property name="style"></property>
                                                           <property name="subclass">; ; forward_declare</property>
                                                           <property name="toolbar_pane">0</property>
-                                                          <property name="tooltip"></property>
+                                                          <property name="tooltip">Remove FX Material Variable</property>
                                                           <property name="validator_data_type"></property>
                                                           <property name="validator_style">wxFILTER_NONE</property>
                                                           <property name="validator_type">wxDefaultValidator</property>
@@ -16446,7 +16446,7 @@
                                                           <property name="style"></property>
                                                           <property name="subclass">; ; forward_declare</property>
                                                           <property name="toolbar_pane">0</property>
-                                                          <property name="tooltip"></property>
+                                                          <property name="tooltip">Set Selected Variable Value</property>
                                                           <property name="validator_data_type"></property>
                                                           <property name="validator_style">wxFILTER_NONE</property>
                                                           <property name="validator_type">wxDefaultValidator</property>
@@ -16805,7 +16805,7 @@
                                         <property name="style"></property>
                                         <property name="subclass">; ; forward_declare</property>
                                         <property name="toolbar_pane">0</property>
-                                        <property name="tooltip"></property>
+                                        <property name="tooltip">Add Texture to Project</property>
                                         <property name="validator_data_type"></property>
                                         <property name="validator_style">wxFILTER_NONE</property>
                                         <property name="validator_type">wxDefaultValidator</property>
@@ -16880,7 +16880,7 @@
                                         <property name="style"></property>
                                         <property name="subclass">; ; forward_declare</property>
                                         <property name="toolbar_pane">0</property>
-                                        <property name="tooltip"></property>
+                                        <property name="tooltip">Remove Texture from Project</property>
                                         <property name="validator_data_type"></property>
                                         <property name="validator_style">wxFILTER_NONE</property>
                                         <property name="validator_type">wxDefaultValidator</property>
@@ -17776,7 +17776,7 @@
           <property name="name">m_tool33</property>
           <property name="permission">protected</property>
           <property name="statusbar"></property>
-          <property name="tooltip"></property>
+          <property name="tooltip">New Project</property>
           <event name="OnToolClicked">OnNewProjectMenuSelection</event>
         </object>
         <object class="tool" expanded="false">
@@ -17788,7 +17788,7 @@
           <property name="name">m_tool34</property>
           <property name="permission">protected</property>
           <property name="statusbar"></property>
-          <property name="tooltip"></property>
+          <property name="tooltip">Open Project</property>
           <event name="OnToolClicked">OnLoadProjectMenuSelection</event>
         </object>
         <object class="tool" expanded="false">
@@ -17800,7 +17800,7 @@
           <property name="name">m_tool35</property>
           <property name="permission">protected</property>
           <property name="statusbar"></property>
-          <property name="tooltip"></property>
+          <property name="tooltip">Save Project</property>
           <event name="OnToolClicked">OnSaveProjectMenuSelection</event>
         </object>
         <object class="toolSeparator" expanded="false">
@@ -17815,7 +17815,7 @@
           <property name="name">m_tool36</property>
           <property name="permission">protected</property>
           <property name="statusbar"></property>
-          <property name="tooltip"></property>
+          <property name="tooltip">Generate Code</property>
           <event name="OnToolClicked">OnCodeGen</event>
         </object>
       </object>
