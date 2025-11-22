@@ -112,9 +112,7 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer46->Add( 0, 0, 1, wxEXPAND, 5 );
 
 	m_auiToolBar5 = new wxAuiToolBar( m_panel47, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_TB_HORZ_LAYOUT );
-	m_auiToolBar5->SetToolTip( wxT("Set Viewport Camera") );
-
-	m_tool30 = m_auiToolBar5->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/camera.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+	m_tool30 = m_auiToolBar5->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/camera.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxT("Set Viewport Camera"), wxEmptyString, NULL );
 
 	m_auiToolBar5->Realize();
 

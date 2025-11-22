@@ -941,11 +941,11 @@
                                                           <property name="width">0</property>
                                                         </object>
                                                       </object>
-                                                      <object class="sizeritem" expanded="false">
+                                                      <object class="sizeritem" expanded="true">
                                                         <property name="border">5</property>
                                                         <property name="flag">wxALL</property>
                                                         <property name="proportion">0</property>
-                                                        <object class="wxAuiToolBar" expanded="false">
+                                                        <object class="wxAuiToolBar" expanded="true">
                                                           <property name="BottomDockable">1</property>
                                                           <property name="LeftDockable">1</property>
                                                           <property name="RightDockable">1</property>
@@ -998,7 +998,7 @@
                                                           <property name="style">wxAUI_TB_HORZ_LAYOUT</property>
                                                           <property name="subclass">; ; forward_declare</property>
                                                           <property name="toolbar_pane">0</property>
-                                                          <property name="tooltip">Set Viewport Camera</property>
+                                                          <property name="tooltip"></property>
                                                           <property name="use_explicit_ids">0</property>
                                                           <property name="window_extra_style"></property>
                                                           <property name="window_name"></property>
@@ -1012,7 +1012,7 @@
                                                             <property name="name">m_tool30</property>
                                                             <property name="permission">protected</property>
                                                             <property name="statusbar"></property>
-                                                            <property name="tooltip"></property>
+                                                            <property name="tooltip">Set Viewport Camera</property>
                                                             <event name="OnToolClicked">OnStageCameraNavigate</event>
                                                           </object>
                                                         </object>
