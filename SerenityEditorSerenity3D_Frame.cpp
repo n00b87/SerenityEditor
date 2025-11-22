@@ -923,6 +923,8 @@ void SerenityEditorSerenity3D_Frame::updatePreviewMesh()
 		{
 			meshTab_preview_obj.node->getMaterial(i) = irr::video::SMaterial();
 		}
+
+		meshTab_preview_obj.node->getMaterial(i).Lighting = false;
 	}
 
 	//Set Animation
