@@ -128,7 +128,7 @@
             <object class="auinotebookpage" expanded="true">
               <property name="bitmap"></property>
               <property name="label">Stage</property>
-              <property name="select">1</property>
+              <property name="select">0</property>
               <object class="wxPanel" expanded="true">
                 <property name="BottomDockable">1</property>
                 <property name="LeftDockable">1</property>
@@ -8503,7 +8503,7 @@
             <object class="auinotebookpage" expanded="false">
               <property name="bitmap"></property>
               <property name="label">Mesh</property>
-              <property name="select">0</property>
+              <property name="select">1</property>
               <object class="wxPanel" expanded="false">
                 <property name="BottomDockable">1</property>
                 <property name="LeftDockable">1</property>
