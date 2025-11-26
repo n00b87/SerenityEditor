@@ -572,21 +572,21 @@ void wxIrrlicht::OnRender() {
 				if(view2D_texture)
 				{
 					irr::core::dimension2d<irr::u32> texture_size = view2D_texture->getSize();
-					irr::u32 fit_factor = 1;
+					float fit_factor = 1;
 
-					if(texture_size.Height > texture_size.Width)
+					if(camera[i].h < camera[i].w)
 					{
-						fit_factor = camera[i].h / (texture_size.Height < 1 ? 1 : texture_size.Height);
+						fit_factor = (float)camera[i].h / (float)(texture_size.Height < 1 ? 1 : texture_size.Height);
 					}
 					else
 					{
-						fit_factor = camera[i].w / (texture_size.Width < 1 ? 1 : texture_size.Width);
+					    fit_factor = (float)camera[i].w / (float)(texture_size.Width < 1 ? 1 : texture_size.Width);
 					}
 
-					fit_factor = (fit_factor < 1 ? 1 : fit_factor);
+					fit_factor = (fit_factor <= 0 ? 1 : fit_factor);
 
 					irr::core::rect<irr::s32> src( irr::core::position2di(0, 0), texture_size );
-					irr::core::rect<irr::s32> dst( irr::core::position2di(0, 0), irr::core::dimension2d<irr::s32>(texture_size.Width * fit_factor, texture_size.Height * fit_factor) );
+					irr::core::rect<irr::s32> dst( irr::core::position2di(0, 0), irr::core::dimension2d<irr::s32>((irr::s32)((float)texture_size.Width * fit_factor), (irr::s32)((float)texture_size.Height * fit_factor)) );
 					m_pDriver->draw2DImage(view2D_texture, dst, src);
 				}
 
