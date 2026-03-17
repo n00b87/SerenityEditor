@@ -128,7 +128,7 @@
             <object class="auinotebookpage" expanded="true">
               <property name="bitmap"></property>
               <property name="label">Stage</property>
-              <property name="select">0</property>
+              <property name="select">1</property>
               <object class="wxPanel" expanded="true">
                 <property name="BottomDockable">1</property>
                 <property name="LeftDockable">1</property>
@@ -4885,11 +4885,11 @@
                                         </object>
                                       </object>
                                     </object>
-                                    <object class="auinotebookpage" expanded="false">
+                                    <object class="auinotebookpage" expanded="true">
                                       <property name="bitmap"></property>
                                       <property name="label">Settings</property>
                                       <property name="select">0</property>
-                                      <object class="wxScrolledWindow" expanded="false">
+                                      <object class="wxScrolledWindow" expanded="true">
                                         <property name="BottomDockable">1</property>
                                         <property name="LeftDockable">1</property>
                                         <property name="RightDockable">1</property>
@@ -4943,7 +4943,7 @@
                                         <property name="window_extra_style"></property>
                                         <property name="window_name"></property>
                                         <property name="window_style">wxHSCROLL|wxVSCROLL</property>
-                                        <object class="wxBoxSizer" expanded="false">
+                                        <object class="wxBoxSizer" expanded="true">
                                           <property name="minimum_size"></property>
                                           <property name="name">bSizer671</property>
                                           <property name="orient">wxVERTICAL</property>
@@ -6416,11 +6416,11 @@
                                               </object>
                                             </object>
                                           </object>
-                                          <object class="sizeritem" expanded="false">
+                                          <object class="sizeritem" expanded="true">
                                             <property name="border">5</property>
                                             <property name="flag">wxEXPAND | wxALL</property>
                                             <property name="proportion">0</property>
-                                            <object class="wxPanel" expanded="false">
+                                            <object class="wxPanel" expanded="true">
                                               <property name="BottomDockable">1</property>
                                               <property name="LeftDockable">1</property>
                                               <property name="RightDockable">1</property>
@@ -6472,7 +6472,7 @@
                                               <property name="window_extra_style"></property>
                                               <property name="window_name"></property>
                                               <property name="window_style">wxBORDER_SIMPLE|wxTAB_TRAVERSAL</property>
-                                              <object class="wxBoxSizer" expanded="false">
+                                              <object class="wxBoxSizer" expanded="true">
                                                 <property name="minimum_size"></property>
                                                 <property name="name">bSizer171</property>
                                                 <property name="orient">wxVERTICAL</property>
@@ -6704,11 +6704,11 @@
                                                     </object>
                                                   </object>
                                                 </object>
-                                                <object class="sizeritem" expanded="false">
+                                                <object class="sizeritem" expanded="true">
                                                   <property name="border">5</property>
                                                   <property name="flag">wxEXPAND</property>
                                                   <property name="proportion">0</property>
-                                                  <object class="wxBoxSizer" expanded="false">
+                                                  <object class="wxBoxSizer" expanded="true">
                                                     <property name="minimum_size"></property>
                                                     <property name="name">bSizer175</property>
                                                     <property name="orient">wxHORIZONTAL</property>
@@ -8503,7 +8503,7 @@
             <object class="auinotebookpage" expanded="false">
               <property name="bitmap"></property>
               <property name="label">Mesh</property>
-              <property name="select">1</property>
+              <property name="select">0</property>
               <object class="wxPanel" expanded="false">
                 <property name="BottomDockable">1</property>
                 <property name="LeftDockable">1</property>

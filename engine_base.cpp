@@ -1193,6 +1193,8 @@ bool serenity_project::genRCBasicProject()
 		total_actor_animations += meshes[i].animation.size();
 	}
 
+	total_actor_animations = (total_actor_animations == 0 ? 1 : total_actor_animations);
+
 	pfile.Write(_("Dim Serenity_Global_Mesh_Animation_List[") + wxString::Format(_("%i"), total_actor_animations) + _("] As Serenity_Mesh_Animation\n\n"));
 
 	pfile.Write(_("Type Serenity_Mesh") + _("\n"));

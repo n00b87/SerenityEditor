@@ -1120,7 +1120,7 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_stage_panel->SetSizer( bSizer2 );
 	m_stage_panel->Layout();
 	bSizer2->Fit( m_stage_panel );
-	m_editorMain_auinotebook->AddPage( m_stage_panel, wxT("Stage"), false, wxNullBitmap );
+	m_editorMain_auinotebook->AddPage( m_stage_panel, wxT("Stage"), true, wxNullBitmap );
 	m_meshDB_panel = new wxPanel( m_editorMain_auinotebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer21;
 	bSizer21 = new wxBoxSizer( wxVERTICAL );
@@ -1545,7 +1545,7 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_meshDB_panel->SetSizer( bSizer21 );
 	m_meshDB_panel->Layout();
 	bSizer21->Fit( m_meshDB_panel );
-	m_editorMain_auinotebook->AddPage( m_meshDB_panel, wxT("Mesh"), true, wxNullBitmap );
+	m_editorMain_auinotebook->AddPage( m_meshDB_panel, wxT("Mesh"), false, wxNullBitmap );
 	m_materialDB_panel = new wxPanel( m_editorMain_auinotebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer92;
 	bSizer92 = new wxBoxSizer( wxVERTICAL );
