@@ -1,5 +1,6 @@
 #include <wx/wx.h>
 #include <wx/filename.h>
+#include <wx/dir.h>
 #include <wx/stdpaths.h>
 #include <vector>
 #include "rc_stage.h"
@@ -5575,6 +5576,32 @@ wxString serenity_project::genMeshID()
 	bool name_found = false;
 	int name_n = 0;
 
+	wxDir dir;
+	wxString filename;
+	wxString filespec = _T("*.*");
+	wxArrayString files_list;
+
+	wxFileName data_path(project_path.GetAbsolutePath());
+	data_path.AppendDir("data");
+	data_path.SetFullName(_(""));
+
+	//std::cout << "Check Dir: " << data_path.GetAbsolutePath().ToStdString() << std::endl;
+
+	if ( dir.Open( data_path.GetAbsolutePath() ) )
+	{
+		bool cont = dir.GetFirst(&filename, filespec, wxDIR_FILES);
+		while ( cont )
+		{
+		    filename.Replace(_(".sna"), _(""));
+		    filename.Replace(_(".snmd"), _(""));
+			files_list.Add( filename );
+			cont = dir.GetNext(&filename);
+		}
+	}
+
+	files_list.Sort();
+
+
 	while(!name_found)
 	{
 		new_name = tmp_name + wxString::Format(_("%d"), name_n);
@@ -5590,6 +5617,16 @@ wxString serenity_project::genMeshID()
 				break;
 			}
 		}
+
+		for(int i = 0; i < files_list.size(); i++)
+        {
+            //std::cout << "cmp: " << files_list[i].ToStdString() << " != " << new_name << std::endl;
+            if(files_list[i].compare(new_name)==0)
+            {
+                name_found = false;
+                break;
+            }
+        }
 	}
 
 	return new_name;
