@@ -2012,6 +2012,34 @@ void SerenityEditorSerenity3D_Frame::updateProjectFromStageEdit()
 
 void SerenityEditorSerenity3D_Frame::OnStageUpdate( wxUpdateUIEvent& event )
 {
+
+    if(true)
+    {
+        wxPGProperty* p_test = m_stage_propertyGridManager->GetSelection();
+
+        wxPropertyGrid* p_grid = NULL;
+
+        if(p_test)
+            p_grid = p_test->GetGrid();
+
+        if(p_grid)
+        {
+            if(p_grid->IsEditorFocused())
+            {
+                if(!stage_window)
+                    return;
+
+                stage_tools_selection = -1;
+                stage_window->stage_edit_tool = -1;
+                updateToolSelection();
+
+            }
+
+            //std::cout << "Property: " << p_test->GetName().ToStdString() << " -> " << (p_grid->IsEditorFocused() ? "SHOWN" : "HIDDEN");
+            //std::cout << " -> Stage Test: " << (stage_window->HasFocus() ? "TRUE" : "FALSE") << std::endl;
+        }
+    }
+
 	if(stage_window)
 	{
 	    if(stage_window->select_group_flag)
