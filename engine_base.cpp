@@ -1347,9 +1347,10 @@ bool serenity_project::genRCBasicProject()
 	sn_api += _("\t\t") + _("Return -1\n");
 	sn_api += _("\t") + _("End If\n");
 	sn_api += _("\t") + _("ani_name$ = Trim$(UCase$(animation_name$))\n");
-	sn_api += _("\t") + _("For i = 0 To ArraySize(Serenity_Global_Mesh_Animation_List, 1) - 1\n");
-    sn_api += _("\t\t") + _("If Trim$(UCase$(Serenity_Global_Mesh_Animation_List[i].Name$)) = ani_name$ Then\n");
-    sn_api += _("\t\t\t") + _("Return MatrixValue(Serenity_Global_Mesh_List[mesh_index].Animation_Matrix, 0, i)+1\n");
+	sn_api += _("\t") + _("For i = 0 To Serenity_Global_Mesh_List[mesh_index].AnimationCount - 1\n");
+    sn_api += _("\t\t") + _("global_ani_index = MatrixValue(Serenity_Global_Mesh_List[mesh_index].Animation_Matrix, 0, i)\n");
+    sn_api += _("\t\t") + _("If Trim$(UCase$(Serenity_Global_Mesh_Animation_List[global_ani_index].Name$)) = ani_name$ Then\n");
+    sn_api += _("\t\t\t") + _("Return i+1\n");
     sn_api += _("\t\t") + _("End If\n");
 	sn_api += _("\t") + _("Next\n");
 	sn_api += _("\t") + _("Return -1\n");
