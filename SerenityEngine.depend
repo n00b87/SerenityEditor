@@ -1,8 +1,8 @@
 # depslib dependency file v1.0
-1775882045 source:/home/n00b/Projects/SerenityEngine/Serenity3D_Editor.cpp
+1779926451 source:/home/n00b/Projects/SerenityEngine/Serenity3D_Editor.cpp
 	"Serenity3D_Editor.h"
 
-1775882045 /home/n00b/Projects/SerenityEngine/Serenity3D_Editor.h
+1779926451 /home/n00b/Projects/SerenityEngine/Serenity3D_Editor.h
 	<wx/artprov.h>
 	<wx/xrc/xmlres.h>
 	<wx/string.h>
@@ -32,8 +32,8 @@
 	<wx/scrolwin.h>
 	<wx/aui/auibook.h>
 	<wx/listbox.h>
-	<wx/textctrl.h>
 	<wx/toolbar.h>
+	<wx/textctrl.h>
 	<wx/statusbr.h>
 	<wx/frame.h>
 	<wx/srchctrl.h>
@@ -1433,7 +1433,7 @@
 	"wx/icon.h"
 	"wx/aui/auibook.h"
 
-1775897692 source:/home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.cpp
+1775897983 source:/home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.cpp
 	<wx/stdpaths.h>
 	<wx/propgrid/manager.h>
 	<wx/propgrid/propgridpagestate.h>

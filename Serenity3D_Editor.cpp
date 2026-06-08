@@ -1189,6 +1189,24 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	wxBoxSizer* bSizer61;
 	bSizer61 = new wxBoxSizer( wxHORIZONTAL );
 
+	wxBoxSizer* bSizer71;
+	bSizer71 = new wxBoxSizer( wxVERTICAL );
+
+	m_mesh_animationPreview_panel = new wxPanel( m_panel291, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SIMPLE|wxTAB_TRAVERSAL );
+	bSizer71->Add( m_mesh_animationPreview_panel, 1, wxEXPAND | wxALL, 5 );
+
+	m_toolBar2 = new wxToolBar( m_panel291, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL );
+	m_mesh_meshAnimation_play_tool = m_toolBar2->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/play.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxT("Play Selected Animation"), wxEmptyString, NULL );
+
+	m_mesh_meshAnimation_stop_tool = m_toolBar2->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/stop.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxT("Stop Playing Animation"), wxEmptyString, NULL );
+
+	m_toolBar2->Realize();
+
+	bSizer71->Add( m_toolBar2, 0, wxEXPAND, 5 );
+
+
+	bSizer61->Add( bSizer71, 4, wxEXPAND, 5 );
+
 	wxBoxSizer* bSizer67;
 	bSizer67 = new wxBoxSizer( wxVERTICAL );
 
@@ -1352,25 +1370,7 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer67->Add( m_panel41, 1, wxEXPAND | wxALL, 5 );
 
 
-	bSizer61->Add( bSizer67, 4, wxEXPAND, 5 );
-
-	wxBoxSizer* bSizer71;
-	bSizer71 = new wxBoxSizer( wxVERTICAL );
-
-	m_mesh_animationPreview_panel = new wxPanel( m_panel291, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SIMPLE|wxTAB_TRAVERSAL );
-	bSizer71->Add( m_mesh_animationPreview_panel, 1, wxEXPAND | wxALL, 5 );
-
-	m_toolBar2 = new wxToolBar( m_panel291, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL );
-	m_mesh_meshAnimation_play_tool = m_toolBar2->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/play.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxT("Play Selected Animation"), wxEmptyString, NULL );
-
-	m_mesh_meshAnimation_stop_tool = m_toolBar2->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/stop.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxT("Stop Playing Animation"), wxEmptyString, NULL );
-
-	m_toolBar2->Realize();
-
-	bSizer71->Add( m_toolBar2, 0, wxEXPAND, 5 );
-
-
-	bSizer61->Add( bSizer71, 4, wxEXPAND, 5 );
+	bSizer61->Add( bSizer67, 2, wxEXPAND, 5 );
 
 
 	bSizer78->Add( bSizer61, 1, wxEXPAND, 5 );
@@ -2252,15 +2252,15 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_mesh_saveMesh_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_Save_ButtonClick ), NULL, this );
 	m_mesh_removeMesh_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_Remove_ButtonClick ), NULL, this );
 	m_mesh_mesh_listBox->Connect( wxEVT_COMMAND_LISTBOX_SELECTED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_MeshList_Select ), NULL, this );
+	m_mesh_animationPreview_panel->Connect( wxEVT_SIZE, wxSizeEventHandler( Serenity3D_Frame::OnAnimationPreviewSize ), NULL, this );
+	this->Connect( m_mesh_meshAnimation_play_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_previewPlay ) );
+	this->Connect( m_mesh_meshAnimation_stop_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_previewStop ) );
 	m_mesh_meshID_textCtrl->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_MeshID ), NULL, this );
 	m_mesh_meshCollider_comboBox->Connect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_MeshCollider_Select ), NULL, this );
 	m_button51->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_AddMaterial ), NULL, this );
 	m_button52->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_RemoveMaterial ), NULL, this );
 	m_button53->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_SetMaterial ), NULL, this );
 	m_clear_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_Material_Clear ), NULL, this );
-	m_mesh_animationPreview_panel->Connect( wxEVT_SIZE, wxSizeEventHandler( Serenity3D_Frame::OnAnimationPreviewSize ), NULL, this );
-	this->Connect( m_mesh_meshAnimation_play_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_previewPlay ) );
-	this->Connect( m_mesh_meshAnimation_stop_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_previewStop ) );
 	m_mesh_newAnimation_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_NewAnimation ), NULL, this );
 	m_mesh_deleteAnimation_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_DeleteAnimation ), NULL, this );
 	m_mesh_meshAnimation_listBox->Connect( wxEVT_COMMAND_LISTBOX_SELECTED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_AnimationList_Select ), NULL, this );
@@ -2380,15 +2380,15 @@ Serenity3D_Frame::~Serenity3D_Frame()
 	m_mesh_saveMesh_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_Save_ButtonClick ), NULL, this );
 	m_mesh_removeMesh_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_Remove_ButtonClick ), NULL, this );
 	m_mesh_mesh_listBox->Disconnect( wxEVT_COMMAND_LISTBOX_SELECTED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_MeshList_Select ), NULL, this );
+	m_mesh_animationPreview_panel->Disconnect( wxEVT_SIZE, wxSizeEventHandler( Serenity3D_Frame::OnAnimationPreviewSize ), NULL, this );
+	this->Disconnect( m_mesh_meshAnimation_play_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_previewPlay ) );
+	this->Disconnect( m_mesh_meshAnimation_stop_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_previewStop ) );
 	m_mesh_meshID_textCtrl->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_MeshID ), NULL, this );
 	m_mesh_meshCollider_comboBox->Disconnect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_MeshCollider_Select ), NULL, this );
 	m_button51->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_AddMaterial ), NULL, this );
 	m_button52->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_RemoveMaterial ), NULL, this );
 	m_button53->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_SetMaterial ), NULL, this );
 	m_clear_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_Material_Clear ), NULL, this );
-	m_mesh_animationPreview_panel->Disconnect( wxEVT_SIZE, wxSizeEventHandler( Serenity3D_Frame::OnAnimationPreviewSize ), NULL, this );
-	this->Disconnect( m_mesh_meshAnimation_play_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_previewPlay ) );
-	this->Disconnect( m_mesh_meshAnimation_stop_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_previewStop ) );
 	m_mesh_newAnimation_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_NewAnimation ), NULL, this );
 	m_mesh_deleteAnimation_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_DeleteAnimation ), NULL, this );
 	m_mesh_meshAnimation_listBox->Disconnect( wxEVT_COMMAND_LISTBOX_SELECTED, wxCommandEventHandler( Serenity3D_Frame::On_Mesh_AnimationList_Select ), NULL, this );
