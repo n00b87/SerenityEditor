@@ -2012,6 +2012,34 @@ void SerenityEditorSerenity3D_Frame::updateProjectFromStageEdit()
 
 void SerenityEditorSerenity3D_Frame::OnStageUpdate( wxUpdateUIEvent& event )
 {
+
+    if(true)
+    {
+        wxPGProperty* p_test = m_stage_propertyGridManager->GetSelection();
+
+        wxPropertyGrid* p_grid = NULL;
+
+        if(p_test)
+            p_grid = p_test->GetGrid();
+
+        if(p_grid)
+        {
+            if(p_grid->IsEditorFocused())
+            {
+                if(!stage_window)
+                    return;
+
+                stage_tools_selection = -1;
+                stage_window->stage_edit_tool = -1;
+                updateToolSelection();
+
+            }
+
+            //std::cout << "Property: " << p_test->GetName().ToStdString() << " -> " << (p_grid->IsEditorFocused() ? "SHOWN" : "HIDDEN");
+            //std::cout << " -> Stage Test: " << (stage_window->HasFocus() ? "TRUE" : "FALSE") << std::endl;
+        }
+    }
+
 	if(stage_window)
 	{
 	    if(stage_window->select_group_flag)
@@ -2938,10 +2966,21 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 
 		case SN_ACTOR_TYPE_PARTICLE:
 		{
+		    project.stages[stage_project_index].actors[i].min_per_sec = (project.stages[stage_project_index].actors[i].min_per_sec <= 0 ? 1 : project.stages[stage_project_index].actors[i].min_per_sec);
+		    project.stages[stage_project_index].actors[i].cylinder_length = (project.stages[stage_project_index].actors[i].cylinder_length <= 0 ? 1: project.stages[stage_project_index].actors[i].cylinder_length);
+		    project.stages[stage_project_index].actors[i].max_life = (project.stages[stage_project_index].actors[i].max_life <= 0 ? 1: project.stages[stage_project_index].actors[i].max_life);
+		    project.stages[stage_project_index].actors[i].max_per_sec = (project.stages[stage_project_index].actors[i].max_per_sec <= 0 ? 1 : project.stages[stage_project_index].actors[i].max_per_sec);
+		    project.stages[stage_project_index].actors[i].min_life = (project.stages[stage_project_index].actors[i].min_life <= 0 ? 1 : project.stages[stage_project_index].actors[i].min_life);
+		    project.stages[stage_project_index].actors[i].radius = (project.stages[stage_project_index].actors[i].radius <= 0 ? 1 : project.stages[stage_project_index].actors[i].radius);
+		    project.stages[stage_project_index].actors[i].ring_thickness = (project.stages[stage_project_index].actors[i].ring_thickness <= 0 ? 1 : project.stages[stage_project_index].actors[i].ring_thickness);
+
+		    project.stages[stage_project_index].actors[i].particle_emitter = NULL;
+
+
 			if(project.stages[stage_project_index].actors[i].particle_type == SN_PARTICLE_TYPE_BOX)
 			{
 				if(!project.stages[stage_project_index].actors[i].node)
-					project.stages[stage_project_index].actors[i].node = smgr->addParticleSystemSceneNode();
+					project.stages[stage_project_index].actors[i].node = smgr->addParticleSystemSceneNode(false);
 				irr::scene::IParticleSystemSceneNode* p_node = (irr::scene::IParticleSystemSceneNode*) project.stages[stage_project_index].actors[i].node;
 
 				if(!project.stages[stage_project_index].actors[i].particle_emitter)
@@ -2963,7 +3002,7 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 			else if(project.stages[stage_project_index].actors[i].particle_type == SN_PARTICLE_TYPE_CYLINDER)
 			{
 				if(!project.stages[stage_project_index].actors[i].node)
-					project.stages[stage_project_index].actors[i].node = smgr->addParticleSystemSceneNode();
+					project.stages[stage_project_index].actors[i].node = smgr->addParticleSystemSceneNode(false);
 
 				irr::scene::IParticleSystemSceneNode* p_node = (irr::scene::IParticleSystemSceneNode*) project.stages[stage_project_index].actors[i].node;
 
@@ -2999,7 +3038,7 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 				if(mesh)
 				{
 					if(!project.stages[stage_project_index].actors[i].node)
-						project.stages[stage_project_index].actors[i].node = smgr->addParticleSystemSceneNode();
+						project.stages[stage_project_index].actors[i].node = smgr->addParticleSystemSceneNode(false);
 					irr::scene::IParticleSystemSceneNode* p_node = (irr::scene::IParticleSystemSceneNode*) project.stages[stage_project_index].actors[i].node;
 
 					if(!project.stages[stage_project_index].actors[i].particle_emitter)
@@ -3079,7 +3118,7 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 			else if(project.stages[stage_project_index].actors[i].particle_type == SN_PARTICLE_TYPE_POINT)
 			{
 				if(!project.stages[stage_project_index].actors[i].node)
-					project.stages[stage_project_index].actors[i].node = smgr->addParticleSystemSceneNode();
+					project.stages[stage_project_index].actors[i].node = smgr->addParticleSystemSceneNode(false);
 				irr::scene::IParticleSystemSceneNode* p_node = (irr::scene::IParticleSystemSceneNode*) project.stages[stage_project_index].actors[i].node;
 
 				if(!project.stages[stage_project_index].actors[i].particle_emitter)
@@ -3100,7 +3139,7 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 			else if(project.stages[stage_project_index].actors[i].particle_type == SN_PARTICLE_TYPE_RING)
 			{
 				if(!project.stages[stage_project_index].actors[i].node)
-					project.stages[stage_project_index].actors[i].node = smgr->addParticleSystemSceneNode();
+					project.stages[stage_project_index].actors[i].node = smgr->addParticleSystemSceneNode(false);
 				irr::scene::IParticleSystemSceneNode* p_node = (irr::scene::IParticleSystemSceneNode*) project.stages[stage_project_index].actors[i].node;
 
 				if(!project.stages[stage_project_index].actors[i].particle_emitter)
@@ -3124,7 +3163,7 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 			else if(project.stages[stage_project_index].actors[i].particle_type == SN_PARTICLE_TYPE_SPHERE)
 			{
 				if(!project.stages[stage_project_index].actors[i].node)
-					project.stages[stage_project_index].actors[i].node = smgr->addParticleSystemSceneNode();
+					project.stages[stage_project_index].actors[i].node = smgr->addParticleSystemSceneNode(false);
 				irr::scene::IParticleSystemSceneNode* p_node = (irr::scene::IParticleSystemSceneNode*) project.stages[stage_project_index].actors[i].node;
 
 				if(!project.stages[stage_project_index].actors[i].particle_emitter)
@@ -3145,8 +3184,17 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 				}
 			}
 
+
+
 			if(project.stages[stage_project_index].actors[i].node != NULL)
 			{
+			    if(project.stages[stage_project_index].actors[i].particle_emitter)
+			    {
+			        irr::scene::IParticleSystemSceneNode* p_node = (irr::scene::IParticleSystemSceneNode*) project.stages[stage_project_index].actors[i].node;
+                    p_node->setEmitter(project.stages[stage_project_index].actors[i].particle_emitter);
+                    project.stages[stage_project_index].actors[i].particle_emitter->drop();
+			    }
+
 				//-----APPLY MATERIAL-----------
 				int mat_index = project.stages[stage_project_index].actors[i].override_material_index;
 				if(mat_index >= 0 && mat_index < project.materials.size())

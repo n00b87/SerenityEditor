@@ -36,8 +36,8 @@
 #include <wx/scrolwin.h>
 #include <wx/aui/auibook.h>
 #include <wx/listbox.h>
-#include <wx/textctrl.h>
 #include <wx/toolbar.h>
+#include <wx/textctrl.h>
 #include <wx/statusbr.h>
 #include <wx/frame.h>
 #include <wx/srchctrl.h>
@@ -483,6 +483,10 @@ class Serenity3D_Frame : public wxFrame
 		wxButton* m_mesh_removeMesh_button;
 		wxListBox* m_mesh_mesh_listBox;
 		wxPanel* m_panel291;
+		wxPanel* m_mesh_animationPreview_panel;
+		wxToolBar* m_toolBar2;
+		wxToolBarToolBase* m_mesh_meshAnimation_play_tool;
+		wxToolBarToolBase* m_mesh_meshAnimation_stop_tool;
 		wxPanel* m_panel41;
 		wxPanel* m_panel33;
 		wxStaticText* m_staticText321;
@@ -500,10 +504,6 @@ class Serenity3D_Frame : public wxFrame
 		wxButton* m_button53;
 		wxButton* m_clear_button;
 		wxListBox* m_mesh_materialList_listBox;
-		wxPanel* m_mesh_animationPreview_panel;
-		wxToolBar* m_toolBar2;
-		wxToolBarToolBase* m_mesh_meshAnimation_play_tool;
-		wxToolBarToolBase* m_mesh_meshAnimation_stop_tool;
 		wxPanel* m_panel43;
 		wxPanel* m_panel46;
 		wxStaticText* m_staticText33;
@@ -678,15 +678,15 @@ class Serenity3D_Frame : public wxFrame
 		virtual void On_Mesh_Save_ButtonClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_Remove_ButtonClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_MeshList_Select( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnAnimationPreviewSize( wxSizeEvent& event ) { event.Skip(); }
+		virtual void On_Mesh_previewPlay( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Mesh_previewStop( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_MeshID( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_MeshCollider_Select( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_AddMaterial( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_RemoveMaterial( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_SetMaterial( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_Material_Clear( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnAnimationPreviewSize( wxSizeEvent& event ) { event.Skip(); }
-		virtual void On_Mesh_previewPlay( wxCommandEvent& event ) { event.Skip(); }
-		virtual void On_Mesh_previewStop( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_NewAnimation( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_DeleteAnimation( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_AnimationList_Select( wxCommandEvent& event ) { event.Skip(); }

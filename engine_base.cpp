@@ -1,5 +1,6 @@
 #include <wx/wx.h>
 #include <wx/filename.h>
+#include <wx/dir.h>
 #include <wx/stdpaths.h>
 #include <vector>
 #include "rc_stage.h"
@@ -1193,7 +1194,9 @@ bool serenity_project::genRCBasicProject()
 		total_actor_animations += meshes[i].animation.size();
 	}
 
-	pfile.Write(_("Dim Serenity_Global_Mesh_Animation_List[") + wxString::Format(_("%i"), total_actor_animations) + _("] As Serenity_Mesh_Animation\n\n"));
+	total_actor_animations = (total_actor_animations == 0 ? 1 : total_actor_animations);
+
+	pfile.Write(_("Dim Serenity_Global_Mesh_Animation_List[") + wxString::Format(_("%i"), (total_actor_animations <= 0 ? 1 : total_actor_animations) ) + _("] As Serenity_Mesh_Animation\n\n"));
 
 	pfile.Write(_("Type Serenity_Mesh") + _("\n"));
 
@@ -1344,9 +1347,10 @@ bool serenity_project::genRCBasicProject()
 	sn_api += _("\t\t") + _("Return -1\n");
 	sn_api += _("\t") + _("End If\n");
 	sn_api += _("\t") + _("ani_name$ = Trim$(UCase$(animation_name$))\n");
-	sn_api += _("\t") + _("For i = 0 To ArraySize(Serenity_Global_Mesh_Animation_List, 1) - 1\n");
-    sn_api += _("\t\t") + _("If Trim$(UCase$(Serenity_Global_Mesh_Animation_List[i].Name$)) = ani_name$ Then\n");
-    sn_api += _("\t\t\t") + _("Return MatrixValue(Serenity_Global_Mesh_List[mesh_index].Animation_Matrix, 0, i)+1\n");
+	sn_api += _("\t") + _("For i = 0 To Serenity_Global_Mesh_List[mesh_index].AnimationCount - 1\n");
+    sn_api += _("\t\t") + _("global_ani_index = MatrixValue(Serenity_Global_Mesh_List[mesh_index].Animation_Matrix, 0, i)\n");
+    sn_api += _("\t\t") + _("If Trim$(UCase$(Serenity_Global_Mesh_Animation_List[global_ani_index].Name$)) = ani_name$ Then\n");
+    sn_api += _("\t\t\t") + _("Return i+1\n");
     sn_api += _("\t\t") + _("End If\n");
 	sn_api += _("\t") + _("Next\n");
 	sn_api += _("\t") + _("Return -1\n");
@@ -1816,14 +1820,25 @@ bool serenity_project::genRCBasicProject()
 	sn_api += _("End Function\n\n");
 
 	sn_api += _("\'-------ACTORS-------\n");
+	sn_api += _("Function Serenity_GetActorIndexFromStage(stage_actor_index)\n");
+	sn_api += _("\t") + _("If Serenity_Current_Stage.StageID < 0 Or Serenity_Current_Stage.StageID >= 2 Then\n");
+    sn_api += _("\t\t") + _("Return -1\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("Return MatrixValue(Serenity_Global_Stage_List[Serenity_Current_Stage.StageID].Actor_Matrix, 0, stage_actor_index)\n");
+    sn_api += _("End Function\n\n");
+
 	sn_api += _("Function Serenity_GetActorIndex(actor_name$)\n");
 	sn_api += _("\t") + _("If Serenity_Current_Stage.StageID < 0 Or Serenity_Current_Stage.StageID >= ") + wxString::Format(_("%i"), (int)stages.size()) + _(" Then\n");
 	sn_api += _("\t\t") + _("Return -1\n");
 	sn_api += _("\t") + _("End If\n");
 	sn_api += _("\t") + _("For i = 0 To Serenity_Global_Stage_List[Serenity_Current_Stage.StageID].ActorCount-1\n");
-	sn_api += _("\t\t") + _("If Serenity_Global_Actor_List[i].Name$ = actor_name$ Then\n");
-	sn_api += _("\t\t\t") + _("Return i\n");
-	sn_api += _("\t\t") + _("End If\n");
+	sn_api += _("\t\t") + _("actor_index = MatrixValue(Serenity_Global_Stage_List[Serenity_Current_Stage.StageID].Actor_Matrix, 0, i)\n");
+    sn_api += _("\t\t") + _("If actor_index < 0 Then\n");
+    sn_api += _("\t\t\t") + _("Continue\n");
+    sn_api += _("\t\t") + _("End If\n");
+    sn_api += _("\t\t") + _("If Serenity_Global_Actor_List[actor_index].Name$ = actor_name$ Then\n");
+    sn_api += _("\t\t\t") + _("Return actor_index\n");
+    sn_api += _("\t\t") + _("End If\n");
 	sn_api += _("\t") + _("Next\n");
 	sn_api += _("\t") + _("Return -1\n");
 	sn_api += _("End Function\n\n");
@@ -1839,7 +1854,7 @@ bool serenity_project::genRCBasicProject()
 	sn_api += _("\t") + _("If Serenity_Current_Stage.StageID < 0 Or Serenity_Current_Stage.StageID >= ") + wxString::Format(_("%i"), (int)stages.size()) + _(" Then\n");
 	sn_api += _("\t\t") + _("Return -1\n");
 	sn_api += _("\t") + _("End If\n");
-	sn_api += _("\t") + _("If actor_index < 0 Or actor_index >= Serenity_Global_Stage_List[Serenity_Current_Stage.StageID].ActorCount Then\n");
+	sn_api += _("\t") + _("If actor_index < 0 Or actor_index >= ArraySize(Serenity_Global_Actor_List, 1) Then\n");
 	sn_api += _("\t\t") + _("Return -1\n");
 	sn_api += _("\t") + _("End If\n");
 	sn_api += _("\t") + _("Return Serenity_Global_Actor_List[actor_index].ID\n");
@@ -1849,7 +1864,7 @@ bool serenity_project::genRCBasicProject()
 	sn_api += _("\t") + _("If Serenity_Current_Stage.StageID < 0 Or Serenity_Current_Stage.StageID >= ") + wxString::Format(_("%i"), (int)stages.size()) + _(" Then\n");
 	sn_api += _("\t\t") + _("Return \"\"\n");
 	sn_api += _("\t") + _("End If\n");
-	sn_api += _("\t") + _("If actor_index < 0 Or actor_index >= Serenity_Global_Stage_List[Serenity_Current_Stage.StageID].ActorCount Then\n");
+	sn_api += _("\t") + _("If actor_index < 0 Or actor_index >= ArraySize(Serenity_Global_Actor_List, 1) Then\n");
 	sn_api += _("\t\t") + _("Return \"\"\n");
 	sn_api += _("\t") + _("End If\n");
 	sn_api += _("\t") + _("Return Serenity_Global_Actor_List[actor_index].Name$\n");
@@ -1859,7 +1874,7 @@ bool serenity_project::genRCBasicProject()
 	sn_api += _("\t") + _("If Serenity_Current_Stage.StageID < 0 Or Serenity_Current_Stage.StageID >= ") + wxString::Format(_("%i"), (int)stages.size()) + _(" Then\n");
 	sn_api += _("\t\t") + _("Return -1\n");
 	sn_api += _("\t") + _("End If\n");
-	sn_api += _("\t") + _("If actor_index < 0 Or actor_index >= Serenity_Global_Stage_List[Serenity_Current_Stage.StageID].ActorCount Then\n");
+	sn_api += _("\t") + _("If actor_index < 0 Or actor_index >= ArraySize(Serenity_Global_Actor_List, 1) Then\n");
 	sn_api += _("\t\t") + _("Return -1\n");
 	sn_api += _("\t") + _("End If\n");
 	sn_api += _("\t") + _("Return Serenity_Global_Actor_List[actor_index].ActorType\n");
@@ -1869,7 +1884,7 @@ bool serenity_project::genRCBasicProject()
 	sn_api += _("\t") + _("If Serenity_Current_Stage.StageID < 0 Or Serenity_Current_Stage.StageID >= ") + wxString::Format(_("%i"), (int)stages.size()) + _(" Then\n");
 	sn_api += _("\t\t") + _("Return -1\n");
 	sn_api += _("\t") + _("End If\n");
-	sn_api += _("\t") + _("If actor_index < 0 Or actor_index >= Serenity_Global_Stage_List[Serenity_Current_Stage.StageID].ActorCount Then\n");
+	sn_api += _("\t") + _("If actor_index < 0 Or actor_index >= ArraySize(Serenity_Global_Actor_List, 1) Then\n");
 	sn_api += _("\t\t") + _("Return -1\n");
 	sn_api += _("\t") + _("End If\n");
 	sn_api += _("\t") + _("Return Serenity_Global_Actor_List[actor_index].Mesh\n");
@@ -1879,7 +1894,7 @@ bool serenity_project::genRCBasicProject()
 	sn_api += _("\t") + _("If Serenity_Current_Stage.StageID < 0 Or Serenity_Current_Stage.StageID >= ") + wxString::Format(_("%i"), (int)stages.size()) + _(" Then\n");
 	sn_api += _("\t\t") + _("Return -1\n");
 	sn_api += _("\t") + _("End If\n");
-	sn_api += _("\t") + _("If actor_index < 0 Or actor_index >= Serenity_Global_Stage_List[Serenity_Current_Stage.StageID].ActorCount Then\n");
+	sn_api += _("\t") + _("If actor_index < 0 Or actor_index >= ArraySize(Serenity_Global_Actor_List, 1) Then\n");
 	sn_api += _("\t\t") + _("Return -1\n");
 	sn_api += _("\t") + _("End If\n");
 	sn_api += _("\t") + _("Return Serenity_Global_Actor_List[actor_index].Material\n");
@@ -1889,7 +1904,7 @@ bool serenity_project::genRCBasicProject()
 	sn_api += _("\t") + _("If Serenity_Current_Stage.StageID < 0 Or Serenity_Current_Stage.StageID >= ") + wxString::Format(_("%i"), (int)stages.size()) + _(" Then\n");
 	sn_api += _("\t\t") + _("Return \"\"\n");
 	sn_api += _("\t") + _("End If\n");
-	sn_api += _("\t") + _("If actor_index < 0 Or actor_index >= Serenity_Global_Stage_List[Serenity_Current_Stage.StageID].ActorCount Then\n");
+	sn_api += _("\t") + _("If actor_index < 0 Or actor_index >= ArraySize(Serenity_Global_Actor_List, 1) Then\n");
 	sn_api += _("\t\t") + _("Return \"\"\n");
 	sn_api += _("\t") + _("End If\n");
 	sn_api += _("\t") + _("Return Serenity_Global_Actor_List[actor_index].Terrain.HeightMap$\n");
@@ -1899,7 +1914,7 @@ bool serenity_project::genRCBasicProject()
 	sn_api += _("\t") + _("If Serenity_Current_Stage.StageID < 0 Or Serenity_Current_Stage.StageID >= ") + wxString::Format(_("%i"), (int)stages.size()) + _(" Then\n");
 	sn_api += _("\t\t") + _("Return -1\n");
 	sn_api += _("\t") + _("End If\n");
-	sn_api += _("\t") + _("If actor_index < 0 Or actor_index >= Serenity_Global_Stage_List[Serenity_Current_Stage.StageID].ActorCount Then\n");
+	sn_api += _("\t") + _("If actor_index < 0 Or actor_index >= ArraySize(Serenity_Global_Actor_List, 1) Then\n");
 	sn_api += _("\t\t") + _("Return -1\n");
 	sn_api += _("\t") + _("End If\n");
 	sn_api += _("\t") + _("Return Serenity_Global_Actor_List[actor_index].CubeSize\n");
@@ -1909,7 +1924,7 @@ bool serenity_project::genRCBasicProject()
 	sn_api += _("\t") + _("If Serenity_Current_Stage.StageID < 0 Or Serenity_Current_Stage.StageID >= ") + wxString::Format(_("%i"), (int)stages.size()) + _(" Then\n");
 	sn_api += _("\t\t") + _("Return -1\n");
 	sn_api += _("\t") + _("End If\n");
-	sn_api += _("\t") + _("If actor_index < 0 Or actor_index >= Serenity_Global_Stage_List[Serenity_Current_Stage.StageID].ActorCount Then\n");
+	sn_api += _("\t") + _("If actor_index < 0 Or actor_index >= ArraySize(Serenity_Global_Actor_List, 1) Then\n");
 	sn_api += _("\t\t") + _("Return -1\n");
 	sn_api += _("\t") + _("End If\n");
 	sn_api += _("\t") + _("Return Serenity_Global_Actor_List[actor_index].SphereRadius\n");
@@ -1919,7 +1934,7 @@ bool serenity_project::genRCBasicProject()
 	sn_api += _("\t") + _("If Serenity_Current_Stage.StageID < 0 Or Serenity_Current_Stage.StageID >= ") + wxString::Format(_("%i"), (int)stages.size()) + _(" Then\n");
 	sn_api += _("\t\t") + _("Return -1\n");
 	sn_api += _("\t") + _("End If\n");
-	sn_api += _("\t") + _("If actor_index < 0 Or actor_index >= Serenity_Global_Stage_List[Serenity_Current_Stage.StageID].ActorCount Then\n");
+	sn_api += _("\t") + _("If actor_index < 0 Or actor_index >= ArraySize(Serenity_Global_Actor_List, 1) Then\n");
 	sn_api += _("\t\t") + _("Return -1\n");
 	sn_api += _("\t") + _("End If\n");
 	sn_api += _("\t") + _("Return MatrixValue(Serenity_Global_Stage_List[Serenity_Current_Stage.StageID].Actor_Matrix, 1, actor_index)\n");
@@ -2000,6 +2015,32 @@ bool serenity_project::genRCBasicProject()
 	sn_api += _("\t") + _("End If\n");
 	sn_api += _("\t") + _("Return Serenity_Global_Stage_List[Serenity_Current_Stage.StageID].GroupName$[group_index]\n");
 	sn_api += _("End Function\n\n");
+
+
+	sn_api += _("Function Serenity_GetActorIndexFromGroup(group_index, group_actor_index)\n");
+	sn_api += _("\t") + _("If Serenity_Current_Stage.StageID < 0 Or Serenity_Current_Stage.StageID >= 2 Then\n");
+    sn_api += _("\t\t") + _("Return -1\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("If group_actor_index < 0 Or group_actor_index >= Serenity_Global_Stage_List[Serenity_Current_Stage.StageID].GroupCount Then\n");
+    sn_api += _("\t\t") + _("Return -1\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("g_actor_count = 0\n");
+	sn_api += _("\t") + _("For i = 0 To Serenity_Global_Stage_List[Serenity_Current_Stage.StageID].ActorCount-1\n");
+    sn_api += _("\t\t") + _("actor_index = MatrixValue(Serenity_Global_Stage_List[Serenity_Current_Stage.StageID].Actor_Matrix, 0, i)\n");
+    sn_api += _("\t\t") + _("If actor_index < 0 Then\n");
+    sn_api += _("\t\t\t") + _("Continue\n");
+    sn_api += _("\t\t") + _("End If\n");
+    sn_api += _("\t\t") + _("actor_group = MatrixValue(Serenity_Global_Stage_List[Serenity_Current_Stage.StageID].Actor_Matrix, 1, i)\n");
+    sn_api += _("\t\t") + _("If actor_group <> group_index Then\n");
+    sn_api += _("\t\t\t") + _("Continue\n");
+    sn_api += _("\t\t") + _("End If\n");
+    sn_api += _("\t\t") + _("If g_actor_count = group_actor_index Then\n");
+    sn_api += _("\t\t\t") + _("Return actor_index\n");
+    sn_api += _("\t\t") + _("End If\n");
+    sn_api += _("\t\t") + _("g_actor_count = g_actor_count + 1\n");
+	sn_api += _("\t") + _("Next	\n");
+	sn_api += _("\t") + _("Return -1\n");
+    sn_api += _("End Function\n\n");
 
 
 	pfile.Write(_("\'-----------------DEFINE STAGES---------------") + _("\n"));
@@ -5536,6 +5577,32 @@ wxString serenity_project::genMeshID()
 	bool name_found = false;
 	int name_n = 0;
 
+	wxDir dir;
+	wxString filename;
+	wxString filespec = _T("*.*");
+	wxArrayString files_list;
+
+	wxFileName data_path(project_path.GetAbsolutePath());
+	data_path.AppendDir("data");
+	data_path.SetFullName(_(""));
+
+	//std::cout << "Check Dir: " << data_path.GetAbsolutePath().ToStdString() << std::endl;
+
+	if ( dir.Open( data_path.GetAbsolutePath() ) )
+	{
+		bool cont = dir.GetFirst(&filename, filespec, wxDIR_FILES);
+		while ( cont )
+		{
+		    filename.Replace(_(".sna"), _(""));
+		    filename.Replace(_(".snmd"), _(""));
+			files_list.Add( filename );
+			cont = dir.GetNext(&filename);
+		}
+	}
+
+	files_list.Sort();
+
+
 	while(!name_found)
 	{
 		new_name = tmp_name + wxString::Format(_("%d"), name_n);
@@ -5551,6 +5618,16 @@ wxString serenity_project::genMeshID()
 				break;
 			}
 		}
+
+		for(int i = 0; i < files_list.size(); i++)
+        {
+            //std::cout << "cmp: " << files_list[i].ToStdString() << " != " << new_name << std::endl;
+            if(files_list[i].compare(new_name)==0)
+            {
+                name_found = false;
+                break;
+            }
+        }
 	}
 
 	return new_name;
