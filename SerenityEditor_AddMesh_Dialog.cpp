@@ -18,14 +18,46 @@ void SerenityEditor_AddMesh_Dialog::refresh_list()
 	wxString filespec = _T("*.*");
 	wxArrayString files_list;
 
-	if ( dir.Open( model_path.GetAbsolutePath() ) )
+	wxArrayString mesh_ext;
+
+	mesh_ext.Add(_("obj"));
+	mesh_ext.Add(_("an8"));
+	mesh_ext.Add(_("b3d"));
+	mesh_ext.Add(_("x"));
+	mesh_ext.Add(_("ms3d"));
+	mesh_ext.Add(_("md2"));
+	mesh_ext.Add(_("md3"));
+	mesh_ext.Add(_("irr"));
+	mesh_ext.Add(_("irrmesh"));
+	mesh_ext.Add(_("3ds"));
+	mesh_ext.Add(_("lwo"));
+	mesh_ext.Add(_("xml"));
+	mesh_ext.Add(_("dae"));
+	mesh_ext.Add(_("my3d"));
+	mesh_ext.Add(_("lmts"));
+	mesh_ext.Add(_("bsp"));
+	mesh_ext.Add(_("dmf"));
+	mesh_ext.Add(_("oct"));
+	mesh_ext.Add(_("csm"));
+	mesh_ext.Add(_("stl"));
+	mesh_ext.Add(_("ply"));
+
+
+	for(int i = 0; i < mesh_ext.size(); i++)
 	{
-		bool cont = dir.GetFirst(&filename, filespec, wxDIR_FILES);
-		while ( cont )
-		{
-			files_list.Add( filename );
-			cont = dir.GetNext(&filename);
-		}
+	    filespec = _("*.") + mesh_ext.Item(i);
+
+	    if ( dir.Open( model_path.GetAbsolutePath() ) )
+        {
+            bool cont = dir.GetFirst(&filename, filespec, wxDIR_FILES);
+            while ( cont )
+            {
+                files_list.Add( filename );
+                cont = dir.GetNext(&filename);
+            }
+        }
+
+        dir.Close();
 	}
 
 	files_list.Sort();
