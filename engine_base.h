@@ -75,7 +75,7 @@ public:
 	wxString genTextureID(wxString filename); //generate a texture id name if needed
 	wxString genMaterialID(); //generate a material id name if needed
 	wxString genMaterialFileName(wxString tmp_name);
-	wxString genMeshID(); //generate a mesh id name if needed
+	wxString genMeshID(wxString filename); //generate a mesh id name if needed
 	wxString genMeshAnimationID(int mesh_index); //generate a mesh id name if needed
 	wxString genAN8ID(); //generate a anim8or project id name if needed
 	wxString genActorID(int stage_index);

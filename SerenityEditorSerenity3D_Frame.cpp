@@ -1069,7 +1069,7 @@ void SerenityEditorSerenity3D_Frame::OnMainEditorNotebookPageChanged( wxAuiNoteb
 		if(!isValidID(wxString::FromUTF8(project.meshes[n].id_name.c_str()), RC_ID_MESH))
 		{
 			wxMessageBox(_("Warning: Mesh ID is invalid. A default Mesh ID will be generated."));
-			project.meshes[n].id_name = project.genMeshID().ToStdString();
+			project.meshes[n].id_name = project.genMeshID(wxString(project.meshes[n].file)).ToStdString();
 		}
 
 		//Make Sure animation ID is valid on current texture
@@ -8695,7 +8695,7 @@ void SerenityEditorSerenity3D_Frame::On_Mesh_MeshList_Select( wxCommandEvent& ev
 		if(!isValidID(wxString::FromUTF8(project.meshes[n].id_name.c_str()), RC_ID_MESH))
 		{
 			wxMessageBox(_("Warning: Mesh ID is invalid. A default Mesh ID will be generated."));
-			project.meshes[n].id_name = project.genMeshID().ToStdString();
+			project.meshes[n].id_name = project.genMeshID(project.meshes[n].file).ToStdString();
 		}
 
 		//Make Sure animation ID is valid on current texture
@@ -8807,10 +8807,39 @@ void SerenityEditorSerenity3D_Frame::On_Mesh_Create_ButtonClick( wxCommandEvent&
 
 	wxString mesh_id = dialog->mesh_id;
 
+	wxString cm_shape_type = _("");
+
+	switch(dialog->shape_type)
+	{
+        case CREATE_MESH_SHAPE_CONE:
+        {
+            cm_shape_type = _("cone_mesh");
+        }
+        break;
+
+        case CREATE_MESH_SHAPE_CYLINDERER:
+        {
+            cm_shape_type = _("cylinder_mesh");
+        }
+        break;
+
+        case CREATE_MESH_SHAPE_PLANE:
+        {
+            cm_shape_type = _("plane_mesh");
+        }
+        break;
+
+        default:
+        {
+            cm_shape_type = _("primitive_mesh");
+        }
+        break;
+	}
+
 	if(!isValidID(mesh_id, RC_ID_MESH))
 	{
 		wxMessageBox(_("Warning: Mesh ID is invalid. A default Mesh ID will be generated."));
-		mesh_id = project.genMeshID().ToStdString();
+		mesh_id = project.genMeshID(cm_shape_type).ToStdString();
 	}
 
 	int mesh_index = project.meshes.size();
@@ -8935,7 +8964,7 @@ void SerenityEditorSerenity3D_Frame::On_Mesh_Load_ButtonClick( wxCommandEvent& e
 		param.push_back(p_obj);
 
 		p_obj.key = _("id");
-		id_name = project.genMeshID();
+		id_name = project.genMeshID(dialog->selected_files[i]);
 		p_obj.val = id_name;
 		param.push_back(p_obj);
 
@@ -9054,7 +9083,7 @@ void SerenityEditorSerenity3D_Frame::On_Mesh_Load_ButtonClick( wxCommandEvent& e
 			    project.meshes[mesh_index].collider_id_name = "NONE";
                 project.meshes[mesh_index].tmp_has_collider = false;
 
-                std::cout << "MESH_MATERIALS: " << project.meshes[mesh_index].mesh->getMeshBufferCount() << ", " << project.meshes[mesh_index].mesh->getMesh(0)->getMeshBufferCount() << std::endl;
+                //std::cout << "MESH_MATERIALS: " << project.meshes[mesh_index].mesh->getMeshBufferCount() << ", " << project.meshes[mesh_index].mesh->getMesh(0)->getMeshBufferCount() << std::endl;
 
                 for(int mat_index = 0; mat_index < project.meshes[mesh_index].mesh->getMeshBufferCount(); mat_index++)
                 {

@@ -1,8 +1,8 @@
 # depslib dependency file v1.0
-1791176329 source:/home/n00b/Projects/SerenityEngine/Serenity3D_Editor.cpp
+1791267960 source:/home/n00b/Projects/SerenityEngine/Serenity3D_Editor.cpp
 	"Serenity3D_Editor.h"
 
-1791176329 /home/n00b/Projects/SerenityEngine/Serenity3D_Editor.h
+1791268460 /home/n00b/Projects/SerenityEngine/Serenity3D_Editor.h
 	<wx/artprov.h>
 	<wx/xrc/xmlres.h>
 	<wx/string.h>
@@ -1433,7 +1433,7 @@
 	"wx/icon.h"
 	"wx/aui/auibook.h"
 
-1791256978 source:/home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.cpp
+1791263226 source:/home/n00b/Projects/SerenityEngine/SerenityEditorSerenity3D_Frame.cpp
 	<wx/stdpaths.h>
 	<wx/propgrid/manager.h>
 	<wx/propgrid/propgridpagestate.h>
@@ -9705,7 +9705,7 @@
 	"engine_base.h"
 	"rc_stage.h"
 
-1791254511 /home/n00b/Projects/SerenityEngine/engine_base.h
+1791260713 /home/n00b/Projects/SerenityEngine/engine_base.h
 	<wx/wx.h>
 	<wx/filename.h>
 	<vector>
@@ -9730,7 +9730,7 @@
 
 1731957962 /usr/include/wx-3.2/wx/unix/stdpaths.h
 
-1791255641 source:/home/n00b/Projects/SerenityEngine/engine_base.cpp
+1791266354 source:/home/n00b/Projects/SerenityEngine/engine_base.cpp
 	<wx/wx.h>
 	<wx/filename.h>
 	<wx/dir.h>

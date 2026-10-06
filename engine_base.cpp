@@ -5490,6 +5490,10 @@ wxString serenity_project::genTextureID(wxString filename)
 {
 	wxString tmp_name = filename;
 	tmp_name.Replace(_("."), _("_"));
+	tmp_name.Replace(_(" "), _("_"));
+	tmp_name.Replace(_("/t"), _("_"));
+	tmp_name.Replace(_("/r"), _("_"));
+	tmp_name.Replace(_("/n"), _("_"));
 
 	wxString new_name = _("");
 
@@ -5571,9 +5575,15 @@ wxString serenity_project::genMaterialFileName(wxString tmp_name)
 	return new_name;
 }
 
-wxString serenity_project::genMeshID()
+wxString serenity_project::genMeshID(wxString mesh_filename)
 {
-	wxString tmp_name = _("mesh_id");
+	wxString tmp_name = mesh_filename;
+	tmp_name.Replace(_("."), _("_"));
+	tmp_name.Replace(_(" "), _("_"));
+	tmp_name.Replace(_("/t"), _("_"));
+	tmp_name.Replace(_("/r"), _("_"));
+	tmp_name.Replace(_("/n"), _("_"));
+
 	wxString new_name = _("");
 
 	bool name_found = false;
@@ -5607,7 +5617,7 @@ wxString serenity_project::genMeshID()
 
 	while(!name_found)
 	{
-		new_name = tmp_name + wxString::Format(_("%d"), name_n);
+		new_name = tmp_name + ( name_n > 0 ? wxString::Format(_("%d"), name_n) : _(""));
 		name_n++;
 
 		name_found = true;

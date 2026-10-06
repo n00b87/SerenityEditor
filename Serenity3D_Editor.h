@@ -483,10 +483,27 @@ class Serenity3D_Frame : public wxFrame
 		wxButton* m_mesh_removeMesh_button;
 		wxListBox* m_mesh_mesh_listBox;
 		wxPanel* m_panel291;
+		wxSplitterWindow* m_splitter61;
+		wxPanel* m_panel63;
 		wxPanel* m_mesh_animationPreview_panel;
 		wxToolBar* m_toolBar2;
 		wxToolBarToolBase* m_mesh_meshAnimation_play_tool;
 		wxToolBarToolBase* m_mesh_meshAnimation_stop_tool;
+		wxPanel* m_panel43;
+		wxPanel* m_panel46;
+		wxStaticText* m_staticText33;
+		wxButton* m_mesh_newAnimation_button;
+		wxButton* m_mesh_deleteAnimation_button;
+		wxListBox* m_mesh_meshAnimation_listBox;
+		wxPanel* m_panel451;
+		wxStaticText* m_staticText27;
+		wxTextCtrl* m_mesh_animationID_textCtrl;
+		wxStaticText* m_staticText271;
+		wxSpinCtrl* m_mesh_animationStartFrame_spinCtrl;
+		wxStaticText* m_staticText2711;
+		wxSpinCtrl* m_mesh_animationEndFrame_spinCtrl;
+		wxStaticText* m_staticText2712;
+		wxSpinCtrl* m_mesh_animationSpeed_spinCtrl;
 		wxPanel* m_panel41;
 		wxPanel* m_panel33;
 		wxStaticText* m_staticText321;
@@ -504,21 +521,6 @@ class Serenity3D_Frame : public wxFrame
 		wxButton* m_button53;
 		wxButton* m_clear_button;
 		wxListBox* m_mesh_materialList_listBox;
-		wxPanel* m_panel43;
-		wxPanel* m_panel46;
-		wxStaticText* m_staticText33;
-		wxButton* m_mesh_newAnimation_button;
-		wxButton* m_mesh_deleteAnimation_button;
-		wxListBox* m_mesh_meshAnimation_listBox;
-		wxPanel* m_panel451;
-		wxStaticText* m_staticText27;
-		wxTextCtrl* m_mesh_animationID_textCtrl;
-		wxStaticText* m_staticText271;
-		wxSpinCtrl* m_mesh_animationStartFrame_spinCtrl;
-		wxStaticText* m_staticText2711;
-		wxSpinCtrl* m_mesh_animationEndFrame_spinCtrl;
-		wxStaticText* m_staticText2712;
-		wxSpinCtrl* m_mesh_animationSpeed_spinCtrl;
 		wxPanel* m_materialDB_panel;
 		wxSplitterWindow* m_splitter4;
 		wxPanel* m_panel37;
@@ -681,12 +683,6 @@ class Serenity3D_Frame : public wxFrame
 		virtual void OnAnimationPreviewSize( wxSizeEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_previewPlay( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_previewStop( wxCommandEvent& event ) { event.Skip(); }
-		virtual void On_Mesh_MeshID( wxCommandEvent& event ) { event.Skip(); }
-		virtual void On_Mesh_MeshCollider_Select( wxCommandEvent& event ) { event.Skip(); }
-		virtual void On_Mesh_AddMaterial( wxCommandEvent& event ) { event.Skip(); }
-		virtual void On_Mesh_RemoveMaterial( wxCommandEvent& event ) { event.Skip(); }
-		virtual void On_Mesh_SetMaterial( wxCommandEvent& event ) { event.Skip(); }
-		virtual void On_Mesh_Material_Clear( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_NewAnimation( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_DeleteAnimation( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_AnimationList_Select( wxCommandEvent& event ) { event.Skip(); }
@@ -694,6 +690,12 @@ class Serenity3D_Frame : public wxFrame
 		virtual void On_Mesh_Animation_StartFrame( wxSpinEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_Animation_EndFrame( wxSpinEvent& event ) { event.Skip(); }
 		virtual void On_Mesh_Animation_Speed( wxSpinEvent& event ) { event.Skip(); }
+		virtual void On_Mesh_MeshID( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Mesh_MeshCollider_Select( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Mesh_AddMaterial( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Mesh_RemoveMaterial( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Mesh_SetMaterial( wxCommandEvent& event ) { event.Skip(); }
+		virtual void On_Mesh_Material_Clear( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Material_NewMaterial_ButtonClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Material_LoadMaterial_ButtonClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Material_SaveMaterial_ButtonClicked( wxCommandEvent& event ) { event.Skip(); }
@@ -744,7 +746,7 @@ class Serenity3D_Frame : public wxFrame
 
 	public:
 
-		Serenity3D_Frame( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Serenity"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 1368,795 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
+		Serenity3D_Frame( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Serenity"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 1527,795 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
 
 		~Serenity3D_Frame();
 
@@ -764,6 +766,12 @@ class Serenity3D_Frame : public wxFrame
 		{
 			m_splitter51->SetSashPosition( 300 );
 			m_splitter51->Disconnect( wxEVT_IDLE, wxIdleEventHandler( Serenity3D_Frame::m_splitter51OnIdle ), NULL, this );
+		}
+
+		void m_splitter61OnIdle( wxIdleEvent& )
+		{
+			m_splitter61->SetSashPosition( 1100 );
+			m_splitter61->Disconnect( wxEVT_IDLE, wxIdleEventHandler( Serenity3D_Frame::m_splitter61OnIdle ), NULL, this );
 		}
 
 		void m_splitter4OnIdle( wxIdleEvent& )
