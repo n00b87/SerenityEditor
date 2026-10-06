@@ -1056,7 +1056,7 @@ void SerenityEditorSerenity3D_Frame::OnMainEditorNotebookPageChanged( wxAuiNoteb
 		if(!isValidID(wxString::FromUTF8(project.textures[textureTab_selected_texture_project_index].id_name.c_str()), RC_ID_TEXTURE))
 		{
 			wxMessageBox(_("Warning: Texture ID is invalid. A default Texture ID will be generated."));
-			project.textures[textureTab_selected_texture_project_index].id_name = project.genTextureID().ToStdString();
+			project.textures[textureTab_selected_texture_project_index].id_name = project.genTextureID(wxString(project.textures[textureTab_selected_texture_project_index].file)).ToStdString();
 		}
 	}
 
@@ -9054,6 +9054,13 @@ void SerenityEditorSerenity3D_Frame::On_Mesh_Load_ButtonClick( wxCommandEvent& e
 			    project.meshes[mesh_index].collider_id_name = "NONE";
                 project.meshes[mesh_index].tmp_has_collider = false;
 
+                std::cout << "MESH_MATERIALS: " << project.meshes[mesh_index].mesh->getMeshBufferCount() << ", " << project.meshes[mesh_index].mesh->getMesh(0)->getMeshBufferCount() << std::endl;
+
+                for(int mat_index = 0; mat_index < project.meshes[mesh_index].mesh->getMeshBufferCount(); mat_index++)
+                {
+                    project.meshes[mesh_index].material_index.push_back(-1);
+                }
+
 				if(project.meshes[mesh_index].id_name.compare("")!=0)
 					m_mesh_mesh_listBox->AppendAndEnsureVisible(wxString::FromUTF8(project.meshes[mesh_index].id_name));
 			}
@@ -10764,7 +10771,7 @@ void SerenityEditorSerenity3D_Frame::On_Texture_AddTexture_ButtonClicked( wxComm
 		param.push_back(param_obj);
 
 		param_obj.key = _("id");
-		param_obj.val = project.genTextureID();
+		param_obj.val = project.genTextureID(dialog->selected_files[i]);
 		param.push_back(param_obj);
 
 		param_obj.key = _("file");
@@ -10848,7 +10855,7 @@ void SerenityEditorSerenity3D_Frame::On_Texture_TextureList_Select( wxCommandEve
 		if(!isValidID(wxString::FromUTF8(project.textures[textureTab_selected_texture_project_index].id_name), RC_ID_TEXTURE))
 		{
 			wxMessageBox(_("Warning: Texture ID is invalid. A default Texture ID will be generated."));
-			project.textures[textureTab_selected_texture_project_index].id_name = project.genTextureID().ToStdString();
+			project.textures[textureTab_selected_texture_project_index].id_name = project.genTextureID(wxString(project.textures[textureTab_selected_texture_project_index].file)).ToStdString();
 
 			wxMessageBox(_("NEW ID: ") + wxString::FromUTF8(project.textures[textureTab_selected_texture_project_index].id_name.c_str()));
 

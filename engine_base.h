@@ -72,7 +72,7 @@ public:
 	void save_stage(int stage_id);
 	void remove_stage(int stage_id);
 
-	wxString genTextureID(); //generate a texture id name if needed
+	wxString genTextureID(wxString filename); //generate a texture id name if needed
 	wxString genMaterialID(); //generate a material id name if needed
 	wxString genMaterialFileName(wxString tmp_name);
 	wxString genMeshID(); //generate a mesh id name if needed

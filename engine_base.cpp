@@ -5399,7 +5399,7 @@ rc_material serenity_project::loadMaterialFile(wxString mfile, wxString mID)
 				if(!texture_found)
 				{
 					//load texture here
-					wxString new_texture_id_name = genTextureID();
+					wxString new_texture_id_name = genTextureID(filename);
 					std::vector<serenity_project_dict_obj> tx_param;
 					serenity_project_dict_obj t_obj;
 
@@ -5486,9 +5486,11 @@ rc_material serenity_project::loadMaterialFile(wxString mfile, wxString mID)
 	return p_mat;
 }
 
-wxString serenity_project::genTextureID()
+wxString serenity_project::genTextureID(wxString filename)
 {
-	wxString tmp_name = _("texture_id");
+	wxString tmp_name = filename;
+	tmp_name.Replace(_("."), _("_"));
+
 	wxString new_name = _("");
 
 	bool name_found = false;
@@ -5496,7 +5498,7 @@ wxString serenity_project::genTextureID()
 
 	while(!name_found)
 	{
-		new_name = tmp_name + wxString::Format(_("%d"), name_n);
+		new_name = tmp_name + ( name_n > 0 ? wxString::Format(_("%d"), name_n) : _("") );
 		name_n++;
 
 		name_found = true;
