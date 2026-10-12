@@ -391,6 +391,8 @@ class rc_stage
 		bool idIsActive;
 		bool clear_flag = false;
 
+		bool use_tmp_hmap = false;
+
 		rc_stage();
 		~rc_stage();
 

@@ -2178,14 +2178,87 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 
 	m_toolBar3->AddSeparator();
 
+	m_tool31 = m_toolBar3->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/undo.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxT("Undo"), wxEmptyString, NULL );
+
+	m_tool32 = m_toolBar3->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/redo.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxT("Redo"), wxEmptyString, NULL );
+
+	m_toolBar3->AddSeparator();
+
 	m_tool36 = m_toolBar3->AddTool( wxID_ANY, wxT("tool"), wxBitmap( wxT("icons/build.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxT("Generate Code"), wxEmptyString, NULL );
 
 	m_toolBar3->Realize();
+
+	m_menubar1 = new wxMenuBar( 0 );
+	m_menu1 = new wxMenu();
+	wxMenuItem* m_menuItem1;
+	m_menuItem1 = new wxMenuItem( m_menu1, wxID_ANY, wxString( wxT("New Project") ) + wxT('\t') + wxT("CTRL+N"), wxEmptyString, wxITEM_NORMAL );
+	m_menu1->Append( m_menuItem1 );
+
+	wxMenuItem* m_menuItem2;
+	m_menuItem2 = new wxMenuItem( m_menu1, wxID_ANY, wxString( wxT("Open") ) + wxT('\t') + wxT("CTRL+O"), wxEmptyString, wxITEM_NORMAL );
+	m_menu1->Append( m_menuItem2 );
+
+	wxMenuItem* m_menuItem3;
+	m_menuItem3 = new wxMenuItem( m_menu1, wxID_ANY, wxString( wxT("Save") ) + wxT('\t') + wxT("CTRL+S"), wxEmptyString, wxITEM_NORMAL );
+	m_menu1->Append( m_menuItem3 );
+
+	m_menu1->AppendSeparator();
+
+	wxMenuItem* m_menuItem11;
+	m_menuItem11 = new wxMenuItem( m_menu1, wxID_ANY, wxString( wxT("Generate Code") ) , wxEmptyString, wxITEM_NORMAL );
+	m_menu1->Append( m_menuItem11 );
+
+	m_menu1->AppendSeparator();
+
+	m_recentProjects_menu = new wxMenu();
+	wxMenuItem* m_recentProjects_menuItem = new wxMenuItem( m_menu1, wxID_ANY, wxT("Recent Projects"), wxEmptyString, wxITEM_NORMAL, m_recentProjects_menu );
+	m_menu1->Append( m_recentProjects_menuItem );
+
+	m_menu1->AppendSeparator();
+
+	wxMenuItem* m_menuItem4;
+	m_menuItem4 = new wxMenuItem( m_menu1, wxID_ANY, wxString( wxT("Exit") ) , wxEmptyString, wxITEM_NORMAL );
+	m_menu1->Append( m_menuItem4 );
+
+	m_menubar1->Append( m_menu1, wxT("Project") );
+
+	m_menu2 = new wxMenu();
+	wxMenuItem* m_menuItem6;
+	m_menuItem6 = new wxMenuItem( m_menu2, wxID_ANY, wxString( wxT("Undo") ) + wxT('\t') + wxT("CTRL+Z"), wxEmptyString, wxITEM_NORMAL );
+	m_menu2->Append( m_menuItem6 );
+
+	wxMenuItem* m_menuItem7;
+	m_menuItem7 = new wxMenuItem( m_menu2, wxID_ANY, wxString( wxT("Redo") ) + wxT('\t') + wxT("CTRL+Y"), wxEmptyString, wxITEM_NORMAL );
+	m_menu2->Append( m_menuItem7 );
+
+	m_menu2->AppendSeparator();
+
+	wxMenuItem* m_menuItem8;
+	m_menuItem8 = new wxMenuItem( m_menu2, wxID_ANY, wxString( wxT("Copy Actor") ) + wxT('\t') + wxT("CTRL+C"), wxEmptyString, wxITEM_NORMAL );
+	m_menu2->Append( m_menuItem8 );
+
+	m_menu2->AppendSeparator();
+
+	wxMenuItem* m_menuItem9;
+	m_menuItem9 = new wxMenuItem( m_menu2, wxID_ANY, wxString( wxT("Delete Actor") ) + wxT('\t') + wxT("Delete"), wxEmptyString, wxITEM_NORMAL );
+	m_menu2->Append( m_menuItem9 );
+
+	m_menubar1->Append( m_menu2, wxT("Edit") );
+
+	m_menu3 = new wxMenu();
+	wxMenuItem* m_menuItem10;
+	m_menuItem10 = new wxMenuItem( m_menu3, wxID_ANY, wxString( wxT("About") ) + wxT('\t') + wxT("F1"), wxEmptyString, wxITEM_NORMAL );
+	m_menu3->Append( m_menuItem10 );
+
+	m_menubar1->Append( m_menu3, wxT("Help") );
+
+	this->SetMenuBar( m_menubar1 );
 
 
 	this->Centre( wxBOTH );
 
 	// Connect Events
+	this->Connect( wxEVT_ACTIVATE, wxActivateEventHandler( Serenity3D_Frame::OnActivate ) );
 	m_editorMain_auinotebook->Connect( wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGED, wxAuiNotebookEventHandler( Serenity3D_Frame::OnMainEditorNotebookPageChanged ), NULL, this );
 	this->Connect( m_s3d_target_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DTargetClicked ) );
 	this->Connect( m_s3d_select_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DSelectClicked ) );
@@ -2308,12 +2381,25 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	this->Connect( m_tool33->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnNewProjectMenuSelection ) );
 	this->Connect( m_tool34->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnLoadProjectMenuSelection ) );
 	this->Connect( m_tool35->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnSaveProjectMenuSelection ) );
+	this->Connect( m_tool31->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnStageUndo ) );
+	this->Connect( m_tool32->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnStageRedo ) );
 	this->Connect( m_tool36->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnCodeGen ) );
+	m_menu1->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( Serenity3D_Frame::OnNewProjectMenuSelection ), this, m_menuItem1->GetId());
+	m_menu1->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( Serenity3D_Frame::OnLoadProjectMenuSelection ), this, m_menuItem2->GetId());
+	m_menu1->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( Serenity3D_Frame::OnSaveProjectMenuSelection ), this, m_menuItem3->GetId());
+	m_menu1->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( Serenity3D_Frame::OnCodeGen ), this, m_menuItem11->GetId());
+	m_menu1->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( Serenity3D_Frame::OnExitMenuSelection ), this, m_menuItem4->GetId());
+	m_menu2->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( Serenity3D_Frame::OnStageUndo ), this, m_menuItem6->GetId());
+	m_menu2->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( Serenity3D_Frame::OnStageRedo ), this, m_menuItem7->GetId());
+	m_menu2->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_CopyActor ), this, m_menuItem8->GetId());
+	m_menu2->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( Serenity3D_Frame::On_Stage_DeleteActor ), this, m_menuItem9->GetId());
+	m_menu3->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( Serenity3D_Frame::OnAbout ), this, m_menuItem10->GetId());
 }
 
 Serenity3D_Frame::~Serenity3D_Frame()
 {
 	// Disconnect Events
+	this->Disconnect( wxEVT_ACTIVATE, wxActivateEventHandler( Serenity3D_Frame::OnActivate ) );
 	m_editorMain_auinotebook->Disconnect( wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGED, wxAuiNotebookEventHandler( Serenity3D_Frame::OnMainEditorNotebookPageChanged ), NULL, this );
 	this->Disconnect( m_s3d_target_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DTargetClicked ) );
 	this->Disconnect( m_s3d_select_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnS3DSelectClicked ) );
@@ -2436,6 +2522,8 @@ Serenity3D_Frame::~Serenity3D_Frame()
 	this->Disconnect( m_tool33->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnNewProjectMenuSelection ) );
 	this->Disconnect( m_tool34->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnLoadProjectMenuSelection ) );
 	this->Disconnect( m_tool35->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnSaveProjectMenuSelection ) );
+	this->Disconnect( m_tool31->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnStageUndo ) );
+	this->Disconnect( m_tool32->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnStageRedo ) );
 	this->Disconnect( m_tool36->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::OnCodeGen ) );
 
 }

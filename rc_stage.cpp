@@ -137,6 +137,8 @@ rc_stage::rc_stage()
 {
 	idIsActive=true;
 
+	use_tmp_hmap = false;
+
 	sky.left_texture_index = -1;
 	sky.right_texture_index = -1;
 	sky.top_texture_index = -1;

@@ -39,6 +39,7 @@
 #include <wx/toolbar.h>
 #include <wx/textctrl.h>
 #include <wx/statusbr.h>
+#include <wx/menu.h>
 #include <wx/frame.h>
 #include <wx/srchctrl.h>
 #include <wx/dialog.h>
@@ -616,9 +617,17 @@ class Serenity3D_Frame : public wxFrame
 		wxToolBarToolBase* m_tool33;
 		wxToolBarToolBase* m_tool34;
 		wxToolBarToolBase* m_tool35;
+		wxToolBarToolBase* m_tool31;
+		wxToolBarToolBase* m_tool32;
 		wxToolBarToolBase* m_tool36;
+		wxMenuBar* m_menubar1;
+		wxMenu* m_menu1;
+		wxMenu* m_recentProjects_menu;
+		wxMenu* m_menu2;
+		wxMenu* m_menu3;
 
 		// Virtual event handlers, override them in your derived class
+		virtual void OnActivate( wxActivateEvent& event ) { event.Skip(); }
 		virtual void OnMainEditorNotebookPageChanged( wxAuiNotebookEvent& event ) { event.Skip(); }
 		virtual void OnS3DTargetClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnS3DSelectClicked( wxCommandEvent& event ) { event.Skip(); }
@@ -741,7 +750,11 @@ class Serenity3D_Frame : public wxFrame
 		virtual void OnNewProjectMenuSelection( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnLoadProjectMenuSelection( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnSaveProjectMenuSelection( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnStageUndo( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnStageRedo( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnCodeGen( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnExitMenuSelection( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnAbout( wxCommandEvent& event ) { event.Skip(); }
 
 
 	public:

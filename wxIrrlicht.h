@@ -72,6 +72,11 @@ struct font_obj
     bool active = false;
 };
 
+struct terrain_data
+{
+    irr::core::array<irr::video::S3DVertex2TCoords> t_vertices;
+};
+
 struct actor_object
 {
 	int actor_index;
@@ -92,6 +97,8 @@ struct actor_object
 	bool isTerrain = false;
 
 	irr::core::vector3df t_pos; //used for terrain
+
+	irr::core::array<terrain_data> t_buffer;
 };
 
 struct actor_icon
@@ -179,6 +186,8 @@ class wxIrrlicht : public wxControl {
         int stage_edit_tool = -1;
         irr::core::array<actor_object> selected_actors;
         irr::core::array<actor_object> scene_actors;
+        bool start_transform_flag = false;
+        bool start_terrain_flag = false;
         axis_obj transform_tool_widget;
 
         irr::scene::ISceneNode* test_material_object = NULL;
@@ -305,6 +314,8 @@ class wxIrrlicht : public wxControl {
         bool VIEW_KEY_D = false;
         bool VIEW_KEY_R = false;
         bool VIEW_KEY_F = false;
+
+        bool VIEW_KEY_CTRL_Z = false;
 
         #ifdef __linux__
         GdkWindow* gdkWindow;
