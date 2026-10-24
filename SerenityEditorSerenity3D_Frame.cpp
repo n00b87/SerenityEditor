@@ -395,7 +395,152 @@ Serenity3D_Frame( parent )
 	m_stage_propertyGridManager->SelectPage(m_propertyGridPage13);
 
 	m_editorMain_auinotebook->SetSelection(0);
+
+
+
+	// Recent Projects
+	wxFileName data_path = editor_path;
+	data_path.AppendDir(_("data"));
+	data_path.SetFullName(_("recent_projects.data"));
+
+	max_recent_projects = 5;
+
+	if(data_path.Exists())
+    {
+        wxFile recent_data_file(data_path.GetAbsolutePath());
+
+        if(recent_data_file.IsOpened())
+        {
+            wxString rdata = _("");
+            recent_data_file.ReadAll(&rdata);
+            recent_data_file.Close();
+
+            rdata += _("\n");
+            wxString current_line = _("");
+
+            int ln_num = 0;
+
+            for(int i = 0; i < rdata.Length(); i++)
+            {
+                if(ln_num >= max_recent_projects)
+                    break;
+
+                wxString c = rdata.substr(i, 1);
+
+                if(c.compare(_("\n"))==0)
+                {
+                    wxFileName fname(current_line);
+
+                    if(fname.Exists())
+                    {
+                        serenity_recent_project p;
+                        p.project_path = fname;
+                        p.m_item = new wxMenuItem( m_recentProjects_menu, wxID_ANY, current_line, wxEmptyString, wxITEM_NORMAL );
+                        m_recentProjects_menu->Append(p.m_item);
+                        m_recentProjects_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( SerenityEditorSerenity3D_Frame::OnRecentProject ), this, p.m_item->GetId());
+
+                        recent_projects.push_back(p);
+                    }
+
+                    //std::cout << "LINE: " << current_line.ToStdString() << std::endl;
+
+                    current_line = _("");
+                    ln_num++;
+                }
+                else
+                {
+                    current_line += c;
+                }
+            }
+        }
+    }
 }
+
+
+void SerenityEditorSerenity3D_Frame::addRecentProject()
+{
+    for(int i = 0; i < recent_projects.size(); i++)
+    {
+        m_recentProjects_menu->Remove(recent_projects[i].m_item->GetId());
+        delete recent_projects[i].m_item;
+    }
+
+    if(max_recent_projects > 0)
+    {
+        for(int i = recent_projects.size()-1; i >= (max_recent_projects-1); i--)
+        {
+            recent_projects.erase(recent_projects.begin() + i);
+        }
+    }
+
+    //if(current_found)
+    //    return;
+
+
+    wxFileName fname = project.project_path;
+
+	wxFileName pfile_path = fname;
+	pfile_path.SetFullName(wxString(project.project_name).Trim() + _(".snprj"));
+
+    serenity_recent_project p;
+    p.project_path = pfile_path;
+    recent_projects.insert(recent_projects.begin(), p);
+
+    for(int i = 0; i < recent_projects.size(); i++)
+    {
+        recent_projects[i].m_item = new wxMenuItem( m_recentProjects_menu, wxID_ANY, recent_projects[i].project_path.GetAbsolutePath(), wxEmptyString, wxITEM_NORMAL );
+        m_recentProjects_menu->Append(recent_projects[i].m_item);
+        m_recentProjects_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( SerenityEditorSerenity3D_Frame::OnRecentProject ), this, recent_projects[i].m_item->GetId());
+    }
+
+
+    wxFileName data_path = editor_path;
+	data_path.AppendDir(_("data"));
+	data_path.SetFullName(_("recent_projects.data"));
+
+	wxFile recent_data_file(data_path.GetAbsolutePath(), wxFile::write);
+
+    if(recent_data_file.IsOpened())
+    {
+        for(int i = 0; i < recent_projects.size(); i++)
+        {
+            //std::cout << "ADD: " << recent_projects[i].project_path.GetAbsolutePath().ToStdString() << std::endl;
+            recent_data_file.Write(recent_projects[i].project_path.GetAbsolutePath() + _("\n"));
+        }
+
+        //std::cout << std::endl;
+
+        recent_data_file.Close();
+    }
+}
+
+void SerenityEditorSerenity3D_Frame::OnRecentProject( wxCommandEvent& event )
+{
+    for(int i = 0; i < recent_projects.size(); i++)
+    {
+        if(recent_projects[i].m_item->GetId() == event.GetId())
+        {
+            //std::cout << "RECENT: " << recent_projects[i].m_item->GetItemLabelText().ToStdString() << std::endl;
+
+            wxFileName project_path = recent_projects[i].project_path;
+            project_path.SetFullName(_(""));
+
+            wxString project_name = recent_projects[i].project_path.GetName();
+
+
+            project.clear_flag = true;
+            project.clearProject();
+            load_project(recent_projects[i].project_path);
+
+            project.project_initialized = true;
+
+            m_main_statusBar->SetStatusText(_("Current Project:") + project.project_path.GetAbsolutePath());
+
+            break;
+        }
+    }
+}
+
 
 void SerenityEditorSerenity3D_Frame::preDialog()
 {
@@ -8523,6 +8668,8 @@ void SerenityEditorSerenity3D_Frame::OnLoadProjectMenuSelection( wxCommandEvent&
 
 	m_main_statusBar->SetStatusText(_("Current Project:") + project.project_path.GetAbsolutePath());
 
+	addRecentProject();
+
 	return;
 }
 
@@ -8628,6 +8775,8 @@ bool SerenityEditorSerenity3D_Frame::save_project()
 void SerenityEditorSerenity3D_Frame::OnSaveProjectMenuSelection( wxCommandEvent& event )
 {
 	save_project();
+
+	addRecentProject();
 
 	m_main_statusBar->SetStatusText(_("Current Project:") + project.project_path.GetAbsolutePath());
 }

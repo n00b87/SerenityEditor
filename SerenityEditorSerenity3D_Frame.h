@@ -96,6 +96,14 @@ struct Serenity_StageAction
     std::vector<Serenity_StageAction_Actor> action_actor;
 };
 
+
+struct serenity_recent_project
+{
+    wxMenuItem* m_item;
+    wxFileName project_path;
+};
+
+
 /** Implementing Serenity3D_Frame */
 class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
 {
@@ -104,6 +112,11 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
 		SerenityEditorSerenity3D_Frame( wxWindow* parent );
 
 		bool window_is_active = true;
+
+		std::vector<serenity_recent_project> recent_projects;
+		int max_recent_projects = 5;
+
+		void addRecentProject();
 
 		wxString editor_path;
 
@@ -280,6 +293,8 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
     	void OnSaveProjectMenuSelection( wxCommandEvent& event );
     	void OnExitMenuSelection( wxCommandEvent& event );
 		void OnAbout( wxCommandEvent& event );
+
+		void OnRecentProject( wxCommandEvent& event );
 
     	void OnCodeGen( wxCommandEvent& event );
     	void OnStageUndo( wxCommandEvent& event );
