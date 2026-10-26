@@ -154,6 +154,9 @@ actual_params->WindowId = (HWND)this->GetHandle();
 
     select_group_flag = false;
 
+    start_transform_flag = false;
+    start_terrain_flag = false;
+
 	back_buffer = m_pDriver->addRenderTargetTexture(irr::core::dimension2d<irr::u32>((irr::u32)2048, (irr::u32)2048), "rt", ECF_A8R8G8B8);
 
 	camera[0].camera.init(m_pSceneManager, 0, 0, 0);
@@ -1124,6 +1127,13 @@ void wxIrrlicht::OnKey(wxKeyEvent& event) {
 
     m_pDevice->postEventFromUser(sevt);
 
+    if(sevt.KeyInput.Control)
+    {
+        if(event.GetKeyCode() == irr::KEY_KEY_Z)
+        {
+            VIEW_KEY_CTRL_Z = true;
+        }
+    }
     if(event.GetKeyCode() == irr::KEY_KEY_W)
 	{
 		VIEW_KEY_W = sevt.KeyInput.PressedDown;
@@ -1736,6 +1746,29 @@ void wxIrrlicht::terrain_brush_control(irr::scene::ITerrainSceneNode* terrain, i
 
     if (terrainTimer_then30 < terrainTimer_now)
     {
+        if(start_terrain_flag)
+        {
+            irr::scene::IMesh* pMesh = terrain->getMesh();
+            selected_actors[0].t_buffer.clear();
+
+            for (int b=0; b<pMesh->getMeshBufferCount(); ++b)
+            {
+                terrain_data t_data;
+                irr::scene::IMeshBuffer* pMeshBuffer = pMesh->getMeshBuffer(b);
+                // skip mesh buffers that are not the right type
+                if (pMeshBuffer->getVertexType() != video::EVT_2TCOORDS) continue;
+
+                video::S3DVertex2TCoords* pVertices = (video::S3DVertex2TCoords*)pMeshBuffer->getVertices();
+
+                for(int index = 0; index < pMeshBuffer->getVertexCount(); index++)
+                {
+                    t_data.t_vertices.push_back(pVertices[index]);
+                }
+
+                selected_actors[0].t_buffer.push_back(t_data);
+            }
+        }
+
         // move the arrow to the nearest vertex ...
         //const position2di clickPosition = m_pDevice->getCursorControl()->getPosition();
         irr::core::position2di clickPosition(click_x, click_y);
@@ -2103,6 +2136,8 @@ void wxIrrlicht::OnUpdate()
 					move_tool_average_x = move_tool_average_x / num_actors;
 					move_tool_average_y = move_tool_average_y / num_actors;
 					move_tool_average_z = move_tool_average_z / num_actors;
+
+					start_transform_flag = true;
 				}
 
 				if(!left_drag_init)
@@ -2285,6 +2320,8 @@ void wxIrrlicht::OnUpdate()
 						else
 							selected_actors[i].t_start = irr::core::vector3df(0,0,0);
 					}
+
+					start_transform_flag = true;
 				}
 
 				if(!left_drag_init)
@@ -2433,6 +2470,8 @@ void wxIrrlicht::OnUpdate()
 
 						selected_actors[i].t_start = selected_actors[i].node->getScale();
 					}
+
+					start_transform_flag = true;
 				}
 
 				if(!left_drag_init)
@@ -2624,6 +2663,8 @@ void wxIrrlicht::OnUpdate()
 
                     if(terrain_arrow)
                         terrain_arrow->setVisible(true);
+
+                    start_terrain_flag = true;
                 }
 
 				if(terrain_actor_index >= 0) //(init_click)

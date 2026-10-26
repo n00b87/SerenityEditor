@@ -3678,14 +3678,14 @@ void serenity_project::save_stage(int stage_id)
 
 		if(stages[stage_id].actors[i].type == SN_ACTOR_TYPE_TERRAIN)
         {
-            std::cout << "Save Terrain" << std::endl;
+            //std::cout << "Save Terrain" << std::endl;
 
             if(stage_window)
             {
                 wxFileName tmap_out_file = project_path;
                 tmap_out_file.AppendDir(_("textures"));
                 tmap_out_file.SetFullName(wxString(stages[stage_id].actors[i].terrain_hmap_file));
-                std::cout << "Save to: " << tmap_out_file.GetAbsolutePath().ToStdString() << std::endl;
+                //std::cout << "Save to: " << tmap_out_file.GetAbsolutePath().ToStdString() << std::endl;
                 stage_window->saveTerrainHMap((irr::scene::ITerrainSceneNode*)stages[stage_id].actors[i].node, stages[stage_id].actors[i].terrain_size, tmap_out_file);
             }
             else
@@ -4703,7 +4703,7 @@ int serenity_project::load_mesh(std::vector<serenity_project_dict_obj> param, in
 		}
 		device->getFileSystem()->removeFileArchive((irr::u32) 0);
 
-		std::cout << "LOADED FROM PK: " << file_name.ToStdString() << ", " << (p_mesh.mesh != NULL ? "SUCCESS" : "FAIL") << std::endl;
+		//std::cout << "LOADED FROM PK: " << file_name.ToStdString() << ", " << (p_mesh.mesh != NULL ? "SUCCESS" : "FAIL") << std::endl;
 	}
 	else if(p_mesh.isAN8Scene)
 	{
@@ -5399,7 +5399,7 @@ rc_material serenity_project::loadMaterialFile(wxString mfile, wxString mID)
 				if(!texture_found)
 				{
 					//load texture here
-					wxString new_texture_id_name = genTextureID();
+					wxString new_texture_id_name = genTextureID(filename);
 					std::vector<serenity_project_dict_obj> tx_param;
 					serenity_project_dict_obj t_obj;
 
@@ -5486,9 +5486,15 @@ rc_material serenity_project::loadMaterialFile(wxString mfile, wxString mID)
 	return p_mat;
 }
 
-wxString serenity_project::genTextureID()
+wxString serenity_project::genTextureID(wxString filename)
 {
-	wxString tmp_name = _("texture_id");
+	wxString tmp_name = filename;
+	tmp_name.Replace(_("."), _("_"));
+	tmp_name.Replace(_(" "), _("_"));
+	tmp_name.Replace(_("/t"), _("_"));
+	tmp_name.Replace(_("/r"), _("_"));
+	tmp_name.Replace(_("/n"), _("_"));
+
 	wxString new_name = _("");
 
 	bool name_found = false;
@@ -5496,7 +5502,7 @@ wxString serenity_project::genTextureID()
 
 	while(!name_found)
 	{
-		new_name = tmp_name + wxString::Format(_("%d"), name_n);
+		new_name = tmp_name + ( name_n > 0 ? wxString::Format(_("%d"), name_n) : _("") );
 		name_n++;
 
 		name_found = true;
@@ -5569,9 +5575,15 @@ wxString serenity_project::genMaterialFileName(wxString tmp_name)
 	return new_name;
 }
 
-wxString serenity_project::genMeshID()
+wxString serenity_project::genMeshID(wxString mesh_filename)
 {
-	wxString tmp_name = _("mesh_id");
+	wxString tmp_name = mesh_filename;
+	tmp_name.Replace(_("."), _("_"));
+	tmp_name.Replace(_(" "), _("_"));
+	tmp_name.Replace(_("/t"), _("_"));
+	tmp_name.Replace(_("/r"), _("_"));
+	tmp_name.Replace(_("/n"), _("_"));
+
 	wxString new_name = _("");
 
 	bool name_found = false;
@@ -5605,7 +5617,7 @@ wxString serenity_project::genMeshID()
 
 	while(!name_found)
 	{
-		new_name = tmp_name + wxString::Format(_("%d"), name_n);
+		new_name = tmp_name + ( name_n > 0 ? wxString::Format(_("%d"), name_n) : _(""));
 		name_n++;
 
 		name_found = true;
