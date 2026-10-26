@@ -465,6 +465,20 @@ void SerenityEditorSerenity3D_Frame::addRecentProject()
         delete recent_projects[i].m_item;
     }
 
+    wxFileName fname = project.project_path;
+
+	wxFileName pfile_path = fname;
+	pfile_path.SetFullName(wxString(project.project_name).Trim() + _(".snprj"));
+
+
+    for(int i = recent_projects.size() - 1; i >= 0; i--)
+    {
+        if(recent_projects[i].project_path.GetAbsolutePath().compare(pfile_path.GetAbsolutePath())==0)
+        {
+            recent_projects.erase(recent_projects.begin()+i);
+        }
+    }
+
     if(max_recent_projects > 0)
     {
         for(int i = recent_projects.size()-1; i >= (max_recent_projects-1); i--)
@@ -476,11 +490,6 @@ void SerenityEditorSerenity3D_Frame::addRecentProject()
     //if(current_found)
     //    return;
 
-
-    wxFileName fname = project.project_path;
-
-	wxFileName pfile_path = fname;
-	pfile_path.SetFullName(wxString(project.project_name).Trim() + _(".snprj"));
 
     serenity_recent_project p;
     p.project_path = pfile_path;
