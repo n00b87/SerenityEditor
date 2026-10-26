@@ -2234,7 +2234,7 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_menu2->AppendSeparator();
 
 	wxMenuItem* m_menuItem8;
-	m_menuItem8 = new wxMenuItem( m_menu2, wxID_ANY, wxString( wxT("Copy Actor") ) + wxT('\t') + wxT("CTRL+C"), wxEmptyString, wxITEM_NORMAL );
+	m_menuItem8 = new wxMenuItem( m_menu2, wxID_ANY, wxString( wxT("Copy Actor") ) + wxT('\t') + wxT("SHIFT+D"), wxEmptyString, wxITEM_NORMAL );
 	m_menu2->Append( m_menuItem8 );
 
 	m_menu2->AppendSeparator();

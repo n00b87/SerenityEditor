@@ -2863,8 +2863,8 @@ void SerenityEditorSerenity3D_Frame::refresh_actor(int actor_project_index)
 					else
 						project.stages[stage_project_index].actors[i].node = smgr->addAnimatedMeshSceneNode(mesh);
 				}
-				else
-                    std::cout << "NO DICE" << std::endl;
+				//else
+                //    std::cout << "NO DICE" << std::endl;
 			}
 
 

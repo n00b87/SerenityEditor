@@ -3678,14 +3678,14 @@ void serenity_project::save_stage(int stage_id)
 
 		if(stages[stage_id].actors[i].type == SN_ACTOR_TYPE_TERRAIN)
         {
-            std::cout << "Save Terrain" << std::endl;
+            //std::cout << "Save Terrain" << std::endl;
 
             if(stage_window)
             {
                 wxFileName tmap_out_file = project_path;
                 tmap_out_file.AppendDir(_("textures"));
                 tmap_out_file.SetFullName(wxString(stages[stage_id].actors[i].terrain_hmap_file));
-                std::cout << "Save to: " << tmap_out_file.GetAbsolutePath().ToStdString() << std::endl;
+                //std::cout << "Save to: " << tmap_out_file.GetAbsolutePath().ToStdString() << std::endl;
                 stage_window->saveTerrainHMap((irr::scene::ITerrainSceneNode*)stages[stage_id].actors[i].node, stages[stage_id].actors[i].terrain_size, tmap_out_file);
             }
             else
@@ -4703,7 +4703,7 @@ int serenity_project::load_mesh(std::vector<serenity_project_dict_obj> param, in
 		}
 		device->getFileSystem()->removeFileArchive((irr::u32) 0);
 
-		std::cout << "LOADED FROM PK: " << file_name.ToStdString() << ", " << (p_mesh.mesh != NULL ? "SUCCESS" : "FAIL") << std::endl;
+		//std::cout << "LOADED FROM PK: " << file_name.ToStdString() << ", " << (p_mesh.mesh != NULL ? "SUCCESS" : "FAIL") << std::endl;
 	}
 	else if(p_mesh.isAN8Scene)
 	{
