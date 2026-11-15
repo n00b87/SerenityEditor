@@ -10722,14 +10722,14 @@ void SerenityEditorSerenity3D_Frame::On_Material_PointCloud_Update( wxCommandEve
 }
 
 
-void SerenityEditorSerenity3D_Frame::On_Material_Shineness_Update( wxSpinEvent& event )
+void SerenityEditorSerenity3D_Frame::On_Material_Shineness_Update( wxSpinDoubleEvent& event )
 {
 	int n = materialTab_selected_material_project_index;
 
 	if(n < 0 || n >= project.materials.size())
 		return;
 
-	project.materials[n].material.Shininess = m_material_shineness_spinCtrl->GetValue();
+	project.materials[n].material.Shininess = (irr::f32)m_material_shineness_spinCtrl->GetValue();
 
 	updateTestMesh();
 }

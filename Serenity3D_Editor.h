@@ -572,7 +572,7 @@ class Serenity3D_Frame : public wxFrame
 		wxStaticText* m_staticText522;
 		wxCheckBox* m_material_pointCloud_checkBox;
 		wxStaticText* m_staticText56;
-		wxSpinCtrl* m_material_shineness_spinCtrl;
+		wxSpinCtrlDouble* m_material_shineness_spinCtrl;
 		wxPanel* m_panel401;
 		wxPanel* m_panel411;
 		wxPanel* m_material_materialPreview_panel;
@@ -728,7 +728,7 @@ class Serenity3D_Frame : public wxFrame
 		virtual void On_Material_Lighting_Update( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Material_Normalize_Update( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Material_PointCloud_Update( wxCommandEvent& event ) { event.Skip(); }
-		virtual void On_Material_Shineness_Update( wxSpinEvent& event ) { event.Skip(); }
+		virtual void On_Material_Shineness_Update( wxSpinDoubleEvent& event ) { event.Skip(); }
 		virtual void On_Material_previewNoLight_Selected( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Material_previewDirectionlight_Selected( wxCommandEvent& event ) { event.Skip(); }
 		virtual void On_Material_previewPointlight_Selected( wxCommandEvent& event ) { event.Skip(); }
