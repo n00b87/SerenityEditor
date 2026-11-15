@@ -429,7 +429,7 @@ class SerenityEditorSerenity3D_Frame : public Serenity3D_Frame
 		void On_Material_Lighting_Update( wxCommandEvent& event );
 		void On_Material_Normalize_Update( wxCommandEvent& event );
 		void On_Material_PointCloud_Update( wxCommandEvent& event );
-		void On_Material_Shineness_Update( wxSpinEvent& event );
+		void On_Material_Shineness_Update( wxSpinDoubleEvent& event );
 
 		void On_Material_previewNoLight_Selected( wxCommandEvent& event );
 		void On_Material_previewDirectionlight_Selected( wxCommandEvent& event );

@@ -1863,7 +1863,8 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_staticText56->Wrap( -1 );
 	bSizer130->Add( m_staticText56, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_material_shineness_spinCtrl = new wxSpinCtrl( m_scrolledWindow3, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 128, 0 );
+	m_material_shineness_spinCtrl = new wxSpinCtrlDouble( m_scrolledWindow3, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 1000, 0, 0.1 );
+	m_material_shineness_spinCtrl->SetDigits( 2 );
 	bSizer130->Add( m_material_shineness_spinCtrl, 4, wxALL, 5 );
 
 
@@ -2359,7 +2360,7 @@ Serenity3D_Frame::Serenity3D_Frame( wxWindow* parent, wxWindowID id, const wxStr
 	m_material_lighting_checkBox->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Material_Lighting_Update ), NULL, this );
 	m_material_normalize_checkBox->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Material_Normalize_Update ), NULL, this );
 	m_material_pointCloud_checkBox->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Material_PointCloud_Update ), NULL, this );
-	m_material_shineness_spinCtrl->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( Serenity3D_Frame::On_Material_Shineness_Update ), NULL, this );
+	m_material_shineness_spinCtrl->Connect( wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, wxSpinDoubleEventHandler( Serenity3D_Frame::On_Material_Shineness_Update ), NULL, this );
 	this->Connect( m_material_previewNoLight_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Material_previewNoLight_Selected ) );
 	this->Connect( m_material_previewDirectionLight_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Material_previewDirectionlight_Selected ) );
 	this->Connect( m_material_previewPointLight_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Material_previewPointlight_Selected ) );
@@ -2500,7 +2501,7 @@ Serenity3D_Frame::~Serenity3D_Frame()
 	m_material_lighting_checkBox->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Material_Lighting_Update ), NULL, this );
 	m_material_normalize_checkBox->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Material_Normalize_Update ), NULL, this );
 	m_material_pointCloud_checkBox->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Material_PointCloud_Update ), NULL, this );
-	m_material_shineness_spinCtrl->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( Serenity3D_Frame::On_Material_Shineness_Update ), NULL, this );
+	m_material_shineness_spinCtrl->Disconnect( wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, wxSpinDoubleEventHandler( Serenity3D_Frame::On_Material_Shineness_Update ), NULL, this );
 	this->Disconnect( m_material_previewNoLight_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Material_previewNoLight_Selected ) );
 	this->Disconnect( m_material_previewDirectionLight_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Material_previewDirectionlight_Selected ) );
 	this->Disconnect( m_material_previewPointLight_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Serenity3D_Frame::On_Material_previewPointlight_Selected ) );
