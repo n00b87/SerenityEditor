@@ -6031,7 +6031,7 @@ bool serenity_project::save_material(int material_index)
                                                                                              _("n1=") + wxString::FromDouble(p_mat.fx_var[i].var_value[0]) + _("  ") +
                                                                                              _("n2=") + wxString::FromDouble(p_mat.fx_var[i].var_value[1]) + _("  ") +
                                                                                              _("n3=") + wxString::FromDouble(p_mat.fx_var[i].var_value[2]) + _("  ") +
-                                                                                             _("n4=") + wxString::FromDouble(p_mat.fx_var[i].var_value[3]) + _("  ") + _("\";"));
+                                                                                             _("n4=") + wxString::FromDouble(p_mat.fx_var[i].var_value[3]) + _("  ") + _(";"));
         mat_file.Write(_("\n"));
 	}
 
