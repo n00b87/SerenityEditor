@@ -1880,6 +1880,16 @@ bool serenity_project::genRCBasicProject()
 	sn_api += _("\t") + _("Return Serenity_Global_Actor_List[actor_index].ActorType\n");
 	sn_api += _("End Function\n\n");
 
+	sn_api += _("Function Serenity_GetCollisionActorID(actor_index)\n");
+	sn_api += _("\t") + _("If Serenity_Current_Stage.StageID < 0 Or Serenity_Current_Stage.StageID >= ") + wxString::Format(_("%i"), (int)stages.size()) + _(" Then\n");
+	sn_api += _("\t\t") + _("Return -1\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("If actor_index < 0 Or actor_index >= ArraySize(Serenity_Global_Actor_List, 1) Then\n");
+	sn_api += _("\t\t") + _("Return -1\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("Return Serenity_Global_Actor_List[actor_index].Collider_ID\n");
+	sn_api += _("End Function\n\n");
+
 	sn_api += _("Function Serenity_GetActorMeshIndex(actor_index)\n");
 	sn_api += _("\t") + _("If Serenity_Current_Stage.StageID < 0 Or Serenity_Current_Stage.StageID >= ") + wxString::Format(_("%i"), (int)stages.size()) + _(" Then\n");
 	sn_api += _("\t\t") + _("Return -1\n");
