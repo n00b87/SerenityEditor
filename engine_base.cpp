@@ -2437,6 +2437,9 @@ bool serenity_project::genRCBasicProject()
 					{
 						int mat_index = meshes[mesh_index].material_index[mat];
 
+						if(mat_index < 0 || mat_index >= materials.size())
+                            continue;
+
 						wxString mat_sn_id = _("Materials.") + wxString::FromUTF8(materials[mat_index].id_name) + _(".SN_ID");
 						wxString mat_id = _("Serenity_Global_Material_List[") + mat_sn_id + _("].ID");
 						mesh_material_str += _("\t") + _("SetActorMaterial( [ACTOR], ") + wxString::Format(_("%d"), mat) + _(", ") + mat_id + _(" ) ") + _("\n");
