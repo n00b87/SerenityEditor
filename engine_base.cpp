@@ -1843,6 +1843,22 @@ bool serenity_project::genRCBasicProject()
 	sn_api += _("\t") + _("Return -1\n");
 	sn_api += _("End Function\n\n");
 
+	sn_api += _("Function Serenity_GetActorIndexFromID(actor_id)\n");
+	sn_api += _("\t") + _("If Serenity_Current_Stage.StageID < 0 Or Serenity_Current_Stage.StageID >= ") + wxString::Format(_("%i"), (int)stages.size()) + _(" Then\n");
+	sn_api += _("\t\t") + _("Return -1\n");
+	sn_api += _("\t") + _("End If\n");
+	sn_api += _("\t") + _("For i = 0 To Serenity_Global_Stage_List[Serenity_Current_Stage.StageID].ActorCount-1\n");
+	sn_api += _("\t\t") + _("actor_index = MatrixValue(Serenity_Global_Stage_List[Serenity_Current_Stage.StageID].Actor_Matrix, 0, i)\n");
+    sn_api += _("\t\t") + _("If actor_index < 0 Then\n");
+    sn_api += _("\t\t\t") + _("Continue\n");
+    sn_api += _("\t\t") + _("End If\n");
+    sn_api += _("\t\t") + _("If Serenity_Global_Actor_List[actor_index].ID = actor_id Then\n");
+    sn_api += _("\t\t\t") + _("Return actor_index\n");
+    sn_api += _("\t\t") + _("End If\n");
+	sn_api += _("\t") + _("Next\n");
+	sn_api += _("\t") + _("Return -1\n");
+	sn_api += _("End Function\n\n");
+
 	sn_api += _("Function Serenity_GetActorCount()\n");
 	sn_api += _("\t") + _("If Serenity_Current_Stage.StageID < 0 Or Serenity_Current_Stage.StageID >= ") + wxString::Format(_("%i"), (int)stages.size()) + _(" Then\n");
 	sn_api += _("\t\t") + _("Return 0\n");
